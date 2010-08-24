@@ -1,6 +1,6 @@
 #summary Discussion of resolutions to issues related to scripting
 
-_ Note: this page is a drafty discussion area, nothing stated herein are agreed resolutions_
+_ Note: this page is a discussion area, nothing stated herein is agreed resolutions_
 
 <wiki:toc max_depth="3" />
 
@@ -11,30 +11,48 @@ Here are the issues that have surfaced so far with regards to scripting in EPUB:
 Reading systems that do dynamic pagination/reflow run into trouble if the DOM can change unpredictably (outside of given, fixed-size rectangles).
 
 === *B* Not all reading systems support scripting ===
-... and nor should we require them to in 3.0.
+... and nor should we require them to in 3.0. This includes reading systems that are not built on top of HTML browser components for example.
 
 === *C* Scripting is potentially harmful for accessibility ===
+Refer to [http://www.w3.org/TR/WCAG-TECHS/failures.html] for some examples.
 
 === *D* Maximize cross-device content predictability ===
 See Design Guidelines: _author content once, consume everywhere, with a predictable user experience_. 
 
+---------
+
 == Solutions ==
 === A ===
-
-TBD - final definition of "chapter-level scripting" and its functional restrictions
-
-Question (MG): if we discern between two types of scripting (chapter-level and rectangle-restrained), should these be machine-distinguisable?
- * EPUBcheck being able to verify that a spine item with chapter-level scripting is properly declared as such in spine/manifest
- * A reading system being able to selectively disable chapter-level scripts (in a document where both types co-exist)
-
+==== A1 ====
+ # Discern between two types of scripting: _document-level_ and _container-constrained (note document-level also called "chapter level")_. 
+  * Document-level scripting is defined as:
+   * Scripts of type `<script>` that manipulate content at a document-wide level 
+   * Scripts executing within the context of `<iframe>`, `<canvas>`, (?) that manipulate content outside their containing rectangle, and/or change the size of their containing rectangle
+  * Container-constrained scripting is defined as `<iframe>`, `<canvas>`, (?) when *not* manipulating content outside their containing rectangle, and/or change the size of their containing rectangle
+  * Spine items that contain document-level scripting should be declared as such in the OPF
+ # Impose restrictions on the types of scripting that can occur at the document level
+  * limit script definition  (e.g. only in document `<head>`) 
+  * limit script execution (e.g. only to certain event handlers like document.ready, and user interaction events on DOM content)
+ # For document-level scripting, have the spec express a requirement that only progressive-enhancement-type scripts be used 
+  
+---------
 === B  ===
-By emphasizing and recommending the use of scripting for the purposes of progressive enhancement, we say that an EPUB _should_ retain its fundamental informational integrity even when consumed in a reading system with no scripting support.
+_(Background reading: [http://www.idpf.org/doc_library/epub/OPS_2.0.1_draft.htm#Section2.3.7 EPUB 2.01 prose on script and noscript])_
 
-_ Note: it seems agreed to not require explicit content alternatives/fallbacks for scripted content that is not of a progressive enhancement nature (using for example HTML's noscript element), although such mechanisms would remain allowed. _
+==== B1 ====
+*In the context of document-level scripting*: by requiring the use to be constrained the purposes of progressive enhancement, we say that an EPUB must retain its fundamental informational integrity even when consumed in a reading system with no scripting support. 
 
-_Comment (MG): this is still a serious impediment to D above. Is it completely unthinkable to require reading systems to support at least some level of scripting?_
+_Note: the use of progressive-enhancement-only scripting can not be machine-enforced (e.g. EPUBCheck wont be able to tell when this req is violated). _
 
-_(See also [http://www.idpf.org/doc_library/epub/OPS_2.0.1_draft.htm#Section2.3.7 EPUB 2.01 prose on script and noscript])_
 
+*In the context of container-constrained scripting*:
+ * at least in the case of canvas, fallback content must always be provided, as per the HTML5 spec.
+ * @@@ fallback for scripts in iframe? The content of the script element?
+
+_ Note [http://www.w3.org/Bugs/Public/show_bug.cgi?id=10068 there's a suggestion to make `<noscript>` obsolete but conforming] in HTML5 _
+
+
+---------
 === C === 
-This is a general problem inherited from the web; we do not plan to introduce any special remedial features of our own here, but instead rely on solutions from the web space (referencing WCAG guidelines, supporting ARIA markup). See also the solution for {B} above.
+==== C1 ====
+This is a general problem inherited from the web; we do not introduce any special remedial features of our own, but instead rely on solutions from the web space (referencing WCAG guidelines, supporting ARIA markup). See also B1 above.
