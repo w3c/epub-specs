@@ -8,111 +8,6 @@
 
 Requirements have been reviewed by: Daniel Weck; Alexis Wiles; Will Manis
 
-== Strawman prioritization ==
-
-
-=== P1 Document identifiers (ANNOT_R3) ===
-_Rationale: Annotations stored separately from the referenced document should be able to reliably identify the referenced document.
-
-_Comment (wmanis): This is a general problem that is covered in the metadata working group. This requirement provides a high level correlation between the annotation and the referenced document. Minor versions of document will have the same identifier, so relying solely on the document identifier maybe problematic if the annotated content is changed in a minor version, thus the need for the next requirement. That being said for annotations that are not sensitive this level of identity may be sufficient.
-
-=== P2 Mechanism to guarantee that document content has not changed (ANNOT_R1) ===
-
-_Rationale: The scenario we need to prevent here is - an author creates a document and says Vinay is a good guy, I come along and add an annotation that says I agree? (that Vinay is a good guy), the author later edits the document to read? Vinay is a criminal?, my ?I agree? annotation will now be misinterpreted by subsequent viewers of my annotation.
-
-_Comment (wmanis):The digital signature  section of the OCF specification allows for this requirement (3.5.4 Digital Signatures  META-INF/signatures.xml (Optional))  unfortunately this section is not required. Unfortunately the originator of the document does not have a strong impetus to provide these DSIGs (the benefit only accrues downstream). The document containing the annotations could store signatures of the annotated data, provided the user agent(s) provided the data in a form that could be used to generate a dsig consistently. The user agent would have to guarantee that it had not introduced any additional content that would pollute the DSIG.
-
-==== P2.1 Mechanism to guarantee that the public annotation has not changed (ANNOT_R2) ====
-
-_Rationale: The scenario we need to prevent here is - an author creates a document and says Vinay is a good guy?, I come along and add an annotation that says ?I agree?, I do not want a subsequent annotator to change my annotation to "I disagree".
-
-=== P3 Content identification (ANNOT_R4) ===
-
-_Rationale: Annotations must be able to reference text, audio, video, spatial (ink circle of a face in an image), etc.
-- 2010/07/16, Daniel Weck: I suggest breaking-down ANNOT_R4 into several, more accurate requirements. I have drafted a few and named them "4.x", as follows:
-
-==== P 3.1 Same as ANNOT_R4.1, but instead of targeting predefined unique identifiers, here the identification of the point/location in the content document is based on a given path leading to the XML element in question, which requires structural assumptions (i.e. the knowledge from the annotation creator about the structure of the document). (ANNOT_R4.2) ====
-NOTE: by virtue of ANNOT_R1, the structure of the content document is considered immutable which guarantees that the annotation targets described in ANNOT_R4.1 and ANNOT_R4.2 cannot be broken.
-
-_Comment (wmanis): An XPath to content. Current browsers do not make this an easy assumption, either by Javascript DOM manipulation or by under the cover content mutation. The UA would needs to provide a canonical xpath to the content. The canonical xpath will need to be precisely defined, avoiding problematic xpath constructs.
-
-==== P 3.1.1 Identification of an annotation target as a location in between 2 consecutive unicode characters inside the XML content document. (ANNOT_R4.3) ====
-_Rationale: annotations must be able to reference a particular point/location in a stream of unicode characters, expressed relatively to a particular structural point in the document that contains this text (ancestor/descendant relationship), such as an XML element (opening "tag") defined by the mechanisms described in ANNOT_R4.1 and ANNOT_R4.2.
-
-_Comment (wmanis): An XPath to content. The same problems exist as those outlined in ANNOT_R4.2. The issue here may be that the user is viewing glyphs and the backing store is in characters, the UA must help in disambiguating.
-
-
-==== P 3.1.2 Identification of an annotation target as a range of unicode characters inside the XML content document. (ANNOT_R4.4) ====
-_Rationale: annotations must be able to reference a particular contiguous (i.e. non-disjoint) "selection" of text, based on two points/locations specified using the mechanism described in ANNOT_R4.3.
-
-_Comment (wmanis): An XPath to content. The same problems exist as those outlined in ANNOT_R4.2 and ANNOT_R4.3. Given that the range may span multiple elements, a simple XPath will not suffice.
-
-
-==== P 3.2 Identification of an annotation target as a time offset inside audio or video resources that are part of the EPUB publication. (ANNOT_R4.5) ====
-_Rationale: annotations must be able to reference media objects contained inside the main content document or part of the synchronized audio content of the publication.
-
-==== P 3.2.1 Same as ANNOT_R4.5, but for a range of time (i.e. a particular "clip" of the media object) defined by a begin and an end time offset relative to the starting point of the media object. (ANNOT_R4.6) ====
-
-
-==== P 3.3 Identification of an annotation target as a spacial area in media objects inside the content document (ANNOT_R4.7) ====
-_Rationale: annotations must be able to reference a particular graphical zone/region of the target visual media (i.e. image, video), based on a specified geometrical shape and associated coordinates in the space domain (e.g. rectangle, circle, arbitrary outline).
-
-==== P 3.4 Identification of an annotation target can mix the structural, spacial and time domains. (ANNOT_R4.8) ====
-_Rationale: annotations (particularly the ones addressing video objects) must be able to reference a specific graphical area for the duration of a specific time range in the target media object.
-
-==== P 3.5 Annotation may be on multiple selection targets (ANNOT_R4.9) ====
-_Rationale: "There are 7 misspelled instances of the word 'accessability'"
-
-
-==== P 3.6 Identification of an annotation target as a named (i.e. predefined, authored with a unique identifier), media-agnostic structural point/location in the content document. (ANNOT_R4.1) ====
-_Rationale: annotations must be able to reference a particular XML element in the content document, regardless of the type of content the pointed element represents (e.g. text markup, video or audio tag from HTML5...etc.), using unique names (such as XML fragment identifiers) that have been authored explicitly in the targeted content document (i.e. predefined/prepared intentionally by the content producers).
-
-_Comment (wmanis): This assumes the presence of an html:id or xml:id attribute, or the ability to introduce one to the document. None of these strike me as assumptions that we should rely on. 
-
-==== P 3.x Synchronized audio annotates the text (ANNOT_R9) ====
-Use case: A audio book producer wants to add a narration to the EPUB text version. They want synchronization to take place at various levels of granularity, i.e. paragraph, sentence, word.
-Use case 2: A EPUB document contains poetry and somebody wants to add a human reading of the poem. Different human presentations can be compared, which interprets the meaning of the poem in different ways. e.g. "this is my son" one version is with pride, the other with shame.
-Note: this relates to the concept of "Transparent Overlay" described in RM-21: http://code.google.com/p/epub-revision/wiki/RichMediaAndInteractivity#RM-21._Transparent_overlay
-P 3.xContent identification resilient to reflow (ANNOT_R5)
-
-_Rationale: The content identification scheme must be resilient to content reflow.
-
-_Comment (wmanis): This falls into the the P3.1, P3.2 category.
-
-
-=== P4 Annotation mechanism capture(ANNOT_TW_R1) ===
-* Annotation Type may include : highlight, underline, circle, margin bar, mark, doodles, anchor+content, comment, footnote. 
-_Comment (wmanis): The annotation must contain the mechanism used by the user to capture the data  underlining, highlighting (color), proofing mark, etc. This may entail capturing more than just the content identification.
-
-=== P5 ANNOT_TW_R2 Portable Annotation ===
-_Rationale: For the use of digital learning, such as notes from a teacher to students, students to students, answers to the examination, etc. We need a portable method that can read these annotations on different devices
-
-_Comment (wmanis): Making this a high priority will ensure that annotations do not live in walled gardens. Annotations for content annotated in an iBook should work on a Nook, provided they both are consuming epub.
-
-=== P6 Annotation content can contain either/any of: audio, video, image, text. (ANNOT_R8) ===
-_Rationale: annotations must be able to contain multimedia objects, TO BE DEFINED: can one given annotation contain more than one object, such as a mix of video and images for example? If yes, are there any presentation requirements for these mixed media objects, or should the user-agent be responsible for orchestrating the presentation flow of these multiple media items?
-
-=== P7 How far should this specification go in suggesting how user agents display annotations? (ISSUE_I1) ===
-_Rationale: The display of annotations can be an exceedingly complex problem, we need to allow UA freedom to handle accessibility, device limitations, domain requirements, etc. Should we focus on the data representations and integrity of annotations and a very set of minimal display requirements that ensure the integrity of the annotation, the annotator and the annotated content? Or more display requirements?
-
-=== P8 Annotator identification (ANNOT_R6) ===
-_Rationale: The annotator should be able to be reliably identified if they so desire.
-
-=== P9 Annotator anonymity (ANNOT_R7) ===
-_Rationale: In the event the annotator does not want to be identified the annotation should contain no PI.
-
-=== Px ANNOT_TW_R1 Annotation Structure ===
-_Rationale: We consider personal annotation structure can divide into three elements: Annotation Type, Anchor and Annotation content as follow?
-
-* Annotation Type may include : highlight, underline, circle, margin bar, mark, doodles, anchor+content, comment, footnote. (added above)
-
-* Annotation anchor should be able to mark accurately to point, word, sentence, paragraph, chapter, document. (covered in content identification above)
-
-* Annotation content should contain text, image, symbol, audio, video. (covered in ANNOT_R8 above)
-
-(We read DAISY Portable Bookmarks and Highlights, seems it only divided the annotation type into highlight and bookmark, and less multimedia support(only text and audio), maybe we could base on it and add more annotation types, anchor position and multimedia for annotation content.) 
-
-
 == Mission ==
 
 The goal of the annotations sub-group is to provide a specification for schema and storage of data associated with content in an EPUB document. It is quite likely that the specification will be an entirely separate document (e.g. not unlike OPS, OCF, OPF) under the EPUB umbrella. (Needs refinement.)
@@ -313,6 +208,112 @@ _Rationale: For the use of digital learning, such as notes from a teacher to stu
     * http://www.cehd.umn.edu/Reading/documents/reports/Brahier-report.pdf 
   * Heck, Luebke, Obermark
     * http://www.math.grin.edu/~rebelsky/Blazers/Annotations/Summer1999/Papers/survey_paper.html
+
+== Strawman prioritization ==
+
+
+=== P1 Document identifiers (ANNOT_R3) ===
+_Rationale: Annotations stored separately from the referenced document should be able to reliably identify the referenced document.
+
+_Comment (wmanis): This is a general problem that is covered in the metadata working group. This requirement provides a high level correlation between the annotation and the referenced document. Minor versions of document will have the same identifier, so relying solely on the document identifier maybe problematic if the annotated content is changed in a minor version, thus the need for the next requirement. That being said for annotations that are not sensitive this level of identity may be sufficient.
+
+=== P2 Mechanism to guarantee that document content has not changed (ANNOT_R1) ===
+
+_Rationale: The scenario we need to prevent here is - an author creates a document and says Vinay is a good guy, I come along and add an annotation that says I agree? (that Vinay is a good guy), the author later edits the document to read? Vinay is a criminal?, my ?I agree? annotation will now be misinterpreted by subsequent viewers of my annotation.
+
+_Comment (wmanis):The digital signature  section of the OCF specification allows for this requirement (3.5.4 Digital Signatures  META-INF/signatures.xml (Optional))  unfortunately this section is not required. Unfortunately the originator of the document does not have a strong impetus to provide these DSIGs (the benefit only accrues downstream). The document containing the annotations could store signatures of the annotated data, provided the user agent(s) provided the data in a form that could be used to generate a dsig consistently. The user agent would have to guarantee that it had not introduced any additional content that would pollute the DSIG.
+
+==== P2.1 Mechanism to guarantee that the public annotation has not changed (ANNOT_R2) ====
+
+_Rationale: The scenario we need to prevent here is - an author creates a document and says Vinay is a good guy?, I come along and add an annotation that says ?I agree?, I do not want a subsequent annotator to change my annotation to "I disagree".
+
+=== P3 Content identification (ANNOT_R4) ===
+
+_Rationale: Annotations must be able to reference text, audio, video, spatial (ink circle of a face in an image), etc.
+- 2010/07/16, Daniel Weck: I suggest breaking-down ANNOT_R4 into several, more accurate requirements. I have drafted a few and named them "4.x", as follows:
+
+==== P 3.1 Same as ANNOT_R4.1, but instead of targeting predefined unique identifiers, here the identification of the point/location in the content document is based on a given path leading to the XML element in question, which requires structural assumptions (i.e. the knowledge from the annotation creator about the structure of the document). (ANNOT_R4.2) ====
+NOTE: by virtue of ANNOT_R1, the structure of the content document is considered immutable which guarantees that the annotation targets described in ANNOT_R4.1 and ANNOT_R4.2 cannot be broken.
+
+_Comment (wmanis): An XPath to content. Current browsers do not make this an easy assumption, either by Javascript DOM manipulation or by under the cover content mutation. The UA would needs to provide a canonical xpath to the content. The canonical xpath will need to be precisely defined, avoiding problematic xpath constructs.
+
+==== P 3.1.1 Identification of an annotation target as a location in between 2 consecutive unicode characters inside the XML content document. (ANNOT_R4.3) ====
+_Rationale: annotations must be able to reference a particular point/location in a stream of unicode characters, expressed relatively to a particular structural point in the document that contains this text (ancestor/descendant relationship), such as an XML element (opening "tag") defined by the mechanisms described in ANNOT_R4.1 and ANNOT_R4.2.
+
+_Comment (wmanis): An XPath to content. The same problems exist as those outlined in ANNOT_R4.2. The issue here may be that the user is viewing glyphs and the backing store is in characters, the UA must help in disambiguating.
+
+
+==== P 3.1.2 Identification of an annotation target as a range of unicode characters inside the XML content document. (ANNOT_R4.4) ====
+_Rationale: annotations must be able to reference a particular contiguous (i.e. non-disjoint) "selection" of text, based on two points/locations specified using the mechanism described in ANNOT_R4.3.
+
+_Comment (wmanis): An XPath to content. The same problems exist as those outlined in ANNOT_R4.2 and ANNOT_R4.3. Given that the range may span multiple elements, a simple XPath will not suffice.
+
+
+==== P 3.2 Identification of an annotation target as a time offset inside audio or video resources that are part of the EPUB publication. (ANNOT_R4.5) ====
+_Rationale: annotations must be able to reference media objects contained inside the main content document or part of the synchronized audio content of the publication.
+
+==== P 3.2.1 Same as ANNOT_R4.5, but for a range of time (i.e. a particular "clip" of the media object) defined by a begin and an end time offset relative to the starting point of the media object. (ANNOT_R4.6) ====
+
+
+==== P 3.3 Identification of an annotation target as a spacial area in media objects inside the content document (ANNOT_R4.7) ====
+_Rationale: annotations must be able to reference a particular graphical zone/region of the target visual media (i.e. image, video), based on a specified geometrical shape and associated coordinates in the space domain (e.g. rectangle, circle, arbitrary outline).
+
+==== P 3.4 Identification of an annotation target can mix the structural, spacial and time domains. (ANNOT_R4.8) ====
+_Rationale: annotations (particularly the ones addressing video objects) must be able to reference a specific graphical area for the duration of a specific time range in the target media object.
+
+==== P 3.5 Annotation may be on multiple selection targets (ANNOT_R4.9) ====
+_Rationale: "There are 7 misspelled instances of the word 'accessability'"
+
+
+==== P 3.6 Identification of an annotation target as a named (i.e. predefined, authored with a unique identifier), media-agnostic structural point/location in the content document. (ANNOT_R4.1) ====
+_Rationale: annotations must be able to reference a particular XML element in the content document, regardless of the type of content the pointed element represents (e.g. text markup, video or audio tag from HTML5...etc.), using unique names (such as XML fragment identifiers) that have been authored explicitly in the targeted content document (i.e. predefined/prepared intentionally by the content producers).
+
+_Comment (wmanis): This assumes the presence of an html:id or xml:id attribute, or the ability to introduce one to the document. None of these strike me as assumptions that we should rely on. 
+
+==== P 3.x Synchronized audio annotates the text (ANNOT_R9) ====
+Use case: A audio book producer wants to add a narration to the EPUB text version. They want synchronization to take place at various levels of granularity, i.e. paragraph, sentence, word.
+Use case 2: A EPUB document contains poetry and somebody wants to add a human reading of the poem. Different human presentations can be compared, which interprets the meaning of the poem in different ways. e.g. "this is my son" one version is with pride, the other with shame.
+Note: this relates to the concept of "Transparent Overlay" described in RM-21: http://code.google.com/p/epub-revision/wiki/RichMediaAndInteractivity#RM-21._Transparent_overlay
+P 3.xContent identification resilient to reflow (ANNOT_R5)
+
+_Rationale: The content identification scheme must be resilient to content reflow.
+
+_Comment (wmanis): This falls into the the P3.1, P3.2 category.
+
+
+=== P4 Annotation mechanism capture(ANNOT_TW_R1) ===
+* Annotation Type may include : highlight, underline, circle, margin bar, mark, doodles, anchor+content, comment, footnote. 
+_Comment (wmanis): The annotation must contain the mechanism used by the user to capture the data  underlining, highlighting (color), proofing mark, etc. This may entail capturing more than just the content identification.
+
+=== P5 ANNOT_TW_R2 Portable Annotation ===
+_Rationale: For the use of digital learning, such as notes from a teacher to students, students to students, answers to the examination, etc. We need a portable method that can read these annotations on different devices
+
+_Comment (wmanis): Making this a high priority will ensure that annotations do not live in walled gardens. Annotations for content annotated in an iBook should work on a Nook, provided they both are consuming epub.
+
+=== P6 Annotation content can contain either/any of: audio, video, image, text. (ANNOT_R8) ===
+_Rationale: annotations must be able to contain multimedia objects, TO BE DEFINED: can one given annotation contain more than one object, such as a mix of video and images for example? If yes, are there any presentation requirements for these mixed media objects, or should the user-agent be responsible for orchestrating the presentation flow of these multiple media items?
+
+=== P7 How far should this specification go in suggesting how user agents display annotations? (ISSUE_I1) ===
+_Rationale: The display of annotations can be an exceedingly complex problem, we need to allow UA freedom to handle accessibility, device limitations, domain requirements, etc. Should we focus on the data representations and integrity of annotations and a very set of minimal display requirements that ensure the integrity of the annotation, the annotator and the annotated content? Or more display requirements?
+
+=== P8 Annotator identification (ANNOT_R6) ===
+_Rationale: The annotator should be able to be reliably identified if they so desire.
+
+=== P9 Annotator anonymity (ANNOT_R7) ===
+_Rationale: In the event the annotator does not want to be identified the annotation should contain no PI.
+
+=== Px ANNOT_TW_R1 Annotation Structure ===
+_Rationale: We consider personal annotation structure can divide into three elements: Annotation Type, Anchor and Annotation content as follow?
+
+* Annotation Type may include : highlight, underline, circle, margin bar, mark, doodles, anchor+content, comment, footnote. (added above)
+
+* Annotation anchor should be able to mark accurately to point, word, sentence, paragraph, chapter, document. (covered in content identification above)
+
+* Annotation content should contain text, image, symbol, audio, video. (covered in ANNOT_R8 above)
+
+(We read DAISY Portable Bookmarks and Highlights, seems it only divided the annotation type into highlight and bookmark, and less multimedia support(only text and audio), maybe we could base on it and add more annotation types, anchor position and multimedia for annotation content.) 
+
+
 
 == Discussion ==
 
