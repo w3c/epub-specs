@@ -84,6 +84,8 @@ _Rationale: The display of annotations can be an exceedingly complex problem, we
 
 _Rationale: The scenario we need to prevent here is  - an author creates a document and says Vinay is a good guy, I come along and add an annotation that says I agree (that Vinay is a good guy), the author later edits the document to read Vinay is a criminal, my I agree annotation will now be misinterpreted by subsequent viewers of my annotation.
 
+COMMENT by WillManis: The digital signature section of the OCF specification allows for this requirement (3.5.4 Digital Signatures  META-INF/signatures.xml (Optional))  unfortunately this section is not required. Unfortunately the originator of the document does not have a strong impetus to provide these DSIGs (the benefit only accrues downstream). The document containing the annotations could store signatures of the annotated data, provided the user agent(s) provided the data in a form that could be used to generate a dsig consistently. The user agent would have to guarantee that it had not introduced any additional content that would pollute the DSIG.
+
 ==== ANNOT_R1.1 ((B, A, C)) Mechanism to guarantee identity of document author ====
 ==== ANNOT_R1.2 ((B, A, C)) Mechanism to guarantee anonymity of document author ====
 
@@ -101,6 +103,8 @@ _Rationale: Annotations stored seperately from the referenced document should be
 
 PROPOSAL by KingWai: ANNOT_R3.1 ((A, A)) => The annotation for the whole document is allowed. In this case, the annotation references only the document but not the specific content inside the document.
 
+COMMENT by WillManis: This is a general problem that is covered in the metadata working group. This requirement provides a high level correlation between the annotation and the referenced document. Minor versions of document will have the same identifier, so relying solely on the document identifier maybe problematic if the annotated content is changed in a minor version, thus the need for the next requirement. That being said for annotations that are not sensitive this level of identity may be sufficient.
+
 ==== ANNOT_R4 Content identification ====
 
 _Rationale: Annotations must be able to reference text, audio, video, spatial (ink circle of a face in an image), etc. 
@@ -114,11 +118,15 @@ _Description: Identification of an annotation target as a named (i.e. predefined
 
 _Rationale: annotations must be able to reference a particular XML element in the content document, regardless of the type of content the pointed element represents (e.g. text markup, video or audio tag from HTML5...etc.), using unique names (such as XML fragment identifiers) that have been authored explicitly in the targeted content document (i.e. predefined/prepared intentionally by the content producers).
 
+COMMENT by WillManis: This assumes the presence of an html:id or xml:id attribute, or the ability to introduce one to the document. None of these strike me as assumptions that we should rely on.
+
 ====  ANNOT_R4.2 ((A, A, A)) Structural Paths (XPath Expressions) ==== 
 
 _Description: Same as ANNOT_R4.1, but instead of targeting predefined unique identifiers, here the identification of the point/location in the content document is based on a given path leading to the XML element in question, which requires structural assumptions (i.e. the knowledge from the annotation creator about the structure of the document).
 
 NOTE: by virtue of ANNOT_R1, the structure of the content document is considered immutable which guarantees that the annotation targets described in ANNOT_R4.1 and ANNOT_R4.2 cannot be broken.
+
+COMMENT by WillManis: An XPath to content. Current browsers do not make this an easy assumption, either by Javascript DOM manipulation or by under the cover content mutation. The UA would needs to provide a canonical xpath to the content. The canonical xpath will need to be precisely defined, avoiding problematic xpath constructs.
 
 ==== ANNOT_R4.3 ((A, A, A)) Unicode Character Offset ==== 
 
@@ -126,11 +134,15 @@ _Description: Identification of an annotation target as a location in between 2 
 
 _Rationale: annotations must be able to reference a particular point/location in a stream of unicode characters, expressed relatively to a particular structural point in the document that contains this text (ancestor/descendant relationship), such as an XML element (opening "tag") defined by the mechanisms described in ANNOT_R4.1 and ANNOT_R4.2.
 
+COMMENT by WillManis: An XPath to content. The same problems exist as those outlined in ANNOT_R4.2. The issue here may be that the user is viewing glyphs and the backing store is in characters, the UA must help in disambiguating.
+
 ==== ANNOT_R4.4 ((A, A, A)) Unicode Character Range ==== 
 
 _Description: Identification of an annotation target as a range of unicode characters inside the XML content document.
 
 _Rationale: annotations must be able to reference a particular contiguous (i.e. non-disjoint) "selection" of text, based on two points/locations specified using the mechanism described in ANNOT_R4.3.
+
+COMMENT by WillManis: An XPath to content. The same problems exist as those outlined in ANNOT_R4.2 and ANNOT_R4.3. Given that the range may span multiple elements, a simple XPath will not suffice.
 
 ==== ANNOT_R4.5 ((A, C, A)) Time Offset ==== 
 
@@ -215,6 +227,8 @@ _Rationale: We consider personal annotation structure can divide into three elem
 _Rationale: For the use of digital learning, such as notes from a teacher to students, students to students, answers to the examination, etc. We need a portable method that can read these annotations on different devices
 
 COMMENT by KingWai: Several reference scenarios for portable annotation:  (1) one can save one's annotation on a server and has the annotation synchronized with all the devices/reading systems via the server's copy. The time-stamp could be used in synchronization. (1.1) one can also share one's annotation with other users. (similar to the "social reading" platforms some vendors are advocating) (2)  one can transfer an offline copy of the annotation from one reading system to another as long as the same version of the electronic book is present on both reading systems.
+
+COMMENT by WillManis: Making this a high priority will ensure that annotations do not live in walled gardens. Annotations for content annotated in an iBook should work on a Nook, provided they both are consuming epub.
 
 == Background material ==
 
