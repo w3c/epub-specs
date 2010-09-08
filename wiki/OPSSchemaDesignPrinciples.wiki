@@ -1,0 +1,33 @@
+#summary OPS schema design principles
+
+<wiki:toc max_depth="3" />
+
+= Composition =
+ * Utilize a file-level modular approach for the schema content, but not necessarily the very fine-grained modularity used by XHTML11MOD etc. The purposes of file-level modularity are:
+  * ease of reading/authoring (no supersized monolith schema)
+  * ease of composition: reduce need for driver-level manipulation
+  * encourage reuse in future contexts
+ * Utilize a set of global named element and attribute classes, in the element case mapping to the [http://dev.w3.org/html5/spec/Overview.html#kinds-of-content kinds of content] of the HTML5 language. To facilitate future changes and extensibility, maximize the usage of these classes (always used except in documented cases)
+ * Use drivers to compose the concrete document model by selective imports, overrides and class contributions additional to those in the modules themselves
+ * Let the schema modules assume a default document model, e.g. the model that results from constructing a driver that contains only imports and no overrides/added class contributions. Let this model correspond as closely as possible to the HTML5 specification model. _ Note: this practically means: an element or attribute contributes itself to the global named class that it by default belongs to; the driver need not do this _
+ * At the atomic define level, break out element content models and attribute models to individual defines to facilitate external contributions by minimizing the need for overrides. _Downside is that this will expand the size of the schema considerably_ 
+
+= Extension points =
+ * Extensibility is supported via contributions to the global named classes mentioned above, and through access to atomic defines where needed (akin to salami slice). 
+
+= Pattern-based constraints =
+ * Use ISO Schematron for expressing pattern-based constraints
+  * ?? embed the assertions in the RNG files (in contextually relevant locations) ?? 
+  * OR ?? Use separate ISO schematron schema(s) ??
+
+= Datatypes =
+ * As all known RelaxNG implementations supports the XSD 1.0 datatypes, utilize these where appropriate (which, granted, doesn't happen very often)
+ * ?? Use a dedicated datatype library based on [http://www.thaiopensource.com/relaxng/pluggable-datatypes.html pluggable datatypes] ?? _Could reuse/build upon the one used by [http://hsivonen.iki.fi/html5-datatypes/ validator.nu]_
+ * ?? Use the xsd:ID and xsd:IDREF datatypes, and ban/override any use of anyName ??
+ * Place all datatype definitions (inc those for for ID and IDREF) in a separate datatypes proxy module that all users must reference, so that the implementation can easily be swapped by modification in one single location (the proxy). _ This helps us both to vary the solution to the ID/IDREF problem easily, as well as turn pluggable datatype library support on/off. _
+
+= Syntax =
+As all existing EPUB RelaxNG schemas use the XML syntax, stick with that for consistency. Use Trang to provide an informative RNC version post-hoc. This also facilitates the embedding of ISO Schematron rules.
+
+= Example =
+A small toy example of schema design roughly as per above exists in [http://code.google.com/p/zednext/source/browse/#svn/sandbox/ZedDist/src/schema a sandbox]
