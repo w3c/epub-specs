@@ -1262,8 +1262,50 @@ _Comment from (Your Name Goes Here):_<br>
 (Type your name here if you will propose a solution to this requirement. Note that more than one person may propose a solution.)<br>
 (Additional person who will propose a solution.)<br>
 
-*Proposed Solution 1* (Name of contributor)<br>
-(Type your proposed solution here)
+*Proposed Solution 1* Dan Hughes<br>
+Extend meta element with defined value for name attribute, *meta-auth*.
+
+The content attribute will hold the identity of the metadata provider.
+
+The normally optional id attribute becomes required on meta elements where the name is meta-auth.
+
+Introduce new OPF *date-ref* required attribute that will refer by id value to a dc:date element with opf:event value of 'meta-update'.
+
+Introduce a new OPF *opf:signature* attribute, that will be optional and refer by id value to an XML Signature that must reside in the META-INF/Signatures.xml file.
+
+Metadata elements that need to indicate an authority will do so using a new *opf:authority* attribute that will be allowed on all OPF allowed metadata elements, and will have a value of the id of a metadata authority.
+
+
+
+Example 1: Metadata Authority Inc. injects publication with ISBN-13, preserving the package identifier, uses a (currently defined in OCF) XML Signature.
+ 
+ {{{
+  <package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="my-uuid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+  <dc:identifier id="my-uuid">UUID-1234-5678</dc:identifier>
+  <dc:identifier opf:scheme="ISBN-13" id="isbn-id" opf:authority="meta-authority-01">9780101010101</dc:identifier>
+  <dc:date>2009</dc:date>
+  <dc:date id="dt-01" opf:event="meta-update">2010-09-13</dc:date>
+  <meta name="meta-auth" content="Metadata Authority Inc" id="meta-authority-01" opf:signature="MAI-Signature" opf:date-ref="dt-01" />
+  ...
+  <!-- in Signatures.xml -->
+  <signatures>
+  <Signature Id="MAI-Signature" xmlns="http://www.w3.org/2000/09/xmldsig#">
+  ...
+ }}}
+
+Example 2: ExampleEbookRetailer.com injects proprietary identifier into publication, preserving original publisher supplied UUID, but changing package identifier. Does not use signature.
+
+ {{{
+  <package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="pID">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+  <dc:identifier id="my-uuid">UUID-1234-5678</dc:identifier>
+  <dc:identifier opf:scheme="proprietary" id="pID" opf:authority="meta-authority-01">bk-555-555-5555</dc:identifier>
+  <dc:date>2008</dc:date>
+  <dc:date id="update05" opf:event="meta-update">2010-09</dc:date>
+  <meta name="meta-auth" content="ExampleEbookRetailer.com" id="meta-authority-01" opf:date-ref="update05" />
+  ...
+ }}}
 
 _Comment on Proposed Solution 1:_<br>
 (Type name of commenter here)--(Type comment here.)
