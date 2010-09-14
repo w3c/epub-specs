@@ -1,0 +1,157 @@
+#RDFa1.1-related implementation proposals
+
+= Overview =
+This page contains implementation proposals for various subgroups, all proposals centered around the notion of using [http://www.w3.org/TR/rdfa-core/ RDFa 1.1] for expressing various kinds of metadata.
+
+The core notion is that the RDFa attributes collection can be used in OPS, OPF and NCX (and perhaps even in OCF), thus providing a consistent metadata expression mechanism.
+
+<wiki:toc max_depth="5" />
+
+== Common properties ==
+The proposals on this page all have the following general properties in common:
+
+=== Utilize an RDFa profile for the establishment of a set of well-known vocabularies ===
+One of the simplification mechanisms added to RDFa 1.1 is the concept of [http://www.w3.org/TR/rdfa-core/#s_profiles profiles]. An RDFa 1.1 Profile is a machine- and human-readable document, external to the EPUB document itself, that defines collections of terms and/or prefix mappings.
+
+*The proposal is to in EPUB3 define _one canonical RDFa profile_* at a URI defined by the specification, that all EPUB3 publications must reference (implicitly or explicitly) and adhere to. Through this
+ * we establish a limited set of vocabularies that are "well-known"; thereby increasing the chances that Reading Systems and Authoring Tools add support for the terms in these vocabularies
+ * we reserve terms and prefixes globally, thus obviating the need for inline prefix declaration in many cases. (This includes defining which vocabulary is to be used without any prefix at all; the "default" vocabulary.) This reduces the need for repetitive content in EPUBs, reduces risk for syntax errors, and simplifies processing in common XML APIs, allowing for example plain XPath expressions to be used when getting nodes.
+
+In time (EPUB 3.1, 4.0 etc), this profile can be amended to. New vocabularies can be added, and included vocabularies can be deprecated (but for forwards compatibility purposes, the prefixes once assigned can never be reused for another vocabulary). 
+
+Example: the canonical EPUB RDFa profile document living at some URI at idpf.org:
+
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head> 
+    <title>EPUB RDFa profile: well-known vocabularies and prefixes</title> 
+  </head> 
+  <body xmlns:rdfa="http://www.w3.org/ns/rdfa#"> 
+    <p typeof="">The default vocabulary is the EPUB core terms vocabulary located at <span property="rdfa:vocabulary">http://idpf.org/vocab/core/</span>.</p> 
+    <p typeof="">The "<span property="rdfa:prefix">dcterms</span>" prefix must be used for the <span property="rdfa:uri">http://purl.org/dc/terms/</span>" vocabulary.</p> 
+    <p typeof="">The "<span property="rdfa:prefix">prism</span>" prefix must be used for the <span property="rdfa:uri">http://example.org/prism/terms/</span>" vocabulary.</p>	
+    <p typeof="">The "<span property="rdfa:prefix">cc</span>" prefix must be used for the <span property="rdfa:uri">http://creativecommons.org/ns#</span>" vocabulary.</p>	
+  </body> 
+</html>
+}}}
+
+_This provides a mechanism to address the Metadata group's requirements [Metadata#META_R02_Potential_to_incorporate_metadata_using_a_variety_of_me R02], [Metadata#META_R05_Enable_identification_and_inclusion_of_external_models R05, [Metadata#META_R09:_Accommodate_PRISM_Metadata_for_Serials_Publications_an R09]
+
+=== Allow vocabularies beyond those in the canonical profile as a means for extensibility ===
+
+While the canonical profile defines the set of well-known vocabularies and the prefixes to use when using terms from these vocabularies, extensibility is also supported. *The proposal is to allow extending the terms allowed in OPS, OPF and NCX on an instance-by-instance basis by allowing prefix-vocabulary associations locally in the document*. (The attribute to use for this purpose is the RDFa [http://www.w3.org/TR/rdfa-core/#s_syntax prefix] attribute.)
+
+Note that it would be a document conformance constraint that prefixes declared locally can not be the same as prefixes declared in the canonical profile; prefixes defined in the profile document are reserved and fixed globally.
+
+From a processing behavior standpoint, Reading Systems would be explicitly required to ignore terms they don't recognize ("behave as if the term wasn't there").
+
+_This partially addresses the charter requirement [http://www.idpf.org/idpf_groups/IDPF-EPUB-WG-Charter-5-24-2010_Approved.html#pr_12 Insufficient mechanism for adding industry specific extensions] and Metadata [Metadata#META_R02_Potential_to_incorporate_metadata_using_a_variety_of_me R02]_
+
+
+=== EPUB Reading Systems need not be fully conforming RDFa processors ===
+*The proposal is to not require an EPUB reading system conformance requirement to be a fully [http://www.w3.org/TR/rdfa-core/#processorconf conformant RDFa 1.1 processor]*. Much like the use of RDFa in ODF, we make use only of a subset of the RDFa 1.1 functionality, and the day-to-day Reading System usage does not include RDF graph generation and all that stuff.
+
+_Note: it may be beneficial to require the inverse: that documents be syntactically fully conformant to RDFa 1.1 so that RDFa 1.1 processors may be used to extract metadata. For OPS, all we need to achieve this is to require one occurence of the RDFa profile attribute; not much extra noise. However, in the case of OPF, if we end up keeping the legacy dc:title etc elements, then the output from a generic RDFa processor would not be complete anyway. So in terms of metadata harvesting, the benefits would be limited._
+
+----
+
+== RDFa 1.1 as inline metadata in OPS ==
+*The proposal is to add a subset of the RDFa 1.1 Core attributes to the common attributes of the OPS document type.*
+
+This correlates to the existing [http://www.w3.org/TR/rdfa-syntax/ XHTML+RDFa specification] and the ongoing work on [http://dev.w3.org/html5/rdfa/rdfa-module.html HTML5+RDFa]. Note however that EPUB's canonical profile mechanism as per above diverges from these two specs.
+
+_This addresses [Metadata#META_R12_Inline_Medatata_(C) Metadata R12] and [TextContent#TG.06_Inline_Metadata_(A) TextContent TG06]_
+
+Examples: refer to [http://www.w3.org/TR/rdfa-core/#examples]
+
+----
+
+== RDFa 1.1 as extensible metadata in OPF ==
+While OPF contains a number of metadata schemes that are hardcoded as elements, OPF also allows additional arbitrary metadata inside the x-metadata element. 
+
+*The proposal is to replace the current OPF meta element with a new meta element that takes a subset of the RDFa attributes collection.*
+
+As per our design guidelines, 3.0 Reading Systems would still be required to support the old `<meta name content />` for backwards compatibility purposes.
+
+ Example, simple metadata (_assuming that the `dcterms` and `prism` prefixes have been bound in the canonical profile document (see above)_).
+ {{{
+ <x-metadata>
+  <meta property="dcterms:abstract" content="Foo and bar" />
+  <meta property="prism:issueIdentifier" content="baz" />
+ </x-metadata>
+  }}}
+
+ Example, how to use RDFa attributes to identify cover images using the RDFa `rel` attribute on the `item` element:
+ 
+ (_The below assumes that the canonical profile has bound non-prefixed terms to a vocabulary that defines the "cover-image" term; we will likely want an "EPUB Core terms" vocabulary that defines stuff like this, see the profile document example above_)
+
+{{{
+ <manifest>
+   <item id="img_cover" rel="cover-image" href="Cover.jpg" media-type="image/jpeg"/>
+ </manifest>
+}}} 
+
+... and if replacement text is needed:
+{{{
+ <metadata>
+   <meta about="#img_cover" property="replacement-text" >Text optionally with inline markup</meta>
+ </metadata>
+}}} 
+
+Note how the addition of the RDFa `about` and `rel` attributes allows OPF to express metadata not only about the publication as a whole, but about external resources (`rel`) and fragments (`about`). The above solution is not customized particularly to cover images, but can applied to any current and future needs of similar kinds.
+
+----
+
+=== Improved internationalization support ===
+By moving from the classic HTML `<meta name content />` we achieve better support for i18n by letting the meta element optionally take content.
+
+*The proposal is to let the new OPF meta element allow _either_ the content attribute, or child content, to allow i18n-related (dir, xml:lang?) attributes on the meta element, and to allow i18n-related XHTML markup (ruby, bdo, span?) in the content model of the meta element.*
+
+ (The below examples assume that the `dcterms` prefix has been bound to [http://purl.org/dc/terms/])
+
+ Example: 
+
+ {{{ 
+<meta property="dcterms:abstract" content="Foo and bar" />
+ }}} 
+
+ and 
+
+ {{{ 
+ <meta property="dcterms:abstract">Foo and bar</meta>
+ }}} 
+
+ provide identical data.
+
+ Example utilizing the i18n features:
+ {{{ 
+     <meta property="dcterms:mediator" xml:lang="ja"> 
+       <ruby>
+  	  <rb>斎藤信男</rb>
+  	   <rt>さいとうのぶお</rt>
+	</ruby>
+     </meta> 
+  }}}
+ 
+_This address [Metadata#META_R14_Internationalization_(A) Metadata R14] _
+
+----
+
+== RDFa 1.1 in NCX ==
+*The proposal is to add a subset of the RDFa attributes collection to the NCX navTarget, navPoint, navList and pageList elements *
+
+Details TBD
+
+_This address [Navigation#NAV_R04_1_Describe_nature/semantic_of_the_destination_(E) Navigation R4_01] and [Navigation#NAV_R04_2_Allow_distinguishing_links_along_other_axes_than_that Navigation R4_02] _
+
+
+----
+
+== RDFa 1.1 as value population mechanism for @role ==
+*The proposal is to use the RDFa profile and extension mechanism also for the role attribute * 
+
+This means that values for the `role` attribute are populated in the same way as values for the RDFa `property`	 attribute etc. In the case of @role, the OPS schema *may* express restrictions on an element-by-element basis.
+
+(See [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o TextContent TE.01].)
+
+ 
