@@ -1,0 +1,278 @@
+<project name="epub-revision" basedir="." default="all">
+	
+	<tstamp>
+		<format property="TODAY" pattern="yyyyMMdd" />
+	</tstamp>	
+					
+	<property name="dir.src" value="${basedir}/src" />
+	<property name="dir.src.schema" value="${dir.src}/schema" />	
+	<property name="dir.src.spec" value="${dir.src}/spec" />
+	<property name="dir.src.spec.css" value="${dir.src}/spec/css" />
+	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples" />
+	
+	<property name="dir.util" value="${basedir}/util" />	
+	<property name="dir.util.rng" value="${dir.util}/relaxng" />
+	<property name="dir.util.docbook" value="${dir.util}/docbook" />
+	<property name="dir.util.docbook.schema" value="${dir.util.docbook}/schema"/>
+	<property name="dir.util.docbook.xsl" value="${dir.util.docbook}/xsl-ns"/>
+	<property name="dir.util.xhtml" value="${dir.util}/xhtml" />
+	<property name="dir.util.xhtml.dtd.catalog" value="${dir.util.xhtml}/dtd" />
+	
+	<property name="dir.test" value="${basedir}/test" />
+	<property name="dir.lib" value="${basedir}/lib" />	
+	<property name="dir.build" value="${basedir}/build" />	
+	<property name="dir.temp" value="${basedir}/temp" />		
+	
+	<property name="schema.rng" value="${dir.util.rng}/relaxng.rng" />
+	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl" />
+	<property name="schema.xhtml11" value="${dir.util.xhtml}/relaxng/xhtml.rng" />
+	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl" />
+	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
+		
+	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
+	
+	<path id="build.classpath">
+		<fileset dir="${dir.lib}" includes="**/*.jar" />	
+	    <pathelement path="${java.class.path}"/>  
+	</path>
+
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   b u i l d - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+
+	<target name="all" depends=" clean,
+		build-specs,
+		build-schemas,
+		build-archives" />
+
+	<target name="build-specs" depends="clean, validate-src-specs, validate-spec-examples">
+		
+		<!-- batch-convert src docbook to xhtml11 -->
+		<saxon-xslt 
+			classpathref="build.classpath"
+			basedir="${dir.src.spec}/"
+			includes="*.xml"
+			destdir="${dir.build}/"
+			extension=".html" 			
+			style="${xslt.docbook2xhtml}">							
+				<param name="section.autolabel" expression="1"/>
+				<param name="toc.section.depth" expression="4"/>
+				<param name="section.label.includes.component.label" expression="1"/>
+				<param name="html.stylesheet" expression="epub-spec.css"/>		
+		</saxon-xslt>	
+		
+		<!-- validate output html (dtd) -->
+		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
+			<xmlcatalog refid="xhtml-catalog"/>
+			<fileset dir="${dir.build}" includes="*.html"/>			
+		</xmlvalidate>
+				
+		<!-- copy css -->
+		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
+		
+	</target>
+
+	<target name="build-schemas" depends="clean, validate-src-rng-schemas">
+		<!-- TODO run schemas against test suite -->
+		
+		<!-- ocf -->
+		<copy file="${dir.src.schema}/ocf30.rng" todir="${dir.build}"/>
+				
+	</target>
+
+	<target name="build-archives" depends="clean, build-specs, build-schemas">
+		<zip 
+			destfile="${dir.temp}/ebup30-${TODAY}.zip" 
+			basedir="${dir.build}/" 
+			excludes="${file.exclude.list}" />
+			
+		<tar 
+			destfile="${dir.temp}/ebup30-${TODAY}.tar" 
+			basedir="${dir.build}/"
+			excludes="${file.exclude.list}" />
+														
+		<gzip 
+			src="${dir.temp}/ebup30-${TODAY}.tar" 
+			destfile="${dir.build}/ebup30-${TODAY}.tar.gz" />
+		
+		<copy file="${dir.temp}/ebup30-${TODAY}.zip" todir="${dir.build}" />
+		
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   v a l i d a t i o n - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+
+	<target name="validate-src-rng-schemas" 
+		description="validate the source schemas against the RelaxNG schema for RelaxNG">
+		<validate-fileset-rng 
+			fileset-dir="${dir.src.schema}" 
+			fileset-includes="**/*.rng"
+			fileset-excludes=""
+			schema="${schema.rng}"
+			failonerror="true"/>
+	</target>
+	
+	<target name="validate-src-specs" 
+		description="validate the source specs against the docbook schema">
+		<validate-fileset-rng 
+			fileset-dir="${dir.src.spec}" 
+			fileset-includes="*.xml"
+			fileset-excludes=""
+			schema="${schema.docbook}"
+			failonerror="true"/>
+	</target>
+	
+	<target name="validate-spec-examples" 
+		description="validate spec examples against corresponding schemas where available">
+		<property name="example-exclude-pattern" value="**/*invalid* **/*partial*"/>
+		
+		<!-- ocf container -->		
+		<validate-fileset-rng
+			fileset-dir="${dir.src.spec.examples}"
+			fileset-includes="**/*container*.xml"
+			fileset-excludes="${example-exclude-pattern}"
+			schema="${dir.src.schema}/ocf30.rng"
+			failonerror="false"
+		/>
+		
+		<!-- ocf signatures -->
+		<validate-fileset-rng
+			fileset-dir="${dir.src.spec.examples}"
+			fileset-includes="**/*signatures*.xml"
+			fileset-excludes="${example-exclude-pattern}"
+			schema="${dir.src.schema}/ocf30.rng"
+			failonerror="false"
+		/>
+		
+		<!-- ocf encryption -->
+		<validate-fileset-rng
+			fileset-dir="${dir.src.spec.examples}"
+			fileset-includes="**/*encryption*.xml"
+			fileset-excludes="${example-exclude-pattern}"
+			schema="${dir.src.schema}/ocf30.rng"
+			failonerror="false"
+		/>
+		
+		<!-- ops TODO -->
+		
+		<!-- opf TODO -->
+		
+		
+	</target>
+	
+	<macrodef name="validate-fileset-rng" >
+		<attribute name="fileset-dir" />
+		<attribute name="fileset-includes" />
+		<attribute name="fileset-excludes" />	 
+		<attribute name="schema" />				
+		<attribute name="failonerror" /> 		<!-- 'true'|false -->
+		<sequential>
+			<echo level="info">Validating @{fileset-dir}/@{fileset-includes} against @{schema} ...</echo>
+			<jing rngfile="@{schema}" failonerror="@{failonerror}">				
+				<fileset dir="@{fileset-dir}" includes="@{fileset-includes}">
+					<exclude name="@{fileset-excludes}"/>
+				</fileset>
+			</jing>
+		</sequential>					
+	</macrodef>
+	
+	<xmlcatalog id="xhtml-catalog">
+		<dtd publicId="-//W3C//DTD XHTML 1.0 Strict//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml1-strict.dtd" />
+		<dtd publicId="-//W3C//DTD XHTML 1.0 Transitional//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml1-transitional.dtd" />
+		<dtd publicId="-//W3C//DTD XHTML 1.1//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml11.dtd" />
+		<dtd publicId="-//W3C//DTD XHTML+RDFa 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-rdfa-1.dtd" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Base Element 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-base-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Ruby 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-ruby-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Forms 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-basic-form-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Legacy Markup 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-legacy-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Scripting 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-script-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Link Element 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-link-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML BIDI Override Element 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-bdo-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Lists 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-list-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Server-side Image Maps 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-ssismap-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Client-side Image Maps 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-csismap-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Metainformation 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-meta-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Document Structure 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-struct-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Style Sheets 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-style-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Editing Elements 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-edit-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Embedded Object 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-object-1.mod" />					
+		<entity publicid="-//W3C//ELEMENTS XHTML Param Element 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-param-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Tables 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-table-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Hypertext 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-hypertext-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Presentation 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-pres-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Target 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-target-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Images 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-image-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Text 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-text-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Inline Style 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-inlstyle-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Inline Structural 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-inlstruct-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Inline Phrasal 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-inlphras-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Block Structural 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-blkstruct-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-blkphras-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-inlpres-1.mod" />
+		<entity publicid="-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-blkpres-1.mod" />
+	    <entity publicid="-//W3C//ENTITIES XHTML Qualified Names 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-qname-1.mod" />
+	    <entity publicid="-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-events-1.mod" />
+		<entity publicid="-//W3C//ENTITIES XHTML Modular Framework 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-framework-1.mod" />
+	    <entity publicid="-//W3C//ENTITIES XHTML Common Attributes 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-attribs-1.mod" />
+		<entity publicid="-//W3C//ENTITIES XHTML Datatypes 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-datatypes-1.mod" />
+		<entity publicid="-//W3C//ENTITIES XHTML MetaAttributes 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-metaAttributes-1.mod" />
+		<entity publicid="-//W3C//ENTITIES XHTML+RDFa Document Model 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-rdfa-model-1.mod" />
+		<entity publicid="-//W3C//ENTITIES Symbols for XHTML//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-symbol.ent" />
+		<entity publicid="-//W3C//ENTITIES Special for XHTML//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-special.ent" />
+		<entity publicid="-//W3C//ENTITIES Latin 1 for XHTML//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-lat1.ent" />
+		<entity publicid="-//W3C//ENTITIES XHTML Character Entities 1.0//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml-charent-1.mod" />		
+	</xmlcatalog>
+	
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   u t i l i t i e s - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		
+	<target name="clean" depends="clean-temp-dir, clean-build-dir" />
+	
+	<target name="clean-temp-dir">
+		<delete includeemptydirs="true" failonerror="false">
+		  <fileset dir="${dir.temp}" includes="**/*" />
+		</delete>	
+		<mkdir dir="${dir.temp}"/>
+	</target>
+		
+	<target name="clean-build-dir">
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${dir.build}" includes="**/*" />
+		</delete>
+		<mkdir dir="${dir.build}" />
+	</target>
+
+
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   t a s k d e f s - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+	<taskdef name="jing" classname="com.thaiopensource.relaxng.util.JingTask">
+		<classpath>
+			<pathelement location="${dir.lib}/jing.jar" />
+		</classpath>
+	</taskdef>
+
+	<taskdef name="saxon-xslt" classname="net.sf.saxon.ant.AntTransform">
+		<classpath>
+			<pathelement location="${dir.lib}/saxon9.jar" />
+			<pathelement location="${dir.lib}/saxon9-ant.jar" />
+		</classpath>
+	</taskdef>
+		
+	<taskdef name="schematron" classname="com.schematron.ant.SchematronTask">
+		<classpath>
+			<path refid="build.classpath"/>
+		</classpath>		
+	</taskdef>	
+		
+	
+	
+	
+</project>
