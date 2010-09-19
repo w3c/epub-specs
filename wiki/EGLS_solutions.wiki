@@ -43,9 +43,31 @@ Cons:
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Ruby_Positioning Ruby Positioning] ==
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Multiple_Ruby_Text_%28Japanese%29 Multiple Ruby Text (Japanese)] ==
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Handling_Ruby_According_on_User_preferences_or_Displays_Properti Handling Ruby According on User preferences or Displays Properties] ==
-= Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Emphasis_Dots Emphasis Dots] =
-== Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Characters_or_Glyphs Characters or Glyphs] ==
+== Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Emphasis_Dots Emphasis Dots] ==
+= Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Characters_or_Glyphs Characters or Glyphs] ==
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Versions_of_Unicode_or_ISO/IEC_10646 Versions of Unicode or ISO/IEC 10646] ==
+
+=== Solution A (MURATA) ===
+
+Reference to Unicode 6.0 without mandating all conformance requirements present in Unicode 6.0.
+
+Pros:
+ * Unicode is well-known.
+ * Unicode has more information about semantics of each code point and imposes more requirements on conformant implementations.
+Cons:
+ * Unicode sometimes imposes too demanding requirements.
+ * Normative reference to Unicode 6.0 without mandating its conformance requirements is strange.
+
+=== Solution B (MURATA) ===
+
+Reference to a particular version of ISO/IEC 10646 that has all code points of Unicode 6.0.  Do not reference to Unicode.
+
+Pros:
+ * ISO/IEC 10646 does not impose too demanding conformance requirements.
+Cons:
+ * ISO/IEC 10646 has too little information about semantics of each code point and does not impose enough requirements on conformant implementations.
+ * ISO/IEC 10646 is not as well-known as Unicode.
+
 = Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Prohibiting_Private-use_Characters Prohibiting Private-use Characters] =
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#In-line_Graphics In-line Graphics] ==
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Font_Embedding Font Embedding] ==
@@ -77,18 +99,37 @@ Cons:
 === Solution B (Ishii) ===
 Use Unicode INTERLINEAR ANNOTATION to embed phonetics into the text as defined in http://www.unicode.org/charts/PDF/UFFF0.pdf
 
-U+FFF9 INTERLINEAR ANNOTATION ANCHOR marks start of annotated text
-U+FFFA INTERLINEAR ANNOTATION SEPARATOR marks start of annotating character(s)
-U+FFFB INTERLINEAR ANNOTATION TERMINATOR marks end of annotation text
+ * U+FFF9 INTERLINEAR ANNOTATION ANCHOR marks start of annotated text
+ * U+FFFA INTERLINEAR ANNOTATION SEPARATOR marks start of annotating character(s)
+ * U+FFFB INTERLINEAR ANNOTATION TERMINATOR marks end of annotation text
 
-Pros:
- * Can embed phonetics without adding additional tag.
- * epub readers do not have to add additional data field to handle phonetics and thus  helps globalized code.
- * Sorting does not require the special code to separate display field from sort field.
- * Searching by phonetics just works.
+What epub applications should do against this Unicode sequence is described in http://www.w3.org/TR/unicode-xml/#Interlinear
 
-Cons:
- * Display, edit, and sort code requires to handle Unicode INTERLINEAR ANNOTATION properly; i.e., display only between ANCHOR and SEPARATOR, and sort using character(s) between SEPARATOR and TERMINATOR.
+Reading systems are recommended to take one or more of the following actions:
+ # introduce two text fields, and display all characters between U+FFF9 and U+FFFA in the first field while displaying all characters between U+FFFA and U+FFFB in the second field.
+ # remove U+FFF9 together with removing all characters between U+FFFA and following U+FFFB
+ # ignore U+FFF9 and turn U+FFFA and U+FFFB  into "[" and "]" respectively, or into similar characters
+ # tentatively convert into appropriate ruby markup for further editing and formatting by the user
+
+
+*Example:*
+{{{
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:opf="http://www.idpf.org/2007/opf">
+   <dc:title xml:lang="ja-jp">U+FFF9伊達姿五侍U+FFFAダテスガタゴサムライU+FFFB</dc:title>
+   ...
+</metadata>
+}}}
+Where U+FFF9, U+FFFA, and U+FFFB in the example represents single Unicode characters.
+
+Pros
+ * Does not need two elements.
+ * Requires less additional code for application developers.
+
+Cons
+ * This method is not commonly used.
+ * Pre-epub 3.0 devices may display this Unicode sequence incorrectly if it does not follow rules described in http://www.w3.org/TR/unicode-xml/#Interlinear
+ * "Unicode in XML and other Markup Languages" <http://www.w3.org/TR/unicode-xml/#Interlinear> (Unicode Technical Report #20 and W3C Working Group Note 16) discourages the use of Interlinear Annotation Characters in the context of markup in XML/HTML.
 
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Language_Inheritance Language Inheritance] ==
 == Solutions to [http://code.google.com/p/epub-revision/wiki/EGLS_requirement_list#Normalization Normalization] ==
