@@ -12,7 +12,33 @@ Please refer to the [Annotations annotations requirements page] (http://code.goo
 
   * Will Manis
   * Daniel Weck
- * (add your name here)
+  * (add your name here)
+
+= Basic Concepts =
+
+An "annotation" is in fact the combination of:
+
+  * The Annotation Content ("what the annotation consists of, e.g. text with human narration").
+  * The Annotation Target ("the portion of source content that the annotation references / points to").
+
+A single Annotation Content may be associated to several Annotation Targets, located in one or more target EPUB documents.
+
+In this implementation proposal, we propose that the physical distribution unit for one (or more) annotation is an EPUB document. Such EPUB document would define both the Annotation Content(s) and associated Annotation Target(s).
+
+Using the EPUB physical and logical container to store annotations enables the scenario whereby annotations themselves can be annotated ("annotations of annotations"). This implies that an EPUB document containing annotations gets a unique identifier (just like a "normal" publication's ISBN), otherwise it is impossible for contained annotations to be further annotated. Note: although allocating world-wide unique identifiers is a non-trivial issue for annotations contributed by casual readers, it may be less of an issue for content producers that specialize in publishing large annotation sets, e.g. enhancements to existing publications (additional commercial material to textbooks).
+
+For a given EPUB publication, there may be many annotations provided by a large number of individual contributors => this may lead to a non-negligible overhead if each independent annotation is a fully-fledge EPUB document (e.g. processing overhead on the client side, to search and render annotations for a given page of the book being read). It appears to be an authoring issue though: online services or web-connected reading devices that enable the production of annotations by readers themselves, should ensure, for example, that all the annotations created by a single reader for a given publication are stored in the same EPUB document (in some ways, we can make an analogy with POIs Points Of Interest for SatNav/GPS navigation devices).
+
+= Annotation Targets and Multimedia Content =
+
+In this proposal, we put forward the use of XPath to address XML points in the target EPUB document.
+When media elements (video or audio) are present in the document model (e.g. HTML5), annotators need the ability to point in the time domain, as well as the space domain (2D graphics). The latter point implies that static images (non-animated) may also be annotated in terms of specific 2D areas.
+
+There are 2 proposals:
+
+(1) To use W3C's Media Fragments syntax ( http://www.w3.org/TR/media-frags/ ) for both the time and space domain, albeit with a notable difference: a Media Fragments URI points directly to a media resource (e.g. video or audio file), whereas an annotation target would be defined based on a given XML media element (e.g. <audio src="..."/> or <video/>).
+
+(2) To use W3C's SMIL timing attribute syntax (e.g. begin="10s" end="1m45s"), and some other syntax for the space domain (CSS ?).
 
 = Reusing the EPub format for annotations =
 
@@ -51,6 +77,7 @@ Need examples for:
 
    <annotation id="uuid">
       <referenceddocument>
+	    <!-- DANIEL: should "referenceddocument" be renamed to "annotationtargets" (note the proposed plural form), to be consistent with "annotationcontent" ? -->
 	 <documentidentifier>
 	    <!-- ANNOT_R3 -->
 	    ISBN, DOI etc.
