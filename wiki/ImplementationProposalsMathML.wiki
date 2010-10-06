@@ -19,7 +19,7 @@ As an example, the user of content markup will look like:
 </semantics>
 }}}
 
-Other valid attributes for annotation-xml may be used. Additional annotation and annotation-xml elements may be used, but conforming agents are free to ignore them.
+Other valid attributes for annotation-xml may be used. Additional annotation and annotation-xml elements may be used subject to the restrictions mentioned below, but conforming agents are free to ignore them unless otherwise indicated.
 
 === Rationale ===
 Content MathML is discussed in Chapter 4 of the MathML Specification. It provides a means of specifying the semantics of the expression without saying how those semantics should be displayed.  MathML envisioned that an XSL style sheet that transforms the content MathML into presentation MathML would accompany so that it could be rendered as intended.  An alternative method allowed in MathML is called parallel markup where both the presentation and content markup are given inside of a semantics element. Because XSL is not a part of EPUB, parallel markup should be used when content MathML is used.
@@ -27,14 +27,56 @@ Content MathML is discussed in Chapter 4 of the MathML Specification. It provide
 MathML allows either presentation or content MathML to occur as the first element of a semantics element. To ease the burden on conforming agents, this specification requires that the first child of a semantics element be presentation MathML and the second be an annotation-xml element containing content MathML when content MathML is used inside of a semantics element.
 
 == Fallback Images ==
+_Issue:  is a fallback better handled by a more general (non-MathML) mechanism?_
+
+_Issue:  should this be a "should" or "shall"?  If readers support Javascript, then supporting MathML should not be an issue._
+
+MathML content should contain an alternative image representation. The image shall be given using the the altimg attribute of the math element.  The image content type must be one of the types allowed for the img element. For images with a high DPI, the altimg-width and altimg-height attributes should also be given to specify a size for the image. For inline math content, the vertical alignment of the image should be given via the altimg-valign attribute so that the baseline of the image aligns with the baseline of the text.
+
+An example of including an image fallback is:
+
+{{{
+<math altimg="images/img1.png" altimg-valign="-0.2ex">
+   ... presentation mathml ...
+</math>
+}}}
+
+=== Rationale ===
+Some conforming agents may not be able to render MathML. Providing a fall back image along with size and alignment information allows them to include a reasonable, but inferior, fallback.
+Images are inferior to native renderings because they do not resize to match the text nor do they change to match foreground and background colors.  This results in an inferior reading experience. Both of these capabilities are important issues for accessibility.
 
 
 == Alternative Text ==
 
+_Issue:  is a textual fallback better handled by a more general (non-MathML) mechanism?_
+
+An alternative textual description for math expressions shall be provided in the math element.  A simple textual description may be given using the alttext attribute of the math element.  Alternatively, a richer description may be given using the annotation-xml element as described below.  When both versions are present, the richer alternative should be chosen.
+
+If annotation-xml is used, the enclosing semantics element shall be the direct child of the math element.
+
+_need to add more on using annotation-xml for alt text_
+
+
+=== Rationale ===
+MathML was designed so that the math is very accessible.  It can be converted to speech or braille (for a refreshable braille display) and that speech can be highlighted as it is spoken. However, not all conforming agents are able to make the math accessible. Hence, for accessibility, it is necessary to provide a fall back textual description of the math expression.
+
+
 == Legal Annotation Types ==
+
+The annotation-xml element in MathML allows arbitrary XML markup to be included into MathML.  EPUB restricts what is allowed to be:
+  # content MathML
+  # other legal EPUB elements
+
+Content MathML shall use either "MathML-Content" or "application/mathml-content+xml" as an encoding value.
+
+Other EPUB markup shall have "application/epub+xml" as the encoding value.
+
+_Issue: what value should be used for the EPUB encoding?_
+
 
 == Use of Deprecated Features ==
 
+
 No deprecated elements or attributes in MathML 3 shall be used in an EPUB document.
 
-_Issue:  MathML 3 no longer uses XML:id and xlink:href as these have fallen out of favor.  Used in OPS 2?_
+_Issue:  MathML 3 no longer uses XML:id and xlink:href as these have fallen out of favor.  I think that these were used in the DAISY part of OPS -- need to check_
