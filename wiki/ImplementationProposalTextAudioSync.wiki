@@ -1,108 +1,188 @@
 #summary Implementation proposal for text/audio synchronization
+= Proposal for adding an audio overlay to EPUB =
 
-= Introduction =
-
-This is the wiki page for working on the text/audio synchronization feature in EPUB.  This work will produce an implementation proposal.  
-
-Current status is GATHERING EXAMPLES FOR REQUIREMENTS phase. 
-
-= Who is working on this =
-
+Contributors
  * Marisa !DeMeglio
  * Daniel Weck
  * Chow King Wai
  * Alex Zu
- * (your name here)
 
-Please add yourself to this list if you decide to get involved.
+= Introduction =
 
-= Scope = 
+Books with synchronized text and audio can be found today in popular reading software, educational tools, and in formats for persons with print disabilities (often required by law). This is a proposal of how to add text/audio synchronization to EPUB.  It is designed as a transparent overlay to the current EPUB text file format and it will not break compatibility with text-only reading systems. 
 
-In order to get a better idea of the solution scope, we must first decide which are the relevant requirements, and what are some existing use cases and approaches for these requirements.
+During the EPUB requirements gathering phase, several requirements for the inclusion of synchronized text and audio were identified.  
 
-== Which of [RichMediaAndInteractivity these requirements] should be covered? ==
+== Requirements met ==
+
+This proposal meets the following requirements and enables the features in the included examples.
+
+ * [RichMediaAndInteractivity#RM-18._(A)_Define_synchronization_points RM-18: Define synchronization points]
+ * [RichMediaAndInteractivity#RM-19._(A)_Synchronized_playback RM-19: Synchronized playback] 
+ * [RichMediaAndInteractivity#RM-20._(B)_Text_scroll/highlight RM-20: Text scroll/highlight]
+ * [RichMediaAndInteractivity#RM-21._(B)_Transparent_overlay RM-21: Transparent overlay]
+ * [RichMediaAndInteractivity#RM-22._(C)_Using_audio_selectively RM-22: Using audio selectively] 
+ * [RichMediaAndInteractivity#RM-24._(D)_Runtime_audio_options RM-24: Runtime audio options ]
+
+=== Examples of features associated with these requirements === 
  
- * [RichMediaAndInteractivity#RM-13._(C)_Parallel_audio_clips RM-13]
- * [RichMediaAndInteractivity#RM-14._(A)_Triggers RM-14]
- * [RichMediaAndInteractivity#RM-18._(A)_Define_synchronization_points RM-18]
- * [RichMediaAndInteractivity#RM-19._(A)_Synchronized_playback RM-19]
- * [RichMediaAndInteractivity#RM-20._(B)_Text_scroll/highlight RM-20]
- * [RichMediaAndInteractivity#RM-21._(B)_Transparent_overlay RM-21]
- * [RichMediaAndInteractivity#RM-22._(C)_Using_audio_selectively RM-22]
- * [RichMediaAndInteractivity#RM-24._(D)_Runtime_audio_options RM-24]
- * [RichMediaAndInteractivity#RM-25._(C)_Multiple_granularities RM-25]
+ # Audio presentation synchronized with text highlighting: 
+  * [http://www.youtube.com/watch?v=9CtsM2K2iK0 See a video of a DAISY book reader] 
+  * Screenshots of ASTRI books: <br/> http://dl.dropbox.com/u/5509213/epub_wiki_images/pp702.png http://dl.dropbox.com/u/5509213/epub_wiki_images/pp703.png
+ # Allow users to turn on or off specific classes of items such as page number announcements, footnotes, producer notes, and asides such as sidebars.  
+  * [http://www.youtube.com/watch?v=QMcP-0L021A See a video of a DAISY book reader]
 
-Please feel free to make suggestions for this list here.
 
-== Examples ==
-From the list above (once somewhat finalized), list real-world examples for each requirement. If known, mention the technology behind it. If possible, a single requirement should have more than one example.
+== Requirements not met ==
+This proposal does not meet these requirements, but could be extended to do so:
 
-=== RM-13: Parallel audio clips [RichMediaAndInteractivity#RM-13._(C)_Parallel_audio_clips (link)] ===
+ * [RichMediaAndInteractivity#RM-13._(C)_Parallel_audio_clips RM-13: Parallel audio clips]
+ * [RichMediaAndInteractivity#RM-14._(A)_Triggers RM-14: Triggers]
+ * [RichMediaAndInteractivity#RM-25._(C)_Multiple_granularities RM-25: Multiple granularities]
 
-Here is an example with experiments in HTML5:
-http://blog.gingertech.net/2010/02/12/audio-track-accessibility-for-html5/
+= Additions to the standard =
 
-Note that media accessibility in HTML5 is still under development: 
-http://www.w3.org/WAI/PF/HTML/wiki/Media_Sub-Group
+_TODO: a complete example_
 
-=== RM-14: Triggers [RichMediaAndInteractivity#RM-14._(A)_Triggers (link)] ===
+The proposed additions to the standard are as follows.
 
-=== RM-18: Define synchronization points [RichMediaAndInteractivity#RM-18._(A)_Define_synchronization_points (link)] ===
+== The SMIL document ==
 
-==== Example #1 ====
-DAISY books use SMIL to define (and associate) text fragments and audio clips
+The SMIL document links an audio rendition of the document with the text content.
+The basic concept of how to use SMIL is illustrated by this example:
+
 {{{
-<par>
-  <text src="chapter1.html#id1"/>
-  <audio src="aud.mp3" 
-     clipBegin="0" clipEnd="0:32"/>
-</par>
+<seq>
+	<par>
+	  <text src="chapter1.html#id1"/>
+	  <audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
+	</par>
+	<par>
+	  <text src="chapter1.html#id2"/>
+	  <audio src="aud.mp3" clipBegin="0:32" clipEnd="1:00"/>
+	</par>
+	...
+</seq>
 }}}
 
-=== RM-19: Synchronized playback [RichMediaAndInteractivity#RM-19._(A)_Synchronized_playback  (link)] ===
+Where *seq* represents a sequence of phrases, and each phrase is represented by parallel (*par*) groupings of text and audio chunks.  
 
-==== Example #1 ====
-DAISY book readers synchronize the audio presentation with the text display:
+== The text document ==
 
-http://www.youtube.com/watch?v=9CtsM2K2iK0
+=== Using IDs as a reference mechanism  ===
 
-==== Example #2 ====
-ASTRI books play audio while displaying text:
+As shown above, SMIL uses the *src* attribute to refer to media resources (text and audio).  The specific phrase in the text is referenced using a fragment identifier, e.g. *file.html#phrase1*.  This necessitates the text file to be marked up using the *id* attribute:
 
-http://dl.dropbox.com/u/5509213/epub_wiki_images/pp702.png
+{{{
+<h1 id="id1">Lorem ipsum</h1>
+<p id="id2">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
+<p id="id3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+}}}
 
-=== RM-20: Text scroll/highlight [RichMediaAndInteractivity#RM-20._(B)_Text_scroll/highlight (link)] ===
+=== Using XPath as a reference mechanism ===
+The text reference could also be expressed using XPath.
 
-==== Example #1 ====
-DAISY book readers highlight the active text while the audio clip is playing:
+_TODO: example of the src attribute containing an XPath expression._
 
-http://www.youtube.com/watch?v=9CtsM2K2iK0
+== The OPF file ==
+In the OPF file, specify that there is an audio overlay available and specify which text file it belongs to.
 
-==== Example #2 ====
-ASTRI books feature text highlighting during playback:
+Add SMIL files to the manifest.
+{{{
+<manifest>
+  <item id="ch1" href="chapter1.html"/>
+  <item id="ch1_smil"href="chapter1.smil"/>
+  ...
+</manifest>
+}}}
 
-http://dl.dropbox.com/u/5509213/epub_wiki_images/pp703.png
+Add the *audio* attribute to the OPF *item* element and reference the manifest item containing the SMIL file resource.
+{{{
+<spine>
+  <item idref="ch1" audio="ch1_smil"/>
+  ...
+</spine>
+}}}
 
-=== RM-21: Transparent overlay [RichMediaAndInteractivity#RM-21._(B)_Transparent_overlay (link)] ===
+== The role attribute ==
 
-==== Example #1 ====
+While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  It provides an easy global switch to control rendering.
+{{{
+<seq>
+	<par>
+	  <text src="chapter1.html#id1"/>
+	  <audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
+	</par>
+	<seq role="sidebar">
+		<par>
+		  <text src="chapter1.html#id3"/>
+		  <audio src="aud.mp3" clipBegin="1:00" clipEnd="1:15"/>
+		</par>
+		<par>
+		  <text src="chapter1.html#id4"/>
+		  <audio src="aud.mp3" clipBegin="1:15" clipEnd="1:30"/>
+		</par>
+	</seq>
+	
+	...
+</seq>
+}}}
 
-SMIL can offer a synchronized audio "script" that does not impact the main text content:
+Note also how the *seq* representing a sidebar is nested inside the main *seq*.  This mimics the structure of the text document.
 
-[http://code.google.com/p/epub-revision/wiki/SmilOverlayFileset see example fileset] 
+== Player convenience ==
 
-=== RM-22: Using audio selectively [RichMediaAndInteractivity#RM-22._(C)_Using_audio_selectively (link)] ===
+In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par*s), we've introduced a concept called "smilref".   It aligns SMIL IDs with text document IDs.  Instead of IDs, XPath could also be used.  Here is sample smilref data:
+{{{
+header1,audio_header1
+t1,a1
+t2,a2
+section1,audio_section1
+header2,audio_header2
+t3,a3
+}}}
 
-==== Example #1 ====
 
-DAISY book producers often use one MP3 file and one SMIL file (which acts as a sort of "script" for the audio clips) per chapter.  This idea of associating external resources with the main text to provide additional information would also work for having audio applied to selected portions of the text. 
+There are several options for where to put the smilref layer:
 
-=== RM-24: Runtime audio options [RichMediaAndInteractivity#RM-24._(D)_Runtime_audio_options (link)] ===
+ # Generated at authoring time and distributed in its own file, which is then referenced from the SMIL document's metadata section.  Here is a sample smilref layer, written as a list of text ID and SMIL ID pairs:
+ # Generated at authoring time and kept inline in the head of the SMIL document.  This would make the SMIL files quite large though it would reduce the overall number of files in the fileset (as opposed to keeping smilrefs in their own file).
+ #  Keep it out of the distributed fileset and expect the user agent to generate it at runtime. This keeps the fileset simpler but could be time-consuming for user agents to handle large books.
 
-==== Example #1 ====
+== SMIL details ==
+About the SMIL elements and attributes used:
 
-DAISY players support a feature called "skippability", which allows users to turn on or off specific classes of items.  Examples are page number announcements, footnotes, producer notes, and asides such as sidebars.  
+=== seq: a sequence of media nodes ===
+ * attributes: role, id
+ * child elements: seq, par, text, audio
 
-http://www.youtube.com/watch?v=QMcP-0L021A
+=== par: a parallel set of media nodes ===
+ * attributes: role, id
+ * child elements: seq, par, text, audio
+	
+=== text: references text media ===
+ * attributes: src
+ * child elements: none
+	
+=== audio: references audio media ===
+ * attributes: src, clipBegin, clipEnd
+ * child elements: none
+	
+=== meta: metadata ===
+ * attributes: name, content
+ * child elements: none
+	
+=== head: smil document head ===
+ * attributes: none
+ * child elements: meta
+	
+=== body: smil document body ===
+ * attributes: none
+ * child elements: seq
 
-=== RM-25: Multiple granularities [RichMediaAndInteractivity#RM-25._(C)_Multiple_granularities (link)] ===
+=== smil: document root element ===
+ * attributes: none
+ * child elements: head, body
+
+== Guidelines ==
+ * IDs are not recommended to be on media elements because they shouldn't be directly linked to.  The parent time container should be linked to instead.  At the moment, the smilref layer is the only thing that references SMIL directly, but of course there is a chance that other uses will come up.
