@@ -45,7 +45,7 @@ This proposal does not meet these requirements, but could be extended to do so:
 
 _TODO: a complete example_
 
-The proposed additions to the standard are as follows.
+The proposed additions to the standard are as follows, regarding SMIL, OPF, and the relationship to the text document.  Please note that there are no changes required to the NCX.
 
 == The SMIL document ==
 
@@ -67,6 +67,10 @@ The basic concept of how to use SMIL is illustrated by this example:
 }}}
 
 Where *seq* represents a sequence of phrases, and each phrase is represented by parallel (*par*) groupings of text and audio chunks.  
+
+In order to keep complexity to a minimum, EPUB will use a minimal subset of SMIL (see [#SMIL_details SMIL details] below). There will be a dedicated schema to define the EPUB SMIL document.
+
+The relationship with the overall EPUB fileset is that there is one SMIL file per spine OPS item.
 
 == The text document ==
 
@@ -118,9 +122,11 @@ Add the *audio* attribute to the OPF *item* element and reference the manifest i
 </spine>
 }}}
 
+This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *audio* attribute and process documents in their normal fashion.
+
 == The role attribute ==
 
-While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  It provides an easy global switch to control rendering.
+While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  So, wherever the text document uses *role*, the SMIL document does the same (see [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o semantic extensibility in text content]).  This approach provides an easy global switch to control rendering.
 {{{
 <seq>
 	<par>
@@ -146,6 +152,8 @@ Note also how the *seq* representing a sidebar is nested inside the main *seq*. 
 
 == Player convenience ==
 
+An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
+
 In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par*s), we've introduced a concept called "smilref".   It aligns SMIL IDs with text document IDs.  Instead of IDs, XPath could also be used.  Here is sample smilref data:
 {{{
 header1,audio_header1
@@ -161,10 +169,11 @@ There are several options for where to put the smilref layer:
 
  # Generated at authoring time and distributed in its own file, which is then referenced from the SMIL document's metadata section.  Here is a sample smilref layer, written as a list of text ID and SMIL ID pairs:
  # Generated at authoring time and kept inline in the head of the SMIL document.  This would make the SMIL files quite large though it would reduce the overall number of files in the fileset (as opposed to keeping smilrefs in their own file).
+ # Add an attribute to SMIL time containers (par and seq) to note the text reference; players can process at runtime with minimal overhead.
  #  Keep it out of the distributed fileset and expect the user agent to generate it at runtime. This keeps the fileset simpler but could be time-consuming for user agents to handle large books.
 
 == SMIL details ==
-About the SMIL elements and attributes used:
+This proposal recommends a minimal subset of SMIL including basic timing constructs and media objects; excluding complex timing, events, layout, animation, etc.  About the SMIL elements and attributes used:
 
 === seq element: a sequence of media nodes ===
  * attributes: role, id
