@@ -274,3 +274,173 @@ An attempt has been made to preserve backwards compatibility so that an EPUB 2 r
   # Should we use OPF as the base vocabulary or should we switch to XHTML to provide a better human readable form?
   # Would it be better to use an element other than meta now that we are allowing the element value to be used? Does using the existing meta element in new ways destroy on enhance compatibility?
   # What version should we use for the package file? Would going to 3.0 cause 2.0 processors to fail?
+
+== RDFa in XHTML ==
+
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<!-- Namespace prefix definitions (later referenced by RDFa properties) -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:epub="http://www.idpf.org/epub/terms/">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml charset=utf-8"/>
+<link rel="stylesheet" href="template.css" type="text/css"/>
+<title>Through the Looking Glass</title>
+</head>
+
+<body>
+
+<!-- Info about this e-book: 
+  - @about uniquely identifies what thing we are providing metadata about to rdfa.
+  - @typeof specifies the epub-defined class for what type of Work this is
+  -->
+<div about="#ttlg" typeof="epub:Book">
+  <!-- RDFa uses @property when the value is the rendered text -->
+  <!-- The @class attributes reference CSS styles so this page will render attractively -->
+  <h1><span class="book-title" property="dcterms:title">Through the Looking-Glass</span>, 
+  <span class="book-subtitle" property="epub:subtitle">and What Alice Found There</span></h1>
+  <!-- This identifier entry uses a fictitious @href address, demonstrating how an authority 
+  like ISBN can create a unique URI for each book registered and numbered by them.
+  Multiple URI identifiers can be listed, such as ASIN, iTunes id, etc.  -->
+  <!-- RDFa uses @rel rather than @property when the metadata value is given by @href -->
+  <p class="book-id" rel="dcterms:identifier" href="http://isbn.org/isbn10/0393048470">
+    ISBN-10: 0393048470
+  (<span property="dcterms:format" content="application/epub+zip">EPUB</span>)
+  </p>
+  <!-- Use of @content ensures this metadata element is not rendered -->
+  <!-- Also, dcterms references ISO-603-3 3-letter values, where "eng" replaces "en" -->
+  <span property="dcterms:language" content="eng" />
+  <!-- Here we define the book is part of a series, described later below -->
+  <span rel="dcterms:isPartOf" href="#aliceseries"/>
+  <!-- For creators, we refer to separately defined metadata for people below -->
+  <p>by <a class="book-creator" rel="epub:author" href="#carroll">Lewis Carroll</a></p>
+  <p>illustrated by <a class="book-creator" rel="epub:illustrator" href="#tenniel">John Tenniel</a></p>
+  <!-- This structure is needed to correctly reference images in RDFa -->
+  <span rel="epub:coverImg" href="images/ttlg_cover.png">
+    <img class="cover-img" src="images/ttlg_cover.png" alt="TTLG Book Cover" />
+  </span>
+  <!-- Using <span>s, key information in this paragraph can be marked up with links or metadata,
+  such as the dates, titles, names of characters, as is shown for the Jabberwocky poem.
+  The referenced chapter file would embed metadata about the Jabberwocky poem, such as:
+     <div about "#jabberwocky" typeof="epub:Poem">
+  <span rel="dcterms:isPartOf" href="#ttlg-01"/>
+  <span rel="dcterms:description" href="http://en.wikipedia.org/wiki/Jabberwocky"/>
+  <span property="dcterms:title">Jabberwocky</span> -->
+  <p property="dcterms:description">
+    This 1871 sequel to Alice's Adventures in Wonderland (1865) 
+continues the story of young Alice 
+as she progresses through the chess-flavored land
+she discovers on the other side of a living room mirror. Along the way, she encounters
+many bizarre, but memorable, characters, such as the Red and White Queens (and Kings), 
+Humpty Dumpty, Tweedledum and TweedleDee, and the White Knight. She is also subjected
+    to strange poetry (most notably 
+<a href="ttlg-01.xhtml#jabberwocky">Jabberwocky</a>). </p>
+  <!-- an example of using the library of congress subject heading for Fantasy -->
+  <span rel="dcterms:subject" href="http://purl.org/dc/terms/LCSH/#sj2001010209">Fantasy</span>
+ 
+  <p>Chapters:</p>
+  <!-- RDFa chaining ensures this relationship applies to all chapters found in the list -->
+  <ul rel="dcterm:hasPart">
+  <!-- Additional metadata specifying the title/subtitle of the chapter can be provided here
+    (using span) or else found embedded in the ttlg-01 html file -->
+  <li>I. <a class="chap-title" typeof="epub:Chapter" href="ttlg-01.xhtml">Looking-Glass House</a></li>
+  <li>etc.</li>
+  </ul>
+  
+  <p>To learn more, visit:</p>
+  <!-- description may be too vague a term for a web site/page describing this book ... -->
+  <ul rel="dcterms:description">
+    <li><a href="http://en.wikipedia.org/wiki/Through_the_Looking-Glass">
+  Through the Looking-Glass (Wikipedia)</a></li>
+    <li><a href="http://www.alice-in-wonderland.net">
+  Lenny's Alice in Wonderland site</a></li>
+  </ul>
+  
+  <p property="dcterms:rights">
+    &copy;<span property="dcterms:dateCopyrighted">2010</span> 
+<span rel="dcterms:publisher" href="www.ebooksunlimited.com">E-books Unlimited, Inc.</span>
+All Rights Reserved.
+  </p>
+</div>
+
+<!-- This entry defines the Alice in Wonderland series (it will not render on the page) -->
+<div about="#aliceseries" typeof="epub:Series">
+  <!-- Using content means RDFa sees the title, but it is not rendered to a human reader -->
+  <span property="dcterms:title" content="Alice in Wonderland (series)"/>
+  <!-- The order matters for listed parts -->
+  <span rel="dcterms:hasPart" href="#aaiw"/>
+  <span rel="dcterms:hasPart" href="#ttlg"/>
+  <!-- specify other properties of the series here -->
+</div>
+
+<div about="#aaiw" typeof="epub:Book">
+  <span property="dcterms:title" content="Alice's Adventures in Wonderland"/>
+  <!-- etc. -->
+</div>
+
+<!-- Info about Lewis Carroll. Could be in a separate file, if desired, or even
+  could reference the person's official web site where the metadata resides -->
+<div about="#carroll" typeof="foaf:Person">
+  <h2 class="name" property="foaf:name">Lewis Carroll</h2>
+  <span property="epub:fileAs" content="Carroll, Lewis"/>
+  <!-- a nice old-time photograph of the author -->
+  <span rel="foaf:img" href="images/carroll.jpg">
+    <img src="images/carroll.jpg" alt="Picture of Lewis Carroll"/>
+  </span>
+  <!-- Charles probably would have enjoyed blogging .... -->
+  <p>His blog: <a rel="foaf:weblog" href="http://www.blogcentral.com/CharlesDodgson/">
+     Curiosities Of A Polymath</a></p>
+  <p>Lewis was first inspired to created his Alice stories while boating with 
+    <a rel="foaf:knows" href="#alice">Alice Liddell</a> and her sisters.</p>
+  
+  <!-- Instead of just text, these entries could be links enabling the reader 
+  to acquire these books within the same ecosystem this ebook is offered by -->
+  <p>Works:</p>
+  <ul>
+  <li><span rel="foaf:made" href="#aliceseries">Alice in Wonderland (series)</span>
+    <ul>
+<li><span rel="foaf:made" href="#aaiw">Alice's Adventures in Wonderland</span></li>
+<li><span rel="foaf:made" href="#ttlg">Through the Looking-Glass</span></li>
+</ul>
+  </li>
+  <li>The Hunting of the Snark</li>
+  <li>etc.</li>
+  </ul>
+  
+  <p>Fansites:</p>
+  <ul>
+  <li><a rel="foaf:homepage" href="http://en.wikipedia.org/wiki/Lewis_Carroll">Lewis Carroll (Wikipedia)</a></li>
+  <li>etc.</li>
+  </ul>
+  
+  <p>You can follow Mr. Carroll on 
+      <span rel="foaf:holdsAccount">
+        <span typeof="foaf:OnlineAccount">
+          <a rel="foaf:accountServiceHomepage" href="http://twitter.com/">Twitter</a>
+          @<span property="foaf:accountName">lewiscarroll</span>
+        </span>
+      </span>
+  </p>
+</div>
+
+<!-- Info about John Tenniel, the illustrator -->
+<div about="#tenniel" typeof="foaf:Person">
+  <h2 class="name">
+    <span property="foaf:title">Sir</span>
+    <span property="foaf:name">John Tenniel</span>
+  </h2>
+  <!-- etc. -->
+</div>
+
+<!-- Why not also provide info about Alice Liddell too? -->
+<div about="#alice" typeof="foaf:Person">
+  <h2 class="name" property="foaf:name">Alice Pleasance Liddell</h2>
+  <!-- etc. -->
+</div>
+</body>
+</html>
+}}}
