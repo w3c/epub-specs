@@ -186,6 +186,36 @@ Examples/use cases:
  # For paginated view floats are suboptimal because they interact with each other unpredictably when content is broken between pages. Good-looking page layout should start with the page, not with second-guessing CSS float layout rules.
  # replacing Adobe proprietary XPGT would require this functionality. XPGT relies on XSL:FO+ regions for page layout 
 
+_Solution:
+
+The problem is really a set of problems
+  * Flowing text from container to container
+  * Navigation 
+  * Dynamically creating new containers to handle overflow
+  * Run arounds (e.g flowing text around an anchored item)
+  * Alignment
+  * Etc.
+
+Proposal is for a solution to flowing text from container to container, and leave the others out, they can be tackled at a later day, and for the most part can be handled with sufficient forethought with existing css and html. The thing one cannot do today without writing javascript is flowing text from container to container.
+
+The css concept of overflow needs to be extended slightly.
+
+There are two tacks to take with this.
+
+  # Define a starting div/container and content inside it and then flow into subsequent containers.
+    # {{{<div id=”f0” style=”position/size info; overflow:flow(initial,f1)”> blah blah </div>}}}
+    # {{{<div id=”f1” style=” position/size info; overflow:flow(f0,f2)”><!—flow content in here-></div> }}}
+    # {{{<div id=”f1” style=” position/size info; overflow:flow(f1,scroll)”><!—flow content in here, excess would not be clipped, but could be scrolled into view-></div>}}}
+  # Create a true view/data separation.
+    # {{{<div id=”c0” class=”content” style=”visibility:hidden;”>blah blah</div>}}}
+    # {{{<div id=”f0” class=”geometry” style=”position/size info; overflow:flow(c0,f1)”><!—flow content in here-></div>}}}
+    # {{{<div id=”f1” class=”geometry”  style=” position/size info; overflow:flow(f0,f2)”><!—flow content in here-></div>}}}
+
+As much as I would like option two, I am inclined to go with option one since we could rely on overflow used traditionally for UAs (e.g. overflow: scroll, flow(a,b)) that did not understand this concept allowing them to default to a more traditional behavior. There clearly are situations where this will not work perfectly, (e.g. a traditional front page of a newspaper, there might be empty containers for UAs that did not implement the feature ).
+
+Additional normative behavior regarding view data separation so that the UA would not alter the data/content. With @media one could handle different form factors.
+
+
 ==== SNL_R2.2 Fixed (repeatable) content ====
 
 Ranking: P14, priority and scope in question
