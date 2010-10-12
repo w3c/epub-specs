@@ -164,34 +164,24 @@ Note also how the *seq* representing a sidebar is nested inside the main *seq*. 
 
 An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
 
-In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced a concept called "smilref".   It aligns SMIL IDs with text document IDs.  Instead of IDs, XPath could also be used.  Here is sample smilref data:
-{{{
-header1,audio_header1
-t1,a1
-t2,a2
-section1,audio_section1
-header2,audio_header2
-t3,a3
-}}}
+In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced an attribute called *textref* on the *seq* element.   It aligns SMIL *seq*s with text elements in the text document.  Instead of IDs, XPath could also be used. 
 
-
-There are several options for where to put the smilref layer:
-
- # Generated at authoring time and distributed in its own file, which is then referenced from the SMIL document's metadata section.  Here is a sample smilref layer, written as a list of text ID and SMIL ID pairs:
- # Generated at authoring time and kept inline in the head of the SMIL document.  This would make the SMIL files quite large though it would reduce the overall number of files in the fileset (as opposed to keeping smilrefs in their own file).
- # Add an attribute to SMIL time containers (par and seq) to note the text reference; players can process at runtime with minimal overhead.
- #  Keep it out of the distributed fileset and expect the user agent to generate it at runtime. This keeps the fileset simpler but could be time-consuming for user agents to handle large books.
+In order to reduce the overall SMIL file size, an attribute *textdoc* has been introduced.  It lives on the root *smil* element and contains the name of the text document.  All *id*s and *textref*s in the SMIL document should be resolved with respect to the value of *textdoc*. 
 
 == SMIL details ==
 This proposal recommends a minimal subset of SMIL including basic timing constructs and media objects; excluding complex timing, events, layout, animation, etc.  About the SMIL elements and attributes used:
 
+=== smil element: document root element ===
+ * attributes: textdoc
+ * child elements: seq
+
 === seq element: a sequence of media nodes ===
- * attributes: role, id
- * child elements: seq, par, text, audio
+ * attributes: role, id, textref
+ * child elements: seq, par
 
 === par element: a parallel set of media nodes ===
  * attributes: role, id
- * child elements: seq, par, text, audio
+ * child elements: text, audio (one of each allowed)
 	
 === text element: references text media ===
  * attributes: src
@@ -200,22 +190,6 @@ This proposal recommends a minimal subset of SMIL including basic timing constru
 === audio element: references audio media ===
  * attributes: src, clipBegin, clipEnd
  * child elements: none
-	
-=== meta element: metadata ===
- * attributes: name, content
- * child elements: none
-	
-=== head element: smil document head ===
- * attributes: none
- * child elements: meta
-	
-=== body element: smil document body ===
- * attributes: none
- * child elements: seq
-
-=== smil element: document root element ===
- * attributes: none
- * child elements: head, body
 
 == Guidelines ==
  * IDs are not recommended to be on media elements because they shouldn't be directly linked to.  The parent time container should be linked to instead.  At the moment, the smilref layer is the only thing that references SMIL directly, but of course there is a chance that other uses will come up.
