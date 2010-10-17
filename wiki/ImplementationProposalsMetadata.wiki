@@ -1,0 +1,283 @@
+#summary Metadata implementation proposals
+
+*Note -- this page is a stub, to be revised and completed by metadata group during F2F*
+
+<wiki:toc max_depth="5" />
+
+== Proposals Summary ==
+TODO, add complete condensed list here, with referrals to the sections below. This as the below is partially a tutorial/explanatory.
+
+
+== Package metadata ==
+Principles: 
+ * The amount of required metadata should ideally not be extended in 3.0
+ * Using a content nature neutral language (such Dublin Core) as the core language items remains desirable. EPUB is not used exclusively for books.
+ * The primary purpose of package metadata is to describe the package, not the abstract work. Inlining complete bibliographic records remains out of scope.
+ * Fragments of abstract work metadata are included only as and if there are uses cases for simple access to these fragments by reading systems.
+ * An optional method to associate external, rich, complete bibliographic records with an EPUB is however defined as well, for current and future usage contexts where this association is needed.
+ * We propose to use a subset of RDFa 1.1 as the expression form for all new OPF metadata, as this creates an extension and enrichment pattern that does not require the addition of new homegrown elements and/or attributes for each case.
+ * The new syntax for expressing metadata must remain simple from a processing perspective. As an example, it must remain possible to use a plain good old XPath statement to retrieve the title of the publication.
+
+
+=== Required metadata ===
+ * for forwards compatibility purposes, the 3 required DCMES elements of OPF 2.0.1 remain required in 3.0. 
+ * the three required DCMES elements are however deprecated in favor of DCTERMS equivalents (spec will say that we will migrate fully to DCTERMS in the next major version of EPUB)
+ * The content models and attribute sets of the 3 DCMES elements remain the same as in 2.0.1 (with one exception: the `override` attribute, see below)
+ * On the deprecated DCMES elements in question, we provide a way to link (via IDREF) to an equivalent DCTERMS element that, if the (3.0) reading system recognizes the link, overrides the information in the DCMES element. This override link (the `opf:override` attribute) is optional in the grammar.
+
+{{{
+ <dc:creator opf:override="idref">...</dc:creator>
+}}}
+
+This allows complete package metadata to be provided using non-deprecated elements, and allows for making use of the richer expression mechanisms available in the new expression form.
+
+The schema will require that the destination of any given `opf:override` attribute is the 'expected' DCTERMS element, with the following mapping:
+ * dc:creator ==> dcterms:creator
+ * dc:title ==> dcterms:title
+ * dc:identifier ==> dcterms:identifier
+
+Note that in 4.0, the `ops:override` attribute, along with the DC elements, will disappear. The override attribute is transitional.
+
+=== The new DCTERMS elements and 'ancillary properties' ===
+All new (as of 3.0) meta elements use the `meta` element with the RDFa attributes `property` (required) and `about` (optional), where the value of the property is the element content. Note that this is a subset of the full RDFa attribute set. Note also that the current (as of 2.0.1) `name` attribute is removed on the 3.0 `meta` element.
+
+==== Creator ====
+The expression form for a DCTERMS creator is:
+{{{
+  <meta property="dcterms:creator">Haruki Murakami</meta>
+}}}
+
+_Ancillary properties_ may be associated with any given meta element, using one or several additional `meta` elements with the `about` attribute (which in this case references the ID of the `dcterms:creator` element):
+{{{
+  <meta property="dcterms:creator" id="creator">Haruki Murakami</meta>
+  <meta about="#creator" property="alternate-script" xml:lang="ja">村上 春樹</meta>
+  <meta about="#creator" property="file-as">Murakami, Haruki</meta>
+}}}
+
+In the case of `dcterms:creator`, the following ancillary properties are defined in the spec (see further "Property definitions" below). 
+ * `file-as`
+ * `alternate-script`
+
+The use of additional ancillary properties to `dcterms:creator` is not illegal.
+
+Multiple `meta` elements with the property `dcterms:creator` is allowed.
+
+_Note: when used, the `about` attribute must resolve to another `meta` element inside `metadata`, or to an `item` inside `manifest`. (Note that this means that it cannot point to the deprecated DC elements, nor outside the package, the latter contrary to the new `rel` attribute on `item`, see below.)_
+
+_Note: to keep things simple, multiple values in a property attribute is not allowed. `property="foo:bar quux:qul"` is illegal._
+
+==== Title ====
+The expression form for a DCTERMS title is:
+{{{
+  <meta property="dcterms:title">Norwegian Wood</meta>
+}}}
+
+... and, just as in the case with `dcterms:creator`, ancillary information is added using additional `meta` elements with the `about` attribute:
+
+{{{
+  <meta property="dcterms:title" id="title">Norwegian Wood</meta>
+  <meta about="#title" property="alternate-script" xml:lang="ja">ノルウェイの森</meta>
+}}}
+
+In the case of `dcterms:title`, the following ancillary properties are defined in the spec (see further "Property definitions" below). 
+ * `file-as`
+ * `alternate-script`
+ * (TODO: do we need full-title, half-title, cover-title, subtitle ancillary properties? Would a reading system potentially want to use any of these?)
+
+The use of additional ancillary properties to `dcterms:title` is not illegal.
+
+Multiple meta elements with the property `dcterms:title` is not allowed.
+
+==== Identifier ====
+The expression form for a DCTERMS identifier is:
+{{{
+  <meta property="dcterms:identifier">123456789</meta>
+}}}
+
+(The use of the unique-identifier attribute on the package element remains unchanged.)
+
+Where it is necessary to distinguish identifier types, the `identifier-scheme` ancillary property is used:
+
+{{{
+  <meta property="dcterms:identifier" id="issn">123456789</meta>
+  <meta about="#issn" property="identifier-scheme">issn</meta>
+}}}
+
+In the case of `dcterms:identifier`, the following ancillary properties are defined in the spec (see further "Property definitions" below). 
+ * `identifier-scheme`
+ * TODO more?
+
+The use of additional ancillary properties to `dcterms:identifier` is not illegal.
+
+
+==== Other DCTERMS elements ====
+Other elements from the dcterms vocabulary may occur in metadata. Like with all meta elements, ancillary properties may be used with these (so that `dcterms:subject` could be provided in multiple scripts/languages for example).
+
+The following specific recommendations regarding the use of the other dcterms elements is provided in the spec:
+
+ * the `dcterms:subject` property has the ancillary property `subject-scheme` where values _should_ be drawn from TODO
+ * the `dcterms:contributor` property has the ancillary property `contributor-role` where values _should_ be drawn from TODO
+ * TODO more
+
+(Note that the use of _should_ here, as the enumerations we are likely to identify are not guaranteed to be globally applicable (aka western-centric).)
+
+=== PRISM metadata ===
+To allow prism metadata at the package level, all that is needed is that the `prism` prefix be defined using the generic mechanism to associate prefixes with vocabularies (see "Prefix association" below). Because of this generic solution, the OPF spec does not really need to say anything specific about prism. Other "new" metadata vocabularies are hooked up the same way. 
+
+Note: PRISM contains multiple vocabularies. If multiple vocabularies from PRISM are referenced in the same package file, they need different prefixes.
+
+=== Sorting/Series information ===
+TODO
+
+
+
+=== Metadata in manifest ===
+ * add the RDFa `rel` attribute to the manifest `item` element as a way to express metadata about a manifest item
+ * specify the meaning of the value `cover-image` when occurring in `item/@rel`  _(and recommend a default DPI?)_
+ * the specification of the value `cover-image` includes information that multiple items can have the cover image property (multiple images with different resolutions)
+ * specify that if the `cover-image` property occurs on an item which does not reference a core image type, then it is an error
+ * specify that other values on `item/@rel` are not illegal.
+ * TODO there may be more item metadata that we need to specify directly in the spec
+
+{{{
+ <item rel="cover-image" href="cover.png" ... />
+}}}
+
+ * add spec prose that require 3.0 reading systems to also recognize the non-de-jure mechanism used for this purpose in 2.0 content (TODO and find out what that was, and provide a literal example).
+
+ * TODO check with Scripting taskforce exactly what needs to be said re scripting in manifest or spine; note that  `rel` is not suitable here.
+
+
+=== External metadata ===
+ * Add an unambiguous method to identify external bibliographic records. These records may be located in the container, but the default assumption is that they are container-external.
+ * Links to external records is optional in the OPF schema
+ * Support for retrieving the data in external records is optional for Reading Systems
+ * The package manifest does not include these as `item`s, as they are not formally part of the EPUB publication
+ * Add a new element `link` as an allowed child of metadata with the RDFa attributes `rel` and `resource` 
+ * predefine values for ONIX (`onix-record`), MARC21-XML (`marc21xml-record`) and MODS (`mods-record`). The use of other values on link/@rel is not illegal.
+ * There is no provision for specifying the version of the record (this assumes that version information is available inline in the referenced resources)
+ * If data provided in the external record conflicts with data given inline in the OPF, then the inline data takes precedence. (correct ?)
+
+{{{
+<metadata>
+  <link rel='onix-record' resource='anyURI' />  
+  <link rel='mods-record' resource='anyURI' />
+  <link rel='marc21xml-record' resource='anyURI' />  
+</metadata>
+}}}
+
+=== meta element content model ===
+The meta element typically contains only plain text. Inline markup is however allowed to enrich the text where needed, in particular for i18n reasons.
+
+TODO EGLS proposal
+
+Note that support for inline markup is *not* added to the deprecated DC elements.
+
+=== Property definitions ===
+In the ideal case, we are able to reuse properties from existing vocabularies defined by other specifications. There are however a number of properties that we need to define ourselves because they do not exist externally (examples from above: "onix-record", "alternate-script", "cover-image").
+
+These properties taken together constitute the "OPF metadata terms vocabulary". We can either provide this vocabulary as a separate document, normatively referenced from the OPF spec, or we can use the spec itself as the vocabulary document (names and meanings of terms are defined inline). It does not matter from a technical standpoint which we choose, the choice is primarily one of ergonomics for the human consumer.
+
+=== Prefix association ===
+We have the following options:
+ 
+ # Profile + inline prefix attribute
+  * Use the RDFa 1.1 profile mechanism to define a set of "core" vocabulary prefixes (example: opf, dcterms, prism). We normatively reserve these prefixes. 
+  * Allow the prefix attribute in OPF to allow additional prefix-vocabulary associations than those that occur in the profile
+ # inline prefix attribute only
+  * require that the prefix attribute always be present and always define the prefixes for all vocabularies used. This includes defining the "default prefix" (=no prefix) for the OPF metadata terms vocabulary.
+
+By allowing (or requiring) the `prefix` attribute on the package root element only, we simplify processing (cf XML namespaces, which does not include this simplification). 
+
+The use of the profile mechanism to reserve prefixes simplifies processing even further, since there is now no need to resolve the most common prefixes. Plain simple XPath can be used to retrieve the `meta` element with `property="dcterms:title"` for example, since the `dcterms` prefix is fixed globally. Note that a validator such as epubcheck would be able to enforce these constraints.
+
+In RDFa, the terms from maximally one vocabulary can be used without a prefix. It is proposed that the OPF metadata terms vocabulary be fixed to be that prefix-less vocabulary.
+
+
+=== EPUB publication nature specification ===
+TODO
+ * define property for a meta element that specifies that an EPUB is a dictionary
+ * define property for a meta element that specifies that an EPUB is an annotation (as per annotation proposal)
+
+=== Full examples ===
+(The examples assumes the use of @profile as opposed to exclusive use of @prefix until we have resolved how to do that.)
+
+==== Minimal 3.0 OPF metadata ====
+Identical to OPF 2.0.1. 
+{{{
+ <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" profile="http://www.idpf.org/.../3.0/">
+   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+     <dc:identifier id="uid">123456789</dc:identifier>
+     <dc:title>Norwegian Wood</dc:title>
+     <dc:creator>Haruki Murakami</dc:creator>
+   </metadata>
+ </package>
+}}}
+
+==== Minimal 4.0 OPF metadata (projection) ====
+
+Since the three required DC elements are deprecated in 3.0, in 4.0 the above would instead be
+
+{{{
+ <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" profile="http://idpf.org/.../4.0/">
+   <metadata>
+     <meta property="dcterms:identifier" id="uid">123456789</meta>
+     <meta property="dcterms:title">Norwegian Wood</meta>
+     <meta property="dcterms:creator">Haruki Murakami</meta>
+   </metadata>
+ </package>
+}}}
+
+==== Minimal OPF metadata with a DCTERMS override and an ancillary property ====
+Using the new `opf:override` attribute that allows 3.0 aware reading systems to locate richer data for the required-but-deprecated DC elements (in this case, the title), and an ancillary property added.
+
+{{{
+ <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" xml:lang="en" profile="http://idpf.org/.../3.0/">
+   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+     ...
+     <dc:title opf:override="title">Norwegian Wood</dc:title>
+     ...
+     <meta id="title" property="dcterms:title">Norwegian Wood</meta>
+     <meta about="#title" property="alternate-script" xml:lang="ja">ノルウェイの森</meta>
+   </metadata>
+ </package>
+}}}
+
+==== Extension metadata with an ancillary property ====
+An example of how metadata not specified by the OPF spec is included. Note that all extension metadata must be prefixed, as properties without a prefix belong to the "default" vocabulary that is defined in the OPF spec. If an extension property is provided without a prefix, it will be interpreted as a non-existant item from the default vocabulary.
+
+The prefix used must be defined in the root element `prefix` attribute.
+
+{{{
+ <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" xml:lang="en"
+    profile="http://idpf.org/.../3.0/" 
+    prefix="happy: http://happy.info/vocab/#">
+   <metadata ...>
+     ...          
+     <meta property="happy:foo" id="happy">...</meta>
+     <meta about="#happy" property="happy:bar">...</meta>
+   </metadata>
+ </package>
+}}}
+
+==== Manifest metadata  ====
+The first `item` shows how a cover image is identified.
+
+TODO scripting on/off property
+
+{{{
+ <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" xml:lang="en"
+    profile="http://idpf.org/.../3.0/">
+   ...
+   <manifest>
+      <item rel="cover-image" href="cover.png" ... />
+   </manifest>
+ </package>
+}}}
+
+== OPS inline metadata ==
+(Note: what if any OPS head metadata should the OPS spec specify?)
+
+The group first needs to ascertain to what extent the [ImplemenationProposalRoleOpsType ops:type/role attribute] covers identified use cases re semantic inflection. 
+ 
+If ops:type/role does cover existing use cases, then we have no other explicit reason to add support for RDFa and/or microdata other than extensibility; "allow for innovation".
