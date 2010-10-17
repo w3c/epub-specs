@@ -1,0 +1,142 @@
+
+
+   ops.flow.class |= ops.embed.flow.class
+   ops.phrasing.class |= ops.embed.phrasing.class
+
+   ops.embed.flow.class |= ops.audio.flow | ops.video.flow | ops.object.flow | ops.canvas.flow 
+      | ops.map.flow | ops.area | ops.iframe | ops.img | ops.embed
+   ops.embed.phrasing.class |= ops.audio.phrasing | ops.video.phrasing | ops.object.phrasing | ops.canvas.phrasing 
+      | ops.map.phrasing | ops.area | ops.iframe | ops.img | ops.embed 
+
+
+   
+   ops.video.flow = element video { ops.video.attlist & ops.video.flow.content }
+   ops.video.phrasing = element video { ops.video.attlist & ops.video.phrasing.content }
+   ops.video.attlist &= ops.global.attrs & ops.av.common.attrs & ops.video.poster.attr? & ops.dimension.attrs
+   ops.video.poster.attr = attribute poster { datatype.html5.URL.spaces }	
+   ops.video.flow.content = ops.av.source, ops.flow.model
+   ops.video.phrasing.content = ops.av.source, ops.phrasing.model
+
+
+
+   ops.audio.flow = element audio { ops.audio.attlist & ops.audio.flow.content }
+   ops.audio.phrasing = element audio { ops.audio.attlist & ops.audio.phrasing.content }
+   ops.audio.attlist &= ops.global.attrs & ops.av.common.attrs   		
+   ops.audio.flow.content = ops.av.source, ops.flow.model
+   ops.audio.phrasing.content = ops.av.source, ops.phrasing.model
+   
+
+   ops.av.common.attrs =  ops.av.autoplay.attr? & ops.av.preload.attr? 
+      & ops.av.controls.attr? & ops.av.loop.attr?
+		
+   ops.av.autoplay.attr = attribute autoplay { 'autoplay' | '' }
+   ops.av.preload.attr = attribute preload { 'none' | 'metadata' | 'auto' | '' }			
+   ops.av.controls.attr  = attribute controls  { 'controls' | '' }			
+   ops.av.loop.attr = attribute loop { 'loop' | '' }
+				
+   ops.source = element source { ops.source.attlist }
+   ops.source.attlist &= ops.global.attrs & ops.src.attr & ops.type.mime.attr? & ops.media.attr?
+
+   ops.av.source = ops.src.attr | ops.source*
+
+   
+   
+   ops.img = element img { ops.img.attlist }
+   ops.img.attlist &= ops.global.attrs & ops.dimension.attrs & ops.src.attr & ops.alt.attr? & ops.usemap.attr? & ops.img.ismap.attr?    
+   ops.img.ismap.attr = attribute ismap { 'ismap' | '' }
+   
+   
+      
+   ops.embed = element embed { ops.embed.attlist }
+   ops.embed.attlist &= ops.global.attrs & ops.src.attr? & ops.type.mime.attr? & ops.dimension.attrs & ops.embed.attrs.other*		
+   ops.embed.attrs.other = empty #TODO		
+
+
+
+   ops.object.flow = element object { ops.object.flow.content & ops.object.attlist }
+   ops.object.phrasing = element object { ops.object.phrasing.content & ops.object.attlist }
+   ops.object.attlist &= ops.global.attrs & (( ops.object.data.attr & ops.type.mime.attr? ) | ops.type.mime.attr ) 
+      & ops.dimension.attrs & ops.usemap.attr? & ops.name.context.attr?
+   ops.object.data.attr = attribute data { datatype.html5.URL.spaces }
+   
+   ops.object.flow.content = ops.param*, ops.flow.model
+   ops.object.phrasing.content = ops.param*, ops.phrasing.model
+
+   ops.param = element param { ops.param.attlist }
+   ops.param.attlist &= ops.global.attrs & ops.param.name.attr & ops.param.value.attr
+   ops.param.name.attr = attribute name { string }
+   ops.param.value.attr = attribute value { string }
+
+
+   ops.canvas.flow = element canvas { ops.canvas.attlist & ops.canvas.flow.content }
+   ops.canvas.phrasing = element canvas { ops.canvas.attlist & ops.canvas.phrasing.content }	
+   ops.canvas.attlist = ops.global.attrs & ops.dimension.attrs
+   ops.canvas.flow.content	= ops.flow.model	
+   ops.canvas.phrasing.content = ops.phrasing.model
+
+
+   ops.map.flow = element map { ops.map.flow.content & ops.map.attlist }
+   ops.map.phrasing  = element map { ops.map.phrasing.content & ops.map.attlist }
+   ops.map.attlist &= ops.global.attrs & ops.name.id.attr
+   ops.map.flow.content = ops.flow.model
+   ops.map.phrasing.content = ops.phrasing.model
+
+
+   ops.area = element area { ops.area.attlist }
+   ops.area.attlist &= ops.global.attrs & (ops.alt.attr & ops.href.attr)? & ops.target.attr? & ops.rel.attr? 
+      & ops.media.attr? & ops.hreflang.attr? & ops.type.mime.attr? & ops.area.shape.attrs
+		
+   ops.area.shape.attrs =
+      ( ops.area.shape.rect.attr?  & ops.area.coords.rect.attr )
+      |( ops.area.shape.circle.attr & ops.area.coords.circle.attr )
+      |( ops.area.shape.poly.attr & ops.area.coords.poly.attr )
+      |( ops.area.shape.default.attr )
+					
+   ops.area.shape.rect.attr = attribute shape { 'rect' }
+   ops.area.coords.rect.attr = attribute coords { datatype.html5.coords.rectangle }
+   ops.area.shape.circle.attr = attribute shape { 'circle' }
+   ops.area.coords.circle.attr = attribute coords { datatype.html5.coords.circle }
+   ops.area.shape.poly.attr = attribute shape { 'poly' }			
+   ops.area.coords.poly.attr = attribute coords {datatype.html5.coords.poly}
+   ops.area.shape.default.attr = attribute shape { 'default' }
+			
+
+
+   ops.iframe = element iframe { ops.iframe.attlist & ops.iframe.content}
+   ops.iframe.attlist &= ops.global.attrs & ops.src.attr? & ops.name.context.attr? & ops.dimension.attrs & ops.iframe.sandbox.attr? & ops.iframe.seamless.attr?
+   ops.iframe.seamless.attr = attribute seamless { 'seamless' | '' }
+   ops.iframe.sandbox.attr = attribute sandbox
+      { list { 'allow-top-navigation'?, 'allow-same-origin'?, 'allow-forms'?, 'allow-scripts'? }
+      | list { 'allow-top-navigation'?, 'allow-same-origin'?, 'allow-scripts'?, 'allow-forms'? }
+      | list { 'allow-top-navigation'?, 'allow-forms'?, 'allow-same-origin'?, 'allow-scripts'? }
+      | list { 'allow-top-navigation'?, 'allow-forms'?, 'allow-scripts'?, 'allow-same-origin'? }
+      | list { 'allow-top-navigation'?, 'allow-scripts'?, 'allow-same-origin'?, 'allow-forms'? }
+      | list { 'allow-top-navigation'?, 'allow-scripts'?, 'allow-forms'?, 'allow-same-origin'? }
+      | list { 'allow-same-origin'?, 'allow-top-navigation'?, 'allow-forms'?, 'allow-scripts'? }
+      | list { 'allow-same-origin'?, 'allow-top-navigation'?, 'allow-scripts'?, 'allow-forms'? }
+      | list { 'allow-forms'?, 'allow-top-navigation'?, 'allow-same-origin'?, 'allow-scripts'? }
+      | list { 'allow-forms'?, 'allow-top-navigation'?, 'allow-scripts'?, 'allow-same-origin'? }
+      | list { 'allow-scripts'?, 'allow-top-navigation'?, 'allow-same-origin'?, 'allow-forms'? }
+      | list { 'allow-scripts'?, 'allow-top-navigation'?, 'allow-forms'?, 'allow-same-origin'? }
+      | list { 'allow-same-origin'?, 'allow-forms'?, 'allow-top-navigation'?, 'allow-scripts'? }
+      | list { 'allow-same-origin'?, 'allow-scripts'?, 'allow-top-navigation'?, 'allow-forms'? }
+      | list { 'allow-forms'?, 'allow-same-origin'?, 'allow-top-navigation'?, 'allow-scripts'? }
+      | list { 'allow-forms'?, 'allow-scripts'?, 'allow-top-navigation'?, 'allow-same-origin'? }
+      | list { 'allow-scripts'?, 'allow-same-origin'?, 'allow-top-navigation'?, 'allow-forms'? }
+      | list { 'allow-scripts'?, 'allow-forms'?, 'allow-top-navigation'?, 'allow-same-origin'? }
+      | list { 'allow-same-origin'?, 'allow-forms'?, 'allow-scripts'?, 'allow-top-navigation'? }
+      | list { 'allow-same-origin'?, 'allow-scripts'?, 'allow-forms'?, 'allow-top-navigation'? }
+      | list { 'allow-forms'?, 'allow-same-origin'?, 'allow-scripts'?, 'allow-top-navigation'? }
+      | list { 'allow-forms'?, 'allow-scripts'?, 'allow-same-origin'?, 'allow-top-navigation'? }
+      | list { 'allow-scripts'?, 'allow-same-origin'?, 'allow-forms'?, 'allow-top-navigation'? }
+      | list { 'allow-scripts'?, 'allow-forms'?, 'allow-same-origin'?, 'allow-top-navigation'? }
+      } 
+	
+   ops.iframe.content = ops.iframe.content.xml
+   ops.iframe.content.html = datatype.text 
+   ops.iframe.content.xml = empty 
+   
+   
+   
+# TODO SCH The ismap attribute must not be specified on an element that does not have an ancestor a element with an href attribute.
+# TODO SCH  <map>@name: If the id attribute is also specified, both attributes must have the same value.

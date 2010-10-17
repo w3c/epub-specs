@@ -1,0 +1,113 @@
+
+
+   ops.flow.class |= ops.grouping.class
+   ops.grouping.class |= ops.p | ops.hr | ops.pre | ops.blockquote | ops.ul | ops.ol | ops.dl | ops.div | ops.figure | ops.table
+   
+   ops.grouping.attrs &= ops.global.attrs
+      
+   ops.p = element p { ops.p.attlist & ops.p.content }
+   ops.p.attlist &= ops.grouping.attrs
+   ops.p.content = ops.phrasing.model
+   
+   ops.hr = element hr { ops.hr.attlist }
+   ops.hr.attlist = ops.grouping.attrs
+
+   ops.pre = element pre { ops.pre.attlist & ops.pre.content }
+   ops.pre.attlist = ops.grouping.attrs
+   ops.pre.content = ops.phrasing.model
+
+   ops.blockquote = element blockquote { ops.blockquote.attlist & ops.blockquote.content }
+   ops.blockquote.attlist = ops.grouping.attrs & ops.cite.attr?
+   ops.blockquote.content = ops.phrasing.model
+
+   ops.ul = element ul { ops.ul.attlist & ops.ul.content }
+   ops.ul.attlist = ops.grouping.attrs
+   ops.ul.content = ops.li*
+
+   ops.li = element li { ops.li.attlist & ops.li.content }
+   ops.li.attlist = ops.global.attrs 
+   ops.li.content = ops.flow.model
+
+   ops.ol = element ol { ops.ol.attlist & ops.ol.content }
+   ops.ol.attlist = ops.grouping.attrs & ops.ol.start.attr? & ops.ol.reversed.attr?
+   ops.ol.start.attr = attribute start { datatype.integer }
+   ops.ol.reversed.attr = attribute reversed { 'reversed' | '' }
+   ops.ol.content = ops.oli*
+
+   ops.oli = element li { ops.oli.attlist & ops.oli.content }
+   ops.oli.attlist = ops.global.attrs & ops.oli.attrs.value?
+   ops.oli.attrs.value = attribute value { datatype.integer }
+   ops.oli.content = ops.flow.model
+
+   ops.dl = element dl { ops.dl.attlist & ops.dl.content }
+   ops.dl.attlist = ops.grouping.attrs
+   ops.dl.content = (ops.dt+ , ops.dd+)*
+
+   ops.dt = element dt { ops.dt.attlist & ops.dt.content }
+   ops.dt.attlist = ops.global.attrs
+   ops.dt.content = ops.phrasing.model
+
+   ops.dd = element dd { ops.dd.attlist & ops.dd.content }
+   ops.dd.phrasing = element dd { ops.dd.phrasing.content & ops.dd.attlist }
+   ops.dd.attlist = ops.global.attrs
+   ops.dd.content = ops.flow.model
+   ops.dd.phrasing.content = ops.phrasing.model
+
+   ops.div = element div { ops.div.attlist & ops.div.content }
+   ops.div.attlist = ops.grouping.attrs
+   ops.div.content = ops.flow.model
+
+   ops.figure = element figure { ops.figure.attlist & ops.figure.content }
+   ops.figure.attlist = ops.grouping.attrs
+   ops.figure.content = ( ops.figcaption, ops.flow.model ) | ( ops.flow.model, ops.figcaption? )
+		
+   ops.figcaption = element figcaption { ops.figcaption.attlist & ops.figcaption.content }
+   ops.figcaption.attlist = ops.global.attrs
+   ops.figcaption.content = ops.flow.model
+      
+   ops.table = element table { table.attlist & table.content }
+   table.attlist &= ops.grouping.attrs  
+   table.content = (ops.caption?, ops.colgroup*, ops.thead?, 
+      ((ops.tfoot, ( ops.tbody* | ops.tr+ ))|(( ops.tbody* | ops.tr+ ), ops.tfoot?))) 
+
+   ops.caption = element caption { ops.caption.attlist & ops.caption.content }
+   ops.caption.attlist &= ops.global.attrs
+   ops.caption.content = ops.flow.model
+      
+   ops.colgroup = element colgroup { ops.colgroup.attlist & ops.colgroup.content }
+   ops.colgroup.attlist &= ops.global.attrs   
+   ops.colgroup.content = ops.col* | ops.colspan.col.span.attr?
+                     
+   ops.col = element col { ops.col.attlist }
+   ops.col.attlist &= ops.global.attrs & ops.colspan.col.span.attr?  
+            
+   ops.thead = element thead { ops.thead.attlist & ops.thead.content }
+   ops.thead.attlist &= ops.grouping.attrs  
+   ops.thead.content = ops.tr* 
+      
+   ops.tfoot = element tfoot { ops.tfoot.attlist & ops.tfoot.content }
+   ops.tfoot.attlist &= ( ops.grouping.attrs )
+   ops.tfoot.content = ( ops.tr* )
+
+   ops.tbody = element tbody { ops.tbody.attlist & ops.tbody.content  }
+   ops.tbody.attlist &= ( ops.grouping.attrs )
+   ops.tbody.content = ( ops.tr* )
+      
+   ops.tr = element tr { ops.tr.attlist & ops.tr.content }
+   ops.tr.attlist &= ops.grouping.attrs
+   ops.tr.content = ( ops.td | ops.th )* 
+   
+   ops.td = element td { ops.td.attlist & ops.td.content }
+   ops.td.attlist &= ops.global.attrs & ops.table.colspan.attr? & ops.table.rowspan.attr? & ops.table.headers.attr?
+   ops.td.content = ( ops.flow.model )
+
+   ops.th = element th { ops.th.content & ops.th.attlist }
+   ops.th.attlist &= ops.global.attrs & ops.table.colspan.attr? & ops.table.rowspan.attr? & ops.table.scope.attr? & ops.table.headers.attr?    
+   ops.th.content = ops.phrasing.model
+
+   ops.colspan.col.span.attr = attribute span { datatype.positive.integer }   
+   ops.table.colspan.attr = attribute colspan { datatype.positive.integer }
+   ops.table.rowspan.attr = attribute rowspan { datatype.non-negative.integer }   
+   ops.table.headers.attr = attribute headers { datatype.IDREFS }   
+   ops.table.scope.attr = attribute scope { 'row' | 'col' | 'rowgroup' | 'colgroup' }
+   ops.table.abbr.attr = attribute abbr { string }
