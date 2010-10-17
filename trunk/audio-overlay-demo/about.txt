@@ -1,0 +1,52 @@
+= Fileset =
+alice.html: the main text file
+alice_audio.smil: the audio script
+alice.mp3: the actual audio version of the book
+other mp3 files are there as a convenience; the final example will only have one mp3 file.
+other js files are just utilities.
+
+= Features =
+
+Synchronized text/audio playback
+Click on the screen to change the playback position
+"Skippability" support
+On-screen controls
+Phrase navigation
+Volume and timescale control
+
+= Design notes =
+
+This demo has been done with the player baked into the content, but there are other ways to dynamically load different content into the same player.  The player and its scripts could live in an HTML page containing an <iframe>, and the content would get loaded into that <iframe>.
+
+== Skippability ==
+
+In this simple scenario, the player has built-in knowledge of what types of items are optional.  they are reflected in SMIL using @role for fast switching on/off without expensive lookups.
+
+= Implementation notes =
+
+There is a DB table (client-side SQL storage) for tracking SMIL IDs and the corresponding @textref (for seqs) or par/text/@src (for pars).  It therefore only works in Webkit browsers right now.  Testing has been done with Google Chrome.
+
+It is not known how fast the client-side DB is for large filesets.
+
+This player assumes the HTML/SMIL/smilref files all have a 1:1 relationship.
+
+The SMIL file must contain a seq as a direct child of the document root, which contains the entire presentation.
+
+Errors and other messages are sent to console.error and console.log, respectively.  Firebug does the right thing with them.
+
+By default, the SMIL player will not skip any items (as specified by @role).
+
+= Issues =
+You need to press play before being able to click around the screen.  If you click anywhere before pressing play, the audio nodes have trouble (?!) and it skips ahead to where there is a new audio file (in this case, the sidebar).  A UI workaround is in place, but it doesn't solve the audio clipping problem (a well-complained-about HTML5 issue in Chrome/Safari).
+
+Audio skips during volume and rate changes.
+Fast-forward: right now, ffwd only goes so fast (4x is max).  What we should do is start pruning the playback tree.  Does the document control this, or the SMIL?
+
+
+= Future additions =
+Rewind
+Previous phrase navigation
+NCX-style navigation
+Buttons should be keyboard-accessible via access key (depends on @accesskey implementation)
+Parse OPF
+insert resource words into audio (e.g. "sidebar start", "footnote start", "footnote reference")

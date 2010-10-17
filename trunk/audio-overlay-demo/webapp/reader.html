@@ -1,0 +1,303 @@
+<!doctype html> 
+<html>  
+    <head>  
+        <title>Audio EPUB Reader</title>  
+		<style>
+		<!--
+			body {
+				font-family: Helvetica;
+				line-height:150%;
+				margin: 0em;
+				margin-right:300px;
+			}
+			.debug {
+				font-family: courier;
+
+				overflow:scroll;
+
+			    background-color: white;
+			    position: fixed;
+				width: 50%;
+				height: 200px;
+			    left: 0px;
+			    bottom: 0px;
+
+			    border: solid 4px orange;
+
+			    padding: 5px 5px 5px 5px;
+
+			    z-index: 10;
+			}
+			
+			#booklist {
+				font-family: arial;
+			    background-color: white;
+			    position: fixed;
+				width: 250px;
+				text-align: left;
+			    right: 0px;
+			    top: 0px;
+				color: red;
+				font-size: x-large;
+			}
+			
+			#controls {
+
+				font-family: verdana;
+
+			    background-color: white;
+			    position: fixed;
+				width: 250px;
+			    right: 0px;
+			    bottom: 40px;
+
+			    border: solid 4px green;
+			    -webkit-box-shadow: -10px 10px 5px #888;
+			    -o-box-shadow: -10px 10px 5px #888;
+			    -moz-box-shadow: -10px 10px 5px #888;
+			    box-shadow: -10px 10px 5px #888;
+
+			    padding: 5px 5px 5px 5px;
+
+			    z-index: 10;
+
+			    user-select: none;
+			    -o-user-select: none;
+			    -moz-user-select: none;
+			    -webkit-user-select: none;
+			}
+			.hidden {
+				display: none;
+			}
+		-->
+		</style>
+		<script type="text/javascript" src="jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="util.js"></script>
+		<script type="text/javascript" src="smil.js"></script>
+		<script type="text/javascript" src="db.js"></script>
+		
+        <script type="text/javascript"> 
+            
+		    var smil_player = null;
+			function play_pause() 
+		    {
+				if (smil_player.is_playing()) {
+			    	$("#playpause")[0].innerText = "play";
+			        smil_player.pause();
+			    }    
+			    else {
+			       $("#playpause")[0].innerText = "pause";
+			       smil_player.resume();
+			    }		    
+			}
+			function load_book(html, smil)
+			{
+				if (smil_player && smil_player.is_playing()) play_pause(); 
+				
+				// load the OPF, parse it, load the HTML and SMIL
+				// but until we have OPF support, just load the HTML and SMIL directly
+				
+				$("#reader_main").load(function(evt)
+				{
+					on_page_loaded(smil);
+				});
+				
+				$("#reader_main")[0].src=html;
+			}
+		    function load_smil(filename) 
+		    {
+				var frame_elm = $("#reader_main")[0];
+                smil_player.book_doc = frame_elm.contentDocument;
+                if (!smil_player.load_smil(filename)) {
+		            $("#debug")[0].innerHTML += "<p>Error loading SMIL file: " + filename + "</p>";
+		        }
+		        else {
+		            //smil_player.debug_print($("#debug")[0]);
+		        }
+				//smil_player.db.debug_print($("#debug")[0]);
+		    }
+		    function on_page_loaded(smil_file)
+		    {
+		        smil_player = new SmilPlayer();
+				smil_player.play_position_changed_callback = update_smil_play_position;
+				
+                var base_path = url_get_path(this.document.location.href);
+		        var smil_fullpath = go_relative(base_path, smil_file); 
+                load_smil(smil_fullpath);
+	            
+                //listen for the events in the iframe document
+				var frame_elm = $("#reader_main")[0];
+                contentWindow = frame_elm.contentDocument.defaultView;
+				
+				checkHash();
+
+				$(contentWindow).click(function(evt) {
+					if(!evt.originalEvent) return;
+					if (!evt.srcElement.hasAttribute("id")) return;
+					if (!smil_player) return;
+					
+					debug_trace("HTML document click event");
+ 		        						
+ 		        	var id = evt.srcElement.getAttribute("id");
+ 		        	
+					var support_hashes = true;
+					
+					if (support_hashes)
+					{
+						smil_player.has_text_id(id, function(smilid) {
+
+				        	if (smilid != undefined && smilid != "") {
+					        	if (!smil_player.is_playing()) {
+					        		play_pause();
+								}
+
+								var hash = document.location.hash;
+					        	if (hash.length) {
+									parent.location.hash = '';
+					        		window.location.href = window.location.href + "_" + id;
+								} 
+					        	else {
+									window.location.href = window.location.href + '#' + "_" + id;
+					        	}
+								checkHash();
+							}
+				        });
+
+						// if ( window.addEventListener ) {
+						// 		  				window.addEventListener("hashchange", checkHash, true);
+						// 		  			} 
+						// 					else if ( window.attachEvent ) {
+						// 		  				window.attachEvent( 'onhashchange', checkHash );
+						// 		  			}
+
+//	 		   			setTimeout(checkHash, 500);
+					}
+					else
+					{
+						//users need to start playback before they can click around the screen
+						//this is due to problems with HTML5 and audio clipping
+						if (!smil_player.started) {
+							$("#playpause_hint").removeClass("hidden");
+							return;
+						}
+						else {
+							$("#playpause_hint").addClass("hidden");
+						}
+						smil_player.play_from_text_id(id);
+					}
+				});
+			}
+		
+			// activate a time node if a hash is found in the URL
+			function checkHash() {
+				var hash = document.location.hash;
+			  	if (hash.length > 2) {
+			  		var id = hash.substr(2);
+				
+					smil_player.has_text_id(id, function(smilid) {
+			        	if (smilid != undefined && smilid != "") {
+							if (!smil_player.is_playing()) {
+					    		play_pause();
+					    	}
+	
+							var targetElement = null;
+					    	targetElement = window.frames['reader_main'].document.getElementById(id);
+					    	if (targetElement && smil_player) {
+								if (!smil_player.is_playing()) {
+									play_pause();
+								}
+								smil_player.play_from_text_id(id);
+							}
+						}
+			    	});
+			  	}
+			}
+			
+			function update_smil_play_position(id)
+			{
+				// debug_trace("HI! " + id);
+			}
+		    function next_phrase()
+			{
+				if(smil_player && smil_player.started) {
+					smil_player.play_next();
+				}
+			}
+			function previous_phrase()
+			{
+				if(smil_player && smil_player.started) {
+					smil_player.play_previous();
+				}
+			}
+			function fast_forward()
+			{
+				if (smil_player && smil_player.started) {
+					smil_player.set_rate(4);
+					smil_player.play_next();
+				}
+			}
+		    function toggle_debug_region() 
+		    {
+		        if ($("#toggledebug")[0].innerText == "turn debug region on") {
+		            $("#toggledebug")[0].innerText = "turn debug region off";
+		        }
+		        else {
+		            $("#toggledebug")[0].innerText = "turn debug region on";
+		        }
+		        $(".debug").toggleClass("hidden");
+		    }
+		    function toggle(rolename)
+		    {
+		        smil_player.toggle_role(rolename);
+		        $("[role=" + rolename + "]", window.frames['reader_main'].document).toggleClass("hidden");
+		    }
+			function set_rate(rate)
+			{
+				smil_player.set_rate(rate);
+			}
+			function set_volume(vol)
+			{
+				smil_player.set_volume(vol);
+			}
+			$(document).ready(function() {
+						   toggle_debug_region();
+			});
+
+        </script> 
+    </head> 
+      
+    <body> 
+        <nav id="booklist">
+				<p style="text-align: center;"><button onclick="load_book('../book/science.html', '../book/science_audio_overlay.smil')">Science book</button><br/>(click to load)</p>
+        </nav> 
+
+        <div id="controls">
+	        <button id="rwd" onclick="alert('todo')">&lt;&lt;</button>
+			<button id="previousphrase" onclick="previous_phrase()">&lt;</button>
+			<button id="playpause" onclick="play_pause()">play</button>  
+			<button id="nextphrase" onclick="next_phrase()">&gt;</button>
+			<button id="ffwd" onclick="fast_forward()">&gt;&gt;</button>
+			<span id="playpause_hint" class="hint hidden">Start by pressing play!</span>
+	        <br/>
+			<span>Volume</span><input type="range" min="0.0" max="1.0" value="0.6" step="0.1" onchange="set_volume(this.value)"/>
+			<br/>
+			<span>Rate</span><input type="range" min="0.5" max="4.0" value="1.0" step="0.1" onchange="set_rate(this.value)"/> <button id="resetrate" onclick="set_rate(1.0)">reset</button>
+			<br/>
+			<input type="checkbox" checked="checked" onclick="toggle('footnote')">footnotes</input>
+	        <input type="checkbox" checked="checked" onclick="toggle('sidebar')">sidebars</input>
+			<input type="checkbox" checked="checked" onclick="toggle('pagenum')">page numbers</input>
+	        <br/>
+			<button id="toggledebug" onclick="toggle_debug_region()">turn debug region off</button>
+	    </div>
+	
+		<section class="debug">
+	        <h1>Debugging information</h1>
+	        <div id="debug">
+	        </div>
+	    </section>
+
+		<iframe id="reader_main" name="reader_main" width="100%" height="95%"> 
+        </iframe> 
+        
+    </body> 
+</html>
