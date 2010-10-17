@@ -1,0 +1,46 @@
+
+
+   ops.html = element html { ops.html.attlist, ops.head, ops.body }       
+   ops.html.attlist &= ops.global.attrs 
+
+
+   ops.head = element head { ops.head.attlist & ops.head.content } 
+   ops.head.attlist &= ops.global.attrs    
+   ops.head.content = ops.title? & ops.base? & ops.metadata.class*
+   ops.metadata.class |= ops.link | ops.meta
+
+
+   ops.body = element body { ops.body.attlist & ops.body.content }      
+   ops.body.attlist &= ops.global.attrs                            
+   ops.body.content = ops.section.model
+
+
+     
+   ops.base =  element base { ops.base.attlist }
+   ops.base.attlist &= ops.global.attrs, 
+      ((ops.href.attr & ops.target.attr) | ops.href.attr | ops.target.attr)   
+                  
+   ops.link = element link { ops.link.attlist }
+   ops.link.attlist &= ops.global.attrs & ops.href.attr & 
+      ops.rel.attr & ops.media.attr? & ops.hreflang.attr? &
+      ops.type.mime.attr? & ops.link.sizes.attr?        
+   ops.link.sizes.attr = attribute sizes { text } 
+        
+   ops.meta = element meta { ops.meta.attlist }
+   ops.meta.attlist &=
+     (ops.meta.name.attr & ops.meta.content.attr)
+     | (ops.meta.http-equiv.attr & ops.meta.content.attr)
+     | ops.charset.attr            
+   ops.meta.name.attr = attribute name { string }     
+   ops.meta.http-equiv.attr = attribute http-equiv { ops.meta.http-equiv.attr.content }
+   ops.meta.http-equiv.attr.content = ( 'content-language' | 'content-type' | 'default-style' | 'refresh' )  
+   ops.meta.content.attr = attribute content { string }  
+   
+   ops.title = element title { ops.title.attlist & ops.title.content }
+   ops.title.attlist &= ops.global.attrs
+   ops.title.content = datatype.text
+
+
+# TODO @sizes datatype
+# TODO SCH A base element, if it has an href attribute, must come before any other elements in the tree that have attributes defined as taking URLs, except the html element (its manifest attribute isn't affected by base elements).
+# TODO SCH There must not be more than one meta element with a charset attribute per document.

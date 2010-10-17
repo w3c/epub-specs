@@ -1,0 +1,80 @@
+
+
+   ops.flow.class |= ops.interactive.flow.class
+   ops.phrasing.class |= ops.interactive.phrasing.class
+   ops.metadata.class |= ops.interactive.metadata.class
+
+   ops.interactive.phrasing.class |= ops.command.class | ops.progress
+   ops.interactive.flow.class |= ops.menu | ops.details
+   ops.interactive.metadata.class |= ops.command.class
+
+   ops.command.class |= ops.command.command | ops.command.radio | ops.command.checkbox
+      
+    
+   ops.html.attlist &= ops.interactive.manifest.attr?
+   ops.global.attrs &= ops.interactive.global.attrs
+   
+   ops.interactive.global.attrs &= ops.interactive.contextmenu.attr?
+      & ops.interactive.contenteditable.attr? & ops.interactive.draggable.attr?
+	  & ops.interactive.hidden.attr? & ops.interactive.spellcheck.attr? 
+	  & ops.interactive.accesskey.attr? & ops.interactive.tabindex.attr?
+      
+   ops.progress = element progress { ops.progress.attlist & ops.progress.content }
+   ops.progress.attlist &= ops.phrasing.attrs & ops.progress.value.attr? & ops.progress.max.attr?
+   ops.progress.value.attr = attribute value { datatype.float.non-negative }
+   ops.progress.max.attr = attribute max { datatype.float.positive }
+   ops.progress.content = ops.phrasing.model
+		
+
+   ops.command.command = element command { ops.command.command.attlist }
+   ops.command.command.attlist &= ops.phrasing.attrs & ops.command.command.type.attr? & ops.common-command.attrs
+   ops.command.command.type.attr = attribute type { 'command' }
+   
+   ops.command.checked.attr = attribute checked { 'checked' | '' }
+   
+   ops.command.radio = element command { ops.command.radio.attlist }
+   ops.command.radio.attlist &= ops.phrasing.attrs & ( ops.command.radio.type.attr & ops.command.radio.radiogroup.attr  & ops.command.checked.attr? ) & ops.common-command.attrs
+   ops.command.radio.type.attr = attribute type { 'radio' }
+   ops.command.radio.radiogroup.attr = attribute radiogroup { string } #TODO
+      
+   ops.command.checkbox = element command { ops.command.checkbox.attlist }
+   ops.command.checkbox.attlist = ops.phrasing.attrs & ( ops.command.checkbox.type.attr & ops.command.checked.attr? ) & ops.common-command.attrs	
+   ops.command.checkbox.type.attr = attribute type { 'checkbox' }			
+   	
+   ops.common-command.attrs &= ops.command.label.attr? & ops.command.icon.attr? & ops.command.disabled.attr?
+   ops.command.label.attr = attribute label { string }
+   ops.command.icon.attr = attribute icon { datatype.html5.URL.spaces }
+   ops.command.disabled.attr = attribute disabled { 'disabled' |'' }
+			
+			
+   ops.menu = element menu { ops.menu.attlist & ops.menu.content }
+   ops.menu.attlist &= ops.global.attrs & ops.menu.type.attr? & ops.menu.label.attr?
+   ops.menu.type.attr = attribute type { 'toolbar' | 'context' }
+   ops.menu.label.attr = attribute label { string }
+   ops.menu.content = ( ops.mli* | ops.flow.model )
+	
+   ops.mli = element li { ops.mli.attlist & ops.mli.content }
+   ops.mli.attlist &= ops.global.attrs
+   ops.mli.content = ops.flow.model
+		
+   ops.details = element details { ops.details.attlist & ops.details.content }
+   ops.details.attlist &= ops.global.attrs & ops.details.open.attr?
+   ops.details.open.attr = attribute open { 'open' | '' }
+   ops.details.content = ops.summary?, ops.flow.model 
+		
+   ops.summary = element summary { ops.summary.attlist & ops.summary.content }
+   ops.summary.attlist &= ops.global.attrs
+   ops.summary.content = ops.phrasing.model		
+
+
+   ops.interactive.manifest.attr = attribute manifest { datatype.html5.URL.spaces }		
+
+   ops.interactive.contextmenu.attr = attribute contextmenu { datatype.IDREF }
+   ops.interactive.contenteditable.attr = attribute contenteditable { 'true' | 'false' | '' }		
+   ops.interactive.draggable.attr = attribute draggable { 'true' | 'false' }		
+   ops.interactive.hidden.attr = attribute hidden { 'hidden' | '' }
+   ops.interactive.spellcheck.attr = attribute spellcheck { 'true' | 'false' | '' }		
+   ops.interactive.accesskey.attr = attribute accesskey { datatype.html5.ordered.set.unique.tokens }
+   ops.interactive.tabindex.attr = attribute tabindex { datatype.integer }
+	
+	
