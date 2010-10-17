@@ -1,0 +1,39 @@
+#summary Implementation proposal for @ops:type (was: @role)
+
+This implementation proposal addresses 
+ * [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o TE.01], details:
+  * [TextContent#General_book_semantics book semantics]
+  * [TextContent#Magazine/Article_semantics article semantics (pim)]
+  * [DictionariesGlossaries attribute-axis enhancements in OPS dictionary grammar]
+  * [DictionariesGlossaries attribute-axis enhancements in inline glossaries]
+ * [TextContent#TE.01_1_Assure_lexical_predictability_when_addressing_TE.01_(A) TE.01_1]
+ * [ImplementationProposalTextAudioSync#The_role_attribute role in text+audio sync proposal]
+ * [Navigation#NAV_R04_Add_a_mechanism_for_machine-readable_metadata_in_NCX_(E) NAV_R04]
+
+== Introduction ==
+This proposal was originally (and as discussed in TextContent group) based on the notion of reusing the ARIA role attribute in OPS3, NCX and audio overlay, and extending its allowed values beyond those enumerated in the ARIA spec.
+
+However, this approach is, at least at the moment, made difficult because of the following reason:
+ * There is currently (as of 2010-10) [http://www.w3.org/Bugs/Public/show_bug.cgi?id=10914 an ongoing discussion] on who actually "owns" the definition of @role in the HTML5 spec. The outcome of this discussion is difficult to predict. The ownership outcome in its turn, will have an impact on whether our reuse of @role will be practically benign, or have adverse effects. The main possible adverse effect is that populating @role with other values than the ones "given" (in HTML5 and/or ARIA) will lead to unpredictable behaviors in processors and assistive technology that expect only the "given" values.
+
+Therefore, to steer clear from these potential problems, and to avoid skewing other specifications to suit our intended usage, this proposal is based on _creating a new attribute in the OPS namespace_. Depending on the final outcome of the W3C ownership discussion, and discussions with W3C PF re unpredictable behaviors in AT, this proposal _may_ be subject to a late-binding-namespace-change procedure (where the attribute in our namespace would be reverted to be the ARIA role attribute).
+
+== Proposal ==
+=== OPS ===
+ * Create an attribute `ops:type`. Contribute this attribute to the global attributes class of the OPS grammar. Let the attribute be optional.
+ * Let the definition of this attribute express the same usage intent as [http://www.tei-c.org/release/doc/tei-p5-doc/en/html/ref-att.typed.html @type in TEI] and [http://www.docbook.org/tdg/en/html/ch05.html#ex.changerole @role in Docbook].
+ * Let the value population mechanism of `ops:type` be the same as the value population mechanism of the `property` attribute on the [ImplementationProposalsMetadata package file `meta` element]. This means that the value of `ops:type` is a space separated list (1-n) of what RDFa calls CURIEs (lexically QNames).
+ * To facilitate implementation, ensure increased predictability by requiring that vocabularies that define values for `ops:type` specify where the value is intended to be used. This specification can range from "globally applicable" to "meaningful on a particular element only". (The ops:schema *may* enforce these usage context specifications, but that step is optional in this proposal.)
+ * to support extensibility, allow the `prefix` and/or `profile` attribute on the OPS root element (which one to use follows final decisions made on the matter in the Metadata group)
+ * Add specification prose that specifies that if a processor encounters a value in `ops:type` that it does not recognize, or if it encounters a value whose associated behaviors predict the behaviors of the carrying element, it must ignore that value; continuing the processing as if the value was not present.
+ * Build a vocabulary that initially contains the items in [TextContent#General_book_semantics Book Semantics]. This vocabulary need not be normatively referenced from the OPS specification. However, at least informative spec references should be provided to this vocabulary, and the PRISM "pim" vocabulary.
+
+=== Text+Audio Sync ===
+ * allow the `ops:type` attribute also on `par` and `seq` elements in the audio sync overlay. Specify that the attribute when used here is to act as a local proxy for the semantic of the OPS destination (i.e. the resource identified by the child `text` element `src` attribute). Let the attribute be optional, but specify destination semantics for which the attribute is strongly recommended to be present (aka, the typical skippable elements of DAISY).
+
+=== NCX ===
+ * allow the `ops:type` attribute also on `navList` and `navPoint` elements in NCX. Specify that the attribute when used here is to act as a local proxy for the semantic of the OPS destination(s) (i.e. the resource identified by the child `content` element(s) `src` attribute). Let the attribute be optional.
+
+
+
+(Note: the WD [http://www.w3.org/WAI/PF/role-attribute/ W3C PF Role Attribute] is much like this proposal, but is unfortunately not referenced from HTML5 or ARIA 1.)
