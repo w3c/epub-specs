@@ -636,7 +636,7 @@ ParNode.prototype.play = function()
 			return;
 		}
 	}
-	if (smil_player.play_position_changed_callback!= undefined) play_position_changed_callback(this.smil_elm.getAttribute("id"));
+	if (smil_player.play_position_changed_callback!= undefined) smil_player.play_position_changed_callback(this.smil_elm.getAttribute("id"));
 	
 	smil_player.add_currently_playing(this);
 	for (var i = 0; i < this.children.length; i++) {
