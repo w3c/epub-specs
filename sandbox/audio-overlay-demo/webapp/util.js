@@ -227,7 +227,12 @@ function remove_hash(frag)
 			return "";
 	}
 	else {
-		return frag;
+		var index = frag.indexOf('#');
+		if (index > 0 && frag.length > index+1) {
+			return frag.substring(index+1);
+		}
+		else
+			return frag;
 	}
 	
 }

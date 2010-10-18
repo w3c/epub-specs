@@ -199,6 +199,19 @@ SmilPlayer.prototype.pause = function()
 	else {
 		debug_trace("... but there is no audio renderer");
 	}
+	
+	
+	var text_renderer = Renderers.find_renderer_for_type("text");
+	if (text_renderer) {
+		if (text_renderer.currentAudioEventManager != null) {
+			if (!text_renderer.currentAudioEventManager.current_node.smil_elm.hasAttribute("clipEnd")) {
+				if (!text_renderer.currentAudioEventManager.current_node.html_elm.paused) {
+					alert("pause");
+					text_renderer.currentAudioEventManager.current_node.html_elm.pause();
+				}
+			}
+		}
+	}
 }
 // resume playback from a paused state, or start from the beginning
 SmilPlayer.prototype.resume = function()
@@ -320,6 +333,8 @@ SmilPlayer.prototype.add_ids_to_db = function(node)
 	
 	if (textid && smilid && textid.length > 0 && smilid.length > 0) {
 		this.db.insert_row(textid, smilid);
+		
+		debug_trace(textid + "--" + smilid);
 	}
 	
 }
@@ -760,18 +775,21 @@ HighlightTextRenderer.prototype.start_render = function(node)
 		
 		if (node.html_elm.currentTime != 0) {
 			try {
+				debug_trace("AUDIO/VIDEO set currentTime (0) was: " + node.html_elm.currentTime);
             	node.html_elm.currentTime = 0;
 		    } 
 			catch(e) {
-				debug_trace("Audio/Video set currentTime exception: " + e.message);
+				debug_trace("AUDIO/VIDEO set currentTime exception: " + e.message);
 		      function setThisTime() {
             	node.html_elm.currentTime = 0;
 		        node.html_elm.removeEventListener("canplay", setThisTime, true);
 		      }
 		      node.html_elm.addEventListener("canplay", setThisTime, true);
 		    }
+            node.html_elm.play();
 		}
         else {
+			debug_trace("AUDIO/VIDEO Play (0 ok)");
             node.html_elm.play();
 		}
 	}
@@ -785,8 +803,11 @@ HighlightTextRenderer.prototype.stop_render = function(node)
 	$(node.html_elm).toggleClass('smilActive', false);
 	
 	if (node.html_elm.nodeName == "VIDEO" || node.html_elm.nodeName == "AUDIO") {
-		if (this.currentAudioEventManager != null) this.currentAudioEventManager.remove_listeners();
-		node.html_elm.pause();
+		if (this.currentAudioEventManager != null) {
+			this.currentAudioEventManager.remove_listeners();
+		}
+	    node.html_elm.pause();
+	
 		//node.html_elm.currentTime = 0;
 	}
 }
