@@ -2,6 +2,7 @@
 function SmilPlayer()
 {
 	this.rate = 1;
+	this.volume = 0.6;
 	
 	// the root of the smil tree
 	this.smil_root = null;
@@ -460,6 +461,7 @@ SmilPlayer.prototype.set_rate = function(rate)
 SmilPlayer.prototype.set_volume = function(volume)
 {
 	debug_trace("SmilPlayer set_volume(" + volume.toString() + ")");
+	this.volume = volume;
 	var audio_renderer = Renderers.find_renderer_for_type("audio");
 	var elm = this.find_currently_playing_by_type("audio");
 	audio_renderer.set_volume(elm, volume);
@@ -545,7 +547,7 @@ SeqNode.prototype.play = function()
 			return;
 		}
 	}
-	if (smil_player.play_position_changed_callback!= undefined) smil_player.play_position_changed_callback(this.smil_elm.getAttribute("id"));
+	if (smil_player.play_position_changed_callback != undefined) smil_player.play_position_changed_callback(this.smil_elm.getAttribute("id"));
 	
 	smil_player.add_currently_playing(this);
 	if (this.children.length > 0) {
@@ -632,7 +634,7 @@ ParNode.prototype.play = function()
 			return;
 		}
 	}
-	if (smil_player.play_position_changed_callback!= undefined) smil_player.play_position_changed_callback(this.smil_elm.getAttribute("id"));
+	if (smil_player.play_position_changed_callback != undefined) smil_player.play_position_changed_callback(this.smil_elm.getAttribute("id"));
 	
 	smil_player.add_currently_playing(this);
 	for (var i = 0; i < this.children.length; i++) {
@@ -719,6 +721,7 @@ function HighlightTextRenderer()
 {
     //this.saved_bgcolor = "";
     this.supported = "text";
+	this.currentAudioEventManager = null;
 }
 HighlightTextRenderer.prototype = new Renderer();
 // returns whether or not the given node can be rendered by this renderer
@@ -751,14 +754,25 @@ HighlightTextRenderer.prototype.start_render = function(node)
 	if (node.html_elm.nodeName == "VIDEO" || node.html_elm.nodeName == "AUDIO") {
 		
 		node.html_elm.defaultPlaybackRate = smil_player.rate;
-		// node.html_elm.volume = this.volume;
-			
-		AudioEventManager.add_listeners(node);
+		node.html_elm.volume = smil_player.volume;
+		
+		this.currentAudioEventManager = new AudioEventManager(node);
+		
 		if (node.html_elm.currentTime != 0) {
-			node.html_elm.currentTime = 0;
+			try {
+            	node.html_elm.currentTime = 0;
+		    } 
+			catch(e) {
+				debug_trace("Audio/Video set currentTime exception: " + e.message);
+		      function setThisTime() {
+            	node.html_elm.currentTime = 0;
+		        node.html_elm.removeEventListener("canplay", setThisTime, true);
+		      }
+		      node.html_elm.addEventListener("canplay", setThisTime, true);
+		    }
 		}
-		else {
-			node.html_elm.play();
+        else {
+            node.html_elm.play();
 		}
 	}
 }
@@ -771,6 +785,7 @@ HighlightTextRenderer.prototype.stop_render = function(node)
 	$(node.html_elm).toggleClass('smilActive', false);
 	
 	if (node.html_elm.nodeName == "VIDEO" || node.html_elm.nodeName == "AUDIO") {
+		if (this.currentAudioEventManager != null) this.currentAudioEventManager.remove_listeners();
 		node.html_elm.pause();
 		//node.html_elm.currentTime = 0;
 	}
@@ -796,6 +811,7 @@ function AudioRenderer()
 	// keep a list of audio media html elements (one entry per audio file) so we don't re-create them
 	this.audio_media = [];
 	this.event_listeners = 0;
+	this.currentAudioEventManager = null;
 }
 AudioRenderer.prototype = new Renderer();
 // whether or not the given node can by rendered
@@ -817,12 +833,12 @@ AudioRenderer.prototype.start_render = function(node)
 		node.html_elm.volume = this.volume;
         debug_trace("AudioRenderer start: " + node.to_string());
 
-       AudioEventManager.add_listeners(node);
+		this.currentAudioEventManager = new AudioEventManager(node);
 		
         var cb = parseFloat(node.smil_elm.getAttribute("clipBegin"));
-        if (cb != node.html_elm.currentTime) {
-
+        if (node.html_elm.currentTime != cb) {
 			try {
+				debug_trace("Audio set currentTime (clipBegin): " + cb + " - was: " + node.html_elm.currentTime);
             	node.html_elm.currentTime = cb;
 		    } 
 			catch(e) {
@@ -833,10 +849,12 @@ AudioRenderer.prototype.start_render = function(node)
 		      }
 		      node.html_elm.addEventListener("canplay", setThisTime, true);
 		    }
-		}
-        else
             node.html_elm.play();
-        
+		}
+        else {
+			debug_trace("Audio Play (clipBegin ok)");
+            node.html_elm.play();
+		}    
     }
     catch(e) {
 		debug_error(e.message);
@@ -847,6 +865,9 @@ AudioRenderer.prototype.start_render = function(node)
 AudioRenderer.prototype.stop_render = function(node)
 {
 	debug_trace("AudioRenderer stopped " + node.to_string());
+	if (this.currentAudioEventManager != null) {
+		this.currentAudioEventManager.remove_listeners();
+	}
     node.html_elm.pause();
 }
 // create an html element to represent this audio media, or find one in our array of already-created elements
@@ -962,11 +983,21 @@ Renderers.find_renderer_for_type = function(type)
 Renderers.renderers.push(new HighlightTextRenderer());
 Renderers.renderers.push(new AudioRenderer());
 
-// audio event helper
-// it only manages two events at once
-function AudioEventManager(){}
-AudioEventManager.current_node = null;
-AudioEventManager.add_listeners = function(node)
+
+
+
+function AudioEventManager(node) {
+	this.current_node = node;
+	
+	this.seeked_callback = null;
+	this.paused_callback = null;
+	
+	this.timeupdate_callback = null;
+	this.ended_callback = null;
+	
+	this.add_listeners();
+}
+AudioEventManager.prototype.add_listeners = function()
 {
 	// if (!(
 	// 		node.smil_elm.nodeName == "audio" || (node.html_elm.nodeName == "VIDEO" || node.html_elm.nodeName == "AUDIO")
@@ -974,61 +1005,81 @@ AudioEventManager.add_listeners = function(node)
 	// 		debug_error("cannot add listener for non-audio/video nodes!");
 	// 		return;
 	// 	}
-	AudioEventManager.current_node = node;
 	
-	debug_trace("AudioEventManager adding seeked listener for " + node.to_string());
-	node.html_elm.addEventListener("seeked", AudioEventManager.seeked_callback, true);
+	debug_trace("AudioEventManager adding seeked listener for " + this.current_node.to_string());
 	
-	if (AudioEventManager.current_node.smil_elm.hasAttribute("clipEnd")) {
-		debug_trace("AudioEventManager adding timeupdate listener for " + node.to_string());
-		node.html_elm.addEventListener("timeupdate", AudioEventManager.timeupdate_callback, false);
+	var thiz = this;
+	
+	this.seeked_callback = function() {
+		debug_trace("Audio renderer seeked " + thiz.current_node.to_string());
+//		thiz.current_node.html_elm.play();
+	};
+	this.current_node.html_elm.addEventListener("seeked", this.seeked_callback, false);
+	
+	this.paused_callback = function() {
+		debug_trace("Audio renderer paused " + thiz.current_node.to_string());
+		//thiz.remove_listeners();
+	};
+	this.current_node.html_elm.addEventListener("pause", this.paused_callback, false);
+	
+	if (this.current_node.smil_elm.hasAttribute("clipEnd")) {
+		debug_trace("AudioEventManager adding timeupdate listener for " + this.current_node.to_string());
+		
+		this.timeupdate_callback = function() {
+			var ce = parseFloat(thiz.current_node.smil_elm.getAttribute("clipEnd"));
+
+			if(thiz.current_node.html_elm.currentTime >= ce) {
+				debug_trace("Audio renderer done (" + thiz.current_node.html_elm.currentTime + " >= " + ce + ")" + thiz.current_node.to_string());
+
+				thiz.remove_listeners();
+
+			    thiz.current_node.html_elm.pause();
+			    thiz.current_node.notify_done();
+			}
+		};
+		this.current_node.html_elm.addEventListener("timeupdate", this.timeupdate_callback, false);
 	}
 	else {
-		debug_trace("AudioEventManager adding ended listener for " + node.to_string());
-		node.html_elm.addEventListener("ended", AudioEventManager.ended_callback, false);
+		debug_trace("AudioEventManager adding ended listener for " + this.current_node.to_string());
+
+		this.ended_callback = function() {
+			debug_trace("Audio renderer ended " + thiz.current_node.to_string());
+
+			thiz.remove_listeners();
+
+		    thiz.current_node.html_elm.pause();
+		    thiz.current_node.notify_done();
+		};
+		this.current_node.html_elm.addEventListener("ended", this.ended_callback, false);
 	}	
 }
-AudioEventManager.cleanup = function()
+AudioEventManager.prototype.remove_listeners = function()
 {
-	if (AudioEventManager.current_node == null
-		|| AudioEventManager.current_node.html_element == null) return;
+	if (this.seeked_callback != null) {
+		debug_trace("AudioEventManager remove listener for seeked");
 	
-	AudioEventManager.current_node.html_element.removeEventListener("seeked", AudioEventManager.seeked_callback, true);
-	
-	if (AudioEventManager.current_node.smil_elm.hasAttribute("clipEnd")) {
-		AudioEventManager.current_node.html_element.removeEventListener("timeupdate", AudioEventManager.timeupdate_callback, false);
-	}
-	else {
-		AudioEventManager.current_node.html_element.removeEventListener("ended", AudioEventManager.timeupdate_callback, false);
+		this.current_node.html_elm.removeEventListener("seeked", this.seeked_callback, false);
+		this.seeked_callback = null;
 	}
 	
-	AudioEventManager.current_node = null;
-}
-AudioEventManager.timeupdate_callback = function()
-{
-	var ce = parseFloat(AudioEventManager.current_node.smil_elm.getAttribute("clipEnd"));
-	
-	if(AudioEventManager.current_node.html_elm.currentTime >= ce) {
-		debug_trace("Audio renderer done " +  AudioEventManager.current_node.to_string());
-
-	    AudioEventManager.current_node.html_elm.pause();
-	    AudioEventManager.current_node.notify_done();
-	
-		AudioEventManager.cleanup();
+	if (this.paused_callback != null) {
+		debug_trace("AudioEventManager remove listener for paused");
+		
+		this.current_node.html_elm.removeEventListener("pause", this.paused_callback, false);
+		this.paused_callback = null;
 	}
-}
-
-AudioEventManager.seeked_callback = function()
-{
-	debug_trace("Audio renderer seeked " + AudioEventManager.current_node.to_string());
-	AudioEventManager.current_node.html_elm.play();
-}
-
-AudioEventManager.ended_callback = function()
-{
-	debug_trace("Audio renderer ended " + AudioEventManager.current_node.to_string());
-	var node = AudioEventManager.current_node;
-	AudioEventManager.cleanup();
-    node.html_elm.pause();
-    node.notify_done();
+	
+	if (this.timeupdate_callback != null) {
+		debug_trace("AudioEventManager remove listener for timeupdate");
+		
+		this.current_node.html_elm.removeEventListener("timeupdate", this.timeupdate_callback, false);
+		this.timeupdate_callback = null;
+	}
+	
+	if (this.ended_callback != null) {
+		debug_trace("AudioEventManager remove listener for ended");
+		
+		this.current_node.html_elm.removeEventListener("ended", this.ended_callback, false);
+		this.ended_callback = null;
+	}
 }
