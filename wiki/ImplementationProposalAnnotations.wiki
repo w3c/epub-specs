@@ -51,25 +51,23 @@ In some cases, an annotation may require composing several basic media object (a
 
 An *Annotation Target* defines the portion of source content within an *EPUB Publication* that the *Annotation Content* refers to.
 A given Annotation Content can have several Annotation Targets (e.g. a "fix typo" marker applied to several items in the targeted document).
+A given Annotation Target may be used by several distinct Annotation Content (i.e. several annotations for exactly the same location in the target document).
+Annotation Targets may overlap in the target document, so Reading Systems should ensure that a user-interface is available for the reader to visualize annotations in a convenient way.
 
-In the draft specification below, a item marked with "FAIL" means that the *Annotation Target* cannot be fully resolved, resulting in associated annotation(s) failing to be processed / rendered by User Agents (they get skipped / ignored).
+In the draft specification below, any item marked with "FAIL" means that the *Annotation Target* cannot be fully resolved, resulting in associated annotation(s) failing to be processed / rendered by User Agents (i.e. they get skipped / ignored by Reading Systems).
 
- * Publication ID (mandatory): a unique identifier string, referencing an existing EPUB publication FAIL: if the given UID doesn't resolve to a known and retrievable publication
- * Document (mandatory): a unique identifier pointing to a "text" file (XML document / HTML5 ?) within the context publication, i.e. a relative path within internal EPUB folder structure. FAIL: if the given path doesn't resolve to a valid file from the OCF manifest's spine
- * Point
-  * ELEMENT (mandatory): XPath expression to reference a single element inside the target XML document (or HTML5, etc.). FAIL: if XPath expression resolves to anything other than a single XML element. FAIL: if XPath expression doesn't correspond to anything in the target document
-  * CHAR OFFSET: a positive (or zero) integer to define a Unicode character offset within the text contained in the referenced base ELEMENT. FAIL: if the base ELEMENT doesn't have any descendant XML TEXT node(s). FAIL: if given integer is greater than the number of Unicode characters in the context text string, which is made of the concatenation of all descendant XML TEXT nodes in lexical document order (depth-first tree traversal)
-  * TIME OFFSET: a positive time offset (using the SMIL Timing notation) relative to the beginning of the referenced media element (audio, video). FAIL: if the referenced base ELEMENT is not one of the valid media elements: video, audio. FAIL: if the given time offset is greater than the duration of the referenced media asset
- * Range: defines an ordered combination of 2 Points [P1, P2]. FAIL: if P2 before P1.
+An Annotation Target is defined as follows: *Publication ID* AND *Document ID* AND (*Point* XOR *Range*) AND *Signature*, where Point is *Element* AND-optional (*Char-Offset* XOR *Time-Offset*), where Range is (see below), where Signature is (see below).
 
-A Point P1 is said to be situated "before" a Point P2 if:
- * ELEMENT of P1 is before ELEMENT of P2 in the lexical XML document order (depth-first tree traversal)
- * CHAR OFFSET of P1 is less than (but not equal) to CHAR OFFSET of P2
- * TIME OFFSET of P1 is less than (but not equal) to TIME OFFSET of P2
-
-The first Point P1 of a Range must be situated "before" the second Point P2, according to the definition of "before" specified above. A Range containing 2 identical Points should effectively resolve to a single Point.
-
- * Checksum / Signature Hash (mandatory): a string of characters in base64 encoding representing the "signature" of the annotation target, in terms of its referenced content and of neighboring content (TO BE DEFINED FORMALLY, SEE DEMO)
+ * *Publication ID*: a unique identifier string, referencing an existing EPUB publication FAIL: if the given UID doesn't resolve to a known and retrievable publication
+ * *Document ID*: a unique identifier pointing to a "text" file (XML document / HTML5 ?) within the context publication, i.e. a relative path within internal EPUB folder structure. FAIL: if the given path doesn't resolve to a valid file from the OCF manifest's spine
+ * *Element*: XPath expression to reference a single element inside the target XML document (or HTML5, etc.). FAIL: if XPath expression resolves to anything other than a single XML element. FAIL: if XPath expression doesn't correspond to anything in the target document
+ * *Char-Offset*: a positive (or zero) integer to define a Unicode character offset within the text contained in the referenced base ELEMENT. FAIL: if the base ELEMENT doesn't have any descendant XML TEXT node(s). FAIL: if given integer is greater than the number of Unicode characters in the context text string, which is made of the concatenation of all descendant XML TEXT nodes in lexical document order (depth-first tree traversal)
+ * *Time Offset*: a positive time offset (using the SMIL Timing notation) relative to the beginning of the referenced media element (audio, video). FAIL: if the referenced base ELEMENT is not one of the valid media elements: video, audio. FAIL: if the given time offset is greater than the duration of the referenced media asset
+ * *Range*: defines an ordered combination of 2 Points ((P1, P2)). A Range containing 2 identical Points should effectively resolve to a single Point. FAIL: if P2 before P1. A Point P1 is said to be situated "before" a Point P2 if:
+  * *Element* of P1 is before *Element* of P2 in the lexical XML document order (depth-first tree traversal)
+  * *Char-Offset* of P1 is less than (but not equal) to *Char-Offset* of P2
+  * *Time-Offset* of P1 is less than (but not equal) to *Time-Offset* of P2
+ * *Signature*: a checksum / hash (string of characters encoded in base64) representing the unique "signature" of the annotation target, in terms of its referenced content and of neighboring content (TO BE DEFINED, Will demo)
 
 Note that the element() and xpointer() schemes of the W3C XPointer recommendation (and draft specification, respectively) are not recommended for use in this implementation proposal. Neither is the non-XPointer xpath1() scheme which is defined in a non-normative manner.
 
