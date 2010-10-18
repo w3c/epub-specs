@@ -55,20 +55,28 @@ The SMIL document links an audio rendition of the document with the text content
 The basic concept of how to use SMIL is illustrated by this example:
 
 {{{
-<seq>
-	<par>
-	  <text src="chapter1.html#id1"/>
-	  <audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
-	</par>
-	<par>
-	  <text src="chapter1.html#id2"/>
-	  <audio src="aud.mp3" clipBegin="0:32" clipEnd="1:00"/>
-	</par>
-	...
-</seq>
+<smil>
+	<head>
+              <meta name="dc:title" content="Sample"/>
+        </head>
+	<body>
+		<par>
+			<text src="chapter1.html#id1"/>
+			<audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
+		</par>
+		<par>
+		        <text src="chapter1.html#id3"/>
+		        <audio src="aud.mp3" clipBegin="1:00" clipEnd="1:15"/>
+		</par>
+		<par>
+			<text src="chapter1.html#id4"/>
+			<audio src="aud.mp3" clipBegin="1:15" clipEnd="1:30"/>
+		</par>
+	</body>
+</smil>
 }}}
 
-Where *seq* represents a sequence of phrases, and each phrase is represented by parallel (*par*) groupings of text and audio chunks.  
+Where *body* represents the document's series of phrases, and each phrase is represented by parallel (*par*) groupings of text and audio chunks.  
 
 In order to keep complexity to a minimum, EPUB will use a minimal subset of SMIL (see [#SMIL_details SMIL details] below). There will be a dedicated schema to define the EPUB SMIL document.
 
@@ -91,17 +99,18 @@ The text reference could also be expressed using XPath. In this sample code we'r
 
 
 {{{
-<seq>
+<body>
 	<par>
-	  <text src="chapter1.html#xpath1(/html/body/section[position()=2]/p[position()=3]/span[position()=1])"/>
-	  <audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
+		<text src="chapter1.html#xpath1(/html/body/section[position()=2]/p[position()=3]/span[position()=1])"/>
+		<audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
 	</par>
 	<par>
-	  <text src="chapter1.html#element(/1/1/2/3/2)"/> <!-- XPath equivalent: /*[1]/*[1]/*[2]/*[3]/*[2] -->
-	  <audio src="aud.mp3" clipBegin="0:32" clipEnd="1:00"/>
+		<text src="chapter1.html#element(/1/1/2/3/2)"/>
+		<!-- XPath equivalent: /*[1]/*[1]/*[2]/*[3]/*[2] -->
+		<audio src="aud.mp3" clipBegin="0:32" clipEnd="1:00"/>
 	</par>
 	...
-</seq>
+</body>
 }}}
 
 === Styling ===
@@ -140,24 +149,23 @@ This is a forwards-compatible addition: 2.0 reading systems can safely ignore th
 
 While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  So, wherever the text document uses *role*, the SMIL document does the same (see [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o semantic extensibility in text content]).  This approach provides an easy global switch to control rendering.
 {{{
-<seq>
-        <par>
-          <text src="chapter1.html#id1"/>
-          <audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
-        </par>
-        <seq role="sidebar">
-                <par>
-                  <text src="chapter1.html#id3"/>
-                  <audio src="aud.mp3" clipBegin="1:00" clipEnd="1:15"/>
-                </par>
-                <par>
-                  <text src="chapter1.html#id4"/>
-                  <audio src="aud.mp3" clipBegin="1:15" clipEnd="1:30"/>
-                </par>
-        </seq>
-        
-        ...
-</seq>
+<body>
+	<par>
+		<text src="chapter1.html#id1"/>
+		<audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
+	</par>
+	<seq textref="doc.html#the_sidebar" role="sidebar">
+		<par>
+			<text src="chapter1.html#id3"/>
+			<audio src="aud.mp3" clipBegin="1:00" clipEnd="1:15"/>
+		</par>
+		<par>
+			<text src="chapter1.html#id4"/>
+			<audio src="aud.mp3" clipBegin="1:15" clipEnd="1:30"/>
+		</par>
+	</seq>
+         ...
+</body>
 }}}
 
 Note also how the *seq* representing a sidebar is nested inside the main *seq*.  This mimics the structure of the text document.
@@ -166,16 +174,22 @@ Note also how the *seq* representing a sidebar is nested inside the main *seq*. 
 
 An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
 
-In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced an attribute called *textref* on the *seq* element.   It aligns SMIL *seq*s with text elements in the text document.  Instead of IDs, XPath could also be used. 
-
-In order to reduce the overall SMIL file size, an attribute *textdoc* has been introduced.  It lives on the root *smil* element and contains the name of the text document.  All *id*s and *textref*s in the SMIL document should be resolved with respect to the value of *textdoc*. 
+In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced an attribute called *textref* on the *seq* element.   It aligns SMIL *seq* elements with text elements in the text document.  Instead of IDs, XPath could also be used. 
 
 == SMIL details ==
 This proposal recommends a minimal subset of SMIL including basic timing constructs and media objects; excluding complex timing, events, layout, animation, etc.  About the SMIL elements and attributes used:
 
 === smil element: document root element ===
- * attributes: textdoc
- * child elements: seq
+ * attributes: 
+ * child elements: one head, one body
+
+=== head element: document head ===
+ * attributes: none
+ * child elements: meta (optional)
+
+=== body element: document body ===
+ * attributes: none
+ * child elements: seq, par
 
 === seq element: a sequence of media nodes ===
  * attributes: role, id, textref
@@ -183,7 +197,7 @@ This proposal recommends a minimal subset of SMIL including basic timing constru
 
 === par element: a parallel set of media nodes ===
  * attributes: role, id
- * child elements: text, audio (one of each allowed)
+ * child elements: one text, one audio 
 	
 === text element: references text media ===
  * attributes: src
@@ -195,3 +209,6 @@ This proposal recommends a minimal subset of SMIL including basic timing constru
 
 == Guidelines ==
  * IDs are not recommended to be on media elements because they shouldn't be directly linked to.  The parent time container should be linked to instead.  At the moment, the smilref layer is the only thing that references SMIL directly, but of course there is a chance that other uses will come up.
+ * There is exactly 1 SMIL file per HTML file
+ * The text and audio inside a par are considered equivalent to each other content-wise
+ 
