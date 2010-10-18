@@ -600,6 +600,8 @@ SeqNode.prototype.play_next = function(current)
     else if (idx != -1 && idx < idx_last) {
         idx++;
 		debug_trace("SeqNode.play_next(), this = " + this.to_string() + " starting playback on child = " + this.children[idx].to_string());
+		smil_player.add_currently_playing(this);
+		
         this.children[idx].play();
     }
     else {	
