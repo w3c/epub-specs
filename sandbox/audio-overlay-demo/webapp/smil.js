@@ -206,7 +206,7 @@ SmilPlayer.prototype.pause = function()
 		if (text_renderer.currentAudioEventManager != null) {
 			if (!text_renderer.currentAudioEventManager.current_node.smil_elm.hasAttribute("clipEnd")) {
 				if (!text_renderer.currentAudioEventManager.current_node.html_elm.paused) {
-					alert("pause");
+					debug_trace("SmilPlayer pause AUDIO/VIDEO");
 					text_renderer.currentAudioEventManager.current_node.html_elm.pause();
 				}
 			}
@@ -232,6 +232,18 @@ SmilPlayer.prototype.resume = function()
 			var elm = this.find_currently_playing_by_type("audio");
 			if (elm) {
 				audio_renderer.resume(elm);
+			}
+		}
+		
+		var text_renderer = Renderers.find_renderer_for_type("text");
+		if (text_renderer) {
+			if (text_renderer.currentAudioEventManager != null) {
+				if (!text_renderer.currentAudioEventManager.current_node.smil_elm.hasAttribute("clipEnd")) {
+					if (text_renderer.currentAudioEventManager.current_node.html_elm.paused) {
+						debug_trace("SmilPlayer resume AUDIO/VIDEO");
+						text_renderer.currentAudioEventManager.current_node.html_elm.play();
+					}
+				}
 			}
 		}
 	}
