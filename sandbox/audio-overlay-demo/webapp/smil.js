@@ -15,8 +15,6 @@ function SmilPlayer()
 	this.db = new DB();	
 	// a callback for play events
 	this.play_position_changed_callback = null;
-	// the base text document
-	this.textdoc = "";
 	// a convenience for collecting IDs while parsing
 	this.temp_par_node = null;
 	// the address of the current file
@@ -76,12 +74,11 @@ SmilPlayer.prototype.load_smil = function(filepath)
 	        xml_http.send(null);
 	        xml_doc = xml_http.responseXML.documentElement;
 		}
-		this.textdoc = xml_doc.getAttribute("textdoc");
 		
-        // expected: everything should be wrapped up in a seq
-	    var main_seq = xml_doc.getElementsByTagName("seq")[0];
+        // the body element is the container for the top-level sequence.  
+	    var main_seq = xml_doc.getElementsByTagName("body")[0];
 	    if (!main_seq) {
-	        debug_error("No main seq element found in SMIL")
+	        debug_error("No body element found in SMIL")
 	        return;
 	    }
 		this.db.create_db();
@@ -270,8 +267,7 @@ SmilPlayer.prototype.resolve_media = function(node)
 {
     if (!node.html_elm) {
 		var src = node.smil_elm.getAttribute("src");
-		src = resolve_frag(src, smil_player.textdoc);
-        if (src != null && url_has_target(src) && this.book_doc)
+		if (src != null && url_has_target(src) && this.book_doc)
         	node.html_elm = this.book_doc.getElementById(url_get_target(src));	
 	}
     if (!node.html_elm) 
@@ -280,7 +276,7 @@ SmilPlayer.prototype.resolve_media = function(node)
 // make smil nodes
 SmilPlayer.prototype.smil_node_factory = function(elm)
 {
-    if (elm.nodeName == "seq") {
+    if (elm.nodeName == "seq" || elm.nodeName == "body") {
         var node = new SeqNode();
         node.smil_elm = elm;
 		this.add_ids_to_db(node);
@@ -313,7 +309,7 @@ SmilPlayer.prototype.add_ids_to_db = function(node)
 	var textid = "";
 	var smilid = "";
 	if (node.smil_elm.nodeName == "seq") {
-		textid = remove_hash(node.smil_elm.getAttribute("textref"));
+		textid = remove_hash(node.smil_elm.getAttribute("ops:textref"));
 		smilid = node.smil_elm.getAttribute("id");
 	}
 	else if (node.smil_elm.nodeName == "text") {
@@ -540,8 +536,8 @@ SeqNode.prototype = new TimeContainerNode();
 SeqNode.prototype.play = function()
 {
 	// first, check if this node should be skipped
-	if (this.smil_elm.getAttribute("role") != null) {
-		var role = this.smil_elm.getAttribute("role");
+	if (this.smil_elm.getAttribute("ops:role") != null) {
+		var role = this.smil_elm.getAttribute("ops:role");
 		var should_skip = $.inArray(role, smil_player.skip_roles);
 		if (should_skip != -1) {
 			debug_trace("skipping node " + this.to_string());
@@ -627,8 +623,8 @@ ParNode.prototype = new TimeContainerNode();
 ParNode.prototype.play = function()
 {
 	// first, check if this node should be skipped
-	if (this.smil_elm.getAttribute("role") != null) {
-		var role = this.smil_elm.getAttribute("role");
+	if (this.smil_elm.getAttribute("ops:role") != null) {
+		var role = this.smil_elm.getAttribute("ops:role");
 		var should_skip = $.inArray(role, smil_player.skip_roles);
 		if (should_skip != -1) {
 			debug_trace("skipping node " + this.to_string());
@@ -784,8 +780,7 @@ HighlightTextRenderer.prototype.resolve_media = function(node)
 {
     if (!node.html_elm) {
 		var src = node.smil_elm.getAttribute("src");
-		src = resolve_frag(src, smil_player.textdoc);
-        if (src != null && url_has_target(src) && smil_player.book_doc)
+		if (src != null && url_has_target(src) && smil_player.book_doc)
         	node.html_elm = smil_player.book_doc.getElementById(url_get_target(src));	
 	}
     if (!node.html_elm) 
