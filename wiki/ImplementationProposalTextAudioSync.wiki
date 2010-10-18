@@ -1,21 +1,31 @@
 #summary Implementation proposal for text/audio synchronization
 = Proposal for synchronized text and audio in EPUB =
 
-Contributors
+= Summary of additions to EPUB standard =
+
+Please see [Additions_to_the_standard] for details.
+
+ # Add *audio* attribute to the OPF definition for the *itemref* element
+ # Define a schema for the minimal SMIL subset ([#SMIL_details described here])
+ # Write prose describing reading system behavior and the relationship between SMIL and other EPUB files
+
+
+= Proposal = 
+<wiki:toc max_depth="4" />
+
+==  Contributors == 
  * Marisa !DeMeglio
  * Daniel Weck
  * Chow King Wai
  * Alex Zu
 
-<wiki:toc max_depth="4" />
-
-= Introduction =
+== Introduction ==
 
 Books with synchronized text and audio can be found today in popular reading software, educational tools, and in formats for persons with print disabilities (often required by law). This is a proposal of how to add text/audio synchronization to EPUB (based on recorded human narration, not on live TTS Text-To-Speech rendition). It is designed as a transparent overlay to the current EPUB text file format and it will not break compatibility with text-only reading systems. 
 
 During the EPUB requirements gathering phase, several requirements for the inclusion of synchronized text and audio were identified.  
 
-== Requirements met ==
+=== Requirements met ===
 
 This proposal meets the following requirements and enables the features in the included examples.
 
@@ -26,7 +36,7 @@ This proposal meets the following requirements and enables the features in the i
  * [RichMediaAndInteractivity#RM-22._(C)_Using_audio_selectively RM-22: Using audio selectively] 
  * [RichMediaAndInteractivity#RM-24._(D)_Runtime_audio_options RM-24: Runtime audio options ]
 
-=== Examples of features associated with these requirements === 
+==== Examples of features associated with these requirements ====
  
  # Audio presentation synchronized with text highlighting: 
   * [http://www.youtube.com/watch?v=9CtsM2K2iK0 See a video of a DAISY book reader] 
@@ -34,29 +44,60 @@ This proposal meets the following requirements and enables the features in the i
  # Allow users to turn on or off specific classes of items such as page number announcements, footnotes, producer notes, and asides such as sidebars.  
   * [http://www.youtube.com/watch?v=QMcP-0L021A See a video of a DAISY book reader demonstrating this feature] 
 
-
-
-== Requirements not met ==
+=== Requirements not met ===
 This proposal does not meet these requirements, but could be extended to do so:
 
  * [RichMediaAndInteractivity#RM-13._(C)_Parallel_audio_clips RM-13: Parallel audio clips]
  * [RichMediaAndInteractivity#RM-14._(A)_Triggers RM-14: Triggers]
  * [RichMediaAndInteractivity#RM-25._(C)_Multiple_granularities RM-25: Multiple granularities]
 
-= Additions to the standard =
 
-The proposed additions to the standard are as follows, regarding SMIL, OPF, and the relationship to the text document.  Please note that there are no changes required to the NCX.
+== A complete example ==
+Sample content for what is described here and demo implementation are available from the epub-revision subversion repository:
+http://code.google.com/p/epub-revision/source/browse/#svn/sandbox/audio-overlay-demo
 
-== The SMIL document ==
+== Additions to the standard ==
+
+The proposed additions to the standard are as follows:
+
+ # [#Add_audio_attribute_to_the_OPF_file Add an *audio* attribute to the OPF file]
+ # [#Define_the_subset_of_SMIL Define the subset of SMIL]
+ # [#Describe_the_relationship_between_the_SMIL_file_and_the_text_doc Describe the relationship between the SMIL file and the text document]
+
+Please note that there are no changes required to the NCX.
+
+=== Add *audio* attribute to the OPF file ===
+In the OPF file, specify that there is an audio overlay available and specify which text file it belongs to.
+
+Add SMIL files to the manifest.
+{{{
+<manifest>
+  <item id="ch1" href="chapter1.html" media-type=application/xhtml+xml"/>
+  <item id="ch1_smil"href="chapter1.smil" media-type="application/xml"/>
+  ...
+</manifest>
+}}}
+
+Add the *audio* attribute to the OPF *itemref* element and reference the manifest item containing the SMIL file resource.
+{{{
+<spine>
+  <itemref idref="ch1" audio="ch1_smil"/>
+  ...
+</spine>
+}}}
+
+This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *audio* attribute and process documents in their normal fashion.
+
+=== Define the subset of SMIL ===
 
 The SMIL document links an audio rendition of the document with the text content.
 The basic concept of how to use SMIL is illustrated by this example:
 
 {{{
 <smil>
-	<head>
-              <meta name="dc:title" content="Sample"/>
-        </head>
+    <head>
+    	<meta name="dc:title" content="Sample"/>
+    </head>
 	<body>
 		<par>
 			<text src="chapter1.html#id1"/>
@@ -80,9 +121,54 @@ In order to keep complexity to a minimum, EPUB will use a minimal subset of SMIL
 
 The relationship with the overall EPUB fileset is that there is one SMIL file per spine OPS item.
 
-== The text document ==
+==== SMIL elements and attributes ====
+This proposal recommends a minimal subset of SMIL including basic timing constructs and media objects; excluding complex timing, events, layout, animation, etc.  About the SMIL elements and attributes used:
 
-=== Using IDs as a reference mechanism  ===
+===== smil element: document root element =====
+ * attributes: 
+ * child elements: one head, one body
+
+===== head element: document head =====
+ * attributes: none
+ * child elements: meta (optional)
+
+===== body element: document body =====
+ * attributes: none
+ * child elements: seq, par
+
+===== seq element: a sequence of media nodes =====
+ * attributes: role, id, ops:textref
+ * child elements: seq, par
+
+===== par element: a parallel set of media nodes =====
+ * attributes: role, id
+ * child elements: one text, one audio 
+	
+===== text element: references text media =====
+ * attributes: src
+ * child elements: none
+	
+===== audio element: references audio media =====
+ * attributes: src, clipBegin, clipEnd
+ * child elements: none
+
+==== Player convenience and the ops:textref attribute ====
+
+An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
+
+In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced an attribute called *ops:textref* on the *seq* element.   It aligns SMIL *seq* elements with elements in the text document.  Instead of IDs, XPath could also be used. 
+
+==== Guidelines ====
+ * IDs are not recommended to be on media elements because they shouldn't be directly linked to.  The parent time container should be linked to instead.  At the moment, the smilref layer is the only thing that references SMIL directly, but of course there is a chance that other uses will come up.
+ * There is exactly 1 SMIL file per HTML file
+ * The text and audio inside a par are considered equivalent to each other content-wise
+
+
+=== Describe the relationship between the SMIL file and the text document ===
+
+The SMIL document references elements in the text document.  These references can be written as fragment identifiers or as XPath expressions.
+
+==== Using IDs as a reference mechanism  ====
 
 As shown above, SMIL uses the *src* attribute to refer to media resources (text and audio).  The specific phrase in the text is referenced using a fragment identifier, e.g. *file.html#phrase1*.  This necessitates the text file to be marked up using the *id* attribute:
 
@@ -92,7 +178,7 @@ As shown above, SMIL uses the *src* attribute to refer to media resources (text 
 <p id="id3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
 }}}
 
-=== Using XPath as a reference mechanism ===
+==== Using XPath as a reference mechanism ====
 The text reference could also be expressed using XPath. In this sample code we're using the [http://www.simonstl.com/ietf/draft-stlaurent-xpath-frag-00.html xpath1()] notation in the URL/URI/IRI fragment identifier, and XPointer's [http://www.w3.org/TR/xptr-element/ element() scheme]. Note that for readability purposes the characters are not escaped in the fragment part of the URL.
 
 
@@ -111,7 +197,7 @@ The text reference could also be expressed using XPath. In this sample code we'r
 </body>
 }}}
 
-=== Styling ===
+==== Styling ====
 
 At any given time, portions of text for which the corresponding audio narration is currently playing need to be highlighted visually, and scrolled into view.
 
@@ -121,38 +207,17 @@ Document authors may override the default styling rules by including the "audio-
 
 Reading Systems may offer additional styling themes to match typical user-agent overrides such as the "white-on-black" color scheme (inverted color display to read in the dark). This is essential for accessibility purposes too.
 
-== The OPF file ==
-In the OPF file, specify that there is an audio overlay available and specify which text file it belongs to.
 
-Add SMIL files to the manifest.
-{{{
-<manifest>
-  <item id="ch1" href="chapter1.html" media-type=application/xhtml+xml"/>
-  <item id="ch1_smil"href="chapter1.smil" media-type="application/xml"/>
-  ...
-</manifest>
-}}}
+==== The role attribute ====
 
-Add the *audio* attribute to the OPF *item* element and reference the manifest item containing the SMIL file resource.
-{{{
-<spine>
-  <itemref idref="ch1" audio="ch1_smil"/>
-  ...
-</spine>
-}}}
-
-This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *audio* attribute and process documents in their normal fashion.
-
-== The role attribute ==
-
-While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  So, wherever the text document uses *role*, the SMIL document does the same (see [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o semantic extensibility in text content]).  This approach provides an easy global switch to control rendering.
+While reading, users may want to turn on or off certain supplemental aspects of the publication, such as sidebars, footnotes, annotations, etc.  We can specify these elements in the text document by using the *role* attribute.  In the audio presentation, we want to offer an equivalent set of options, hence the introduction of the *role* attribute in the SMIL document.  So, wherever the text document uses *role*, the SMIL document does the same (see [TextContent#TE.01_Allow_for_inflection_of_domain-specific_semantics_on_top_o semantic extensibility in text content]). This approach provides an easy global switch to control rendering.
 {{{
 <body>
 	<par>
 		<text src="chapter1.html#id1"/>
 		<audio src="aud.mp3" clipBegin="0" clipEnd="0:32"/>
 	</par>
-	<seq textref="doc.html#the_sidebar" role="sidebar">
+	<seq ops:textref="doc.html#the_sidebar" role="sidebar">
 		<par>
 			<text src="chapter1.html#id3"/>
 			<audio src="aud.mp3" clipBegin="1:00" clipEnd="1:15"/>
@@ -165,51 +230,3 @@ While reading, users may want to turn on or off certain supplemental aspects of 
          ...
 </body>
 }}}
-
-Note also how the *seq* representing a sidebar is nested inside the main *seq*.  This mimics the structure of the text document.
-
-== Player convenience ==
-
-An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
-
-In order to facilitate easily locating the audio associated with any given text structure (especially those not directly linked to by SMIL *par* elements), we've introduced an attribute called *textref* on the *seq* element.   It aligns SMIL *seq* elements with text elements in the text document.  Instead of IDs, XPath could also be used. 
-
-== SMIL details ==
-This proposal recommends a minimal subset of SMIL including basic timing constructs and media objects; excluding complex timing, events, layout, animation, etc.  About the SMIL elements and attributes used:
-
-=== smil element: document root element ===
- * attributes: 
- * child elements: one head, one body
-
-=== head element: document head ===
- * attributes: none
- * child elements: meta (optional)
-
-=== body element: document body ===
- * attributes: none
- * child elements: seq, par
-
-=== seq element: a sequence of media nodes ===
- * attributes: role, id, textref
- * child elements: seq, par
-
-=== par element: a parallel set of media nodes ===
- * attributes: role, id
- * child elements: one text, one audio 
-	
-=== text element: references text media ===
- * attributes: src
- * child elements: none
-	
-=== audio element: references audio media ===
- * attributes: src, clipBegin, clipEnd
- * child elements: none
-
-== Guidelines ==
- * IDs are not recommended to be on media elements because they shouldn't be directly linked to.  The parent time container should be linked to instead.  At the moment, the smilref layer is the only thing that references SMIL directly, but of course there is a chance that other uses will come up.
- * There is exactly 1 SMIL file per HTML file
- * The text and audio inside a par are considered equivalent to each other content-wise
- 
-== A complete example ==
-Sample content and a demo implementation are available from the epub-revision subversion repository:
-http://code.google.com/p/epub-revision/source/browse/#svn/sandbox/audio-overlay-demo
