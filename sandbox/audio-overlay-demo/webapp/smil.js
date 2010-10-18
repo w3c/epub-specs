@@ -12,8 +12,8 @@ function SmilPlayer()
 	this.skip_roles = [];
 	// play state
 	this.started = false;
-	// the temporary database for keeping track of IDs
-	this.db = new DB();	
+	// the textid-smilid lookup table	
+	this.lookup = {};
 	// a callback for play events
 	this.play_position_changed_callback = null;
 	// a convenience for collecting IDs while parsing
@@ -61,17 +61,6 @@ SmilPlayer.prototype.load_smil = function(filepath)
 	        var xml_http = new window.XMLHttpRequest();
 	        xml_http.overrideMimeType("text/xml");
 	        xml_http.open("GET", filepath, false);
-/*			
-			// TODO: this should probably be an asynchronous request
-			xml_http.onreadystatechange = function() {
-		        if (xhr.readyState == 4) {
-		          //xml_http.overrideMimeType("text/xml");
-		        var xml_doc = xml_http.responseXML.documentElement;
-					.....
-		        }
-		      };
-			xml_http.open("GET", filepath, true);
-*/
 	        xml_http.send(null);
 	        xml_doc = xml_http.responseXML.documentElement;
 		}
@@ -82,7 +71,7 @@ SmilPlayer.prototype.load_smil = function(filepath)
 	        debug_error("No body element found in SMIL")
 	        return;
 	    }
-		this.db.create_db();
+		
 	    this.smil_root = this.make_smil_tree(main_seq);
 		this.started = false;
 		return true;
@@ -94,13 +83,7 @@ SmilPlayer.prototype.load_smil = function(filepath)
     }
 	
 }
-//expects a full file path
-SmilPlayer.prototype.load_smilrefs_file = function(filename) {
-	if (!this.db.load_smilrefs_textfile(filename)) {
-        debug_trace("Error loading smilrefs into database " + filename);
-    	return;
-	}
-}
+
 // stop everything from playing
 SmilPlayer.prototype.stop_and_clear_all = function()
 {
@@ -139,18 +122,17 @@ SmilPlayer.prototype.play_from_beginning = function()
 }
 SmilPlayer.prototype.play_from_text_id = function(id) 
 {
-	var smilid = this.db.find_smilid(id, function(smilid) {
-        if (smilid != undefined && smilid != "") {
-			smil_player.play_from_id(smilid);
-		}
-        else{
-            debug_error("could not find smil id for " + id);
-		}
-    });
+	var smilid = this.lookup[id];
+	if (smilid != undefined && smilid != "") {
+		smil_player.play_from_id(smilid);
+	}
+    else{
+        debug_error("could not find smil id for " + id);
+	}
 }
-SmilPlayer.prototype.has_text_id = function(id, callback) 
+SmilPlayer.prototype.has_text_id = function(id)
 {
-	var smilid = this.db.find_smilid(id, callback);
+	return this.lookup.hasOwnProperty(id);
 }
 // start playback from a specific ID
 SmilPlayer.prototype.play_from_id = function(id)
@@ -305,7 +287,7 @@ SmilPlayer.prototype.smil_node_factory = function(elm)
     if (elm.nodeName == "seq" || elm.nodeName == "body") {
         var node = new SeqNode();
         node.smil_elm = elm;
-		this.add_ids_to_db(node);
+		this.add_ids_to_lookup(node);
         return node;
     }
 	else if (elm.nodeName == "par") {
@@ -318,7 +300,7 @@ SmilPlayer.prototype.smil_node_factory = function(elm)
         var node = new MediaNode();
         node.smil_elm = elm;
 		if (elm.nodeName == "text") {
-			this.add_ids_to_db(node);
+			this.add_ids_to_lookup(node);
 			
     		this.resolve_media(node);
 			if (node.html_elm)
@@ -330,7 +312,7 @@ SmilPlayer.prototype.smil_node_factory = function(elm)
 		return null;
 	}
 }
-SmilPlayer.prototype.add_ids_to_db = function(node)
+SmilPlayer.prototype.add_ids_to_lookup = function(node)
 {
 	var textid = "";
 	var smilid = "";
@@ -344,7 +326,7 @@ SmilPlayer.prototype.add_ids_to_db = function(node)
 	}
 	
 	if (textid && smilid && textid.length > 0 && smilid.length > 0) {
-		this.db.insert_row(textid, smilid);
+		this.lookup[textid] = smilid;
 		
 		debug_trace(textid + "--" + smilid);
 	}
