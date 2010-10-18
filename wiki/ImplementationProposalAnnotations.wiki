@@ -1,12 +1,12 @@
 #summary Implementation proposal for annotations.
 
+<wiki:toc max_depth="5" />
+
 = Introduction =
 
 This is a wiki page to collaboratively edit an implementation proposal for the "annotations" part of the revision of the EPUB standard. This document is in inception phase.
 
 Please refer to the [Annotations annotations requirements page] (http://code.google.com/p/epub-revision/wiki/Annotations)
-
-<wiki:toc max_depth="5" />
 
 = Editors / Contributors =
 
@@ -14,37 +14,76 @@ Please refer to the [Annotations annotations requirements page] (http://code.goo
   * Daniel Weck
   * (add your name here)
 
-= Basic Concepts =
+= Basic Concepts, Terminology =
 
-An "annotation" is in fact the combination of:
+== EPUB Publication ==
 
-  * The Annotation Content ("what the annotation consists of, e.g. text with human narration").
-  * The Annotation Target ("the portion of source content that the annotation references / points to").
+In this implementation proposal we will use the term "*EPUB Publication*" to refer to the original published document for which a given set of annotations is authored (i.e. it is the document that gets annotated).
 
-A single Annotation Content may be associated to several Annotation Targets, located in one or more target EPUB documents.
+We make the following assumptions:
 
-In this implementation proposal, we propose that the physical distribution unit for one (or more) annotation is an EPUB document. Such EPUB document would define both the Annotation Content(s) and associated Annotation Target(s).
+ * There exists a way for the *EPUB Publication* to be uniquely-identified, so that annotations can reference the published document without ambiguity (see dc:Identifier, ISBN, etc.).
+ * Data within the *EPUB Publication* is immutable (guaranteed to remain unchanged after publication), so that annotations can reliably point to specific parts of the document.
+ * The *EPUB Publication* defines a "spine" of OPS files (HTML5 or any other compliant EPUB markup grammar), declared in the OCF manifest in a way that makes them uniquely-identifiable, such as a path relative to the root folder of the EPUB file structure (e.g. $ROOT$/contents/chapter1.html).
 
-Using the EPUB physical and logical container to store annotations enables the scenario whereby annotations themselves can be annotated ("annotations of annotations"). This implies that an EPUB document containing annotations gets a unique identifier (just like a "normal" publication's ISBN), otherwise it is impossible for contained annotations to be further annotated. Note: although allocating world-wide unique identifiers is a non-trivial issue for annotations contributed by casual readers, it may be less of an issue for content producers that specialize in publishing large annotation sets, e.g. enhancements to existing publications (additional commercial material to textbooks).
+== EPUB Annotation ==
 
-For a given EPUB publication, there may be many annotations provided by a large number of individual contributors => this may lead to a non-negligible overhead if each independent annotation is a fully-fledge EPUB document (e.g. processing overhead on the client side, to search and render annotations for a given page of the book being read). It appears to be an authoring issue though: online services or web-connected reading devices that enable the production of annotations by readers themselves, should ensure, for example, that all the annotations created by a single reader for a given publication are stored in the same EPUB document (in some ways, we can make an analogy with POIs Points Of Interest for SatNav/GPS navigation devices).
+In this implementation proposal we will use the term "*EPUB Annotation*" to refer to the dataset that defines the actual annotation content + some associated metadata + the specification of the targeted portion(s) of document within the *EPUB Publication*.
 
-= Annotation Targets and Multimedia Content =
+=== Annotation Content ===
 
-In this proposal, we put forward the use of XPath to address XML points in the target EPUB document.
-When media elements (video or audio) are present in the document model (e.g. HTML5), annotators need the ability to point in the time domain, as well as the space domain (2D graphics). The latter point implies that static images (non-animated) may also be annotated in terms of specific 2D areas.
+==== Simple Assets ====
 
-There are 2 proposals:
+This is a list of typical media objects used to annotate content:
 
-(1) To use W3C's Media Fragments syntax ( http://www.w3.org/TR/media-frags/ ) for both the time and space domain, albeit with a notable difference: a Media Fragments URI points directly to a media resource (e.g. video or audio file), whereas an annotation target would be defined based on a given XML media element (e.g. <audio src="..."/> or <video/>).
+ * Plain text (UTF-8)
+ * XML text (HTML5 markup, HTML4 ? DTBOOK ?)
+ * Video (webcam recording, pre-recorded clip, etc.)
+ * Audio (voice recording, soundtrack, music, etc.)
+ * Image (screen capture, touch/pen scribble, etc.)
 
-(2) To use W3C's SMIL timing attribute syntax (e.g. begin="10s" end="1m45s"), and some other syntax for the space domain (CSS ?).
+==== Composed Assets ====
 
-= Reusing the EPub format for annotations =
+In some cases, an annotation may require composing several basic media object (as described above). In this proposal we recommend the use of the EPUB OPS as a container for richly-structured annotations (e.g., a video with a short textual description bundled inside an HTML5 document).
 
-Annotations would be an additional part of an OCF container.
+=== Annotation Target ===
 
-== Abstract Container: ==
+An *Annotation Target* defines the portion of source content within an *EPUB Publication* that the *Annotation Content* refers to.
+A given Annotation Content can have several Annotation Targets (e.g. a "fix typo" marker applied to several items in the targeted document).
+
+In the draft specification below, a item marked with "FAIL" means that the *Annotation Target* cannot be fully resolved, resulting in associated annotation(s) failing to be processed / rendered by User Agents (they get skipped / ignored).
+
+ * Publication ID (mandatory): a unique identifier string, referencing an existing EPUB publication FAIL: if the given UID doesn't resolve to a known and retrievable publication
+ * Document (mandatory): a unique identifier pointing to a "text" file (XML document / HTML5 ?) within the context publication, i.e. a relative path within internal EPUB folder structure. FAIL: if the given path doesn't resolve to a valid file from the OCF manifest's spine
+ * Point
+  * ELEMENT (mandatory): XPath expression to reference a single element inside the target XML document (or HTML5, etc.). FAIL: if XPath expression resolves to anything other than a single XML element. FAIL: if XPath expression doesn't correspond to anything in the target document
+  * CHAR OFFSET: a positive (or zero) integer to define a Unicode character offset within the text contained in the referenced base ELEMENT. FAIL: if the base ELEMENT doesn't have any descendant XML TEXT node(s). FAIL: if given integer is greater than the number of Unicode characters in the context text string, which is made of the concatenation of all descendant XML TEXT nodes in lexical document order (depth-first tree traversal)
+  * TIME OFFSET: a positive time offset (using the SMIL Timing notation) relative to the beginning of the referenced media element (audio, video). FAIL: if the referenced base ELEMENT is not one of the valid media elements: video, audio. FAIL: if the given time offset is greater than the duration of the referenced media asset
+ * Range: defines an ordered combination of 2 Points [P1, P2]. FAIL: if P2 before P1.
+
+A Point P1 is said to be situated "before" a Point P2 if:
+ * ELEMENT of P1 is before ELEMENT of P2 in the lexical XML document order (depth-first tree traversal)
+ * CHAR OFFSET of P1 is less than (but not equal) to CHAR OFFSET of P2
+ * TIME OFFSET of P1 is less than (but not equal) to TIME OFFSET of P2
+
+The first Point P1 of a Range must be situated "before" the second Point P2, according to the definition of "before" specified above. A Range containing 2 identical Points should effectively resolve to a single Point.
+
+ * Checksum / Signature Hash (mandatory): a string of characters in base64 encoding representing the "signature" of the annotation target, in terms of its referenced content and of neighboring content (TO BE DEFINED FORMALLY, SEE DEMO)
+
+Note that the element() and xpointer() schemes of the W3C XPointer recommendation (and draft specification, respectively) are not recommended for use in this implementation proposal. Neither is the non-XPointer xpath1() scheme which is defined in a non-normative manner.
+
+Note that support for the graphical space domain (2D canvas drawing area used to render images, video, etc.) is not included in this proposal. There is therefore no capabilities to select part of a visible area rendered with known fixed dimensions (e.g. like YouTube graphical annotations).
+
+Note that the W3C Media Fragments syntax ( http://www.w3.org/TR/media-frags/ ) is not suitable for use in this implementation proposal, as it is designed to point to well-defined parts of resources via a URL/URI/IRI mechanism, not what we are trying to achieve here.
+
+= EPUB Annotation Packaging =
+
+One of the benefits of using EPUB to package a set of annotations is that the publishing process for such annotations can rely on a conventional EPUB workflow (i.e. a rich set of annotations can be published as a separate product). Furthermore, this enables the "annotations of annotations" use-case (recursive behavior), which may be needed by interactive reading systems that implement social/collaborative annotations (i.e. a published *EPUB Annotation* should be uniquely-identifiable and discoverable, so that it can in turn be annotated).
+
+For a given *EPUB Publication*, there may be many *EPUB Annotations* provided by a large number of individual contributors => this may lead to a non-negligible overhead if each independent annotation is effectively a fully-fledge EPUB document (e.g. processing overhead on the client side, to discover and render annotations for a given page of the book being read). It appears to be an authoring issue though: online services or web-connected reading devices that enable the production of annotations by readers themselves, should ensure, for example, that all the annotations created by a single reader for a given publication are stored in the same EPUB document.
+
+== Abstract Container ==
+
 {{{
 META-INF/
    container.xml – Note: includes multiple <rootfile> elements
@@ -71,7 +110,8 @@ Need examples for:
   # ink annotation of image or svg
   # annotation of audio/video
 
-== annotations.xml ==
+== Example: annotations.xml ==
+
 {{{
 <annotations xmlns="http://www.idpf.org/2011/annotation">
 
@@ -234,7 +274,8 @@ Need examples for:
 </annotations>
 }}}
 
-=== XSD for above ===
+=== XSD schema ===
+
 {{{
 <?xml version="1.0" encoding="Windows-1252"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
@@ -346,8 +387,10 @@ Need examples for:
 </xs:schema>
 }}}
 
-=== Relax NG for above ===
+=== Relax NG ===
+
 Warning: this is a conversion of xsd above...
+
 {{{
 <rng:grammar
    xmlns:rng="http://relaxng.org/ns/structure/1.0"
@@ -481,11 +524,7 @@ Warning: this is a conversion of xsd above...
 
 </rng:grammar>
 }}}
-== User agent rendering ==
-It will be up to the UA to determine the UI to capture and render annotations.
 
-= Add your solution here =
+= Adobe Digital Editions =
 
-Looking for an implementation proposal...
-
-Here is how annotations are done in Adobe Digital Editions (also used in other vendor's implementations): [ImplementationProposalSimpleAnnotations]
+For reference only: here is how annotations are done in Adobe Digital Editions (also used in other vendor's implementations): [ImplementationProposalSimpleAnnotations]
