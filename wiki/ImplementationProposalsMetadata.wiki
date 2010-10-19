@@ -5,8 +5,24 @@
 <wiki:toc max_depth="5" />
 
 == Proposals Summary ==
-TODO, add complete condensed list here, with referrals to the sections below. This as the below is partially a tutorial/explanatory.
+=== OPF summary ===
+ * deprecate the currently (2.0.1) required DC elements in favor of DCTERMS equivalents (change to be done fully in 4.0)
+ * non-required 2.0.1 DC elements are _invalid_ per Content Conformance and _should be recognized_ per 3.0 Reading System conformance
+ * add a new element `meta` with a required attribute `property` and an optional attribute `about`
+ * the 2.0.1 `meta` element is _invalid_ per Content Conformance and _should be recognized_ per 3.0 Reading System conformance 
+ * add a new element `link` with the required attribute `rel` and the required attribute `href`
+ * add the attribute `prefix` to the OPF root element
+ * (optional to this proposal) add the attribute `profile` to the OPF root element
+ * create a "OPF metadata vocabulary" for the properties that OPF needs to define itself, either inlined in OPF spec or as a separate document
+ * allow the attributes `rel` and `property` on manifest `item` elements to allow expressing metadata about EPUB fileset members
+ * use a vocabulary-based mechanism to provide values for the `rel` and `property` attributes (such as the DCTERMS and PRISM vocabularies)
+ * ... let RDFa 1.1 provide the definition of all attributes mentioned above
 
+=== OPS summary ===
+ * Add the attribute `ops:type` as global attribute in OPS. Refer to [ImplementationProposalsRoleOpsType]
+
+=== NCX summary ===
+ * Add the attribute `ops:type` attribute on navMap navList, navPoint and navTarget elements in NCX, as optional. Refer to [ImplementationProposalsRoleOpsType]
 
 == Package metadata ==
 Principles: 
@@ -62,9 +78,9 @@ The use of additional ancillary properties to `dcterms:creator` is not illegal.
 
 Multiple `meta` elements with the property `dcterms:creator` is allowed.
 
-_Note: when used, the `about` attribute must resolve to another element inside the package file. (Note that this means that it cannot point to the deprecated DC elements, nor outside the package, the latter contrary to the new `rel` attribute on `item`, see below.)_
+_Note: when used, the `about` attribute must resolve to another element inside the package file. (Note that this means that it cannot point outside the package, the latter contrary to the new `rel` attribute on `item`, see below.)_
 
-_Note: to keep things simple, multiple values in a property attribute is not allowed. `property="foo:bar quux:qul"` is illegal._
+_Note: multiple space separated values in a property attribute is allowed. `property="foo:bar quux:qul"` is legal._
 
 ==== Title ====
 The expression form for a DCTERMS title is:
@@ -137,12 +153,12 @@ Declaring that the current EPUB is part of a collection, and which position
 
 
 === Metadata in manifest ===
- * add the RDFa `rel` attribute to the manifest `item` element as a way to express metadata about a manifest item
+
+ * add the RDFa `rel` attribute to the manifest `item` element as a way to express _relationship_ metadata about a manifest item
  * specify the meaning of the value `cover-image` when occurring in `item/@rel`  _(and recommend a default DPI?)_
  * the specification of the value `cover-image` includes information that multiple items can have the cover image property (multiple images with different resolutions)
  * specify that if the `cover-image` property occurs on an item which does not reference a core image type, then it is an error
  * specify that other values on `item/@rel` are not illegal.
- * TODO there may be more item metadata that we need to specify directly in the spec
 
 {{{
  <item rel="cover-image" href="cover.png" ... />
@@ -150,7 +166,15 @@ Declaring that the current EPUB is part of a collection, and which position
 
  * add spec prose that require 3.0 reading systems to also recognize the non-de-jure mechanism used for this purpose in 2.0 content (TODO and find out what that was, and provide a literal example).
 
- * TODO check with Scripting taskforce exactly what needs to be said re scripting in manifest or spine; note that  `rel` is not suitable here. See [ImplementationProposalsMetadata#Spine_entry_properties Spine entry properties]
+
+ * add the RDFa `property` attribute to the manifest `item` element as a way to express that a given manifest item
+possesses a particular property
+
+{{{
+ <item property="scripted" href="chap1.xhtml" ... />
+}}}
+
+ * TODO check with Scripting taskforce exactly what needs to be said re scripting in manifest or spine
 
 
 === External metadata ===
@@ -204,9 +228,6 @@ TODO
  * define property for a meta element that specifies that an EPUB is a dictionary
  * define property for a meta element that specifies that an EPUB is an annotation (as per annotation proposal)
 
-=== Spine entry properties ===
-TODO specify that a spine item contains scripting
-TODO specify that a spine item contains mathml
 
 === Full examples ===
 (The examples assumes the use of @profile as opposed to exclusive use of @prefix until we have resolved how to do that.)
