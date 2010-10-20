@@ -88,39 +88,88 @@
 			       smil_player.resume();
 			    }		    
 			}
-			function load_book(html, smil)
+			
+			function load_opf(filepath)
 			{
+				// this function is a work in progress.. 
+				// load the OPF, parse it, load the HTML and SMIL
 				if (smil_player && smil_player.is_playing()) play_pause(); 
 				
-				// load the OPF, parse it, load the HTML and SMIL
-				// but until we have OPF support, just load the HTML and SMIL directly
+				var base_path = url_get_path(window.location.href);
+				var opf_fullpath = go_relative(base_path, filepath);
+				
+				var xml_http = new window.XMLHttpRequest();
+				xml_http.onreadystatechange = function() { 
+					if (xml_http.readyState == 4)
+					{
+					  	xml_doc = xml_http.responseXML.documentElement;
+						continue_loading(xml_doc, opf_fullpath, base_path);
+					} else 
+					{
+					  // Wait...
+					}
+				}
+				xml_http.overrideMimeType("text/xml");
+		        xml_http.open("GET", opf_fullpath, false);
+		        xml_http.send(null);
+				
+			
+		        
+	
+			}
+			function continue_loading(xml_doc, opf_fullpath, base_path)
+			{
+				// open the spine
+				var spine = xml_doc.getElementsByTagName("spine")[0];
+				var itemrefs = spine.getElementsByTagName("itemref");
+				var manifest = xml_doc.getElementsByTagName("manifest")[0];
+				
+				// just play one file for the moment .. later we'll add support for multiple spine items
+				var textid = itemrefs[0].getAttribute("idref");
+				var timelineid = itemrefs[0].getAttribute("timeline");
+				
+				var textsrc = get_manifest_href_by_id(manifest, textid);
+				var smilsrc = get_manifest_href_by_id(manifest, timelineid);
+				
+				base_path = url_get_path(opf_fullpath);
+				var smil_fullpath = go_relative(base_path, smilsrc);
+		 		var html_fullpath = go_relative(base_path, textsrc);
 				
 				$("#reader_main").load(function(evt)
 				{
-					on_page_loaded(smil);
+					load_smil(smil_fullpath);
 				});
 				
-				$("#reader_main")[0].src=html;
+				$("#reader_main")[0].src=html_fullpath;
+				
 			}
-		    function load_smil(filename) 
-		    {
-				var frame_elm = $("#reader_main")[0];
-                smil_player.book_doc = frame_elm.contentDocument;
-                if (!smil_player.load_smil(filename)) {
-		            $("#debug")[0].innerHTML += "<p>Error loading SMIL file: " + filename + "</p>";
-		        }
-		        else {
-		            //smil_player.debug_print($("#debug")[0]);
-		        }
-		    }
-		    function on_page_loaded(smil_file)
+			function get_manifest_href_by_id(manifest, id)
+			{
+				if (!manifest) return null;
+				
+				var items = manifest.getElementsByTagName("item");
+				
+				for (var i = 0; i<items.length; i++) {
+					if (items[i].getAttribute("id") == id) {
+						return items[i].getAttribute("href");
+					}
+				}
+				return null;
+			}
+		    function load_smil(smil_file)
 		    {
 		        smil_player = new SmilPlayer();
 				smil_player.play_position_changed_callback = update_smil_play_position;
 				
-                var base_path = url_get_path(this.document.location.href);
-		        var smil_fullpath = go_relative(base_path, smil_file); 
-                load_smil(smil_fullpath);
+				var frame_elm = $("#reader_main")[0];
+                smil_player.book_doc = frame_elm.contentDocument;
+                if (!smil_player.load_smil(smil_file)) {
+		            $("#debug")[0].innerHTML += "<p>Error loading SMIL file: " + smil_file + "</p>";
+					return;
+		        }
+		        else {
+		            //smil_player.debug_print($("#debug")[0]);
+		        }
 	            
                 //listen for the events in the iframe document
 				var frame_elm = $("#reader_main")[0];
@@ -214,6 +263,8 @@
 			function update_smil_play_position(id)
 			{
 				// debug_trace("HI! " + id);
+				// here we should listen for the ID of the end of the document (or wherever we want to stop SMIL playback, e.g. pagination could split up a single html file into many pages, and we'd want to pause between each and wait for the user to turn the page)
+				
 			}
 		    function next_phrase()
 			{
@@ -241,7 +292,7 @@
 		    function toggle(rolename)
 		    {
 		        smil_player.toggle_role(rolename);
-		        $("[role=" + rolename + "]", window.frames['reader_main'].document).toggleClass("hidden");
+		        $("[ops\\:role=" + rolename + "]", window.frames['reader_main'].document).toggleClass("hidden");
 		    }
 			function set_rate(rate)
 			{
@@ -260,7 +311,8 @@
       
     <body> 
         <nav id="booklist">
-				<p style="text-align: center;"><button onclick="load_book('../book/science.html', '../book/science_audio_overlay.smil')">Science book</button><br/>(click to load)</p>
+				<p style="text-align: center;"><button onclick="load_opf('../book/science.opf')">Science book</button><br/>(click to load)</p>
+				<p style="text-align: center;"><button onclick="load_opf('../svg/svg.opf')">SVG book</button><br/>(click to load)</p>
         </nav> 
 
         <div id="controls">

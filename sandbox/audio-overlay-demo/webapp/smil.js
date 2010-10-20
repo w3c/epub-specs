@@ -57,24 +57,24 @@ SmilPlayer.prototype.load_smil = function(filepath)
 		}
 		else {
 			//REMOTE FILE
-			
-	        var xml_http = new window.XMLHttpRequest();
-	        xml_http.overrideMimeType("text/xml");
+			var xml_http = new window.XMLHttpRequest();
+			xml_http.onreadystatechange = function() { 
+				if (xml_http.readyState == 4)
+				{
+				  	xml_doc = xml_http.responseXML.documentElement;
+					return smil_player.continue_loading(xml_doc);
+					
+				} else 
+				{
+				  // Wait...
+				}
+			}
+			xml_http.overrideMimeType("text/xml");
 	        xml_http.open("GET", filepath, false);
 	        xml_http.send(null);
-	        xml_doc = xml_http.responseXML.documentElement;
 		}
 		
-        // the body element is the container for the top-level sequence.  
-	    var main_seq = xml_doc.getElementsByTagName("body")[0];
-	    if (!main_seq) {
-	        debug_error("No body element found in SMIL")
-	        return;
-	    }
-		
-	    this.smil_root = this.make_smil_tree(main_seq);
-		this.started = false;
-		return true;
+        
 	}
     catch(e) {
         debug_trace(e.message);
@@ -82,6 +82,20 @@ SmilPlayer.prototype.load_smil = function(filepath)
 		return false;
     }
 	
+}
+
+SmilPlayer.prototype.continue_loading = function(xml_doc)
+{
+	// the body element is the container for the top-level sequence.  
+    var main_seq = xml_doc.getElementsByTagName("body")[0];
+    if (!main_seq) {
+        debug_error("No body element found in SMIL")
+        return false;
+    }
+	
+    this.smil_root = this.make_smil_tree(main_seq);
+	this.started = false;
+	return true;
 }
 
 // stop everything from playing
@@ -547,8 +561,8 @@ SeqNode.prototype = new TimeContainerNode();
 SeqNode.prototype.play = function()
 {
 	// first, check if this node should be skipped
-	if (this.smil_elm.getAttribute("ops:role") != null) {
-		var role = this.smil_elm.getAttribute("ops:role");
+	if (this.smil_elm.getAttributeNS("http://example.org/epub", "role") != null) {	
+		var role = this.smil_elm.getAttributeNS("http://example.org/epub", "role");
 		var should_skip = $.inArray(role, smil_player.skip_roles);
 		if (should_skip != -1) {
 			debug_trace("skipping node " + this.to_string());
@@ -601,7 +615,6 @@ SeqNode.prototype.play_next = function(current)
         idx++;
 		debug_trace("SeqNode.play_next(), this = " + this.to_string() + " starting playback on child = " + this.children[idx].to_string());
 		smil_player.add_currently_playing(this);
-		
         this.children[idx].play();
     }
     else {	
@@ -636,8 +649,8 @@ ParNode.prototype = new TimeContainerNode();
 ParNode.prototype.play = function()
 {
 	// first, check if this node should be skipped
-	if (this.smil_elm.getAttribute("ops:role") != null) {
-		var role = this.smil_elm.getAttribute("ops:role");
+	if (this.smil_elm.getAttributeNS("http://example.org/epub", "role") != null) {	
+		var role = this.smil_elm.getAttributeNS("http://example.org/epub","role");
 		var should_skip = $.inArray(role, smil_player.skip_roles);
 		if (should_skip != -1) {
 			debug_trace("skipping node " + this.to_string());
