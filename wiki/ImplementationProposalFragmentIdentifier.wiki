@@ -1,0 +1,29 @@
+#summary Fragment Identifiers for EPUB.
+
+= Canonical Fragment Identifiers for EPUB =
+
+Fragment Identifier is a part of URI that defines a location in a resource. Syntactically it is a part of URI that starts with # and is appended at the end of the URI of the file itself. For HTML documents, ids and named anchors are used as fragment identifiers.
+
+This proposal defines syntax for precisely identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as root file is defined). I call these identifiers "canonical" because for each location in the file there is a unique identifier. Also, it is possible to compare the resulting identifiers to determine which one is coming first, even without access to the target document.
+
+Example:
+
+{{{#cfi(/2/6/4!/2/4/10/3:127)}}}
+
+Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Apply the following rules on each step:
+
+Slash-number step refers to a child node(s) in the following manner:
+ * each element or PI (except <?xml ...> PI) is assigned an _even_ index; first element/PI is given index 2, second element/PI - 4, etc.
+ * each (possibly empty) collection of nodes before the first element/PI, between elements/PIs, and after last element/PI are given _odd_ indices according to their position
+This indexing scheme insures that nodes are not sensitive to XML parser handling of whitespace, entity references, and CDATA sections.
+
+Column-number step refers to a character offset. If we are dealing with an element, we have a UTF-16 codepoint index in the element's intrinsic textual value. It is empty for most elements, except for XHTML img tag where alt attribute value is used. If we are dealing with a text node or a collection of nodes, UTF-16 codepoint index is calculated after concatenating text data from all the nodes.
+
+Exclamation sign step means following a reference. Next step should be applied starting from the target node (root node when complete XML document is referenced). These specific references are honored:
+ * opf:itemref refers to the file referenced by href attribute of the item element with the given id.
+ * XHTML element references are defined by the following elements/attributes:
+ ** img, iframe, embed: src
+ ** object: data
+ * SVG element references are defined by the following elements (by xlink:href attribute):
+ ** image
+ ** use
