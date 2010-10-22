@@ -8,16 +8,16 @@ This proposal defines syntax for precisely identifying a location inside EPUB fi
 
 Example:
 
-{{{#cfi(/2/6/4!/2/4/10/3:127)}}}
+{{{#cfi(/2/6/4!/2/4/10/3:10)}}}
 
 Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Apply the following rules on each step:
 
 Slash-number step refers to a child node(s) in the following manner:
- * each element or PI (except <?xml ...> PI) is assigned an _even_ index; first element/PI is given index 2, second element/PI - 4, etc.
+ * each element or PI (except <?xml ...> PI) is assigned an _even_ positive index; first element/PI is given index 2, second element/PI - 4, etc.
  * each (possibly empty) collection of nodes before the first element/PI, between elements/PIs, and after last element/PI are given _odd_ indices according to their position.
 This indexing scheme insures that nodes are not sensitive to XML parser handling of whitespace, entity references, and CDATA sections.
 
-Column-number step refers to a character offset. If we are dealing with an element, we have a UTF-16 codepoint index in the element's intrinsic textual value. It is empty for most elements, except for XHTML img tag where alt attribute value is used. If we are dealing with a text node or a collection of nodes, UTF-16 codepoint index is calculated after concatenating text data from all the nodes.
+Column-number step refers to a character offset. If we are dealing with an element, we have a UTF-16 codepoint index in the element's intrinsic textual value. It is empty for most elements, except for XHTML img tag where alt attribute value is used. If we are dealing with a text node or a collection of nodes, UTF-16 codepoint index is calculated after concatenating text data from all the nodes. Position is zero-based and always refers to a place _between_ characters, so 0 means before the first character, and number equal to the total UTF-16 length means position after the last character.
 
 Exclamation sign step means following a reference. Next step should be applied starting from the target node (root node when complete XML document is referenced). These specific references are honored:
   * opf:itemref refers to the file referenced by href attribute of the item element with the given id.
@@ -25,3 +25,55 @@ Exclamation sign step means following a reference. Next step should be applied s
   * for HTML object element, reference is defined by data attribute
   * for SVG image and use elements references are defined by by xlink:href attribute
 Note that this schema does not take into account hyperlinks, only "embedding" references; thus it is illegal to follow links from XHTML (or SVG) a element.
+
+In the example above, if the opf file looks like this:
+{{{
+<?xml version="1.0"?>
+<package version="2.0" unique-identifier="bookid" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns="http://www.idpf.org/2007/opf" xmlns:opf="http://www.idpf.org/2007/opf">
+  <metadata>
+   <dc:title>...</dc:title> 
+   <dc:identifier id="bookid">...</dc:identifier>
+   <dc:creator>...</dc:creator> 
+   <dc:language>en</dc:language> 
+ </metadata>
+ <manifest>
+  <item id="ncxtoc" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+  <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
+  <item id="chapter01" href="chapter01.xhtml" media-type="application/xhtml+xml"/>
+  <item id="chapter02" href="chapter02.xhtml" media-type="application/xhtml+xml"/>
+  <item id="chapter03" href="chapter03.xhtml" media-type="application/xhtml+xml"/>
+  <item id="chapter04" href="chapter04.xhtml" media-type="application/xhtml+xml"/>
+ </manifest>
+ <spine toc="ncxtoc">
+  <itemref idref="titlepage"/>
+  <itemref idref="chapter01"/>
+  <itemref idref="chapter02"/>
+  <itemref idref="chapter03"/>
+  <itemref idref="chapter04"/>
+ </spine>
+</package>
+}}}
+
+and chapter01.xhtml like this:
+
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>...</title>
+</head>
+<body>
+<p>...</p>
+<p>...</p>
+<p>...</p>
+<p>...</p>
+<p>aaa <em>0123456789</em> bbb</p>
+<p>...</p>
+<p>...</p>
+<p>...</p>
+<p>...</p>
+</body>
+</html>
+}}}
+
+Then the given fragment identifier refers to the position right after the digit 9.
