@@ -4,7 +4,7 @@
 
 Fragment Identifier is a part of URI that defines a location in a resource. Syntactically it is a part of URI that starts with # and is appended at the end of the URI of the file itself. For HTML documents, ids and named anchors are used as fragment identifiers.
 
-This proposal defines syntax for precisely identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as root file is defined). I call these identifiers "canonical" because for each location in the file there is a unique identifier. Also, it is possible to compare the resulting identifiers to determine which one is coming first, even without access to the target document.
+This proposal defines syntax for precisely identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as the root file and referencing semantics is defined). I call these identifiers "canonical fragment identifiers" or "CFIs" because for each location in the file there is a unique identifier. Also, it is possible to compare the resulting identifiers to determine which one is coming first, even without access to the target document.
 
 Example:
 
@@ -70,6 +70,7 @@ and chapter01.xhtml like this:
 <p>aaa <em>bbb</em>0123456789</p>
 <p>...</p>
 <p>...</p>
+<img src="foo.svg"/>
 <p>...</p>
 <p>...</p>
 </body>
@@ -77,3 +78,9 @@ and chapter01.xhtml like this:
 }}}
 
 Then the given fragment identifier refers to the position right after the digit 9.
+
+When producing CFIs for text locations, unless the text is defined by img element's alt tag, one should always start with the text node or text node collection (even if it empty) that corresponds to the location and then trace the ancestor and reference chain to the OPF file root. Here are some examples: 
+
+|| {{{#cfi(/2/6/4!/2/4/16)}}} || img element ||
+|| {{{#cfi(/2/6/4!/2/4/16!/2/2)}}} || first element in foo.svg embedded by img element ||
+
