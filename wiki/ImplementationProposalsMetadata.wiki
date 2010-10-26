@@ -1,19 +1,23 @@
 #summary Metadata implementation proposals
 
-*Note -- this page is a stub, to be revised and completed by metadata group during F2F*
+This page has been updated to reflect consensus reached in meta telcon of 26-Oct, on the following issues:
+
+ * change wording re: status of DCMES and migration to DCTERMS.
+ * usage of profile + prefix
 
 <wiki:toc max_depth="5" />
 
 == Proposals Summary ==
 === OPF summary ===
- * deprecate the currently (2.0.1) required DC elements in favor of DCTERMS equivalents (change to be done fully in 4.0)
- * non-required 2.0.1 DC elements are _invalid_ per Content Conformance and _should be recognized_ per 3.0 Reading System conformance
+ * State that DCMI have deprecated [c. 2006/7] the currently (2.0.1) required DCMES in favor of DCTERMS equivalents. Introduce and _strongly encourage_ use of DCTERMS for 3.0 content, with a provided mechanism for compatibility between 3.0 reading systems and 2.0 packages, as well as the reverse, 2.0 reading systems and 3.0 packages. State intention to migrate fully to DCTERMS and formally deprecate use of DCMES in a _future_ revision of this standard, but do not specify a version number.
+ * Currently required 2.0.1 DCMES will remain, but changed with the addition of an extension mechanism (opf:override)
+ * non-required 2.0.1 DCMES will be allowed, but discouraged, per Content Conformance and _should be recognized_ per 3.0 Reading System Conformance.
  * add a new element `meta` with a required attribute `property` and an optional attribute `about`
  * the 2.0.1 `meta` element is _invalid_ per Content Conformance and _should be recognized_ per 3.0 Reading System conformance 
  * add a new element `link` with the required attribute `rel` and the required attribute `href`
  * add the attribute `prefix` to the OPF root element
- * (optional to this proposal) add the attribute `profile` to the OPF root element
- * create a "OPF metadata vocabulary" for the properties that OPF needs to define itself, either inlined in OPF spec or as a separate document
+ * add the attribute `profile` to the OPF root element
+ * create a "OPF metadata vocabulary" for the properties that OPF needs to define itself, as a separate profile document
  * allow the attributes `rel` and `property` on manifest `item` elements to allow expressing metadata about EPUB fileset members
  * use a vocabulary-based mechanism to provide values for the `rel` and `property` attributes (such as the DCTERMS and PRISM vocabularies)
  * ... let RDFa 1.1 provide the definition of all attributes mentioned above
@@ -37,9 +41,9 @@ Principles:
 
 === Required metadata ===
  * for forwards compatibility purposes, the 3 required DCMES elements of OPF 2.0.1 remain required in 3.0. 
- * the three required DCMES elements are however deprecated in favor of DCTERMS equivalents (spec will say that we will migrate fully to DCTERMS in the next major version of EPUB)
- * The content models and attribute sets of the 3 DCMES elements remain the same as in 2.0.1 (with one exception: the `override` attribute, see below)
- * On the deprecated DCMES elements in question, we provide a way to link (via IDREF) to an equivalent DCTERMS element that, if the (3.0) reading system recognizes the link, overrides the information in the DCMES element. This override link (the `opf:override` attribute) is optional in the grammar.
+ * the three required DCMES elements are placeholders for DCTERMS equivalents for 3.0 package conformance.
+ * The content models and attribute sets of the 3 DCMES elements remain the same as in 2.0.1, with one exception: the `override` attribute, see below.
+ * On the deprecated DCMES elements in question, we provide a way to link (via IDREF) to an equivalent DCTERMS element that, if the (3.0) reading system recognizes the link, overrides the information in the DCMES element. This override link ('opf:override`) is optional in the grammar.
 
 {{{
  <dc:creator opf:override="idref">...</dc:creator>
@@ -52,7 +56,7 @@ The schema will require that the destination of any given `opf:override` attribu
  * dc:title ==> dcterms:title
  * dc:identifier ==> dcterms:identifier
 
-Note that in 4.0, the `ops:override` attribute, along with the DC elements, will disappear. The override attribute is transitional.
+In a future version of this standard, the `ops:override` attribute, along with DCMES, will be formally deprecated. The override attribute is transitional.
 
 === The new DCTERMS elements and 'ancillary properties' ===
 All new (as of 3.0) meta elements use the `meta` element with the RDFa attributes `property` (required) and `about` (optional), where the value of the property is the element content. Note that this is a subset of the full RDFa attribute set. Note also that the current (as of 2.0.1) `name` attribute is removed on the 3.0 `meta` element.
@@ -194,7 +198,7 @@ possesses a particular property
  * Support for retrieving the data in external records is optional for Reading Systems
  * The package manifest does not include these as `item`s, as they are not formally part of the EPUB publication
  * Add a new element `link` as an allowed child of metadata with the RDFa attributes `rel` and `resource` 
- * predefine values for ONIX (`onix-record`), MARC21-XML (`marc21xml-record`) and MODS (`mods-record`). The use of other values on link/@rel is not illegal.
+ * predefine values for ONIX (`onix-record`), MARC21-XML (`marc21xml-record`), MODS (`mods-record`), and XMP ('xmp-record'). The use of other values on link/@rel is not illegal.
  * There is no provision for specifying the version of the record (this assumes that version information is available inline in the referenced resources)
  * If data provided in the external record conflicts with data given inline in the OPF, then the inline data takes precedence. (correct ?)
 
@@ -220,15 +224,10 @@ In the ideal case, we are able to reuse properties from existing vocabularies de
 These properties taken together constitute the "OPF metadata terms vocabulary". We can either provide this vocabulary as a separate document, normatively referenced from the OPF spec, or we can use the spec itself as the vocabulary document (names and meanings of terms are defined inline). It does not matter from a technical standpoint which we choose, the choice is primarily one of ergonomics for the human consumer.
 
 === Prefix association ===
-We have the following options:
- 
- # Profile + inline prefix attribute
-  * Use the RDFa 1.1 profile mechanism to define a set of "core" vocabulary prefixes (example: opf, dcterms, prism). We normatively reserve these prefixes. 
-  * Allow the prefix attribute in OPF to allow additional prefix-vocabulary associations than those that occur in the profile
- # inline prefix attribute only
-  * require that the prefix attribute always be present and always define the prefixes for all vocabularies used. This includes defining the "default prefix" (=no prefix) for the OPF metadata terms vocabulary.
 
-By allowing (or requiring) the `prefix` attribute on the package root element only, we simplify processing (cf XML namespaces, which does not include this simplification). 
+ * Use the RDFa 1.1 profile mechanism to define a set of "core" vocabulary prefixes (example: opf, dcterms, prism). We normatively reserve these prefixes. 
+ * Add @profile to the OPF package element only.
+ * Add @prefix to the OPF package element only (This simplifies processing vs. XML namespaces, which does not include this simplification). 
 
 The use of the profile mechanism to reserve prefixes simplifies processing even further, since there is now no need to resolve the most common prefixes. Plain simple XPath can be used to retrieve the `meta` element with `property="dcterms:title"` for example, since the `dcterms` prefix is fixed globally. Note that a validator such as epubcheck would be able to enforce these constraints.
 
