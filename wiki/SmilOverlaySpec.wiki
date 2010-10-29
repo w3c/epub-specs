@@ -101,49 +101,11 @@ Typical reading system playback behavior would be to play the audio clip and hig
 
 There are additional features not represented in this very simple example, but they do not add much complexity.  They are described in the following sections as well as in the full example.
 
-== Schema for the EPUB SMIL subset ==
+== EPUB SMIL subset ==
 
 _This section is normative._
 
-Reading systems that support the *media-timeline* attribute MUST support the SMIL subset defined here.  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.
-
-{{{
-default namespace = ""
-namespace ops = "http://www.idpf.org/2007/ops"
-
-start =
-    element smil {
-        element head {
-            element meta {
-                attribute content { text },
-                attribute name { text }
-            }
-        },
-        element body { (seq | par)* }
-    }
-seq =
-    element seq {
-        attribute role { text }?,
-        attribute id { text },
-        attribute ops:textref { xsd:anyURI },
-        (seq | par)*
-    }
-par =
-    element par {
-        attribute role { text }?,
-        attribute id { text },
-        element text {
-            attribute src { xsd:anyURI },
-			attribute id { text }?
-        },
-        element audio {
-            attribute clipBegin { text }?,
-            attribute clipEnd { text }?,
-            attribute src { xsd:anyURI },
-			attribute id { text }?
-        }
-    }+
-}}}
+Reading systems that support the *media-timeline* attribute MUST support the SMIL subset defined [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/miniSmil.rnc here].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.  
 
 == Media clipping attributes ==
 
@@ -281,12 +243,8 @@ TODO
 
 = Pending TODOs  =
 
- * Daniel => The demo shows how to handle HTML5 video/audio media elements targeted by a SMIL's "text" elements, but we need to normatively define the expected Reading System behavior(s), like how default video controls get overridden by the SMIL scheduler.
  * Requiring head element implies that there is a required metadata element -- what is it?  Is head otherwise entirely optional?  No point in having an empty head.
  * Where are the OPS role (or ops:type) values defined?
- * Regarding the requirement to apply audio selectively:
-  * Add to media-timeline attribute bullet point: "However, there may be OPS spine items without any corresponding SMIL file."  In other words, perhaps there is a text/partial audio ebook.  
-  * Is it required that a SMIL file cover an entire text document?  Could it apply only to a portion?
  * Language: SMIL overlay, media-overlay, audio overlay, media-timeline, epub-time-active.  Let's pick a single term and use it everywhere (and use that term + "-active" for the CSS class).
  * What media-type for SMIL files in the manifest?  "application/smil" used here.
  * Certain text structures without @role may still be given a role value in the SMIL seq corresponding to that particular structure, e.g. an *aside* element does not always take @role but in the SMIL, you would want to specify one so that the aside could be skipped.  Do allowed OPS role values include this case or do we have to extend the values allowed in SMIL's @role to include OPS text element names?
