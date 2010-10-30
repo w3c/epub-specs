@@ -1,9 +1,4 @@
-#summary specification language for the SMIL overlay feature
-
-
-= TOC = 
-
-_This section is informative._
+#summary Specification for the SMIL overlay feature
 
 <wiki:toc max_depth="4" />
 
@@ -11,9 +6,7 @@ _This section is informative._
 
 _This section is informative._
 
-Books with synchronized text and audio can be found today in popular reading software, educational tools, and in formats for persons with print disabilities (often required by law). This is a proposal of how to add text/audio synchronization to EPUB (based on recorded human narration, not on live TTS Text-To-Speech rendition). It is designed as a transparent overlay to the current EPUB text file format and it will not break compatibility with text-only reading systems. 
-
-The mechanism by which audio is synchronized with text is SMIL, a W3C standard for representing synchronized multimedia information in XML.
+Books featuring audio narration synchronized with the text can be found today in mainstream book software, educational tools, and in formats for persons with print disabilities (often required by law).  In EPUB 3.0, these types of books are created by adding to the OPS fileset an overlay describing the timing for the pre-recorded audio narration. The file format for the overlay is SMIL, a W3C standard for representing synchronized multimedia information in XML.  This transparent overlay feature will not break compatibility with text-only reading systems. 
 
 = How to include SMIL files in EPUB =
 
@@ -21,16 +14,16 @@ The mechanism by which audio is synchronized with text is SMIL, a W3C standard f
 
 _This section is normative._
 
-SMIL files for an EPUB publication are to be listed in the manifest and will be given media-type="application/smil".
+SMIL files for an EPUB publication MUST be listed in the OPS manifest with media-type="application/smil".
 
-== The media-timeline attribute ==
+== The smil-overlay attribute ==
 
 _This section is normative._
 
- * What: a new attribute called *media-timeline*
+ * What: a new attribute called *smil-overlay*
  * Where: optional on OPF *itemref* elements
- * Contents: ID of the manifest item containing the SMIL overlay for the part of the publication referred to by that *itemref*.  
- * When this feature is enabled, there MUST be exactly one OPS spine itemref element per SMIL file.  In other words, multiple OPS spine items cannot share a single SMIL file.  
+ * Contents: ID of the manifest item containing the SMIL file overlay for the part of the publication referred to by that *itemref*.  
+ * While not every OPS spine itemref element is required to have a SMIL overlay associated with it, there MUST be a one-to-one relationship between SMIL files and OPS spine itemref elements; in other words, multiple OPS spine items cannot share a single SMIL file.  
  * Reading systems MAY support this new attribute
  * Content creators MAY include this feature
 
@@ -38,7 +31,7 @@ _This section is normative._
 
 _This section is informative._
 
-Example of how to specify that there is an audio overlay available.
+Example of how to specify that there is a SMIL overlay available.
 
 Add SMIL files to the manifest of the OPF file:
 {{{
@@ -49,15 +42,15 @@ Add SMIL files to the manifest of the OPF file:
 </manifest>
 }}}
 
-Add the *media-timeline* attribute to the OPF *itemref* element and reference the manifest item containing the SMIL file resource.
+Add the *smil-overlay* attribute to the OPF *itemref* element and reference the manifest item containing the SMIL file resource.
 {{{
 <spine>
-  <itemref idref="ch1" media-timeline="ch1_smil"/>
+  <itemref idref="ch1" smil-overlay="ch1_smil"/>
   ...
 </spine>
 }}}
 
-This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *media-timeline* attribute and process documents in their normal fashion.
+This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *smil-overlay* attribute and process documents in their normal fashion.
 
 = SMIL =
 
@@ -65,9 +58,9 @@ This is a forwards-compatible addition: 2.0 reading systems can safely ignore th
 
 _This section is informative._
 
-SMIL (Synchronized Multimedia Integration Language) is a W3C recommendation for describing multimedia presentations in XML.  The current version is [http://www.w3.org/TR/SMIL3/ SMIL 3.0].  This specification defines a subset of SMIL for the purpose of synchronizing an audio overlay with the text document(s) in EPUB publications.  SMIL is capable of doing much more and this subset could be built upon in future EPUB revisions, but this revision purposely defines a minimal set of SMIL elements and attributes in order to maintain simplicity.
+SMIL (Synchronized Multimedia Integration Language) is a W3C recommendation for describing multimedia presentations in XML.  The current version is [http://www.w3.org/TR/SMIL3/ SMIL 3.0].  This specification defines a subset of SMIL for the purpose of synchronizing an audio overlay with the text document(s) in EPUB publications.  SMIL is capable of doing much more and this subset could be built upon in the future, but this revision purposely defines a minimal set of SMIL elements and attributes in order to maintain simplicity.
 
-The key to understanding how SMIL works here is to see how it handles synchronization of media objects.  Media objects can be presented one at a time or in parallel with other media objects.  The elements for these behaviors are called *seq* (sequence) and *par* (parallel).  An EPUB SMIL overlay is, in its simplest form, defined as a sequence of parallel text and audio media objects, where the text consists of a reference to an element in the text content file and the audio consists of a clip of audio media.  The parallel sets of media objects are played one at a time.  
+The key to understanding how SMIL works here is to see how it handles synchronization of text and audio media objects.  The elements associated with synchronization behavior are called *seq* (sequence) and *par* (parallel).  An EPUB SMIL overlay is, in its simplest form, defined as a sequence of parallel (i.e. rendered together) text and audio media objects. 
 
 A basic SMIL document describing an audio overlay for an EPUB book is shown here:
 
@@ -97,15 +90,15 @@ A basic SMIL document describing an audio overlay for an EPUB book is shown here
 </smil>
 }}}
 
-Typical reading system playback behavior would be to play the audio clip and highlight the text element pointed to by the ID fragment.  Then, when the first audio clip reaches the specified end time, the next one is loaded and the next piece of text is highlighted.
+Typical reading system playback behavior would be to, for each *par* element, play the audio clip and highlight the text element pointed to by the ID fragment.  Then, when the first audio clip reaches the specified end time, the contents of the next *par* are rendered.
 
 There are additional features not represented in this very simple example, but they do not add much complexity.  They are described in the following sections as well as in the full example.
 
-== EPUB SMIL subset ==
+== Schema for the EPUB SMIL subset ==
 
 _This section is normative._
 
-Reading systems that support the *media-timeline* attribute MUST support the SMIL subset defined [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/miniSmil.rnc here].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.  
+Reading systems that support the *smil-overlay* attribute MUST support the [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/miniSmil.rnc EPUB SMIL subset].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.  
 
 == Media clipping attributes ==
 
@@ -114,10 +107,10 @@ _This section is normative._
 The attributes *clipBegin* and *clipEnd*, used to represent audio media clip times, are defined as follows:
 
  * Are a subset of [http://www.w3.org/TR/SMIL3/smil-extended-media-object.html#adef-clipBegin]
- * Use the same Normal play time (npt) but without the metric ("npt=") stated explicitly
- * Are written as hh:mm:ss.fraction or as seconds.fraction (e.g. "1:33:23.453", "345.21", "0:00:32.434")
- * Are non-negative
- * The value of clipEnd must be chronologically after that of clipBegin
+ * MUST be interpreted as normal play time (npt) values, although the metric ("npt=") is not stated explicitly
+ * MUST be expressed as hh:mm:ss.fraction or as seconds.fraction (e.g. "1:33:23.453", "345.21", "0:00:32.434")
+ * MUST be non-negative
+ * The value of clipEnd MUST be chronologically after that of clipBegin
  * If clipBegin is not specified, its value is assumed to be 0
  * If clipEnd is not specified, its value is assumed to be the end of the physical media
  * If clipEnd exceeds the duration of the physical media, then its value is assumed to be the end of the physical media 
@@ -129,9 +122,8 @@ The attributes *clipBegin* and *clipEnd*, used to represent audio media clip tim
 _This section is normative._
 
 The *ops:textref* attribute:
- * Must contain relative URIs with fragment identifiers
- * Must point to a text document within the publication
- * The contents must resolve to an element in the OPS text document corresponding to this SMIL file
+ * MUST contain relative URIs with fragment identifiers
+ * MUST resolve to an element in the OPS text document corresponding to this SMIL file
 
 === The purpose of ops:textref ===
 
@@ -159,7 +151,7 @@ Reading systems MAY support the *role* attribute in SMIL.
 
 _This section is informative._
 
-While reading, users may want to turn on or off certain features of the publication, such as sidebars, footnotes, page numbers, etc.  This feature is called "skippability".  In addition to default element names, the *role* attribute in the text document is used to express semantics of an element. In order to offer an equivalent set of options in the audio presentation, the *role* attribute can be used in the SMIL document. This approach provides an easy global switch to control rendering.
+While reading, users may want to turn on or off certain features of the publication, such as sidebars, footnotes, page numbers, or other types of secondary content.  This feature is called "skippability".  In addition to default element names, the *role* attribute in the text document is used to express semantics of an element. In order to offer an equivalent set of options in the audio presentation, the *role* attribute can be used in the SMIL document. This approach provides an easy global switch to control rendering.
 
 See how the *role* attribute is used in the full example below. 
 
@@ -167,13 +159,13 @@ See how the *role* attribute is used in the full example below.
 
 == Structure ==
 
-The SMIL document SHOULD be marked up with the same nested structures as the text document.  SMIL *seq* elements are used to represent text containers such as header, section, subsection, div, etc.  SMIL *body* is a sequence element, which corresponds with the text document's *body* element.  *Seq* elements MAY be nested to mimic the text structure.
+The SMIL document SHOULD be marked up with the same nested structures as the text document.  The SMIL *body* element corresponds with the text document's *body* element. SMIL *seq* elements are used to represent text containers such as header, section, subsection, div, and similar elements.  *Seq* elements SHOULD be nested to mimic the nested structures in the text.
 
-This, combined with the use of @role to identify special types of structures, allows the reading system to give users the option of escaping things like sidebars, footnotes, tables, etc. while they are reading.  
+This, combined with the use of @role to identify special types of structures, allows the reading system to give users the option of escaping structures like sidebars, footnotes, and tables while they are reading.  
 
 == Granularity ==
 
-SMIL text elements' *src* attribute values point to text document elements by using IDs.  The granularity level of the SMIL presentation therefore depends on how the text document is marked up.  If the finest level of text markup is at the paragraph level, then the synchronized text/audio presentation will display and highlight an entire paragraph while playing the audio for that whole paragraph.  On the other hand, if sub-paragraph markup is available, such as *span* elements wrapping phrases or sentences, then a finer level of granularity is possible in the SMIL presentation.  
+SMIL text elements' *src* attribute values point to text document elements by using their IDs.  The granularity level of the SMIL presentation therefore depends on how the text document is marked up.  If the finest level of text markup is at the paragraph level, then the synchronized text/audio presentation will display and highlight an entire paragraph while playing the audio for that whole paragraph.  On the other hand, if sub-paragraph markup is available, such as *span* elements wrapping phrases or sentences, then a finer level of granularity is possible in the SMIL presentation.  
 
 == Audio and Video ==
 
@@ -194,9 +186,9 @@ _This section is normative._
 
 Often, depending on reading system features, portions of text for which the corresponding audio narration is currently playing need to be highlighted visually, and scrolled into view.
 
-A CSS pseudo class *epub-time-active* is used to indicate that a particular text fragment is "active".
+A CSS pseudo class *smil-overlay-active* is used to indicate that a particular text fragment is "active".
 
-Content creators MAY include style information for *epub-time-active*.
+Content creators MAY include style information for *smil-overlay-active*.
 
 Reading systems MAY implement this pseudo class.  
 
@@ -204,48 +196,21 @@ Reading systems MAY implement this pseudo class.
 = Full example =
 
 == OPF file ==
-TODO
+TODO: show an OPF file with multiple chapters featuring SMIL overlays
 
 == SMIL file ==
-{{{
-<body>
-	<par id="smil1">
-		<text src="chapter1.html#id1"/>
-		<audio src="aud.mp3" clipBegin="0" clipEnd="12.5"/>
-	</par>
-	<par id="smil2">
-	    <text src="chapter1.html#id2"/>
-	    <audio src="aud.mp3" clipBegin="12.5" clipEnd="17.34"/>
-	</par>
-	<par id="smil3">
-		<text src="chapter1.html#id3"/>
-		<audio src="aud.mp3" clipBegin="17.34" clipEnd="28"/>
-	</par>
-	<seq ops:textref="chapter1.html#id4" id="smil4" role="sidebar">
-		<par id="smil5">
-		    <text src="chapter1.html#id5"/>
-		    <audio src="aud.mp3" clipBegin="28" clipEnd="35.634"/>
-		</par>
-		<par id="smil6">
-			<text src="chapter1.html#id6"/>
-			<audio src="aud.mp3" clipBegin="35.634" clipEnd="43.2"/>
-		</par>
-	</seq>
-</body>
-
-}}}
+TODO: show a SMIL file and how it mimics the structure of the text document
 
 == Text content file ==
-TODO
+TODO: a snippet of a text content file showing the structure mimicked by the SMIL document above
 
 == CSS file ==
-TODO
+TODO: show some value(s) for pseudo class smil-overlay-active
 
 = Pending TODOs  =
 
  * Requiring head element implies that there is a required metadata element -- what is it?  Is head otherwise entirely optional?  No point in having an empty head.
  * Where are the OPS role (or ops:type) values defined?
- * Language: SMIL overlay, media-overlay, audio overlay, media-timeline, epub-time-active.  Let's pick a single term and use it everywhere (and use that term + "-active" for the CSS class).
  * What media-type for SMIL files in the manifest?  "application/smil" used here.
  * Certain text structures without @role may still be given a role value in the SMIL seq corresponding to that particular structure, e.g. an *aside* element does not always take @role but in the SMIL, you would want to specify one so that the aside could be skipped.  Do allowed OPS role values include this case or do we have to extend the values allowed in SMIL's @role to include OPS text element names?
  * Add full example
