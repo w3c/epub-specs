@@ -22,7 +22,7 @@ function SmilPlayer()
 	this.smil_url = "";
 }
 // load a file (expected: a full path to the file)
-SmilPlayer.prototype.load_smil = function(filepath)
+SmilPlayer.prototype.load_smil = function(filepath, callback)
 {
 	/*
 	Use this command line on Mac OSX to launch Chrome and avoid running a webserver (bypassing the XMLHttpRequest cross-origin / local file restrictions):
@@ -62,7 +62,7 @@ SmilPlayer.prototype.load_smil = function(filepath)
 				if (xml_http.readyState == 4)
 				{
 				  	xml_doc = xml_http.responseXML.documentElement;
-					return smil_player.continue_loading(xml_doc);
+					smil_player.continue_loading(xml_doc, callback);
 					
 				} else 
 				{
@@ -79,23 +79,23 @@ SmilPlayer.prototype.load_smil = function(filepath)
     catch(e) {
         debug_trace(e.message);
 		this.smil_root = null;
-		return false;
+		callback(false);
     }
 	
 }
 
-SmilPlayer.prototype.continue_loading = function(xml_doc)
+SmilPlayer.prototype.continue_loading = function(xml_doc, callback)
 {
 	// the body element is the container for the top-level sequence.  
     var main_seq = xml_doc.getElementsByTagName("body")[0];
     if (!main_seq) {
         debug_error("No body element found in SMIL")
-        return false;
+        callback(false);
     }
 	
     this.smil_root = this.make_smil_tree(main_seq);
 	this.started = false;
-	return true;
+	callback(true);
 }
 
 // stop everything from playing

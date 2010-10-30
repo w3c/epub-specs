@@ -126,7 +126,7 @@
 				
 				// just play one file for the moment .. later we'll add support for multiple spine items
 				var textid = itemrefs[0].getAttribute("idref");
-				var timelineid = itemrefs[0].getAttribute("timeline");
+				var timelineid = itemrefs[0].getAttribute("smil-overlay");
 				
 				var textsrc = get_manifest_href_by_id(manifest, textid);
 				var smilsrc = get_manifest_href_by_id(manifest, timelineid);
@@ -163,20 +163,22 @@
 				
 				var frame_elm = $("#reader_main")[0];
                 smil_player.book_doc = frame_elm.contentDocument;
-                if (!smil_player.load_smil(smil_file)) {
-		            $("#debug")[0].innerHTML += "<p>Error loading SMIL file: " + smil_file + "</p>";
-					return;
-		        }
-		        else {
-		            //smil_player.debug_print($("#debug")[0]);
-		        }
-	            
-                //listen for the events in the iframe document
-				var frame_elm = $("#reader_main")[0];
-                contentWindow = frame_elm.contentDocument.defaultView;
-				
-				checkHash();
+                smil_player.load_smil(smil_file, function(result) {
+					if (result) {
+						   	var frame_elm = $("#reader_main")[0];
+			                contentWindow = frame_elm.contentDocument.defaultView;
 
+							checkHash();
+							registerClickEvents();		
+					}
+					else {
+						$("#debug")[0].innerHTML += "<p>Error loading SMIL file: " + smil_file + "</p>";
+						return;
+					}
+				});
+			}
+			function registerClickEvents()
+			{
 				$(contentWindow).click(function(evt) {
 					if(!evt.originalEvent) return;
 					if (!evt.srcElement.hasAttribute("id")) return;
