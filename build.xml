@@ -12,6 +12,7 @@
 	
 	<property name="dir.util" value="${basedir}/util" />	
 	<property name="dir.util.rng" value="${dir.util}/relaxng" />
+	<property name="dir.util.rng.schemadoc" value="${dir.util.rng}/schemadoc" />
 	<property name="dir.util.docbook" value="${dir.util}/docbook" />
 	<property name="dir.util.docbook.schema" value="${dir.util.docbook}/schema"/>
 	<property name="dir.util.docbook.xsl" value="${dir.util.docbook}/xsl-ns"/>
@@ -20,8 +21,12 @@
 	
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.lib" value="${basedir}/lib" />	
-	<property name="dir.build" value="${basedir}/build" />	
+	<property name="dir.build" value="${basedir}/build" />
+	<property name="dir.build.schema" value="${basedir}/build/schema" />
+	<property name="dir.build.schemadoc" value="${basedir}/build/schemadoc" />
 	<property name="dir.temp" value="${basedir}/temp" />		
+	
+	<property name="schema.src.ops" value="${dir.src.schema}/ops30.rnc"/>
 	
 	<property name="schema.rng" value="${dir.util.rng}/relaxng.rng" />
 	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl" />
@@ -77,9 +82,10 @@
 	<target name="build-schemas" depends="clean, validate-src-rng-schemas">
 		<!-- TODO run schemas against test suite -->
 		
-		<!-- ocf -->
-		<copy file="${dir.src.schema}/ocf30.rng" todir="${dir.build}"/>
-				
+		<clean-dir dir="${dir.build.schema}"/>
+		<copy todir="${dir.build.schema}">
+			<fileset dir="${dir.src.schema}" /> <!--  includes="*.rng *.rnc *.sch" -->
+		</copy>				
 	</target>
 
 	<target name="build-archives" depends="clean, build-specs, build-schemas">
@@ -101,6 +107,89 @@
 		
 	</target>
 	
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+	<target name="build-schemadoc" depends="schemadoc-depends, build-schemadoc-ops"/>
+	
+	<target name="build-schemadoc-ops" depends="schemadoc-depends">
+		<schemadoc 			
+			in-schema="${schema.src.ops}"
+			out-dir="${dir.build.schemadoc}/ops30"
+			machine-name="ops30"		
+		/>
+	</target>	
+	
+	<macrodef name="schemadoc">
+		<attribute name="in-schema" />
+		<attribute name="out-dir" />
+		<attribute name="machine-name" />
+				
+		<sequential>			
+			<mkdir dir="@{out-dir}"/>
+			
+			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
+			
+			<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
+				<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
+				<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
+				<arg value="false"/>
+				<arg value="false"/>
+				<classpath refid="build.classpath"/>					
+			</java>
+			
+			<saxon-xslt 
+				in="${dir.temp}/@{machine-name}-quasi.rng" 
+				style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
+				out="${dir.temp}/dummy-schemadoc.xml">
+				<param name="rd-summary" expression="${dir.temp}/summary.xml" />
+				<param name="output-path" expression="${dir.build.schemadoc}/@{machine-name}/" />
+				<param name="profile-machine-name" expression="ops30" />
+				<param name="debug" expression="0" />
+			</saxon-xslt> 
+			
+			<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
+			
+			<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" tofile="${dir.build.schemadoc}/@{machine-name}/schemadoc.css" />	
+		</sequential>
+		
+	</macrodef>
+	
+	<target name="schemadoc-depends">
+		<echoxml file="${dir.temp}/summary.xml">
+			<summary>
+				<profile nicename="OPS 3.0" machinename="ops30" rd-uri="http://www.idpf.org/draft/2010-10-02" />								
+			</summary>
+		</echoxml>
+	</target>
+	
+	<!-- broken on ops
+	<target name="rng-topology-ops">		 
+		<rng-topology
+			in-schema="${schema.src.ops}"
+			out-dir="${dir.build}/topology"
+			machine-name="ops30"
+		/>
+	</target>	
+	-->
+	<!--
+	<macrodef name="rng-topology">
+		<attribute name="in-schema"/>
+		<attribute name="machine-name" />
+		<attribute name="out-dir"/>
+		<sequential>
+			<mkdir dir="@{out-dir}"/>
+			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
+			<saxon-xslt 
+				in="${dir.temp}/@{machine-name}-trangd.rng" 
+				style="${dir.util.rng}/rng-topology.xsl" 
+				out="@{out-dir}/@{machine-name}-topology.html">							
+			</saxon-xslt> 			
+			<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" todir="@{out-dir}"/>
+		</sequential>
+	</macrodef>
+	-->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!--   v a l i d a t i o n - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -135,7 +224,7 @@
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*container*.xml"
 			fileset-excludes="${example-exclude-pattern}"
-			schema="${dir.src.schema}/ocf30.rng"
+			schema="${dir.src.schema}/ocf30-container.rnc"
 			failonerror="false"
 		/>
 		
@@ -144,7 +233,7 @@
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*signatures*.xml"
 			fileset-excludes="${example-exclude-pattern}"
-			schema="${dir.src.schema}/ocf30.rng"
+			schema="${dir.src.schema}/ocf30-signatures.rnc"
 			failonerror="false"
 		/>
 		
@@ -153,13 +242,17 @@
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*encryption*.xml"
 			fileset-excludes="${example-exclude-pattern}"
-			schema="${dir.src.schema}/ocf30.rng"
+			schema="${dir.src.schema}/ocf30-encryption.rnc"
 			failonerror="false"
 		/>
 		
 		<!-- ops TODO -->
 		
 		<!-- opf TODO -->
+		
+		<!-- ncx TODO -->
+		
+		<!-- smil-overlay TODO -->
 		
 		
 	</target>
@@ -233,22 +326,52 @@
 		
 	<target name="clean" depends="clean-temp-dir, clean-build-dir" />
 	
-	<target name="clean-temp-dir">
-		<delete includeemptydirs="true" failonerror="false">
-		  <fileset dir="${dir.temp}" includes="**/*" />
-		</delete>	
-		<mkdir dir="${dir.temp}"/>
+	<target name="clean-temp-dir">	
+		<clean-dir dir="${dir.temp}"/>
 	</target>
 		
 	<target name="clean-build-dir">
-		<delete failonerror="false" includeemptydirs="true">
-			<fileset dir="${dir.build}" includes="**/*" />
-		</delete>
-		<mkdir dir="${dir.build}" />
+		<clean-dir dir="${dir.build}" />
 	</target>
 
+	<macrodef name="clean-dir">
+		<attribute name="dir"/>
+		<sequential>
+			<delete failonerror="false" includeemptydirs="true">
+				<fileset dir="@{dir}" includes="**/*" />
+			</delete>
+			<mkdir dir="@{dir}" />
+		</sequential>
+	</macrodef>
+	
+	<target name="xmlgen-ops">
+		<mkdir dir="${dir.temp}/trang" />
+		<trang
+			in="${schema.src.ops}"
+			out="${dir.temp}/trang/ops30.rng"
+			/>		
+		<xmlgen 
+			input-schema="${dir.temp}/trang/ops30.rng"
+			output-dir="${dir.temp}/xmlgen"
+			output-count="10"
+			datatype-example="${dir.util}/xmlgen/ops-datatypes.xml"
+			root="{http://www.w3.org/1999/xhtml}html"
+		/>
+	</target>
+	
 
-
+	<macrodef name="trang">
+		<attribute name="in"/> 
+		<attribute name="out"/> 
+		<sequential>				
+			<java jar="${dir.lib}/trang.jar" fork="true" failonerror="true" maxmemory="512m">
+				<arg value="@{in}" />
+				<arg value="@{out}" />
+				<classpath refid="build.classpath" />
+			</java>
+		</sequential>
+	</macrodef>
+	
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!--   t a s k d e f s - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -272,7 +395,86 @@
 		</classpath>		
 	</taskdef>	
 		
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   x m l g e n - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 	
+	<macrodef name="xmlgen">
+			<attribute name="input-schema" />		<!-- can't be rnc -->
+			<attribute name="output-dir" />
+			<attribute name="output-count" />		<!-- number of instances to generate -->
+			<attribute name="datatype-example" /> 	<!-- xmlgen datatype training -->
+			<attribute name="root" /> 				<!-- clark syntax -->
+			
+			<sequential>
+				<delete failonerror="false" includeemptydirs="true">
+					<fileset dir="@{output-dir}" includes="**/*" />
+				</delete>
+				<mkdir dir="@{output-dir}" />
+				<java jar="${dir.lib}/xmlgen/xmlgen.jar" 				   				  
+					  fork="true" maxmemory="512m">			
+									
+					<arg value="-n" />
+					<arg value="@{output-count}" />
+					
+					<arg value="-seed" />
+					<arg value="3145349583" />
+					
+					<arg value="-depth" />
+					<arg value="10" />
+					
+					<arg value="-width" />
+					<arg value="10" />
+					
+					<arg value="-example" />				
+					<arg value="@{datatype-example}" />
+					
+					<arg value="-encoding" />				
+					<arg value="utf-8" />
+					
+					<arg value="-root"/>
+					<arg value="@{root}" />
+					
+					<arg value="@{input-schema}"/>
+					<arg value="@{output-dir}/out$.xml" />
+													
+					<classpath>					
+						<pathelement path="${java.class.path}"/>
+						<fileset dir="${dir.lib}/xmlgen/" includes="**/*.jar" />												  
+					</classpath>
+					
+				</java>
+			</sequential>
+			<!--
+		 [java]	Usage: XMLGenerator <options> <schema> [<output name>]
+	     [java] Options:
+	     [java]   -dtd      : use a DTD as a schema
+	     [java]   -ascii    : use US-ASCII characters only
+	     [java]   -seed <n> : set random seed
+	     [java]   -depth <n>: set cut back depth
+	     [java]   -width <n>: maximum number of times '*'/'+' are repeated
+	     [java]   -n <n>    : # of files to be generated
+	     [java]   -warning  : show warnings.
+	     [java]   -quiet    : be quiet.
+	     [java]   -root {<namespaceURI>}<localName>
+	     [java]       fix the root element to the given element
+	     [java]   -encoding <str>
+	     [java]       output encoding (Java name)
+	     [java]   -example <filename>
+	     [java]       use the given file as an example. tokens found in the example
+	     [java]       is used to generate documents
+	     [java]   -error <n>/<m>
+	     [java]       error ratio. generate n errors per m elemnts (average).
+	     [java]       to control error generation, see manual for details.
+	     [java]   -nocomment: suppress insertion of comments that indicate generated errors.
+	     [java] 
+	     [java]   <output name> must include one '$'. '$' will be replaced by number.
+	     [java]   e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...
+	     [java]   if omitted, generated file will be sent to stdout.
+			
+			-->
+		</macrodef>
 	
 	
 </project>
