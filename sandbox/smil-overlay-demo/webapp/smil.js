@@ -114,6 +114,11 @@ SmilPlayer.prototype.is_playing = function()
 	var audio_renderer = Renderers.find_renderer_for_type("audio");
 	if (audio_renderer) {
 		retval = audio_renderer.is_playing();
+	} else {
+		var video_renderer = Renderers.find_renderer_for_type("video");
+		if (video_renderer) {
+			retval = video_renderer.is_playing();
+		}
 	}
 	
 	debug_trace("SmilPlayer is_playing() returns " + retval.toString());
@@ -191,9 +196,20 @@ SmilPlayer.prototype.pause = function()
 		else {
 			debug_trace("... but no audio is currently playing");
 		}
-	}
-	else {
-		debug_trace("... but there is no audio renderer");
+	} else {
+		var video_renderer = Renderers.find_renderer_for_type("video");
+		if (video_renderer) {
+			var elm = this.find_currently_playing_by_type("video");
+			if (elm) {
+				video_renderer.pause(elm);
+			}
+			else {
+				debug_trace("... but no video is currently playing");
+			}
+		}
+		else {
+			debug_trace("... but there is no audio/video renderer");
+		}
 	}
 	
 	
@@ -228,6 +244,15 @@ SmilPlayer.prototype.resume = function()
 			var elm = this.find_currently_playing_by_type("audio");
 			if (elm) {
 				audio_renderer.resume(elm);
+			}
+		}
+		else {
+			var video_renderer = Renderers.find_renderer_for_type("video");
+			if (video_renderer) {
+				var elm = this.find_currently_playing_by_type("video");
+				if (elm) {
+					video_renderer.resume(elm);
+				}
 			}
 		}
 		
@@ -310,7 +335,7 @@ SmilPlayer.prototype.smil_node_factory = function(elm)
 		this.temp_par_node = node;
 		return node;
 	}
-    else if (elm.nodeName == "audio" || elm.nodeName == "text") {
+    else if (elm.nodeName == "audio" || elm.nodeName == "video" || elm.nodeName == "text") {
         var node = new MediaNode();
         node.smil_elm = elm;
 		if (elm.nodeName == "text") {
@@ -477,17 +502,27 @@ SmilPlayer.prototype.set_rate = function(rate)
 {
 	debug_trace("SmilPlayer set_rate(" + rate.toString() + ")");
 	this.rate = rate;
+	
 	var audio_renderer = Renderers.find_renderer_for_type("audio");
-	var elm = this.find_currently_playing_by_type("audio");
-	audio_renderer.set_rate(elm, rate);
+	var elm_audio = this.find_currently_playing_by_type("audio");
+	if (audio_renderer) audio_renderer.set_rate(elm_audio, rate);
+	
+	var video_renderer = Renderers.find_renderer_for_type("video");
+	var elm_video = this.find_currently_playing_by_type("video");
+	if (video_renderer) video_renderer.set_rate(elm_video, rate);
 }
 SmilPlayer.prototype.set_volume = function(volume)
 {
 	debug_trace("SmilPlayer set_volume(" + volume.toString() + ")");
 	this.volume = volume;
+	
 	var audio_renderer = Renderers.find_renderer_for_type("audio");
-	var elm = this.find_currently_playing_by_type("audio");
-	audio_renderer.set_volume(elm, volume);
+	var elm_audio = this.find_currently_playing_by_type("audio");
+	if (audio_renderer) audio_renderer.set_volume(elm_audio, volume);
+	
+	var video_renderer = Renderers.find_renderer_for_type("video");
+	var elm_video = this.find_currently_playing_by_type("video");
+	if (video_renderer) video_renderer.set_volume(elm_video, volume);
 }
 // main abstract object representing a node in the smil tree
 function SmilNode()
@@ -918,7 +953,10 @@ AudioRenderer.prototype.resolve_media = function(node)
 		}
 		// if it still was not found, create it
 		if (!node.html_elm) {
+			//if (node.smil_elm.nodeName == "audio") {
+
 			node.html_elm = new Audio(src_fullpath);
+
 		    this.audio_media.push(node.html_elm);
 		}
 	}
@@ -982,6 +1020,168 @@ AudioRenderer.prototype.is_playing = function() {
 	return retval;
 }
 
+
+// video media renderer
+function VideoRenderer()
+{
+    this.rate = 1;
+	this.volume = 0.6;
+    this.supported = "video";
+	// keep a list of video media html elements (one entry per video file) so we don't re-create them
+	this.video_media = [];
+	this.event_listeners = 0;
+	this.currentAudioEventManager = null;
+}
+VideoRenderer.prototype = new Renderer();
+// whether or not the given node can by rendered
+VideoRenderer.prototype.can_render = function(node)
+{
+    if (!node) return false;
+    if (!node.smil_elm) return false;
+    if (node.smil_elm.nodeName == this.supported) return true;
+    return false;
+}
+// start playing the video
+VideoRenderer.prototype.start_render = function(node)
+{
+	// create an html element (or find one we've already created) for this video media
+    this.resolve_media(node);
+
+    try {
+        node.html_elm.defaultPlaybackRate = this.rate;
+		node.html_elm.volume = this.volume;
+        debug_trace("VideoRenderer start: " + node.to_string());
+
+		this.currentAudioEventManager = new AudioEventManager(node);
+		
+        var cb = parseFloat(node.smil_elm.getAttribute("clipBegin"));
+        if (node.html_elm.currentTime != cb) {
+			try {
+				debug_trace("Video set currentTime (clipBegin): " + cb + " - was: " + node.html_elm.currentTime);
+            	node.html_elm.currentTime = cb;
+		    } 
+			catch(e) {
+				debug_trace("Video set currentTime exception: " + e.message);
+		      function setThisTime() {
+            	node.html_elm.currentTime = cb;
+		        node.html_elm.removeEventListener("canplay", setThisTime, true);
+		      }
+		      node.html_elm.addEventListener("canplay", setThisTime, true);
+		    }
+            node.html_elm.play();
+		}
+        else {
+			debug_trace("Video Play (clipBegin ok)");
+            node.html_elm.play();
+		}    
+    }
+    catch(e) {
+		debug_error(e.message);
+        node.notify_done();
+    }
+}
+// pause the video
+VideoRenderer.prototype.stop_render = function(node)
+{
+	debug_trace("VideoRenderer stopped " + node.to_string());
+	if (this.currentAudioEventManager != null) {
+		this.currentAudioEventManager.remove_listeners();
+	}
+    node.html_elm.pause();
+}
+// create an html element to represent this video media, or find one in our array of already-created elements
+VideoRenderer.prototype.resolve_media = function(node)
+{
+	if (!node.html_elm) {
+		var src = node.smil_elm.getAttribute("src");
+		
+		var base_path = url_get_path(smil_player.smil_url);
+        var src_fullpath = go_relative(base_path, src);
+		
+		// look in the collection of media elements already created by this renderer
+		for (var i = 0; i < this.video_media.length; i++) {
+			if (this.video_media[i].hasAttribute("src") && this.video_media[i].getAttribute("src") == src_fullpath) {
+				node.html_elm = this.video_media[i];
+				break;
+			}
+		}
+		// if it still was not found, create it
+		if (!node.html_elm) {
+			
+			var video_placeholder = $("#video_placeholder")[0];
+			
+			//if (node.smil_elm.nodeName == "video") {
+			//node.html_elm = new Video(src_fullpath);
+			//video_placeholder.appendChild(node.html_elm);
+			
+			$("#video_placeholder").append("<video id=\"zVideo\" src=\"" + src_fullpath + "\"/>");
+			
+			node.html_elm = $("#zVideo")[0];
+				
+		    this.video_media.push(node.html_elm);
+		}
+	}
+}
+//additional functions outside of the basic renderer "api"
+// pause playback
+VideoRenderer.prototype.pause = function(node)
+{
+	debug_trace("VideoRenderer paused " + node.to_string());
+    node.html_elm.pause();
+}
+// resume playback
+VideoRenderer.prototype.resume = function(node)
+{	
+	debug_trace("VideoRenderer resume " + node.to_string());
+    node.html_elm.play();
+}
+// set the rate
+// 1 = normal speed, forward playback
+// and, according to the HTML5 draft (http://www.w3.org/TR/html5/video.html):
+// "If the playbackRate  is positive or zero, then the direction of playback is forwards. Otherwise, it is backwards.
+VideoRenderer.prototype.set_rate = function(node, rate)
+{
+    this.rate = rate;
+    if (node && node.html_elm) {
+        var was_playing = !node.html_elm.paused;
+        if (was_playing)
+            node.html_elm.pause();
+            
+        node.html_elm.defaultPlaybackRate = this.rate;
+        
+        if (was_playing)
+            node.html_elm.play();
+    }
+    
+}
+VideoRenderer.prototype.set_volume = function(node, volume)
+{
+	this.volume = volume;
+    if (node && node.html_elm) {
+        var was_playing = !node.html_elm.paused;
+        if (was_playing)
+            node.html_elm.pause();
+            
+        node.html_elm.volume = this.volume;
+        
+        if (was_playing)
+            node.html_elm.play();
+    }
+}
+// are we playing video?
+VideoRenderer.prototype.is_playing = function() {
+	var retval = false;
+	
+	for (var i = 0; i < this.video_media.length; i++) {
+		if (this.video_media[i].paused == false) 
+			retval = true;
+	}
+	
+	debug_trace("VideoRenderer is_playing() returns " + retval.toString());
+	return retval;
+}
+
+
 // renderer instances and the global Renderers.renderers array
 function Renderers(){}
 Renderers.renderers = [];
@@ -1009,10 +1209,10 @@ Renderers.find_renderer_for_type = function(type)
         return 0;
 }
 
-// our two renderers
+// our 3 renderers
 Renderers.renderers.push(new HighlightTextRenderer());
 Renderers.renderers.push(new AudioRenderer());
-
+Renderers.renderers.push(new VideoRenderer());
 
 
 
