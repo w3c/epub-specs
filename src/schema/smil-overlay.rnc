@@ -1,0 +1,34 @@
+   
+
+   default namespace = "http://www.w3.org/ns/SMIL"
+   namespace ops = "http://www.idpf.org/2007/ops"
+
+   include "./mod/ops-type-attr.rnc"
+   include "./mod/rdfa-attrs.rnc"   
+   include "./mod/datatypes.rnc"
+
+   start = element smil { smil.smil.attlist & smil.smil.content }
+   smil.smil.attlist = smil.id.attr? & rdfa.profile.attr? & rdfa.prefix.attr?
+   smil.smil.content = smil.head?, smil.body.seq 
+   
+   smil.head = element head { smil.meta* }  
+   
+   smil.meta = element meta { attribute content { text }, attribute name { text } }
+      | element meta { rdfa.property.attr, rdfa.about.attr?, text }
+   
+   smil.body.seq = element seq { smil.tc.attrs & (smil.seq | smil.par)+ }   
+   
+   smil.seq = element seq { smil.tc.attrs & ops.textref.attr & (smil.seq | smil.par)+ }
+    
+   smil.par = element par { smil.tc.attrs, smil.text, smil.audio }
+   
+   smil.text = element \text { smil.src.attr }
+   
+   smil.audio = element audio { attribute clipBegin { datatype.smil.npt }? 
+      & attribute clipEnd { datatype.smil.npt } & smil.src.attr }?
+            
+            
+   smil.tc.attrs = ops.type.attr?, smil.id.attr?
+   smil.src.attr = attribute src { datatype.URI }
+   smil.id.attr = attribute id { datatype.ID }
+   ops.textref.attr = attribute ops:textref { datatype.URI }
