@@ -91,14 +91,22 @@
         </section>
         <section xml:id="sec-overview-relationship">
             <title>Relationship to Other Specifications</title>
-            <para>This specification references and integrates the building-block specifications
-                comrpising EPUB3: OCF, OPF, Content Documents, NCX, and Media Overlays. Unless
-                otherwise specified terms used herein have the meaning defined in these
-                specifications <remark role="todo"><remark role="todo"> TBD: enumerate other
-                        dependent specs </remark>TBD: statement about layered use of terminology
-                    from other dependent specs </remark><remark role="todo"> TBD: statement about
-                    conformance requirements based on dependent specs<remark role="todo"> TBD: this
-                        specification supersedes OPS 2.0.1</remark></remark></para>
+            <para>This specification depends on other building-block specifications These include
+                EPUB Content Documents 3.0, Open Container Format 3.0, and EPUB Media Overlays 3.0. </para>
+            <para>This specification defines constructs based on XML, and by default all terminology
+                used in this specification has the same meaning as its use in [XML]. This
+                specification also relies on XML Namespaces, and in this specification the term "XML
+                namespace" (or just "namespace") has the meaning defined in that specification </para>
+            <para>EPUB Publications 3.0 is a revision to, and supersedes, Open Package Format 2.0.1
+                [OPF2].</para>
+            <para>
+                <remark role="todo"><remark role="todo"> TBD: enumerate other dependent specs
+                    </remark>TBD: statement about layered use of terminology from other dependent
+                    specs </remark>
+                <remark role="todo"> TBD: statement about conformance requirements based on
+                    dependent specs<remark role="todo"> TBD: this specification supersedes OPS
+                        2.0.1</remark></remark>
+            </para>
             </section>
 
         <section xml:id="sec-overview-terminology">
@@ -108,11 +116,8 @@
                     <glossterm>EPUB Publication (<emphasis role="underline">or</emphasis>
                         Publication)</glossterm>
                     <glossdef>
-                        <para>A collection of Content Documents, an OPF Package file, and other
-                            media files and supporting components, packaged in an OCF container in
-                            manner also conformant with this specification. Note that because OCF
-                            defines both ZIP and Filesystem containers, an EPUB Publication does not
-                            necessarily exist in the form of a single file.</para>
+                        <para>A collection of Content Documents, a Package file, and other media
+                            files and supporting components.</para>
                     </glossdef>
                 </glossentry>
                 <glossentry>
@@ -151,6 +156,13 @@
                             Systems are contemplated by this specification.</para>
                     </glossdef>
                 </glossentry>
+                <glossentry>
+                    <glossterm>Package Document</glossterm>
+                    <glossdef>
+                        <para>An XML Document conformant with the Package schema and additional
+                            constraints defined in this specification</para>
+                    </glossdef>
+                </glossentry>
             </glosslist>
         </section>            
         
@@ -164,248 +176,91 @@
     <chapter xml:id="sec-opf-introduction">
         <title>Introduction</title>
         <para>EPUB is an interchange and delivery format for digital publications, based on XML and
-            Web Standards. An EPUB Publication can be thought of as a "website in a box": a
-            packaging of Web content that represents a digital book, magazine, or other type of
-            publication, with a declarative means to navigate through the content, and able to
-            distributed reliably for online and offline consumption. </para>
+            Web Standards. An EPUB Publication can be thought of as a "website in a box" <remark
+                role="todo">TODO: FIND BETTER TERM</remark>: a packaging of Web content that
+            represents a digital book, magazine, or other type of publication, with a declarative
+            means to navigate through the content, and able to distributed reliably for online and
+            offline consumption. </para>
         <para>This specification defines the semantics and conformance requirements for EPUB at the
             publication level. The individual contents of EPUB Publications are defined by other
-            specifications; any  EPUB Publication consists of at minimum four files (e.g.,
-            container.xml, manifest.opf, nav.ncx, and index.html), defined according to the rules of
-            four independent, modular specifications (respectively OCF3, OPF3, NCX3, and
-            ContentDocs3). This specification defines the additional rules for how these files and
-            other optional files are tied together to create valid and conforming EPUB Publications,
-            and for how such Publications are processed by a conforming Reading System.</para>
+            specifications; a fully-packaged EPUB Publication consists of at minimum four files
+            (e.g., container.xml, manifest.opf, nav.ncx, and index.html), defined according to the
+            rules of this and other specifications (including [OCF3], and [ContentDocs3]). This
+            specification defines the formats of the OPF and NCX files, as well as additional rules
+            for how these files and other optional files are tied together to create valid and
+            conforming EPUB Publications, and for how such Publications are processed by a
+            conforming Reading System.</para>
     </chapter>
     <chapter xml:id="sec-ocf-overview">
         <title>EPUB Publications</title>
+        <para>This section describes the high-level content and Reading System conformance requirements for EPUB Publications. The sections 
+        following this one describe more specifically the requirements for Package Documents, NCX Documents, and Core Media Types</para>
         <section xml:id="sec-ocf-overview-intro">
-            <title>Content Conformance</title>
-            <para>An EPUB Publication consists of</para>
+            <title>Publication-level Content Conformance</title>
+            <para>A minimal EPUB Publication consists of</para>
             <para>
                 <itemizedlist>
                     <listitem>
-                        <para>One or more EPUB Content Documents (conformant to
-                            [ContentDocs3])</para>
+                        <para>Exactly one Package Document, conformant to the Package Document
+                            requirements defined in this specification</para>
                     </listitem>
                     <listitem>
-                        <para>Exactly one Package File (conformant to OPF3)</para>
+                        <para>An associated NCX Document, conformant to NCX Document requirements
+                            defined in this specificaiton</para>
                     </listitem>
                     <listitem>
-                        <para>Exactly one NCX Document (conformant to NCX3)</para>
+                        <para>One or more EPUB Content Documents, conformant to the requirements of
+                            [ContentDocs3]</para>
                     </listitem>
                     <listitem>
-                        <para>Zero or more Media Overlay Documents (conformant to  Overlays3)</para>
+                        <para>Zero or more Media Overlay Documents, conformant to [Overlays3]</para>
                     </listitem>
                     <listitem>
-                        <para>Zero or more additional  files, all of which, together with the EPUB
-                            Content Document(s), NCX Document, and Media Overlay Documents(s) if any, must
-                            be uniquely referenced in the Package File's &lt;manifest> element
-                            conformant to the rules of OPF3</para>
-                    </listitem>
-                    <listitem>
-                        <para>Packaged as a Filesystem or ZIP container conformant to the rules of
-                            OCF3 (containing a valid META-INF/container.xml file and, if in the ZIP
-                            container, a MIMETYPE file), potentially together with <emphasis
-                                role="bold">external files<emphasis role="bold"
-                                >,</emphasis></emphasis> additional files that are not referenced in
-                            the &lt;manifest> and thus not considered part of the EPUB
-                            Publication.</para>
+                        <para>Zero or more additional files, all of which, together with the EPUB
+                            Content Document(s), NCX Document, and Media Overlay Documents(s) if
+                            any, must be uniquely referenced in the Package File's &lt;manifest>
+                            element</para>
                     </listitem>
                 </itemizedlist>
-            </para>
-            <para>that also adheres to the following additional requirements:</para>
-            <para>
-                <itemizedlist>
-                    <listitem>
-                        <para role="contentconf">The <literal>container.xml</literal>'s <literal>rootfiles</literal> element must contain a <literal>rootfile</literal>
-                            element with a <literal>media-type</literal> of <literal>application/oebps-package+xml</literal> that
-                            references the Publication's Package File </para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">Each <literal>item</literal> referenced by the Package File's
-                        <literal>spine</literal> element must be an Extended Content Document
-                            Reference.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">For each item in the manifest whose media-type is
-                            an EPUB3 Core Media Type (as defined in Section 4.1 of this document),
-                            the file referenced by that item must conform to the applicable
-                            specification for that Core Media Type. </para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">Each item in the manifest whose <literal>media-type</literal> is NOT
-                            one of the EPUB3 Core Media Types must specify a fallback chain that
-                            includes at least one item whose <literal>media-type</literal> is an EPUB3 Core Media Type,
-                            or which references an XML Document and includes a
-                            <literal>fallback-style</literal>.</para>
-                    </listitem><listitem>
-                        <para role="contentconf">The Package Document's <literal>package</literal> element's <literal>toc</literal>" attribute value must
-                            be the id of the manifest item corresponding to an NCX file.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">All references in the NCX Document must resolve to
-                            or within a resource that is represented by an Extended Content Document
-                            Reference. </para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">If the Package Document contains a <literal>guide</literal> element,
-                            the <literal>href</literal> attribute of each <literal>reference</literal> element within it must resolve to
-                            or within a resource that is represented by an Extended Content Document
-                            Reference, and its <literal>type</literal> atttribute must conform to the requirements of
-                            Section 4.2 of this document. </para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">There must not be any relative URI references of
-                            any kind to external files from any item or via any URI referencing
-                            mechanism, including script, in any Content Document or other content
-                            files.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">Content Documents must not contain any <literal>script</literal>
-                            elements unless the manifest item corresponding to that Content
-                            Document contains the <literal>property</literal> value <literal>scripted</literal> (thus indicating a
-                                <emphasis role="bold">Scripted Content Document).</emphasis></para>
-                    </listitem>
-                    <listitem>
-                        <para>A <literal>fallback-style</literal> attribute in a manifest item must not be present
-                            unless a) that item's content is XML and b) that item's <literal>media-type</literal> is
-                            not a Core Media Type.</para>
-                    </listitem>
-                    <listitem>
-                        <para>All <literal>fallback-style</literal> attributes in manifest items must reference a valid
-                            EPUB Style Sheet as defined in [ContentDocs3]</para>
-                    </listitem>
-                    <listitem>
-                        <para>All required fallbacks are included as per Section 2.3 below. </para>
-                    </listitem>
-                    <listitem><para><remark role="todo">TODO: publication-level metadata content conformance requirements</remark></para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">Since scripted content may be processed
-                            differently, with features such as pagination potentially disabled,
-                            content items that set the property value of "scripted" should not be
-                            spine items unless absolutely required by a publication (i.e. scripted
-                            content hould if possible be nested, contained within top-level content
-                            via "object" or "iframe").</para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">XHTML Content Documents should be used rather than
-                            SVG Content Documents, unless a) such use is within a Publication that
-                            is packaged together with, and as an alternative non-default
-                            representation of, another Publication that represents effectively the
-                            same content utilizing XHTML Content Documents or b) the nature of the
-                            content being represented via SVG is inherently unsuitable to
-                            representation in XHTML.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="contentconf">if a Publication is packaged as a ZIP Container, it should be named
-                            with the file extension ".epub". </para>
-                    </listitem>
-                    <listitem><para><remark role="todo">TODO:are there any other "shoulds" (beyond those specified in OCF/OPF)?</remark></para>
-                    </listitem>
-                </itemizedlist>
-            </para>
-            <para>NOTE: for convenience, a listing of all content conformance requirements
-                applicable based on all the EPUB3 specifications is available as Appendix A of the
-                EPUB3 Overview.</para>
+            </para>  
+                        <para>In most cases, an EPUB Publication will be instantiated as an Expanded
+                    EPUB Publication or an EPUB File, i.e. in a Filesystem or ZIP container
+                    conformant with [OCF3] (containing a valid META-INF/container.xml file and, if
+                    in the ZIP container, a MIMETYPE file), potentially together with <emphasis
+                        role="bold">external files<emphasis role="bold">,</emphasis></emphasis>
+                    additional files that are not referenced in the &lt;manifest> and thus not
+                    considered part of the EPUB Publication itself.</para>
+            <para>For convenience, a complete listing of all content conformance requirements
+                applicable based on all the EPUB3 specifications is available as Appendix A of this
+                specification.</para>
         <section xml:id="sec-xhtml-content-role-attribute">
-            <title>Example: Conforming EPUB Publication</title>
+            <title>Example: EPUB Publication</title>
             <para>This section is non-normative.</para>
-            <para><remark role="todo">TODO: example (layer on an example from OCF3?)</remark></para>
+            <para><remark role="todo">TODO: example</remark></para>
         </section>
           
         </section>
         <section xml:id="sec-ocf-overview-examples">
-            <title>Reading System Conformance</title>
-            <para>An EPUB Reading System must necessarily be a conforming User Agent according to
-                [ContentDocs3], a conforming OPF Processor according to [OPF3], a conforming OCF
-                Processor according to [OCF3], and a conforming NCX Processor according to [NCX3].
-                An EPUB Reading System must also, if it supports Media Overlays, be a confoming
-                Media Overlay Processor according to [Overlays3].</para>
-            <para>In addition, EPUB Reading Systems must adhere to the following additional
-            requirements:</para>
-            <para>
-                <itemizedlist>
-                    <listitem>
-                        <para role="rsconferr">When providing navigation via the OPF spine, the Reading System must
-                            ignore items that are not Extended Content Document References. </para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconf">Reading Systems must provide a means to render a Publication in the
-                            sequence order defined by the spine. Reading Systems must as part of
-                            this means a) recognize the first primary (linear=true) item in spine to
-                            be the beginning of the main reading order of the publication and b)
-                            render successive primary items in the order given in spine. Reading
-                            Systems may use "next-page" style functionality when moving from one
-                            primary item to the next in spine. </para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconf">Reading Systems must provide a means to navigate a Publication based
-                            on the information in its NCX file.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconf">Reading Systems may provide a means to navigate a Publication based on
-                            the information in its optional Guide.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconf">Reading Systems may render Scripted Content Documents as
-                            an interactive, scripted HTML User Agent according to [HTML5] rather
-                            than according to the simplified processing model defined for EPUB User
-                            Agents in [ContentDocs3], i.e. with scripting enabled. Reading Systems
-                            should not enable scripting for any resources other than Scripted
-                            Content Documents.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconf">Reading Systems may implement support for Scripted
-                            Content Documents in a manner that disables other EPUB capabilities
-                            and/or provides a different rendering such as, for example, disabling
-                            pagination.</para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconferr">Reading Systems must not fail catastrophically if they encounter two distinct Publications
-                            with the same purportedly unique primary identifier as defined in [OPF3].
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para role="rsconferr">Reading Systems must process fallback items according
-                            to the rules of Section 2.3 below. </para>
-                    </listitem>
-                    
-                    <listitem>
-                        <para role="rsconf">Reading Systems may render an item that is arbitrary XML with a
-                            reference to an EPUB Style Sheet. Such rendering is defined to be
-                            Reading System dependent. If a Reading System natively supports the XML
-                            schema of such an item, the Reading System may ignore the Style
-                            Sheet.</para>
-                    </listitem>
-                    <listitem><para><remark role="todo">TODO: publication-level metadata content conformance requirements</remark></para>
-                    </listitem>
-                    <listitem>
-                        <para>if a Publication is packaged as a ZIP Container, it should be named with the file extension ".epub".
-                        </para>
-                    </listitem>
-                    <listitem><para><remark role="todo">TODO:are there any other "shoulds" (beyond those specified in OCF/OPF)?</remark></para>
-                    </listitem>
-                </itemizedlist>
-            </para>
-            <para>NOTE: for oonvenience, all Reading System conformance requirements applicable
-                based on all of the EPUB3 specifications are non-normatively summarized in Appendix
-                B of the EPUB3 Overview</para>
-            <para/>
-       
-
+            <title>Publication-level Reading System Conformance</title>
+            <para>In addition to conforming with the requirements specific to this specification, an
+                EPUB Reading System must necessarily also be a conforming User Agent according to
+                [ContentDocs3] and a conforming OCF Processor according to [OCF3]. An EPUB Reading
+                System must also, if it supports Media Overlays, be a confoming Media Overlay
+                Processor according to [Overlays3].</para>
+            <para>For convenience, all Reading System conformance requirements applicable based on
+                all of the EPUB3 specifications are non-normatively summarized in Appendix B of the
+                EPUB3 Overview</para>
         </section>
         <section xml:id="fallback">
             <title>Fallback Items</title>
             <para role="contentconf">This specification defines a set of Core Media Types that all
                 conforming Reading Systems must support in addition to Content Documents (e.g. PNG,
-                SVG, OpenType fonts).  Publications may optionally reference items of additional
+                SVG, OpenType fonts). Publications may optionally reference items of additional
                 media types. In order to ensure that all conforming Publications can be successfully
                 rendered by all conforming Reading Systems, alternative "fallback" items must be
                 provided for each such item. Fallbacks may be provided either via inherent
                 mechanisms defined for Content Documents, or via the manifest-level fallback
-                mechanism defined in OPF3. </para>
+                mechanism defined in this specification. </para>
             <para role="contentconf">For every item that is not a Core Media Type, suitable
                 fallback(s) of a Core Media Type must be provided via one of these mechanisms, as
                 detailed below:</para>
@@ -432,7 +287,241 @@
             
         </section>
     </chapter>
-
+    <chapter>
+        <title> Package Documents</title>
+        <para>The fundamental publication-levle construct of an EPUB Publication is a Package
+            Document:  a set of enumerated resources (the manifest), which contains an ordered
+            sequence of top-level resources from which all other resources in the set can be reached
+            or utilized (the spine).</para>
+        <para><remark role="todo">TODO DIAGRAM: show visual graph of abstract "hedge" here, inc
+                fallback chains, a fallback-style, and sharing resources between roots.</remark>In
+            addition Package Documents include a means of including and/or referencing metadata
+            applicable to the entire collection including a means for referencing a "TOC" item, an
+            optional means for an item to reference an ordered list of alternative items (a fallback
+            chain) and/or a style resource, and an additional optional sequence of some or all
+            top-level resources (the Guide). While the Package Document schema is modular and could
+            potentially be utilized by applications other than EPUB, certain conformance
+            requirements are defined here that are applicable to Package Documents use to represent
+            EPUB Publications.</para>
+        <para><remark role="todo">TODO LIST: replace or supplement above prose with list of major
+                parts of Package Documents, concise form of list in sec 2.0 OPF 2.0.1.</remark>In
+            the package file schema, items of any kind (including style objects, metadata objects,
+            and TOC) are simply abstract URI references to resources that specify a MIME type.
+            Additional significance is defined in the context of EPUB, regarding valid resource
+            types for different items. Inter-item references are always via id attributes.</para>
+        <section xml:id="sec-package-element">
+            <title>Package Document and root Package Element</title>
+            <para role="contentconf">A Package Document must be a well-formed XML Document.</para>
+            <para role="contentconf">A Package Document must be encoded in UTF-8 or UTF-16 as
+                defined by <xref linkend="refUnicode5"/> and be valid according to the  Package
+                Document schema (<remark role="todo">TODO: Appendix A</remark>). Note that this
+                schema is normative and in case of conflicts between the specification prose and
+                this document, the schema shall be considered definitive. </para>
+            <para role="contentconf">A Package Document must exist as a root XML file that should be
+                named ending in the extension ".opf", and is considered to have the MIME media type
+                "application/oebps-package+xml". This root XML file may refer to other XML files via
+                XML’s general entity mechanism, but those files must not use the .opf file
+                extension. </para>
+            <para role="contentconf">The <literal>package</literal> element must be the one and only
+                one root element in a Package Document; all other elements in the Package Document
+                must be nested within it. The package element's namespace must be
+                    <literal>http://www.idpf.org/2007/opf</literal>. <remark role="todo">do we need
+                    new namespace for EPUB3?</remark></para>
+            <para role="contentconf">The <literal>package</literal> element must have a
+                    <literal>version</literal> attribute with a value of
+                <literal>3.0</literal>.</para>
+            <para role="contentconf">The <literal>package</literal> element must specify a value for
+                its <literal>unique-identifier attribute</literal>. The unique-identifier
+                attribute's value specifies which Dublin Core identifier element, described in
+                Section 2.2.10, provides the package's preferred, or primary, identifier. The
+                Package Document's author is responsible for choosing a primary identifier that is
+                unique to one and only one particular package (i.e., the set of resources referenced
+                from the package document's manifest). </para>
+            <para role="rsconferr">Reading Systems must not fail catastrophically if they encounter
+                two distinct EPUB Publications with the same purportedly unique primary identifier. </para>
+            <para>
+                <remark role="todo">TODO EXAMPLE: from sec 2.0 of OPF 2.0.1</remark>
+            </para>
+            <para> </para>
+        </section>
+        <section xml:id="sec-manifest-elem">
+            <title>Manifest element</title>
+            <para role="contentconf">The <literal>package</literal> element must contain one and
+                only one <literal>manifest</literal> element as its first sub-element. The
+                    <literal>manifest</literal> element must contain one or more
+                    <literal>item</literal> elements, each describing a content item. The manifest
+                must not include item elements referring to the XML file or files that make up the
+                Package Document, and no item in the manfest may have the MIME media type
+                    <literal>"application/oebps-package+xml</literal>. Each <literal>item</literal>
+                element contained within a manifest element must have the attributes
+                    <literal>id</literal>, <literal>href</literal> (a URI; if relative, the URI is
+                interpreted as relative to the  Package File containing the reference), and
+                    <literal>media-type</literal> (specifying the item’s MIME media type). The order
+                of item elements in the manifest is not significant. </para>
+            <para role="epubconf">In an EPUB Publication, for each item in the manifest whose
+                media-type is an EPUB3 Core Media Type (as defined in Section 4.1 of this document),
+                the resource referenced by that item must conform to the applicable specification
+                for that Core Media Type. Each item in the manifest whose
+                    <literal>media-type</literal> is NOT one of the EPUB3 Core Media Types must
+                specify a fallback chain that includes at least one item whose
+                    <literal>media-type</literal> is an EPUB3 Core Media Type, or which references
+                an XML Document and includes a <literal>fallback-style</literal>, as further defined
+                below. As well, in EPUB Publications there must not be any relative URI references
+                of any kind to external files from any item (nor via any URI referencing mechanism,
+                including script, in any Content Document or other content files): i.e. the manifest
+                must include all resources that are considered part of the publication itself and
+                referenced in a relative manner, and all external resources must be referenced by
+                absolute URIs.</para>
+            <section>
+                <title>Fallback Chains</title>
+                <para role="contentconf"> An item in the manifest may optionally contain the
+                    atttribute <literal>fallback</literal>. If present it must be an id reference to
+                    another item in the manifest. The ordered list of all id references that can be
+                    reached starting from any item's <literal>fallback</literal> attribute is
+                    considered to be the "fallback chain" for that item. There must not be any
+                    circulare references in any fallback chains. </para>
+                <para role="epubconf">In the context of EPUB, fallback chains are used to reference
+                    a set of items that can be considered equivalents, that a Reading System can
+                    choose between in rendering content. The detailed requirements for use of
+                    fallback chains in EPUB are described in <remark role="todo">section
+                        X.X.X</remark> below. </para>
+            </section>
+            <section>
+                <title>Fallback Styles</title>
+                <para role="contentconf">An item in the manifest may optionally contain the
+                    atttribute <literal>fallback-style</literal>, whose value must be an id
+                    reference to another item in the manifest.</para> 
+                    
+                    <para role="epubconf">In the context of EPUB, this
+                    attribute is used in order to associate a CSS style sheet with custom XML
+                    content. See the section<remark role="todo">section X.X.X</remark> on
+                    Out-Of-Line XML Islands.
+                        In EPUB publicaitons, a <literal>fallback-style</literal> attribute in
+                            a manifest item must not be present unless a) that item's content is XML
+                            and b) that item's <literal>media-type</literal> is not a Core Media
+                            Type, and all <literal>fallback-style</literal> attributes in manifest
+                            items must reference a valid EPUB Style Sheet as defined in
+                            [ContentDocs3]</para>
+                <para role="rsconf">Reading Systems may render an item that is arbitrary XML with a
+                    reference to an EPUB Style Sheet. Such rendering is defined to be Reading System
+                    dependent. If a Reading System natively supports the XML schema of such an item,
+                    the Reading System may ignore the Style Sheet.</para>
+                    
+                <para>
+                    <remark role="todo">TODO EXAMPLE: first one from sec 2.3 of OPF 2.0.1</remark>
+                </para>
+            </section>
+        </section>
+        <section xml:id="sec-spine-elem">
+            <title>Spine element</title>
+            <para role="contentconf">Following the manifest, there must be one and only one
+                    <literal>spine</literal> element, which contains one or more
+                    <literal>itemref</literal> elements. Each <literal>itemref</literal> must
+                reference (via its required <literal>idref</literal> attribute) a unique item in the
+                manifest, thus the spine represents an ordered list of a subset of the items in the
+                manifest. In EPUB, this represents the default reading order for the content, with
+                content items not appearing in the spine being ancillary to those that do appear
+                there. </para>
+            <para role="epubconf">In the context of EPUB, each <literal>item</literal> referenced by
+                the Package File's <literal>spine</literal> element must be an Extended Content
+                Document Reference. Note that in general such references should resolve to XHTML
+                Content Documents  rather than SVG Content Documents, unless a) such use is within a
+                Publication that is packaged together with, and as an alternative non-default
+                representation of, another Publication that represents effectively the same content
+                utilizing XHTML Content Documents or b) the nature of the content being represented
+                via SVG is inherently unsuitable to representation in XHTML.</para>
+            <para role="contentconf">The <literal>spine</literal> element must include a
+                    <literal>toc attribute</literal>, whose value is an id reference to another item
+                    in the manifest.</para>
+            <para role="epubconf">  For an EPUB Publication, the <literal>toc</literal> reference must be to the publication's
+                one and only one NCX Document.</para>
+            <para role="contentconf">The <literal>spine</literal> element may contain an optional attribute
+                    <literal>page-progression-direction</literal>, which can have the values
+                    <literal>ltr</literal> or <literal>rtl</literal> indicating left-to-right or
+                right-to-left presentation is expected.</para>
+            <para role="contentconf">Spine itemref elements may also contain an optional attribute
+                    <literal>linear</literal> whose default value is <literal>true</literal>. This
+                reference indicates whether a spine item is considered primary (linear=true) or
+                auxiliary (linear=false). In the context of EPUB, this may be used to enable Reading
+                Systems to distinguish presentation of "body" content from ancillary or "sidebar"
+                content which might be, for example, presented in a popup window, or omitted from an
+                aural rendition. </para>
+            <para role="rsconf">Reading Systems must provide a means to render a Publication in the
+                sequence order defined by the spine. Reading Systems must as part of this means a)
+                recognize the first primary (linear=true) item in spine to be the beginning of the
+                main reading order of the publication and b) render successive primary items in the
+                order given in spine. Reading Systems may use "next-page" style functionality when
+                moving from one primary item to the next in spine. </para>
+            <para role="rsconferr">When providing navigation via the spine, a Reading System must
+                ignore items that are not Extended Content Document References. </para>
+            <para role="contentconf">
+                <remark role="todo">TODO EXAMPLE from OPF 2.0.1</remark>
+            </para>
+        </section>
+        <section>
+            <title>Metadata</title>
+            <para role="contentconf"> The required metadata element is used to provide information
+                about the publication as a whole. It may contain Dublin Core metadata elements
+                directly or... <remark role="todo">TODO: include info here based on metadata
+                    subgroup solution proposal.</remark></para>
+                
+                    <para role="epubconf">In EPUB Publications, Content Documents must not contain
+                any <literal>script</literal> elements unless the manifest item corresponding to
+                that Content Document contains the <literal>property</literal> value
+                    <literal>scripted</literal> (thus indicating a <emphasis role="bold">Scripted
+                    Content Document).</emphasis>Since scripted content may be processed
+                differently, with features such as pagination potentially disabled, content items
+                that set the property value of "scripted" should not be spine items unless
+                absolutely required by a publication (i.e. scripted content hould if possible be
+                nested, contained within top-level content via "object" or "iframe").</para>
+           
+                    <para role="rsconf">Reading Systems may render Scripted Content Documents as an
+                        interactive, scripted HTML User Agent according to [HTML5] rather than
+                        according to the simplified processing model defined for EPUB User Agents in
+                        [ContentDocs3], i.e. with scripting enabled. Reading Systems should not
+                        enable scripting for any resources other than Scripted Content
+                        Documents.</para>
+               
+                    <para role="rsconf">Reading Systems may implement support for Scripted Content
+                        Documents in a manner that disables other EPUB capabilities and/or provides
+                        a different rendering such as, for example, disabling pagination.</para>
+               
+        </section>
+        <section>
+            <title>Guide</title>
+            <para role="contentconf">The package element may contain one <literal>guide</literal>
+                element, which if present must contain one or more <literal>reference</literal>
+                elements. Each reference must have an <literal>href</literal> attribute, which may
+                include a fragment identifier as defined in section 4.1 of RFC 2396 (see
+                http://www.ietf.org/rfc/rfc2396.txt). Each reference must further have
+                    <literal>type</literal> and <literal>title</literal> attributes whose values
+                must be strings. </para>
+            <para role="epubconf">In the context of EPUB, the href attribute of each reference
+                element  must resolve to or within a resource that is represented by an Extended
+                Content Document Reference, with each type atttribute conforming to the requirements
+                of Section 4.2 of this document (Core Media Types). </para>
+            <para role="rsconf">Reading Systems may provide a means to navigate a Publication
+                based on the information in its optional Guide.</para>
+            <remark role="todo">TODO: Guide example from OPF2</remark>
+        </section>
+        <section><title>Fallback Processing</title><para> This section defines in detail the process by which Reading Systems process fallback
+                information in EPUB Publications. The rules for fallback processing depend on both
+                the type of item, and how is referenced by a Content Document or other
+                resource.</para></section>
+    </chapter>
+    <chapter>
+        <title> NCX Documents</title>
+        <para>
+            <remark role="todo">TODO</remark>
+        </para>
+                <para role="epubconf">All references in the NCX Document must resolve to or
+                    within a resource that is represented by an Extended Content Document Reference.
+                </para>
+        <para role="rsconf">Reading Systems must provide a means to navigate a Publication based on
+            the information in its NCX file.</para>
+            
+        
+        </chapter>
     <chapter xml:id="sec-content-definitions">
         <title>EPUB Content Definitions</title>
         <para>This section includes information about specific values required or allowable in
@@ -462,6 +551,26 @@
             <para role="contentconf"><remark role="todo">TODO: EPUB-specific requirements for  NCX</remark></para>
         </section>
     </chapter>
+    
+    <appendix xml:id="app-content-conform" conformance="informative">
+        <title>Appendix A. Content Conformance Summary</title>
+        
+        <para>This appendix non-normatively summarizes all content conformance requirements
+            applicable to EPUB Publications based on this specification as well as [ContentDocs3],
+            [OCF3], and [Overlays3].</para>
+        
+        
+        <para><remark role="todo">TODO</remark></para>
+    </appendix>
+    <appendix xml:id="app-reading-system-conform" conformance="informative">
+        <title>Appendix B. Reading System Conformance Summary</title>
+        <para>This appendix non-normatively summarizes all conformance requirements applicable to
+            Reading Systems based on this specification as well as [ContentDocs3], [OCF3], and
+            [Overlays3].</para>
+        
+        
+        <para><remark role="todo">TODO</remark></para>
+    </appendix>
 
     <appendix xml:id="acknowledgements" role="acknowledgements" conformance="informative">
         <title>Contributors</title>
@@ -498,11 +607,6 @@
 
             <biblioentry xml:id="refEPUB">
                 <abbrev>EPUB Overview</abbrev>
-                <title><link xlink:href="http://www.idpf.org/doc_library/epub/OPF_3.0_draft.htm">Open Packaging Format</link><remark role="todo">TODO fix
-                    link</remark></title>
-            </biblioentry>
-            <biblioentry xml:id="refOPF">
-                <abbrev>OPF</abbrev>
                 <title><link xlink:href="http://www.idpf.org/doc_library/epub/OPF_3.0_draft.htm">Open Packaging Format</link><remark role="todo">TODO fix
                     link</remark></title>
             </biblioentry>
