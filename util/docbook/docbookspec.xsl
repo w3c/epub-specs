@@ -5,7 +5,7 @@
     xmlns:db="http://docbook.org/ns/docbook"
     xmlns="http://www.w3.org/1999/xhtml">
     
-    <xsl:import href="xsl-ns/xhtml-1_1/docbook.xsl "/>
+    <xsl:import href="xsl-ns/xhtml-1_1/docbook.xsl"/>
     
     
     <xsl:output method="xhtml" 
@@ -15,7 +15,7 @@
         exclude-result-prefixes="saxon db exsl"/>
 
     <xsl:param name="generate.toc">
-appendix  toc,title
+appendix  nop
 article/appendix  nop
 article   toc,title
 book      toc,title,example
@@ -32,7 +32,7 @@ sect4     toc
 sect5     toc
 set       toc,title
     </xsl:param>
- 
+    
     <!-- ============================================================================= -->
     <!-- crude rearrange of the leading info element to structure as an IDPF spec document  -->
     <xsl:template name="book.titlepage">
@@ -108,6 +108,7 @@ set       toc,title
         </xsl:if>
     </xsl:template>    
     
+    
     <!-- ============================================================================= -->
     <!-- override titlepage hr separators -->
     
@@ -154,11 +155,6 @@ set       toc,title
     </xsl:template>
  
     <!-- ============================================================================= -->
-    <!-- set the target location for a tags that link externally 
-    
-    <xsl:variable name="ulink.target">_self</xsl:variable> -->
- 
-    <!-- ============================================================================= -->
     <!-- Fill in the docbook placeholder user.head.content template to add an http-equiv meta
         element (helps IE < 9) -->
     
@@ -172,6 +168,7 @@ set       toc,title
     <!-- ============================================================================= -->
     <!-- For chapters, preface, sections, and appendices that have @conformance, add a "This section is ..." line -->
     <!-- We match on title so that we can insert the text after the heading -->
+    
     <xsl:template
         match="db:chapter/db:title|db:preface/db:title|db:section/db:title|db:appendix/db:title|db:bibliography/db:title">
         <xsl:apply-imports />
@@ -197,8 +194,8 @@ set       toc,title
             </xsl:element>
         </xsl:if>
     </xsl:template>
- 
- 
+    
+    
     <!-- ============================================================================= -->
     <!-- add templates as per htmltbl.xsl in order to get id and role -->
     
@@ -209,7 +206,7 @@ set       toc,title
     <xsl:template mode="htmlTableAtt" match="@role">
         <xsl:attribute name="class"><xsl:value-of select="." /></xsl:attribute>        
     </xsl:template>
- 
+    
     <!-- ============================================================================= -->
     <!-- override section title page templates to remove all the excess divs and correct heading levels -->
     
@@ -302,7 +299,7 @@ set       toc,title
             </xsl:when>
             <xsl:otherwise>1</xsl:otherwise>
         </xsl:choose>
-    </xsl:template>  
+    </xsl:template>
     
     
 </xsl:stylesheet>

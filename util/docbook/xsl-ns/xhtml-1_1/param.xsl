@@ -370,9 +370,9 @@ set       toc,title
 <xsl:param name="rootid"/>
 <xsl:param name="runinhead.default.title.end.punct">.</xsl:param>
 <xsl:param name="runinhead.title.end.punct">.!?:</xsl:param>
-<xsl:param name="section.autolabel" select="0"/>
+<xsl:param name="section.autolabel" select="1"/>
 <xsl:param name="section.autolabel.max.depth">8</xsl:param>
-<xsl:param name="section.label.includes.component.label" select="0"/>
+<xsl:param name="section.label.includes.component.label" select="1"/>
 <xsl:param name="segmentedlist.as.table" select="0"/>
 <xsl:param name="shade.verbatim" select="0"/>
 <xsl:attribute-set name="shade.verbatim.style">
