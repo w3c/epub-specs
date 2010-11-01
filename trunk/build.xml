@@ -32,6 +32,7 @@
 	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl" />
 	<property name="schema.xhtml11" value="${dir.util.xhtml}/relaxng/xhtml.rng" />
 	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl" />
+	<!-- <property name="xslt.docbook2xhtml" value="${dir.util.docbook}/xsl-ns/xhtml-1_1/docbook.xsl"/> -->
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 		
 	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
@@ -52,7 +53,7 @@
 		build-schemas,
 		build-archives" />
 
-	<target name="build-specs" depends="clean, validate-src-specs, validate-spec-examples">
+	<target name="build-specs" depends="clean"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
 		<!-- batch-convert src docbook to xhtml11 -->
 		<saxon-xslt 
@@ -61,11 +62,16 @@
 			includes="*.xml"
 			destdir="${dir.build}/"
 			extension=".html" 			
-			style="${xslt.docbook2xhtml}">							
-				<param name="section.autolabel" expression="1"/>
-				<param name="toc.section.depth" expression="4"/>
-				<param name="section.label.includes.component.label" expression="1"/>
-				<param name="html.stylesheet" expression="epub-spec.css"/>		
+			style="${xslt.docbook2xhtml}">
+			
+			<param name="section.autolabel" expression="1"/>
+		    <param name="part.autolabel" expression="1"/>
+		    <param name="chapter.autolabel" expression="1"/>
+			<param name="toc.section.depth" expression="4"/>
+			<param name="section.label.includes.component.label" expression="1"/> 
+			<param name="section.autolabel.max.depth" expression="8"/>
+			<param name="html.stylesheet" expression="epub-spec.css"/>		
+				
 		</saxon-xslt>	
 		
 		<!-- validate output html (dtd) -->
@@ -79,7 +85,7 @@
 		
 	</target>
 
-	<target name="build-schemas" depends="clean, validate-src-rng-schemas">
+	<target name="build-schemas" depends="clean"> <!-- , validate-src-rng-schemas" -->
 		<!-- TODO run schemas against test suite -->
 		
 		<clean-dir dir="${dir.build.schema}"/>
