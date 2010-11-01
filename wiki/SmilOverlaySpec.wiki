@@ -1,4 +1,4 @@
-#summary Specification for the SMIL overlay feature
+#summary Specification for the media overlay feature
 
 <wiki:toc max_depth="4" />
 
@@ -16,14 +16,14 @@ _This section is normative._
 
 SMIL files for an EPUB publication MUST be listed in the OPF manifest with media-type="application/smil+xml".
 
-== The smil-overlay attribute ==
+== The media-overlay attribute ==
 
 _This section is normative._
 
- * What: a new attribute called *smil-overlay*
+ * What: a new attribute called *media-overlay*
  * Where: optional on OPF *itemref* elements
- * Contents: ID of the manifest item containing the SMIL file overlay for the part of the publication referred to by that *itemref*.  
- * While not every OPF spine itemref element is required to have a SMIL overlay associated with it, there MUST be a one-to-one relationship between SMIL files and OPF spine itemref elements; in other words, multiple OPF spine items cannot share a single SMIL file.  
+ * Contents: ID of the manifest item containing the media overlay for the part of the publication referred to by that *itemref*.  
+ * While not every OPF spine itemref element is required to have a media overlay associated with it, there MUST be a one-to-one relationship between media overlay files and OPF spine itemref elements; in other words, multiple OPF spine items cannot share a single media overlay file.  
  * Reading systems MAY support this new attribute
  * Content creators MAY include this feature
 
@@ -31,7 +31,7 @@ _This section is normative._
 
 _This section is informative._
 
-Example of how to specify that there is a SMIL overlay available.
+Example of how to specify that there is a media overlay available.
 
 Add SMIL files to the manifest of the OPF file:
 {{{
@@ -42,15 +42,15 @@ Add SMIL files to the manifest of the OPF file:
 </manifest>
 }}}
 
-Add the *smil-overlay* attribute to the OPF *itemref* element and reference the manifest item containing the SMIL file resource.
+Add the *media-overlay* attribute to the OPF *itemref* element and reference the manifest item containing the media overlay resource.
 {{{
 <spine>
-  <itemref idref="ch1" smil-overlay="ch1_smil"/>
+  <itemref idref="ch1" media-overlay="ch1_smil"/>
   ...
 </spine>
 }}}
 
-This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *smil-overlay* attribute and process documents in their normal fashion.
+This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *media-overlay* attribute and process documents in their normal fashion.
 
 = SMIL =
 
@@ -58,34 +58,28 @@ This is a forwards-compatible addition: 2.0 reading systems can safely ignore th
 
 _This section is informative._
 
-SMIL (Synchronized Multimedia Integration Language) is a W3C recommendation for describing multimedia presentations in XML.  The current version is [http://www.w3.org/TR/SMIL3/ SMIL 3.0].  This specification defines a subset of SMIL for the purpose of synchronizing an audio overlay with the text document(s) in EPUB publications.  SMIL is capable of doing much more and this subset could be built upon in the future, but this revision purposely defines a minimal set of SMIL elements and attributes in order to maintain simplicity.
+SMIL (Synchronized Multimedia Integration Language) is a W3C recommendation for describing multimedia presentations in XML.  The current version is [http://www.w3.org/TR/SMIL3/ SMIL 3.0].  This specification defines a subset of SMIL for the purpose of synchronizing an audio overlay with the text document(s) in EPUB publications.  While future versions of this specification may incorporate support for video media (e.g. synchronized text/sign-language books), this version only supports audio media.
 
-The key to understanding how SMIL works here is to see how it handles synchronization of text and audio media objects.  The elements associated with synchronization behavior are called *seq* (sequence) and *par* (parallel).  An EPUB SMIL overlay is, in its simplest form, defined as a sequence of parallel (i.e. rendered together) text and audio media objects. 
+The key to understanding how SMIL works here is to see how it handles synchronization of text and audio media objects.  The elements associated with synchronization behavior are called *seq* (sequence) and *par* (parallel).  An EPUB media overlay is, in its simplest form, defined as a sequence of parallel (i.e. rendered together) text and audio media objects. 
 
-A basic SMIL document describing an audio overlay for an EPUB book is shown here:
+A basic SMIL document describing an audio overlay for an EPUB book is shown here (note that this example shows how *body* behaves similar to *seq*):
 
 {{{
 <smil>
-	<head>
-	...
-	</head>
-	
 	<body>
-		<seq>
-			<par>
-				<text src="bookchapter.html#id1"/>
-				<audio src="bookaudio.mp3" clipBegin="0" clipEnd="10"/>
-			</par>
-			<par>
-				<text src="bookchapter.html#id2"/>
-				<audio src="bookaudio.mp3" clipBegin="10" clipEnd="20"/>
-			</par>
-			<par>
-				<text src="bookchapter.html#id3"/>
-				<audio src="bookaudio.mp3" clipBegin="20" clipEnd="30"/>
-			</par>
-			...
-		</seq>
+		<par>
+			<text src="bookchapter.html#id1"/>
+			<audio src="bookaudio.mp3" clipBegin="0" clipEnd="10"/>
+		</par>
+		<par>
+			<text src="bookchapter.html#id2"/>
+			<audio src="bookaudio.mp3" clipBegin="10" clipEnd="20"/>
+		</par>
+		<par>
+			<text src="bookchapter.html#id3"/>
+			<audio src="bookaudio.mp3" clipBegin="20" clipEnd="30"/>
+		</par>
+		...
 	</body>
 </smil>
 }}}
@@ -98,7 +92,7 @@ There are additional features not represented in this very simple example, but t
 
 _This section is normative._
 
-Reading systems that support the *smil-overlay* attribute MUST support the [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/miniSmil.rnc EPUB SMIL subset].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.  
+Reading systems that support the *media-overlay* attribute MUST support the [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/media-overlay.rnc EPUB SMIL subset].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *role*.  
 
 == Media clipping attributes ==
 
@@ -169,19 +163,19 @@ SMIL text elements' *src* attribute values point to text document elements by us
 
 == Audio and Video ==
 
-Any OPS/XHTML5 document with which a given SMIL overlay is associated may contain embedded media objects such as video and audio. Unlike text and images, such content type is said to be "continuous" in the sense that it contains its own timing information (i.e. audio and video clips have an intrinsic duration). 
+Any OPS/XHTML5 document with which a given media overlay is associated may contain embedded media objects such as video and audio. Unlike text and images, such content type is said to be "continuous" in the sense that it contains its own timing information (i.e. audio and video clips have an intrinsic duration). 
 
-Consequently, when a Reading System renders the text/audio synchronization described by a SMIL overlay, the default playback behaviors of audio and video media embedded within the associated text document MUST be overridden, as per the following rules:
+Consequently, when a Reading System renders the text/audio synchronization described by a media overlay, the default playback behaviors of audio and video media embedded within the associated text document MUST be overridden, as per the following rules:
 
- * all audio and video media objects embedded within an OPS/XHTML5 file MUST have their public playback interface deactivated (typically: play/pause control, time scrobbler, volume level, etc.). This is needed to avoid interference between the scheduled playback sequence defined by the SMIL overlay, and the arbitrary playback behavior due to user or script interaction. This means that whilst the SMIL audio/text synchronization is in playback mode:
+ * all audio and video media objects embedded within an OPS/XHTML5 file MUST have their public playback interface deactivated (typically: play/pause control, time scrobbler, volume level, etc.). This is needed to avoid interference between the scheduled playback sequence defined by the media overlay, and the arbitrary playback behavior due to user or script interaction. This means that whilst the SMIL audio/text synchronization is in playback mode:
   * the Reading Device MUST hide the individual video/audio UI controls from the page. This overrides the default behavior defined by the "controls" HTML5 attribute.
-  * the Reading Device MUST prevent the JavaScript audio/video playback API to be invoked by scripts embedded within the EPUB document (i.e. authored as part of the default publication behavior). Because this may be hard to implement in practice, it is recommended that content producers SHOULD avoid publishing embedded scripts dedicated to controlling the playback of inline audio/video media objects, so that the published SMIL overlay can retain full control of the synchronized text/audio presentation, without any risk of interference with script-enabled custom behaviors.
+  * the Reading Device MUST prevent the JavaScript audio/video playback API to be invoked by scripts embedded within the EPUB document (i.e. authored as part of the default publication behavior). Because this may be hard to implement in practice, it is recommended that content producers SHOULD avoid publishing embedded scripts dedicated to controlling the playback of inline audio/video media objects, so that the published media overlay can retain full control of the synchronized text/audio presentation, without any risk of interference with script-enabled custom behaviors.
  * all audio and video media objects embedded within an OPS/XHTML5 file MUST be initialized to their "stopped" state, and ready to be played from the zero-position within their content stream (possibly displaying the poster image specified using the OPS/XHTML5 markup). This overrides the default behavior defined by the "autoplay" HTML5 attribute.
- * when a "text" element becomes active in the SMIL overlay, the CSS visual highlighting rules apply regardless of the content type which the "src" attribute refers to. In other words, visible video and audio player controls within the host OPS/XHTML5 file MUST be decorated as per the *smil-overlay-active* [http://code.google.com/p/epub-revision/wiki/SmilOverlaySpec#CSS CSS styling rules].
+ * when a "text" element becomes active in the media overlay, the CSS visual highlighting rules apply regardless of the content type which the "src" attribute refers to. In other words, visible video and audio player controls within the host OPS/XHTML5 file MUST be decorated as per the *media-overlay-active* [http://code.google.com/p/epub-revision/wiki/SmilOverlaySpec#CSS CSS styling rules].
  * in addition to the above default behavior for SMIL-activation of text fragments, audio and video playback MUST be started and stopped according to the duration implied by the authored SMIL synchronization (as per the standard SMIL timing model). There are 2 possible scenarios:
   * when a "text" element in the SMIL markup has no "audio" sibling within its "par" parent container, the referenced audio or video media object MUST play until it ends, at which point the SMIL "text" element's lifespan terminates. In other words, the implicit duration of the SMIL "text" element (and by inference, of the parent "par" container) is that of the referenced audio or video clip.
-  * when a "text" element in the SMIL markup has an "audio" sibling within its "par" parent container, the playback duration of the audio or video media object referenced by the "text" element MUST be constrained by the duration of the "audio" sibling in the SMIL overlay. In other words, the actual duration of the "par" parent parallel container is that of the child "audio" clip, regardless of the duration of the video or audio media pointed to by the "text" element. This may result in an embedded video or audio media object to end playback prematurely (before reaching its full duration), or to end before the playback of the parallel "audio" in the SMIL markup is finished (in which case the last-played video frame SHOULD remain visible until the parent "par" parallel container finally ends). This is equivalent of the "audio" element in the SMIL markup implicitly carrying the behavior of the "endsync" attribute ( http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-endsyncAttribute ).
- * when a "text" element becomes inactive in the SMIL overlay, and when it points to an video or audio media object, the referenced media object MUST be reset to its initial "stopped" state, and ready to be played from the zero-position within their content stream (possibly displaying the poster image specified using the HTML5 markup)
+  * when a "text" element in the SMIL markup has an "audio" sibling within its "par" parent container, the playback duration of the audio or video media object referenced by the "text" element MUST be constrained by the duration of the "audio" sibling in the SMIL media overlay. In other words, the actual duration of the "par" parent parallel container is that of the child "audio" clip, regardless of the duration of the video or audio media pointed to by the "text" element. This may result in an embedded video or audio media object to end playback prematurely (before reaching its full duration), or to end before the playback of the parallel "audio" in the SMIL markup is finished (in which case the last-played video frame SHOULD remain visible until the parent "par" parallel container finally ends). This is equivalent of the "audio" element in the SMIL markup implicitly carrying the behavior of the "endsync" attribute ( http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-endsyncAttribute ).
+ * when a "text" element becomes inactive in the SMIL media overlay, and when it points to an video or audio media object, the referenced media object MUST be reset to its initial "stopped" state, and ready to be played from the zero-position within their content stream (possibly displaying the poster image specified using the HTML5 markup)
 
 = CSS  =
 
@@ -189,9 +183,9 @@ _This section is normative._
 
 Often, depending on reading system features, portions of text for which the corresponding audio narration is currently playing need to be highlighted visually, and scrolled into view.
 
-A CSS pseudo class *smil-overlay-active* is used to indicate that a particular text fragment is "active".
+A CSS pseudo class *media-overlay-active* is used to indicate that a particular text fragment is "active".
 
-Content creators MAY include style information for *smil-overlay-active*.
+Content creators MAY include style information for *media-overlay-active*.
 
 Reading systems MAY implement this pseudo class.  
 
@@ -199,7 +193,7 @@ Reading systems MAY implement this pseudo class.
 = Full example =
 
 == OPF file ==
-TODO: show an OPF file with multiple chapters featuring SMIL overlays
+TODO: show an OPF file with multiple chapters featuring media overlays
 
 == SMIL file ==
 TODO: show a SMIL file and how it mimics the structure of the text document
@@ -208,7 +202,7 @@ TODO: show a SMIL file and how it mimics the structure of the text document
 TODO: a snippet of a text content file showing the structure mimicked by the SMIL document above
 
 == CSS file ==
-TODO: show some value(s) for pseudo class smil-overlay-active
+TODO: show some value(s) for pseudo class media-overlay-active
 
 = Pending TODOs  =
 
