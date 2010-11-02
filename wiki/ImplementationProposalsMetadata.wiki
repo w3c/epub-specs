@@ -150,7 +150,7 @@ An example, for the fictional cookbook "The Great Cookbooks of the World: Mon pr
   <dc:title opf:override=”t4” id=”ot4”>Special Anniversary  Edition </dc:title>
    <meta property="dcterms:title" id=”t4”>Special Anniversary  Edition</meta>
    <meta about=”#t4” property="opf:type">edition</meta>
-   <meta about="#t4" property="opf:display-seq>4</meta>
+   <meta about="#t4" property="opf:display-seq">4</meta>
 }}} 
 
 The use of additional ancillary properties to `dcterms:title` is not illegal.
@@ -165,7 +165,7 @@ The expression form for a DCTERMS identifier is:
 
 (The use of the unique-identifier attribute on the package element remains unchanged.)
 
-Where it is necessary to distinguish identifier types, the `identifier-scheme` ancillary property is used:
+Where it is necessary to distinguish identifier types, the existing `opf:scheme` ancillary property is used:
 
 {{{
   <meta property="dcterms:identifier" id="issn">123456789</meta>
@@ -179,7 +179,7 @@ The use of additional ancillary properties to `dcterms:identifier` is not illega
 
 
 ==== Other DCTERMS elements ====
-|| Property Name || Usage ||
+|| Property Name || Attributes || Usage Intent || 2.0 Status ||
 || abstract || ||
 || accessRights  || ||
 || accrualMethod || ||
@@ -247,6 +247,55 @@ The following specific recommendations regarding the use of the other dcterms el
 May need method to indicate intended or suitable audience (_eg_ to implement parental locks on reading devices).
 
 (Note that the use of _should_ here, as the enumerations we are likely to identify are not guaranteed to be globally applicable (aka western-centric).)
+
+=== Metadata Authority ===
+
+Define the following new OPF properties:
+
+ * *meta-auth* property to denote the responsible party or authority for metadata elements.
+ * *date-ref* property that will refer by id value to a dcterms:date element with opf:event value of 'meta-update'. (see dcterms:date regarding _opf:event_)
+ * *signature* property, that will be optional and refer by id value to an XML Signature that must reside in the META-INF/Signatures.xml file.
+ * *authority* property that will be allowed on meta elements, and will have a value of the id of a metadata authority.
+
+Example 1: Metadata Authority Inc. injects publication with ISBN-13, preserving the package identifier, uses a (currently defined in OCF) XML Signature.
+ 
+ {{{
+  ...
+  <meta property=”dcterms:identifier id="my-uuid">UUID-1234-5678</meta>
+  <meta property=”dcterms:identifier id="isbn-id">>9780101010101</meta>
+   <meta about=”#isbn-id” property=”opf:scheme” content=”isbn13” />
+   <meta about=”#isbn-id” property=”opf:authority” content=”meta-authority-01” />
+
+  <meta property=”dcterms:date” id="dt-01">2010-10</meta>
+   <meta about=”#dt-01” property=”opf:event” content=”meta-update” />
+
+  <meta property="opf:meta-auth" id="meta-authority-01">>Metadata Authority Inc</meta>
+   <meta about=”#meta-authority-01” property=”opf:signature” content=”MAI-Signature” />
+   <meta about=”#meta-authority-01” property=”opf:date-ref” content=”dt-01” />
+  ...
+  <!-- in Signatures.xml -->
+  <signatures>
+   <Signature Id="MAI-Signature" xmlns="http://www.w3.org/2000/09/xmldsig#">
+  </signatures>
+  ...
+ }}}
+
+Example 2: ExampleEbookRetailer.com injects proprietary identifier into publication, preserving original publisher supplied UUID, but changing package identifier. Does not use signature.
+
+ {{{
+  ...
+  <dc:identifier id="my-uuid">UUID-1234-5678</dc:identifier>
+  <meta property=”dcterms:identifier” id="pID">bk-555-555-5555</meta>
+   <meta about=”#pID” property=”opf:scheme” content="proprietary" />
+   <meta about=”#pID” property=”opf:authority” content="meta-authority-01" />
+
+  <meta property=”dcterms:date” id=”update05”>2008-07-16T12:32:27.21</meta>
+   <meta about=”#update05” property="opf:event” content=”meta-update" />
+
+  <meta property="opf:-auth" id="meta-authority-01">ExampleEbookRetailer.com</meta>
+   <meta about=”#meta-authority-01” property=”opf:date-ref” content="update05" />
+  ...
+}}}
 
 === PRISM metadata ===
 To allow prism metadata at the package level, all that is needed is that the `prism` prefix be defined using the generic mechanism to associate prefixes with vocabularies (see "Prefix association" below). Because of this generic solution, the OPF spec does not really need to say anything specific about prism. Other "new" metadata vocabularies are hooked up the same way. 
