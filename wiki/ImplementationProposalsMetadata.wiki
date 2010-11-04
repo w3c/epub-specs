@@ -54,93 +54,6 @@ Principles:
  * We propose to use a subset of RDFa 1.1 as the expression form for all new OPF metadata, as this creates an extension and enrichment pattern that does not require the addition of new homegrown elements and/or attributes for each case.
  * The new syntax for expressing metadata must remain simple from a processing perspective. As an example, it must remain possible to use a plain good old XPath statement to retrieve the title of the publication.
 
-=== Content Version  ===
-
-Proposal reflecting telcon of 2-Nov: utilize numeric content version property to express release versions of the package. Reading systems must match references based on the specificity of the version provided. In other words, if a request is made for version "1.1" and the publication that exists has a version of "1.1.4", then that publication should match the request.
-
-Define *content-version* property.
-
-Example 1    
-{{{
-  <meta property="content-version">1.1</meta>
-}}}
-
-Example 2 (via list)
-{{{
-  <package xmlns="http://www.idpf.org/2007/opf"
-           xmlns:dc="http://purl.org/dc/elements/1.1/"
-           unique-identifier="bookid" version="3.0">
-   <metadata>
-    <dc:identifier id="bookid">6f24dfc73eb7</dc:identifier>
-    <meta property="content-version">1.2.3</meta>
-   </metadata>
-  </package>
-}}}
-
-=== Metadata Authority ===
-
-Define the following new OPF properties:
-
- * *meta-auth* property to denote the responsible party or authority for metadata elements.
- * *date-ref* property that will refer by id value to a dcterms:date element with opf:event value of 'meta-update'. (see dcterms:date regarding _opf:event_)
- * *signature* property, that will be optional and refer by id value to an XML Signature that must reside in the META-INF/Signatures.xml file.
- * *authority* property that will be allowed on meta elements, and will have a value of the id of a metadata authority.
-
-Example 1: Metadata Authority Inc. injects publication with ISBN-13, preserving the package @unique-identifier, uses a (currently defined in OCF) XML Signature.
- 
-{{{
-  <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="my-uuid">
-  <metadata>
-  <meta property="dcterms:identifier" id="my-uuid">UUID-1234-5678</meta>
-  <meta property="dcterms:identifier" id="isbn-id">>9780101010101</meta>
-   <meta about="#isbn-id" property="opf:scheme" content="isbn13" />
-   <meta about="#isbn-id" property="opf:authority" content="meta-authority-01" />
-
-  <meta property="dcterms:date" id="dt-01">2010-10</meta>
-   <meta about="#dt-01" property="opf:event" content="meta-update" />
-
-  <meta property="opf:meta-auth" id="meta-authority-01">>Metadata Authority Inc</meta>
-   <meta about="#meta-authority-01" property="opf:signature" content="MAI-Signature" />
-   <meta about="#meta-authority-01" property="opf:date-ref" content="dt-01" />
-  ...
-  <!-- in Signatures.xml -->
-  <signatures>
-   <Signature Id="MAI-Signature" xmlns="http://www.w3.org/2000/09/xmldsig#">
-  </signatures>
-}}}
-
-Example 2: ExampleEbookRetailer.com adds proprietary identifier into publication, preserving original publisher supplied UUID, but changing package @unique-identifier. Does not use signature.
-
-{{{
-  <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="pID">
-  <metadata>
-  <dc:identifier id="my-uuid">UUID-1234-5678</dc:identifier>
-
-  <meta property="dcterms:identifier" id="pID">bk-555-555-5555</meta>
-   <meta about="#pID" property="opf:scheme" content="proprietary" />
-   <meta about="#pID" property="opf:authority" content="meta-authority-01" />
-
-  <meta property="dcterms:date" id="update05">2008-07-16T12:32:27.21</meta>
-   <meta about="#update05" property="opf:event" content="meta-update" />
-
-  <meta property="opf:-auth" id="meta-authority-01">ExampleEbookRetailer.com</meta>
-   <meta about="#meta-authority-01" property="opf:date-ref" content="update05" />
-}}}
-
-=== EPUB publication nature specification ===
-
-Define *publication-type* property, enumerate values for specific types of packages that require global declaration.
-
-The meta element that specifies that an EPUB is a dictionary:
-{{{
-  <meta property="publication.type">Dictionary</meta>
-}}}
-
-The meta element that specifies that an EPUB is an annotation (as per annotation proposal)
-{{{
-  <meta property="publication.type">Annotation</meta>
-}}}
-
 === Required metadata ===
  * for forwards compatibility purposes, the 3 required DCMES elements of OPF 2.0.1 remain required in 3.0. 
  * the three required DCMES elements are placeholders for DCTERMS equivalents for 3.0 package conformance.
@@ -352,6 +265,93 @@ The following specific recommendations regarding the use of the other dcterms el
 May need method to indicate intended or suitable audience (_eg_ to implement parental locks on reading devices).
 
 (Note that the use of _should_ here, as the enumerations we are likely to identify are not guaranteed to be globally applicable (aka western-centric).)
+
+=== Content Version  ===
+
+Proposal reflecting telcon of 2-Nov: utilize numeric content version property to express release versions of the package. Reading systems must match references based on the specificity of the version provided. In other words, if a request is made for version "1.1" and the publication that exists has a version of "1.1.4", then that publication should match the request.
+
+Define *content-version* property.
+
+Example 1    
+{{{
+  <meta property="content-version">1.1</meta>
+}}}
+
+Example 2 (via list)
+{{{
+  <package xmlns="http://www.idpf.org/2007/opf"
+           xmlns:dc="http://purl.org/dc/elements/1.1/"
+           unique-identifier="bookid" version="3.0">
+   <metadata>
+    <dc:identifier id="bookid">6f24dfc73eb7</dc:identifier>
+    <meta property="content-version">1.2.3</meta>
+   </metadata>
+  </package>
+}}}
+
+=== Metadata Authority ===
+
+Define the following new OPF properties:
+
+ * *meta-auth* property to denote the responsible party or authority for metadata elements.
+ * *date-ref* property that will refer by id value to a dcterms:date element with opf:event value of 'meta-update'. (see dcterms:date regarding _opf:event_)
+ * *signature* property, that will be optional and refer by id value to an XML Signature that must reside in the META-INF/Signatures.xml file.
+ * *authority* property that will be allowed on meta elements, and will have a value of the id of a metadata authority.
+
+Example 1: Metadata Authority Inc. injects publication with ISBN-13, preserving the package @unique-identifier, uses a (currently defined in OCF) XML Signature.
+ 
+{{{
+  <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="my-uuid">
+  <metadata>
+  <meta property="dcterms:identifier" id="my-uuid">UUID-1234-5678</meta>
+  <meta property="dcterms:identifier" id="isbn-id">>9780101010101</meta>
+   <meta about="#isbn-id" property="opf:scheme" content="isbn13" />
+   <meta about="#isbn-id" property="opf:authority" content="meta-authority-01" />
+
+  <meta property="dcterms:date" id="dt-01">2010-10</meta>
+   <meta about="#dt-01" property="opf:event" content="meta-update" />
+
+  <meta property="opf:meta-auth" id="meta-authority-01">>Metadata Authority Inc</meta>
+   <meta about="#meta-authority-01" property="opf:signature" content="MAI-Signature" />
+   <meta about="#meta-authority-01" property="opf:date-ref" content="dt-01" />
+  ...
+  <!-- in Signatures.xml -->
+  <signatures>
+   <Signature Id="MAI-Signature" xmlns="http://www.w3.org/2000/09/xmldsig#">
+  </signatures>
+}}}
+
+Example 2: ExampleEbookRetailer.com adds proprietary identifier into publication, preserving original publisher supplied UUID, but changing package @unique-identifier. Does not use signature.
+
+{{{
+  <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="pID">
+  <metadata>
+  <dc:identifier id="my-uuid">UUID-1234-5678</dc:identifier>
+
+  <meta property="dcterms:identifier" id="pID">bk-555-555-5555</meta>
+   <meta about="#pID" property="opf:scheme" content="proprietary" />
+   <meta about="#pID" property="opf:authority" content="meta-authority-01" />
+
+  <meta property="dcterms:date" id="update05">2008-07-16T12:32:27.21</meta>
+   <meta about="#update05" property="opf:event" content="meta-update" />
+
+  <meta property="opf:-auth" id="meta-authority-01">ExampleEbookRetailer.com</meta>
+   <meta about="#meta-authority-01" property="opf:date-ref" content="update05" />
+}}}
+
+=== EPUB publication nature specification ===
+
+Define *publication-type* property, enumerate values for specific types of packages that require global declaration.
+
+The meta element that specifies that an EPUB is a dictionary:
+{{{
+  <meta property="publication.type">Dictionary</meta>
+}}}
+
+The meta element that specifies that an EPUB is an annotation (as per annotation proposal)
+{{{
+  <meta property="publication.type">Annotation</meta>
+}}}
 
 === PRISM metadata ===
 
