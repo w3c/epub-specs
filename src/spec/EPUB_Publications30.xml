@@ -246,6 +246,14 @@
                 [ContentDocs3] and a conforming OCF Processor according to [OCF3]. An EPUB Reading
                 System must also, if it supports Media Overlays, be a confoming Media Overlay
                 Processor according to [Overlays3].</para>
+            <para role="rsconf">EPUB Reading Systems conformant with this Publications 3.0
+                specification should also be conformant processors of EPUB version 2 publications,
+                as defined by [OPF2], [OPS2], and [OCF2], and must at a minimum attempt to process
+                any publication whose Package Document designates a version other than "3.0" or
+                which omits the version attribute, as if such publication had designated a version
+                "3.0"; provided, however, that Reading Systems must in this situation ignore the
+                presence of removed constructs including <code>ops:switch</code> in Content
+                Documents and <code>@fallback-style</code> in manifest items.</para>
             <para>For convenience, all Reading System conformance requirements applicable based on
                 all of the EPUB3 specifications are non-normatively summarized in Appendix B of the
                 EPUB3 Overview</para>
@@ -264,22 +272,28 @@
                 fallback(s) of a Core Media Type must be provided via one of these mechanisms, as
                 detailed below:</para>
             <para role="contentconf">For <emphasis role="bold">resources referenced in Content
-                    Documents via object elements,</emphasis> legitimate fallback(s) must be
-                provided via that element’s inherent replacement capabilities. Reading Systems must
-                ignore manifest-level fallbacks in resolving such reference.</para>
+                    Documents via <literal>object</literal> elements,</emphasis> legitimate
+                fallback(s) must be provided via that element’s inherent replacement capabilities.
+                Reading Systems must ignore manifest-level fallbacks in resolving such
+                references.</para>
       
             <para role="contentconf"> For <emphasis role="bold">resources referenced in Content
-                    Documents via  img elements,</emphasis> the text value of the alt or title
-                attributes provide a legitimate fallback and should be included. Additional
-                manifest-level fallbacks may be provided. Reading Systems should process
+                    Documents via <literal>img</literal> elements,</emphasis> the text value of the
+                alt or title attributes provide a legitimate fallback and should be included.
+                Additional manifest-level fallbacks may be provided. Reading Systems should process
                 manifest-level fallbacks in resolving such references. </para>
                 
                 
                 <para role="contentconf">For <emphasis role="bold">fonts embedded in Content
-                    Documents or EPUB Style Sheets using the @font-face mechanism,</emphasis> the
-                basic rules of CSS must be used to provide a legitimate fallback. Reading Systems
-                must ignore manifest-level fallbacks in resolving CSS font references. </para>
-            <para>For <emphasis role="bold">all other resource referencing situations</emphasis> in
+                    Documents or EPUB Style Sheets using the <literal>@font-face</literal>
+                    mechanism,</emphasis> the basic rules of CSS must be used to provide a
+                legitimate fallback. Reading Systems must ignore manifest-level fallbacks in
+                resolving CSS font references. </para>
+            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
+                    Documents via <literal>iframe</literal> elements,</emphasis> only XHTML Content
+                Documents may be referenced; fallback processing is inapplicable.</para>
+            <para>For
+                    <emphasis role="bold">all other resource referencing situations</emphasis> in
                 EPUB Publications, a legitimate fallback must be provided via the manifest fallback
                 mechanism. Reading Systems must process manifest-level fallbacks in resolving such
                 resource references.</para>
@@ -316,10 +330,10 @@
                 schema is normative and in case of conflicts between the specification prose and
                 this document, the schema shall be considered definitive. </para>
             <para role="contentconf">A Package Document must exist as a root XML file that should be
-                named ending in the extension ".opf", and is considered to have the MIME media type
-                "application/oebps-package+xml". This root XML file may refer to other XML files via
-                XML’s general entity mechanism, but those files must not use the .opf file
-                extension. </para>
+                named ending in the extension "<literal>.opf</literal>", and is considered to have
+                the MIME media type <literal>"application/oebps-package+xml"</literal>. This root
+                XML file may refer to other XML files via XML’s general entity mechanism, but those
+                files must not use the .opf file extension. </para>
             <para role="contentconf">The <literal>package</literal> element must be the one and only
                 one root element in a Package Document; all other elements in the Package Document
                 must be nested within it. The package element's namespace must be
@@ -347,15 +361,16 @@
             <para role="contentconf">The <literal>package</literal> element must contain one and
                 only one <literal>manifest</literal> element as its first sub-element. The
                     <literal>manifest</literal> element must contain one or more
-                    <literal>item</literal> elements, each describing a content item. The manifest
-                must not include item elements referring to the XML file or files that make up the
-                Package Document, and no item in the manfest may have the MIME media type
+                    <literal>item</literal> elements, each uniquely describing a content item. The
+                manifest must not include item elements referring to the XML file or files that make
+                up the Package Document, and no item in the manfest may have the MIME media type
                     <literal>"application/oebps-package+xml</literal>. Each <literal>item</literal>
                 element contained within a manifest element must have the attributes
                     <literal>id</literal>, <literal>href</literal> (a URI; if relative, the URI is
-                interpreted as relative to the  Package File containing the reference), and
-                    <literal>media-type</literal> (specifying the item’s MIME media type). The order
-                of item elements in the manifest is not significant. </para>
+                interpreted as relative to the Package File containing the reference, and the URI
+                must not contain a fragment identifier), and <literal>media-type</literal>
+                (specifying the item’s MIME media type). The order of item elements in the manifest
+                is not significant.  No URI may be listed more than once in the manifest.</para>
             <para role="epubconf">In an EPUB Publication, for each item in the manifest whose
                 media-type is an EPUB3 Core Media Type (as defined in Section 4.1 of this document),
                 the resource referenced by that item must conform to the applicable specification
@@ -369,6 +384,50 @@
                 must include all resources that are considered part of the publication itself and
                 referenced in a relative manner, and all external resources must be referenced by
                 absolute URIs.</para>
+            <para>Example manifest:</para>
+            <para>
+                <informalexample><synopsis>
+&lt;manifest>
+    &lt;item id="intro"
+        href="intro.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="c1"
+        href="chap1.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="c1-answerkey"
+        href="chap1-answerkey.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="c2"
+        href="chap2.dtb"
+        media-type="application/x-dtbook+xml" />
+    &lt;item id="c2-answerkey"
+        href="chap2-answerkey.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="c3"
+        href="chap3.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="c3-answerkey"
+        href="chap3-answerkey.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="note"
+        href="note.html"
+        media-type="application/xhtml+xml" />
+    &lt;item id="f1"
+        href="fig1.jpg"
+        media-type="image/jpeg" />
+    &lt;item id="f2"
+        href="fig2.jpg"
+        media-type="image/jpeg" />
+    &lt;item id="f3"
+        href="fig3.jpg"
+        media-type="image/jpeg" />
+    &lt;item id="ncx"
+        href="toc.ncx"
+        media-type="application/x-dtbncx+xml" />
+&lt;/manifest>
+</synopsis>
+</informalexample>
+</para>
             <section>
                 <title>Fallback Chains</title>
                 <para role="contentconf"> An item in the manifest may optionally contain the
@@ -376,7 +435,7 @@
                     another item in the manifest. The ordered list of all id references that can be
                     reached starting from any item's <literal>fallback</literal> attribute is
                     considered to be the "fallback chain" for that item. There must not be any
-                    circulare references in any fallback chains. </para>
+                    circular references in any fallback chains. </para>
                 <para role="epubconf">In the context of EPUB, fallback chains are used to reference
                     a set of items that can be considered equivalents, that a Reading System can
                     choose between in rendering content. The detailed requirements for use of
@@ -425,10 +484,21 @@
                 order given in spine. Reading Systems may use "next-page" style functionality when
                 moving from one primary item to the next in spine. </para>
             <para role="rsconferr">When providing navigation via the spine, a Reading System must
-                ignore items that are not Extended Content Document References. </para>
-            <para role="contentconf">
-                <remark role="todo">TODO EXAMPLE from OPF 2.0.1</remark>
-            </para>
+                ignore items that are not Extended Content Document References.</para>
+            <para role="rsconferr">The following example shows a spine element corresponding to the
+            manifest example in section  4.2 above:</para>
+            <para><informalexample><synopsis>
+&lt;spine toc="ncx">
+     &lt;itemref idref="intro" />
+     &lt;itemref idref="c1" />
+     &lt;itemref idref="c1-answerkey" linear="no" />
+     &lt;itemref idref="c2" />
+     &lt;itemref idref="c2-answerkey" linear="no" />
+     &lt;itemref idref="c3" />
+     &lt;itemref idref="c3-answerkey" linear="no" />
+     &lt;itemref idref="note" linear="no" />
+&lt;/spine>                               
+            </synopsis></informalexample></para>
         </section>
         <section>
             <title>Metadata</title>
@@ -469,9 +539,9 @@
                     <literal>type</literal> and <literal>title</literal> attributes whose values
                 must be strings. </para>
             <para role="epubconf">In the context of EPUB, the href attribute of each reference
-                element  must resolve to or within a resource that is represented by an Extended
+                element must resolve to or within a resource that is represented by an Extended
                 Content Document Reference, with each type atttribute conforming to the requirements
-                of Section 4.2 of this document (Core Media Types). </para>
+                of Section X.X of this document (Core Media Types). </para>
             <para role="rsconf">Reading Systems may provide a means to navigate a Publication
                 based on the information in its optional Guide.</para>
             <remark role="todo">TODO: Guide example from OPF2</remark>
