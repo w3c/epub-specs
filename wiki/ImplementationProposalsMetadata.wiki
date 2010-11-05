@@ -56,9 +56,9 @@ Principles:
 
 === Required metadata ===
  * for forwards compatibility purposes, the 3 required DCMES elements of OPF 2.0.1 remain required in 3.0. 
+ * The required elements `identifier` `language` `title` cannot be empty, and must provide a value.
  * the three required DCMES elements are placeholders for DCTERMS equivalents for 3.0 package conformance.
- * The content models and attribute sets of the 3 DCMES elements remain the same as in 2.0.1, with one exception: the
-`override` attribute, see below.
+ * The content models and attribute sets of the 3 DCMES elements remain the same as in 2.0.1, with one exception: the `override` attribute, see below.
  * On the deprecated DCMES elements in question, we provide a way to link (via IDREF) to an equivalent DCTERMS element
 that, if the (3.0) reading system recognizes the link, overrides the information in the DCMES element. This override link ('opf:override`) is optional in the grammar.
 
@@ -83,7 +83,7 @@ Define *content-version* property.
 
 Example 1    
 {{{
-  <meta property="content-version">1.1</meta>
+  <meta property="content-version">1.1.1</meta>
 }}}
 
 Example 2 (via list)
@@ -112,8 +112,12 @@ The expression form for a DCTERMS identifier is:
 Where it is necessary to distinguish identifier types, the existing `opf:scheme` ancillary property is used:
 
 {{{
-  <meta property="dcterms:identifier" id="issn">123456789</meta>
-  <meta about="#issn" property="opf:scheme">issn</meta>
+  <meta property="dcterms:identifier" id="id1">123456789</meta>
+   <meta about="#id1" property="opf:scheme">issn</meta>
+  <meta property="dcterms:identifier" id="id2">0A920021223F3320</meta>
+   <meta about="#id2" property="opf:scheme">istc</meta>
+  <meta property="dcterms:identifier" id="id3">10.1000/0A920021223F3320</meta>
+   <meta about="#id3" property="opf:scheme">doi</meta>
 }}}
 
 In the case of `dcterms:identifier`, the following ancillary properties are defined in the spec (see further "Property definitions" below). 
@@ -184,7 +188,7 @@ The _display-seq_ attribute will be a numerical value to express how multiple _t
 
 The _file-as_ attribute would behave as currently described in OPF for dc:creator and dc:contributor.
 
-The existing _xml:lang_ attribute's usage should be encouraged on dc:title elements where appropriate.
+The existing _xml:lang_ attribute usage should be encouraged on dc:title elements where appropriate.
 
 An example, for the fictional cookbook "The Great Cookbooks of the World: Mon premier guide de cuisson, un Mémoire. The New French Cuisine Masters, Volume Two. Special Anniversary  Edition"
 
@@ -215,7 +219,7 @@ An example, for the fictional cookbook "The Great Cookbooks of the World: Mon pr
 
 The use of additional ancillary properties to `dcterms:title` is not illegal.
 
-Multiple meta elements with the property `dcterms:title` is not allowed.
+Multiple meta elements with the property `dcterms:title` are allowed.
 
 ==== Other DCTERMS elements ====
 
@@ -399,9 +403,7 @@ Declaring that the current EPUB is part of a collection, and which position
 {{{
  <item property="scripted" href="chap1.xhtml" ... />
 }}}
-
- * TODO check with Scripting taskforce exactly what needs to be said re scripting in manifest or spine
-
+TODO: finalize item property values.
 
 === External metadata ===
  * Add an unambiguous method to identify external bibliographic records. These records may be located in the container, but the default assumption is that they are container-external.
@@ -411,7 +413,7 @@ Declaring that the current EPUB is part of a collection, and which position
  * Add a new element `link` as an allowed child of metadata with the RDFa attributes `rel` and `resource` 
  * predefine values for ONIX (`onix-record`), MARC21-XML (`marc21xml-record`), MODS (`mods-record`), and XMP ('xmp-record'). The use of other values on link/@rel is not illegal.
  * There is no provision for specifying the version of the record (this assumes that version information is available inline in the referenced resources)
- * If data provided in the external record conflicts with data given inline in the OPF, then the inline data takes precedence. (correct ?)
+ * If data provided in the external record conflicts with data given inline in the OPF, then the inline data takes precedence.
 
 {{{
 <metadata>
@@ -427,10 +429,11 @@ The meta element typically contains only plain text. Inline markup is however al
 
 TODO EGLS proposal
 
+<wiki:comment>
 Note that support for inline markup is *not* added to the deprecated DC elements.
-
+</wiki:comment>
 === Full examples ===
-(The examples assumes the use of @profile as opposed to exclusive use of @prefix until we have resolved how to do that.)
+TODO: align with final profile/prefix details.
 
 ==== Minimal 3.0 OPF metadata ====
 Identical to OPF 2.0.1. 
@@ -443,7 +446,7 @@ Identical to OPF 2.0.1.
    </metadata>
  </package>
 }}}
-
+<wiki:comment>
 ==== Minimal 4.0 OPF metadata (projection) ====
 
 Since the three required DC elements are deprecated in 3.0, in 4.0 the above would instead be
@@ -457,6 +460,7 @@ Since the three required DC elements are deprecated in 3.0, in 4.0 the above wou
    </metadata>
  </package>
 }}}
+</wiki:comment>
 
 ==== Minimal OPF metadata with a DCTERMS override and an ancillary property ====
 Using the new `opf:override` attribute that allows 3.0 aware reading systems to locate richer data for the required-but-deprecated DC elements (in this case, the title), and an ancillary property added.
@@ -491,9 +495,7 @@ The prefix used must be defined in the root element `prefix` attribute.
 }}}
 
 ==== Manifest metadata  ====
-The first `item` shows how a cover image is identified.
-
-The first `item` shows how a an OPS item is declared to contain scripting.
+In the example below,  the first `item` shows how a cover image is identified, and the second `item` shows how a an OPS item is declared to contain scripting.
 
 {{{
  <package unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf" xml:lang="en"
@@ -506,13 +508,13 @@ The first `item` shows how a an OPS item is declared to contain scripting.
  </package>
 }}}
 
+== META-INF ==
+ * Resources placed in META-INF may be non-manifested items. 
+ * Resources in META-INF should be named with a reverse-dns prefix and a unique identifier for the resource such as: `org.idpf.resource-id`.
+ 
 == OPS head metadata ==
 
 The OPS head `meta` element remains defined as the HTML5 `meta` element. EPUB/OPS specifies no particular use for this element.
 
 == OPS inline metadata ==
-(Note: what if any OPS head metadata should the OPS spec specify?)
-
-The group first needs to ascertain to what extent the [ImplemenationProposalRoleOpsType ops:type/role attribute] covers identified use cases re semantic inflection. 
- 
-If ops:type/role does cover existing use cases, then we have no other explicit reason to add support for RDFa and/or microdata other than extensibility; "allow for innovation".
+TODO: Review and finalize how the [ImplemenationProposalRoleOpsType ops:type/role attribute] covers identified use cases re semantic inflection. 
