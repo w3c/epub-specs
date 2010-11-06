@@ -21,9 +21,9 @@ SMIL files for an EPUB publication MUST be listed in the OPF manifest with media
 _This section is normative._
 
  * What: a new attribute called *media-overlay*
- * Where: optional on OPF *itemref* elements
- * Contents: ID of the manifest item containing the media overlay for the part of the publication referred to by that *itemref*.  
- * While not every OPF spine itemref element is required to have a media overlay associated with it, there MUST be a one-to-one relationship between media overlay files and OPF spine itemref elements; in other words, multiple OPF spine items cannot share a single media overlay file.  
+ * Where: optional on OPF *item* elements
+ * Contents: ID of the manifest item containing the relevant media overlay
+ * While not every manifest item is required to have a media overlay associated with it, there MUST be a one-to-one relationship between media overlay files and manifest items; in other words, multiple manifest items cannot share a single media overlay file.  
  * Reading systems MAY support this new attribute
  * Content creators MAY include this feature
 
@@ -33,21 +33,13 @@ _This section is informative._
 
 Example of how to specify that there is a media overlay available.
 
-Add SMIL files to the manifest of the OPF file:
+Add the SMIL overlay files to the manifest of the OPF file.  Also add the *media-overlay* attribute to the *item* elements for which corresponding SMIL files are available (e.g. text content documents).  The *media-overlay* attribute contains the ID of the corresponding SMIL overlay file. 
 {{{
 <manifest>
-  <item id="ch1" href="chapter1.html" media-type=application/xhtml+xml"/>
-  <item id="ch1_smil"href="chapter1.smil" media-type="application/smil+xml"/>
+  <item id="ch1" href="chapter1.html" media-type=application/xhtml+xml" media-overlay="ch1_smil"/>
+  <item id="ch1_smil" href="chapter1.smil" media-type="application/smil+xml"/>
   ...
 </manifest>
-}}}
-
-Add the *media-overlay* attribute to the OPF *itemref* element and reference the manifest item containing the media overlay resource.
-{{{
-<spine>
-  <itemref idref="ch1" media-overlay="ch1_smil"/>
-  ...
-</spine>
 }}}
 
 This is a forwards-compatible addition: 2.0 reading systems can safely ignore the *media-overlay* attribute and process documents in their normal fashion.
@@ -92,7 +84,7 @@ There are additional features not represented in this very simple example, but t
 
 _This section is normative._
 
-Reading systems that support the *media-overlay* attribute MUST support the [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/media-overlay.rnc EPUB SMIL subset].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *ops:textref* and *ops:type*.  
+Reading systems that support the *media-overlay* attribute MUST support the [http://code.google.com/p/epub-revision/source/browse/trunk/src/schema/media-overlay.rnc EPUB SMIL subset].  This is a subset of [http://www.w3.org/TR/SMIL3/ SMIL 3.0] plus two attributes defined in this standard, *epub:textref* and *epub:type*.  
 
 == Media clipping attributes ==
 
@@ -109,43 +101,43 @@ The attributes *clipBegin* and *clipEnd*, used to represent audio media clip tim
  * If clipEnd is not specified, its value is assumed to be the end of the physical media
  * If clipEnd exceeds the duration of the physical media, then its value is assumed to be the end of the physical media 
 
-== The ops:textref attribute ==
+== The epub:textref attribute ==
 
 === Requirements and allowed values ===
 
 _This section is normative._
 
-The *ops:textref* attribute:
+The *epub:textref* attribute:
  * MUST contain relative URIs with fragment identifiers
  * MUST resolve to an element in the OPS text document corresponding to this SMIL file
 
-=== The purpose of ops:textref ===
+=== The purpose of epub:textref ===
 
 _This section is informative._
 
 An audio book has a linear flow; however, users may wish to change section or hear a particular sentence by clicking the text, and the player needs to update the audio playback accordingly.
 
-The *ops:textref* attribute has been added to seq containers to facilitate linkage between text structural containers and the corresponding media overlay.
+The *epub:textref* attribute has been added to seq containers to facilitate linkage between text structural containers and the corresponding media overlay.
 
-== The ops:type attribute ==
+== The epub:type attribute ==
 
 === Requirements and allowed values ===
 
 _This section is normative._
 
-The *ops:type* attribute takes its values from the list of allowed role types in OPS.
+The *epub:type* attribute takes its values from the list of allowed role types in OPS.
 
-It is STRONGLY RECOMMENDED for content creators to include *ops:type* information in SMIL.
+It is STRONGLY RECOMMENDED for content creators to include *epub:type* information in SMIL.
 
-Reading systems MAY support the *ops:type* attribute in SMIL.
+Reading systems MAY support the *epub:type* attribute in SMIL.
 
 === About skippability ===
 
 _This section is informative._
 
-While reading, users may want to turn on or off certain features of the publication, such as sidebars, footnotes, page numbers, or other types of secondary content.  This feature is called "skippability".  In addition to default element names, the *ops:type* attribute in the text document is used to express semantics of an element. In order to offer an equivalent set of options in the audio presentation, the *ops:type* attribute can be used in the SMIL document. This approach provides an easy global switch to control rendering.
+While reading, users may want to turn on or off certain features of the publication, such as sidebars, footnotes, page numbers, or other types of secondary content.  This feature is called "skippability".  In addition to default element names, the *epub:type* attribute in the text document is used to express semantics of an element. In order to offer an equivalent set of options in the audio presentation, the *epub:type* attribute can be used in the SMIL document. This approach provides an easy global switch to control rendering.
 
-See how the *ops:type* attribute is used in the full example below. 
+See how the *epub:type* attribute is used in the full example below. 
 
 = The relationship between the SMIL file and the text document =
 
@@ -153,7 +145,7 @@ See how the *ops:type* attribute is used in the full example below.
 
 The SMIL document SHOULD be marked up with the same nested structures as the text document.  The SMIL *body* element corresponds with the text document's *body* element. SMIL *seq* elements are used to represent text containers such as header, section, subsection, div, and similar elements.  *Seq* elements SHOULD be nested to mimic the nested structures in the text.
 
-This, combined with the use of *ops:type* to identify special types of structures, allows the reading system to give users the option of escaping structures like sidebars, footnotes, and tables while they are reading.  
+This, combined with the use of *epub:type* to identify special types of structures, allows the reading system to give users the option of escaping structures like sidebars, footnotes, and tables while they are reading.  
 
 == Granularity ==
 
@@ -172,7 +164,7 @@ Consequently, when a Reading System renders the text/audio synchronization descr
  * when a "text" element becomes active in the media overlay, the CSS visual highlighting rules apply regardless of the content type which the "src" attribute refers to. In other words, visible video and audio player controls within the host OPS/XHTML5 file MUST be decorated as per the *media-overlay-active* [#CSS CSS styling rules].
  * in addition to the above default behavior for SMIL-activation of text fragments, audio and video playback MUST be started and stopped according to the duration implied by the authored SMIL synchronization (as per the standard SMIL timing model). There are 2 possible scenarios:
   * when a "text" element in the SMIL markup has no "audio" sibling within its "par" parent container, the referenced audio or video media object MUST play until it ends, at which point the SMIL "text" element's lifespan terminates. In other words, the implicit duration of the SMIL "text" element (and by inference, of the parent "par" container) is that of the referenced audio or video clip.
-  * when a "text" element in the SMIL markup has an "audio" sibling within its "par" parent container, the playback duration of the audio or video media object referenced by the "text" element MUST be constrained by the duration of the "audio" sibling in the SMIL media overlay. In other words, the actual duration of the "par" parent parallel container is that of the child "audio" clip, regardless of the duration of the video or audio media pointed to by the "text" element. This may result in an embedded video or audio media object to end playback prematurely (before reaching its full duration), or to end before the playback of the parallel "audio" in the SMIL markup is finished (in which case the last-played video frame SHOULD remain visible until the parent "par" parallel container finally ends). This is equivalent of the "audio" element in the SMIL markup implicitly carrying the behavior of the "endsync" attribute ( http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-endsyncAttribute ).
+  * when a "text" element in the SMIL markup has an "audio" sibling within its "par" parent container, the playback duration of the audio or video media object referenced by the "text" element MUST be constrained by the duration of the "audio" sibling in the SMIL media overlay. In other words, the actual duration of the "par" parent parallel container is that of the child "audio" clip, regardless of the duration of the video or audio media pointed to by the "text" element. This may result in an embedded video or audio media object to end playback prematurely (before reaching its full duration), or to end before the playback of the parallel "audio" in the SMIL markup is finished (in which case the last-played video frame SHOULD remain visible until the parent "par" parallel container finally ends). This is equivalent of the "audio" element in the SMIL markup implicitly carrying the behavior of the  [http://www.w3.org/TR/SMIL3/smil-timing.html#Timing-endsyncAttribute "endsync" attribute].
  * when a "text" element becomes inactive in the SMIL media overlay, and when it points to an video or audio media object, the referenced media object MUST be reset to its initial "stopped" state, and ready to be played from the zero-position within their content stream (possibly displaying the poster image specified using the HTML5 markup)
 
 = CSS  =
@@ -204,8 +196,5 @@ TODO: show some value(s) for pseudo class media-overlay-active
 
 = Pending TODOs  =
 
- * Requiring head element implies that there is a required metadata element -- what is it?  Is head otherwise entirely optional?  No point in having an empty head.
- * Where are the ops:type values defined?
- * What media-type for SMIL files in the manifest?  "application/smil+xml" used here as per the SMIl 3.0 spec mimetype.
- * Certain text structures without @ops:type may still be given a ops:type value in the SMIL seq corresponding to that particular structure, e.g. an *aside* element does not always take @ops:type but in the SMIL, you would want to specify one so that the aside could be skipped.  Do allowed ops:type values include this case or do we have to extend the values allowed in SMIL's @ops:type to include OPS text element names?
+ * Reference the default epub vocabulary as possible values for epub:type 
  * Add full example
