@@ -274,9 +274,10 @@
             <para role="contentconf">For <emphasis role="bold">resources referenced in Content
                     Documents via <literal>object</literal> elements,</emphasis> legitimate
                 fallback(s) must be provided via that element’s inherent replacement capabilities.
-                Reading Systems must ignore manifest-level fallbacks in resolving such
-                references.</para>
-      
+                Reading Systems must ignore manifest-level fallbacks in resolving such references
+                (the <code>bindings</code> element described below could be considered to enable a
+                type of fallback, but not in the sense meant here of ensuring that content can be
+                rendered on all Reading Systems, whether or not they support scripting).</para>
             <para role="contentconf"> For <emphasis role="bold">resources referenced in Content
                     Documents via <literal>img</literal> elements,</emphasis> the text value of the
                 alt or title attributes provide a legitimate fallback and should be included.
@@ -302,19 +303,20 @@
     </chapter>
     <chapter>
         <title> Package Documents</title>
-        <para>The fundamental publication-levle construct of an EPUB Publication is a Package
-            Document:  a set of enumerated resources (the manifest), which contains an ordered
+        <para>The fundamental publication-level construct of an EPUB Publication is a Package
+            Document: a set of enumerated resources (the manifest), which contains an ordered
             sequence of top-level resources from which all other resources in the set can be reached
             or utilized (the spine).</para>
         <para><remark role="todo">TODO DIAGRAM: show visual graph of abstract "hedge" here, inc
                 fallback chains and sharing resources between roots.</remark>In addition Package
             Documents include a means of including and/or referencing metadata applicable to the
             entire collection including a means for referencing declarative navigation means (a
-            "table of contents") and an optional means for items to reference an ordered list of
-            alternative items (a fallback chain). While the Package Document schema is modular and
-            could potentially be utilized by applications other than EPUB, certain conformance
-            requirements are defined here that are applicable to Package Documents use to represent
-            EPUB Publications.</para>
+            "table of contents"),  an optional means for items to reference an ordered list of
+            alternative items (a fallback chain), and an optional means of associating script-based
+            implementations with custom media types  (via the <code>bindings</code> element). While
+            the Package Document schema is modular and could potentially be utilized by applications
+            other than EPUB, certain conformance requirements are defined here that are applicable
+            to Package Documents use to represent EPUB Publications.</para>
         <para><remark role="todo">TODO LIST: replace or supplement above prose with list of major
                 parts of Package Documents, concise form of list in sec 2.0 OPF 2.0.1.</remark>In
             the package file schema, items of any kind (including style objects, metadata objects,
@@ -342,8 +344,8 @@
             <para role="contentconf">The <literal>package</literal> element must have a
                     <literal>version</literal> attribute with a value of
                 <literal>3.0</literal>.</para>
-            <para role="contentconf">The <literal>package</literal> element must specify a value for
-                its <literal>unique-identifier attribute</literal>. The unique-identifier
+            <para role="contentconf">The <literal>package</literal> element must specifys a value
+                for its <literal>unique-identifier attribute</literal>. The unique-identifier
                 attribute's value specifies which Dublin Core identifier element, described in
                 Section 2.2.10, provides the package's preferred, or primary, identifier. The
                 Package Document's author is responsible for choosing a primary identifier that is
@@ -529,7 +531,75 @@
                         a different rendering such as, for example, disabling pagination.</para>
                
         </section>
+        <section xml:id="sec-bindings-elem">
+            <title>Bindings element</title>
+            <para role="contentconf">The package element may contain at most one
+                    <literal>bindings</literal> element, which contains one or more
+                    <literal>mediaType</literal> elements, each of which associates a custom media
+                type with a "handler" that provides a default script-based implementation for items
+                of that media type when they are referenced from <code>object</code> elements in
+                XHTML Content Documents. </para>
+            <para role="contentconf"> Each <literal>mediaType</literal> element must uniquely
+                designate, via its required <literal>media-type</literal> attribute, a unique
+                content type, which must not be a Core Media Type, and must reference, via its
+                required <code>handler</code> attribute, the id in the manifest of the default
+                implementation for this media type, which must be an XHTML Content Document. <remark
+                    role="todo">WM: might 'idref' a la spine be more consistent than
+                    'handler'?</remark>
+            </para>
+            <para role="rsconf">Reading Systems that support scripting must utilize the bindings
+                element, if present in a Publication, to handle object element references whose MIME
+                media type is not natively supported by the Reading System. The processing model is
+                to instantiate for such references the designated XHTML Content Document handler
+                (which would typically include scripting) as if it had been referenced from the
+                object element's <code>data</code> attribute, but with URL parameters (which go
+                after '?' in a URL) of <itemizedlist>
+                    <listitem>
+                        <para><code>src</code> - URI to the resource (value of the data attribute in
+                            the object element) </para>
+                    </listitem>
+                    <listitem>
+                        <para><code>type</code> - resource media type (value of the type attribute
+                            in the object element)</para>
+                    </listitem>
+                </itemizedlist> Non-ASCII and non-URL-safe characters (e.g. '=') should be escaped
+                in the usual manner for these parameters (UTF-8 encoding and using %XX escapes). </para>
+            <para role="rsconferr">The following partial example illustrates how bindings can be
+                used to provide a default implementation:</para>
+            <para><informalexample><synopsis>
+&lt;manifest>
+  &lt;item id="pict1" href="images/Pict1.jpg" media-type="image/jpeg"/>
+  ...
+  &lt;item id="content" href="content.xhtml" media-type="application/xhtml+xml"/>
+  &lt;item id="impl" href="impl.xhtml" media-type="application/xhtml+xml"/>
+  &lt;item id="slideshow" href="slideshow.xml" media-type="application/x-demo-slideshow"/>
+ &lt;/manifest>
+ &lt;bindings>
+   &lt;mediaType media-type="application/x-demo-slideshow" handler="impl"/>
+ &lt;/bindings>
 
+<emphasis role="italic">in content.xhtml:</emphasis>
+
+...
+&lt;object data="slideshow.xml" type="application/x-demo-slideshow">
+&lt;!-- if scripting is not available, just show them inline -->
+&lt;img src="images/Pict1.jpg"/>
+&lt;img src="images/Pict2.jpg"/>
+&lt;img src="images/Pict3.jpg"/>
+&lt;img src="images/Pict4.jpg"/>
+&lt;/object>
+...
+
+<emphasis role="italic">in slideshow.xml:</emphasis>
+&lt;slides>
+  &lt;slide src="images/Pict1.jpg" dur="3"/>
+  &lt;slide src="images/Pict2.jpg" dur="3"/>
+  &lt;slide src="images/Pict3.jpg" dur="3"/>
+  &lt;slide src="images/Pict4.jpg" dur="3"/>
+&lt;/slides>    
+                           
+            </synopsis></informalexample></para>
+        </section>
         <section><title>Fallback Processing</title><para> This section defines in detail the process by which Reading Systems process fallback
                 information in EPUB Publications. The rules for fallback processing depend on both
                 the type of item, and how is referenced by a Content Document or other
