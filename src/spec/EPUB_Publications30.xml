@@ -232,11 +232,6 @@
             <para>For convenience, a complete listing of all content conformance requirements
                 applicable based on all the EPUB3 specifications is available in <xref
                     linkend="app-content-conform"/>.</para>
-            <section xml:id="sec-xhtml-content-role-attribute">
-                <title>Example: EPUB Publication</title>
-                <para>This section is non-normative.</para>
-                <para><remark role="todo">TODO: example, might be best placed in an appendix</remark></para>
-            </section>
 
         </section>
         <section xml:id="sec-epub-reading-system-conformance">
@@ -263,55 +258,6 @@
                     (http://www.w3.org/TR/xml-proc-profiles/#profiles), alternatively extract and
                     echo the relevant items.</remark></para>
         </section>
-
-        <section xml:id="fallback">
-            <title>Fallback Items</title>
-            <para><remark role="todo">TODO: mg thinks this section could be moved downwards where it
-                    makes more narrative sense.</remark></para>
-
-            <para> This section defines in detail the process by which Reading Systems process
-                fallback information in EPUB Publications. The rules for fallback processing depend
-                on both the type of item, and how is referenced by a Content Document or other
-                resource.</para>
-            <para role="contentconf">This specification defines a set of Core Media Types that all
-                conforming Reading Systems must support in addition to Content Documents (e.g. PNG,
-                SVG, OpenType fonts). Publications may optionally reference items of additional
-                media types. In order to ensure that all conforming Publications can be successfully
-                rendered by all conforming Reading Systems, alternative "fallback" items must be
-                provided for each such item. Fallbacks may be provided either via inherent
-                mechanisms defined for Content Documents, or via the manifest-level fallback
-                mechanism defined in this specification. </para>
-            <para role="contentconf">For every item that is not a Core Media Type, suitable
-                fallback(s) of a Core Media Type must be provided via one of these mechanisms, as
-                detailed below:</para>
-            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>object</literal> elements,</emphasis> legitimate
-                fallback(s) must be provided via that element’s inherent replacement capabilities.
-                Reading Systems must ignore manifest-level fallbacks in resolving such references
-                (the <code>bindings</code> element described below could be considered to enable a
-                type of fallback, but not in the sense meant here of ensuring that content can be
-                rendered on all Reading Systems, whether or not they support scripting).</para>
-            <para role="contentconf"> For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>img</literal> elements,</emphasis> the text value of the
-                alt or title attributes provide a legitimate fallback and should be included.
-                Additional manifest-level fallbacks may be provided. Reading Systems should process
-                manifest-level fallbacks in resolving such references. </para>
-
-
-            <para role="contentconf">For <emphasis role="bold">fonts embedded in Content Documents
-                    or EPUB Style Sheets using the <literal>@font-face</literal>
-                    mechanism,</emphasis> the basic rules of CSS must be used to provide a
-                legitimate fallback. Reading Systems must ignore manifest-level fallbacks in
-                resolving CSS font references. </para>
-            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>iframe</literal> elements,</emphasis> only XHTML Content
-                Documents may be referenced; fallback processing is inapplicable.</para>
-            <para>For <emphasis role="bold">all other resource referencing situations</emphasis> in
-                EPUB Publications, a legitimate fallback must be provided via the manifest fallback
-                mechanism. Reading Systems must process manifest-level fallbacks in resolving such
-                resource references.</para>
-
-        </section>
     </chapter>
 
     <chapter xml:id="sec-package-documents">
@@ -324,15 +270,15 @@
                 about the individual resources that comprise the publication:</para>
             <itemizedlist>
                 <listitem>
-                    <para>A <link linkend="sec-manifest-elem">manifest</link>, which identifies and
-                        describes the set of resources that collectively comprise the
-                        publication.</para>
+                    <para>A <link linkend="sec-manifest-elem">manifest</link>, which identifies (via
+                        URI) and describes (via MIME type)  the set of resources that collectively
+                        comprise the publication.</para>
                 </listitem>
                 <listitem>
-                    <para>A <link linkend="sec-spine-elem">spine</link> - an ordered sequence of
-                        top-level resources from which all other resources in the set can be reached
-                        or utilized. The spine defines the default "reading order" of the
-                        publication.</para>
+                    <para>A <link linkend="sec-spine-elem">spine</link> - an ordered sequence of id
+                        references to top-level resources  in the manifest, from which all other
+                        resources in the set can be reached or utilized. The spine defines the
+                        default "reading order" of the publication.</para>
                 </listitem>
                 <listitem>
                     <para>Publication <link linkend="sec-metadata-elem">metadata</link> - mechanisms
@@ -359,19 +305,6 @@
                 <remark role="todo">TODO DIAGRAM: show visual graph of abstract "hedge" here, inc
                     fallback chains and sharing resources between roots.</remark>
             </example>
-
-            <para><remark role="todo">TODO mg thinks we can perhaps drop this para.</remark> While
-                the Package Document schema is modular and could potentially be utilized by
-                applications other than EPUB, certain conformance requirements are defined in this
-                specification that are applicable to Package Documents use to represent EPUB
-                Publications.</para>
-
-            <para><remark role="todo">TODO mg thinks we should move this para downwards.</remark>In
-                the package file schema, items of any kind (including style objects, metadata
-                objects, and TOC) are simply abstract URI references to resources that specify a
-                MIME type. Additional significance is defined in the context of EPUB, regarding
-                valid resource types for different items. Inter-item references are always via id
-                attributes.</para>
         </section>
         <section xml:id="sec-opf-content-conf">
             <title>Package Document Content Conformance</title>
@@ -1018,6 +951,54 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
             </synopsis>
                     </informalexample></para>
             </section>
+        </section>
+        <section>
+            <title>Fallback Requirements and Processing Flow</title>
+            
+        <para>This section defines in detail the requirements for including fallback content in a
+                Publication, and the process by which Reading Systems must process fallback
+                information.  The rules for fallback processing depend on both the type of item, and
+                how is referenced by a Content Document or other resource.</para>
+            <para role="contentconf">This specification defines a set of Core Media Types that all
+            conforming Reading Systems must support in addition to Content Documents (e.g. PNG,
+            SVG, OpenType fonts). Publications may optionally reference items of additional
+            media types. In order to ensure that all conforming Publications can be successfully
+            rendered by all conforming Reading Systems, alternative "fallback" items must be
+            provided for each such item. Fallbacks may be provided either via inherent
+            mechanisms defined for Content Documents, or via the manifest-level fallback
+            mechanism defined in this specification. </para>
+            <para role="rsconf">For every item that is not a Core Media Type, suitable
+            fallback(s) of a Core Media Type must be provided via one of these mechanisms, as
+            detailed below:</para>
+            <para role="contentconf">For <emphasis role="bold">resources referenced in Content Documents
+                    via <literal>object</literal> elements,</emphasis> legitimate fallback(s) must
+                be provided via that element’s inherent replacement capabilities. </para>
+            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
+                such references (the <code>bindings</code> element described below could be
+                considered to enable a type of fallback, but not in the sense meant here of ensuring
+                that content can be rendered on all Reading Systems, whether or not they support
+                scripting).</para>
+            <para role="contentconf"> For <emphasis role="bold">resources referenced in Content Documents
+                    via <literal>img</literal> elements,</emphasis> the text value of the alt or
+                title attributes provide a legitimate fallback and should be included. Additional
+                manifest-level fallbacks may be provided. </para>
+            <para role="rsconf">Reading Systems should process manifest-level fallbacks in resolving
+                such references. </para>
+        
+        
+            <para role="contentconf">For <emphasis role="bold">fonts embedded in Content Documents or
+                    EPUB Style Sheets using the <literal>@font-face</literal> mechanism,</emphasis>
+                the basic rules of CSS must be used to provide a legitimate fallback. </para>
+            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
+                CSS font references. </para>
+            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
+            Documents via <literal>iframe</literal> elements,</emphasis> only XHTML Content
+            Documents may be referenced; fallback processing is inapplicable.</para>
+            <para role="contentconf">For <emphasis role="bold">all other resource referencing situations</emphasis> in EPUB
+                Publications, a legitimate fallback must be provided via the manifest fallback
+                mechanism. </para>
+            <para role="rsconf">Reading Systems must process manifest-level fallbacks in resolving such resource
+                references.</para>
         </section>
     </chapter>
 
