@@ -300,8 +300,9 @@
                 </listitem>
                 <listitem>
                     <para><link linkend="sec-fallbacks">Fallback chains</link> - an optional means
-                        for publication resources to reference an ordered list of alternative
-                        items.</para>
+                        for publications to define an ordered list of items that can be considered
+                        informational equivalents, that a Reading System can choose between in
+                        rendering content</para>
                 </listitem>
                 <listitem>
                     <para><link linkend="sec-bindings-elem">Bindings</link> - an optional means of
@@ -627,10 +628,7 @@
                     <section xml:id="sec-fallbacks">
                         <title>Item Fallbacks</title>
 
-                        <para><remark role="todo">TODO this section needs awareness of, or should
-                                integrate, <xref linkend="sec-fallback-processing-flow"
-                            /></remark></para>
-
+                       
                         <para>Each item in the manifest whose <xref
                                 linkend="attrdef-item-media-type"/> value is not one of the <link
                                 linkend="sec-core-media-types">EPUB3 Core Media Types</link> must
@@ -640,30 +638,31 @@
                                 linkend="attrdef-item-media-type"/> is an EPUB3 Core Media
                             Type.</para>
 
-                        <para>The ordered list of all ID references that can be reached starting
-                            from a given item's <literal>fallback</literal> attribute is considered
-                            to be the "fallback chain" for that item. </para>
-
-                        <para>A Reading System that does not support the Media Type of a given item
-                            must traverse the fallback chain until it encounters a supported Media
-                            Type. The resource identified by the fallback item is then used in place
-                            of the unsupported item. <remark role="todo">TODO do we require that RS
-                                make use of the first supported item, or can they skip
-                                ahead?</remark></para>
-
-                        <para>The <literal>fallback</literal> attribute IDREF <xref linkend="refXML"
-                            /> value must resolve to another <literal>item</literal> in the
-                                <literal>manifest</literal>. </para>
-
-                        <para>There must not be any circular references in fallback chains.</para>
-
-                        <para><remark role="todo">TODO is it legal to have a fallback attr on an
-                                item that is a core media type?</remark></para>
+                        <para>The <literal>fallback</literal> attribute IDREF <xref
+                                    linkend="refXML"/> value must resolve to another
+                                    <literal>item</literal> in the <literal>manifest</literal>.
+                            The ordered list of all ID references that can be reached
+                            starting from a given item's <literal>fallback</literal> attribute is
+                            considered to be the "fallback chain" for that item. There must
+                                not be any circular references in fallback chains.</para>
+                        <para>The general rule for processing manifest-level fallbacks is that a
+                            Reading System that does not support the Media Type of a given item must
+                            traverse the fallback chain until it encounters a supported Media Type.
+                            The resource identified by the fallback item is then used in place of
+                            the unsupported item. It is legal to have a fallback attribute on an
+                            item of a Core Media Type and a Reading System may choose to "fall over"
+                            such references in order to find the optimal version of a resource to
+                            render in a given context. </para>
+                        
+                        <para>However, Reading Systems process fallbacks differently depending on
+                            the context where a reference to a resources occurs in Content
+                            Documents, in conjunction with the intrinstic fallback mechanisms
+                            defined in <xref linkend="refHTML5"/> and <xref linkend="refSVG"/> .
+                                <xref linkend="sec-fallback-processing-flow"/> defines the overall
+                            processing flow for handling fallbacks.</para>
 
                         <!--
-                        <para>Fallback chains are used to reference a set of items that can be
-                            considered informational equivalents, that a Reading System can choose
-                            between in rendering content.</para>
+                        
 -->
 
                         <!-- TODO, reintroduce perhaps, but where? NOte that "all external resources must be
@@ -874,12 +873,6 @@
                         item in spine to be the beginning of the main reading order of the
                         publication, and b) render successive primary items in the order given in
                         spine.</para>
-                    <!--
-                    <para role="rsconferr">When providing navigation via the spine, a Reading System
-                        must ignore items that are not Extended Content Document References. <remark
-                            role="TODO">TODO is this redundant? Non-ECDR are not
-                        allowed.</remark></para>
-                    -->
                     <section xml:id="examples-spine">
                         <title>The <literal>spine</literal> Element: Examples</title>
                         <informalexample>
@@ -932,7 +925,7 @@
                 <para role="epubconf">In the context of EPUB, the href attribute of each reference
                     element must resolve to or within a resource that is represented by an Extended
                     Content Document Reference, with each type atttribute conforming to the
-                    requirements of <xref linkend="sec-guide-reference-types"/> of this document . </para>
+                    requirements of <xref linkend="sec-structural-semantics-vocab"/> of this document . </para>
                 <para role="rsconf">Reading Systems may provide a means to navigate a Publication
                     based on the information in its optional Guide.</para>
                 <para>Note that <code>guide</code> has been deprecated, as the required NCX provides
@@ -976,7 +969,7 @@
                                         <listitem>
                                             <para>Text string describing the type of the reference,
                                                 as further detailed in <xref
-                                                  linkend="sec-guide-reference-types"/>. </para>
+                                                  linkend="sec-structural-semantics-vocab"/>. </para>
                                         </listitem>
                                     </varlistentry>
                                     <varlistentry>
@@ -1211,68 +1204,17 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                 </variablelist>
             </section>
         </section>
-        <section xml:id="sec-fallback-processing-flow">
-            <title>Fallback Requirements and Processing Flow</title>
-            <para><remark role="todo">TODO @Bill: this needs to be cleaned up and integrated into
-                        <xref linkend="sec-fallbacks"/>, alternatively put in ContentDocs with a
-                    link from <xref linkend="sec-fallbacks"/> describing it as a set of exceptions
-                    to the general rule. </remark></para>
-            <para>This section defines in detail the requirements for including fallback content in
-                a Publication, and the process by which Reading Systems must process fallback
-                information. The rules for fallback processing depend on both the type of item, and
-                how is referenced by a Content Document or other resource.</para>
-            <para>This specification defines a set of Core Media Types that all conforming Reading
-                Systems must support in addition to Content Documents (e.g. PNG, SVG, OpenType
-                fonts). Publications may optionally reference items of additional media types. In
-                order to ensure that all conforming Publications can be successfully rendered by all
-                conforming Reading Systems, alternative "fallback" items must be provided for each
-                such item. Fallbacks may be provided either via inherent mechanisms defined for
-                Content Documents, or via the manifest-level fallback mechanism defined in this
-                specification. </para>
-            <para>For every item that is not a Core Media Type, suitable fallback(s) of a Core Media
-                Type must be provided via one of these mechanisms, as detailed below:</para>
-            <para>For <emphasis role="bold">resources referenced in Content Documents via
-                        <literal>object</literal> elements,</emphasis> legitimate fallback(s) must
-                be provided via that element’s inherent replacement capabilities. </para>
-            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
-                such references (the <code>bindings</code> element described below could be
-                considered to enable a type of fallback, but not in the sense meant here of ensuring
-                that content can be rendered on all Reading Systems, whether or not they support
-                scripting).</para>
-            <para role="contentconf"> For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>img</literal> elements,</emphasis> the text value of the
-                alt or title attributes provide a legitimate fallback and should be included.
-                Additional manifest-level fallbacks may be provided. </para>
-            <para role="rsconf">Reading Systems should process manifest-level fallbacks in resolving
-                such references. </para>
-
-
-            <para role="contentconf">For <emphasis role="bold">fonts embedded in Content Documents
-                    or EPUB Style Sheets using the <literal>@font-face</literal>
-                    mechanism,</emphasis> the basic rules of CSS must be used to provide a
-                legitimate fallback. </para>
-            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
-                CSS font references. </para>
-            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>iframe</literal> elements,</emphasis> only XHTML Content
-                Documents may be referenced; fallback processing is inapplicable.</para>
-            <para role="contentconf">For <emphasis role="bold">all other resource referencing
-                    situations</emphasis> in EPUB Publications, a legitimate fallback must be
-                provided via the manifest fallback mechanism. </para>
-            <para role="rsconf">Reading Systems must process manifest-level fallbacks in resolving
-                such resource references.</para>
-        </section>
+        
     </chapter>
 
     <xi:include href="./sections/EPUB_Publications30-ncx.xml"/>
 
     <chapter xml:id="sec-content-definitions">
-        <title>EPUB Content Definitions</title>
+        <title>EPUB Content Definitions and Processing Flow</title>
         <para>This section includes information about specific values required or allowable in
             different portions of an EPUB Publication in EPUB3 including Core Media Types, Guide
-            reference types, and <remark role="todo">TODO: NCX . </remark>.</para>
-        <para>The values specified in this section are expected to change significantly over time.
-            Always be sure to consult the latest applicable version of this specification.</para>
+            reference types, and <remark role="todo">TODO: NCX . </remark>, as well as a section on processing flow for
+            fallbacks (alternatives to Core Media Types).</para>
         <section xml:id="sec-core-media-types">
             <title>Core Media Types</title>
             <para>The following table lists the EPUB Core Media Types by MIME type.</para>
@@ -1411,9 +1353,57 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                 </table>
             </para>
         </section>
-
-        <section xml:id="sec-guide-reference-types">
-            <title>Guide reference types</title>
+        <section xml:id="sec-fallback-processing-flow">
+            <title>Fallback Requirements and Processing Flow </title>
+            <para>This section defines in detail the requirements for including fallback content in
+                a Publication, and the process by which Reading Systems must process fallback
+                information. The rules for fallback processing depend on both the type of item, and
+                how is referenced by a Content Document or other resource.</para>
+            <para>This specification defines a set of Core Media Types that all conforming Reading
+                Systems must support in addition to Content Documents (e.g. PNG, SVG, OpenType
+                fonts). Publications may optionally reference items of additional media types. In
+                order to ensure that all conforming Publications can be successfully rendered by all
+                conforming Reading Systems, alternative "fallback" items must be provided for each
+                such item. Fallbacks may be provided either via inherent mechanisms defined for
+                Content Documents, or via the manifest-level fallback mechanism defined in this
+                specification. </para>
+            <para>For every item that is not a Core Media Type, suitable fallback(s) of a Core Media
+                Type must be provided via one of these mechanisms, as detailed below:</para>
+            <para>For <emphasis role="bold">resources referenced in Content Documents via
+                <literal>object</literal> elements,</emphasis> legitimate fallback(s) must
+                be provided via that element’s inherent replacement capabilities. </para>
+            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
+                such references (the <code>bindings</code> element described below could be
+                considered to enable a type of fallback, but not in the sense meant here of ensuring
+                that content can be rendered on all Reading Systems, whether or not they support
+                scripting).</para>
+            <para role="contentconf"> For <emphasis role="bold">resources referenced in Content
+                Documents via <literal>img</literal> elements,</emphasis> the text value of the
+                alt or title attributes provide a legitimate fallback and should be included.
+                Additional manifest-level fallbacks may be provided. </para>
+            <para role="rsconf">Reading Systems should process manifest-level fallbacks in resolving
+                such references. </para>
+            
+            
+            <para role="contentconf">For <emphasis role="bold">fonts embedded in Content Documents
+                or EPUB Style Sheets using the <literal>@font-face</literal>
+                mechanism,</emphasis> the basic rules of CSS must be used to provide a
+                legitimate fallback. </para>
+            <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
+                CSS font references. </para>
+            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
+                Documents via <literal>iframe</literal> elements,</emphasis> only XHTML Content
+                Documents may be referenced; fallback processing is inapplicable.</para>
+            <para role="contentconf">For <emphasis role="bold">all other resource referencing
+                situations</emphasis> in EPUB Publications, a legitimate fallback must be
+                provided via the manifest fallback mechanism. </para>
+            <para role="rsconf">Reading Systems must process manifest-level fallbacks in resolving
+                such resource references. </para>
+        </section>
+        <section xml:id="sec-structural-semantics-vocab">
+            <title>Structural Semantics Vocabulary</title>
+            <para><remark role="todo">TODO: this vocab is intended to be used by NCX, Overlay, @role in Content Docs and guide but at present
+            this is simply the table for guide references from OPF 2.0.1 and its associated prose</remark></para>
             <para role="contentconf">Each Guide reference item's required type attribute must be
                 selected from the list defined below when applicable. Other types may be used when
                 none of the predefined types are applicable; their names must begin with the string
