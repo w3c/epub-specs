@@ -109,6 +109,13 @@
         <section xml:id="sec-overview-terminology">
             <title>Terminology</title>
             <glosslist>
+                <glossentry xml:id="gloss-content-document" xreflabel="Content Document">
+                    <glossterm>EPUB Content Document (or Content Document)</glossterm>
+                    <glossdef>
+                        <para>A document carrying all or parts of the Publication content, as
+                            defined in <xref linkend="refContentDocs3"/>.</para>
+                    </glossdef>
+                </glossentry>
                 <glossentry xml:id="gloss-epub-publication">
                     <glossterm>EPUB Publication (or Publication)</glossterm>
                     <glossdef>
@@ -131,7 +138,8 @@
                             equivalently, an EPUB File that has been "unzipped").</para>
                     </glossdef>
                 </glossentry>
-                <glossentry xml:id="gloss-extended-content-document-reference">
+                <glossentry xml:id="gloss-extended-content-document-reference"
+                    xreflabel="Extended Content Document Reference">
                     <glossterm>Extended Content Document Reference</glossterm>
                     <glossdef>
                         <para>An item in the Package File manifest that either a) refers to an EPUB
@@ -314,7 +322,8 @@
 
             <simplelist role="conformance-list">
                 <member role="conformance-item">A Package Document must be a well-formed XML
-                    Document <xref linkend="refXML"/>. It is considered to have the MIME media type <literal>"application/oebps-package+xml"</literal></member>
+                    Document <xref linkend="refXML"/>. It is considered to have the MIME media type
+                        <literal>"application/oebps-package+xml"</literal></member>
                 <member role="conformance-item"><remark role="todo">TODO for convenience we may want
                         to put a note here re external and internal subsets</remark></member>
                 <member role="conformance-item">A Package Document must be encoded in UTF-8 or
@@ -324,9 +333,8 @@
                     addition must conform to all content conformance constraints expressed in <xref
                         linkend="sec-package-def"/>.</member>
                 <member role="conformance-item">The Package Document filename should use the file
-                    extension <filename>.opf</filename>. Any separate included fragments
-                    (entities or XIncludes) should not use the <literal>.opf</literal>
-                    extension.</member>
+                    extension <filename>.opf</filename>. Any separate included fragments (entities
+                    or XIncludes) should not use the <literal>.opf</literal> extension.</member>
             </simplelist>
 
         </section>
@@ -392,9 +400,25 @@
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
-                                    <term><literal>Common Package Attributes</literal> [TODO]</term>
+                                    <term><literal>xml:lang</literal>
+                                        <option>[required]</option></term>
                                     <listitem>
-                                        <para/>
+                                        <para>Refer to <xref linkend="attrdef-common-xmllang"
+                                            /></para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>dir</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to <xref linkend="attrdef-common-dir"/></para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to <xref linkend="attrdef-common-id"/></para>
                                     </listitem>
                                 </varlistentry>
                             </variablelist>
@@ -425,6 +449,11 @@
 
             <section xml:id="sec-manifest-elem">
                 <title>The <literal>manifest</literal> Element</title>
+
+                <para>The <literal>manifest</literal> element, through its <literal>item</literal>
+                    element children, provides a finite list of the resources that constitute the
+                    publication.</para>
+
                 <variablelist xreflabel="manifest" role="elem-synopsis"
                     xml:id="elemdef-opf-manifest">
                     <varlistentry>
@@ -437,26 +466,69 @@
                     <varlistentry>
                         <term>Attributes</term>
                         <listitem>
-                            <para><remark role="todo">TODO</remark></para>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry xml:id="attrdef-manifest-id">
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to <xref linkend="attrdef-common-id"/></para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
                         <term>Content Model</term>
                         <listitem>
-                            <para><literal><xref linkend="elemdef-opf-item"/></literal>
+                            <para>Multiple <literal><xref linkend="elemdef-opf-item"/></literal>
                                 <option>[required]</option></para>
                         </listitem>
                     </varlistentry>
                 </variablelist>
 
-                <para role="contentconf">The <literal>manifest</literal> element contains one or
-                    more <literal>item</literal> elements, each uniquely describing a component of
-                    the Publication. The manifest must not include item elements referring to the
-                    XML file or files that make up the Package Document, and no item in the manfest
-                    may have the MIME media type <literal>"application/oebps-package+xml</literal>.
-                    The order of item elements in the manifest is not significant. No URI may be
-                    listed more than once in the manifest.</para>
+                <para>The following list defines the resource types that must be included in the
+                    manifest:</para>
 
+                <itemizedlist xml:id="sec-manifest-reqd-items">
+                    <listitem>
+                        <para>All <xref linkend="gloss-content-document"/>s that are part of the
+                            publication; minimally one.</para>
+                    </listitem>
+                    <listitem>
+                        <para>All embedded resources (such as images, stylesheets, document
+                            fragments) referenced from <xref linkend="gloss-content-document"/>s,
+                            recursively.</para>
+                    </listitem>
+                    <listitem>
+                        <para>The <link linkend="sec-ncx">NCX.</link></para>
+                    </listitem>
+                    <listitem>
+                        <para>If <link linkend="refOverlays3">Media Overlays</link> are used, all
+                            Media Overlay Documents.</para>
+                    </listitem>
+                    <listitem>
+                        <para>For each <literal>item</literal> that is not a <link
+                                linkend="sec-core-media-types">Core Media Type</link>, <link
+                                linkend="sec-fallbacks">fallback items</link>. <remark role="todo"
+                                >TODO needs to integrate with <xref
+                                    linkend="sec-fallback-processing-flow"/></remark></para>
+                    </listitem>
+                </itemizedlist>
+
+                <para><remark role="todo">TODO should note that we are no longer using DTDs,
+                        internal subset usage is all that remains allowed?</remark></para>
+
+                <para>Note that a Publication may contain <xref linkend="gloss-external-resource"
+                    />s; such resources must not be included in the
+                    <literal>manifest</literal>.</para>
+
+                <para>The manifest is not self-referencing: it must not include
+                        <literal>item</literal> elements referring to the resource or resources that
+                    make up the Package Document itself.</para>
+
+                <para>The order of <literal>item</literal> elements in the manifest is not
+                    significant. The presentation sequence of Content Documents is provided in <link
+                        linkend="sec-spine-elem"><literal>spine</literal></link>.</para>
 
                 <section xml:id="sec-item-elem" xreflabel="item">
                     <title>The <literal>item</literal> element</title>
@@ -470,53 +542,57 @@
                         <varlistentry>
                             <term>Occurrence</term>
                             <listitem>
-                                <para>As a child of <xref linkend="elemdef-opf-manifest"/>. Repeatable.</para>
+                                <para>As a child of <xref linkend="elemdef-opf-manifest"/>.
+                                    Repeatable.</para>
                             </listitem>
                         </varlistentry>
                         <varlistentry>
                             <term>Attributes</term>
                             <listitem>
                                 <variablelist role="elem-synopsis-attlist">
-                                    <varlistentry xml:id="attrdef-item-id">
+                                    <varlistentry xml:id="attrdef-item-id" xreflabel="id">
                                         <term><literal>id</literal>
                                             <option>[required]</option></term>
                                         <listitem>
                                             <xi:include href="share/id-prose-para.xml"/>
                                         </listitem>
                                     </varlistentry>
-                                    <varlistentry xml:id="attrdef-item-href">
+                                    <varlistentry xml:id="attrdef-item-href" xreflabel="href">
                                         <term><literal>href</literal>
                                             <option>[required]</option></term>
                                         <listitem>
-                                            <para>Specifies the URI of the resource described by the
-                                                element. Must be unique within the manifest. If the
-                                                URI is relative, it is interpreted relative to its
-                                                containing Package File. The URI must not contain a
-                                                fragment identifier. <literal>3.0</literal>.</para>
+                                            <para>Specifies the URI of the resource described by
+                                                this <literal>item</literal> element.</para>
                                         </listitem>
                                     </varlistentry>
-                                    <varlistentry xml:id="attrdef-item-media-type">
+                                    <varlistentry xml:id="attrdef-item-media-type"
+                                        xreflabel="media-type">
                                         <term><literal>media-type</literal>
                                             <option>[required]</option></term>
                                         <listitem>
-                                            <para>Identifies the MIME media type of the resource
-                                                described by the element.</para>
+                                            <para>Identifies the MIME media type [TODO MIME ref] of
+                                                the resource described by this
+                                                  <literal>item</literal> element.</para>
                                         </listitem>
                                     </varlistentry>
-                                    <varlistentry>
-                                        <term><literal>property</literal> 
+                                    <varlistentry xml:id="attrdef-item-fallback"
+                                        xreflabel="fallback">
+                                        <term><literal>fallback</literal>
+                                            <option>[conditionally required]</option></term>
+                                        <listitem>
+                                            <para>Specifies via IDREF <xref linkend="refXML"/> a
+                                                fallback for a non-Core Media Type. Refer to <xref
+                                                  linkend="sec-fallbacks"/></para>
+                                        </listitem>
+                                    </varlistentry>
+                                    <varlistentry xreflabel="property">
+                                        <term><literal>property</literal>
                                             <option>[optional]</option></term>
                                         <listitem>
-                                            <para>
-                                                <remark role="todo">TODO</remark>
-                                            </para>
-                                        
-                                        </listitem>
-                                    </varlistentry>
-                                    <varlistentry>
-                                        <term><literal>Common Package Attributes</literal> [TODO]</term>
-                                        <listitem>
-                                            <para/>
+                                            <para>Specifies metadata for the given
+                                                  <literal>item</literal>. Refer to <xref
+                                                  linkend="elemdef-opf-item-property-values"
+                                                />.</para>
                                         </listitem>
                                     </varlistentry>
                                 </variablelist>
@@ -528,8 +604,74 @@
                                 <para>Empty.</para>
                             </listitem>
                         </varlistentry>
-                        
+
                     </variablelist>
+
+                    <para>The URI provided in the <literal>item</literal> element
+                            <literal>href</literal> attribute may be relative, and is in this case
+                        resolved to an absolute URI using the URI of the Package Document as the
+                        base. The resulting absolute URI must be unique within the
+                            <literal>manifest</literal> scope.</para>
+
+                    <para>The resource identified by an item must conform to the applicable
+                        specification(s) as inferred from the MIME Type provided in the
+                            <literal>item</literal> element <literal>media-type</literal>
+                        attribute.</para>
+
+                    <section xml:id="sec-fallbacks">
+                        <title>Item Fallbacks</title>
+
+                        <para><remark role="todo">TODO this section needs awareness of, or should
+                                integrate, <xref linkend="sec-fallback-processing-flow"
+                            /></remark></para>
+
+                        <para>Each item in the manifest whose <xref
+                                linkend="attrdef-item-media-type"/> value is not one of the <link
+                                linkend="sec-core-media-types">EPUB3 Core Media Types</link> must
+                            use the <xref linkend="attrdef-item-fallback"/> attribute to specify a
+                            fallback chain that includes at least one <xref
+                                linkend="elemdef-opf-item"/> whose <xref
+                                linkend="attrdef-item-media-type"/> is an EPUB3 Core Media
+                            Type.</para>
+
+                        <para>The ordered list of all ID references that can be reached starting
+                            from a given item's <literal>fallback</literal> attribute is considered
+                            to be the "fallback chain" for that item. </para>
+
+                        <para>A Reading System that does not support the Media Type of a given item
+                            must traverse the fallback chain until it encounters a supported Media
+                            Type. The resource identified by the fallback item is then used in place
+                            of the unsupported item. <remark role="todo">TODO do we require that RS
+                                make use of the first supported item, or can they skip
+                                ahead?</remark></para>
+
+                        <para>The <literal>fallback</literal> attribute IDREF <xref linkend="refXML"
+                            /> value must resolve to another <literal>item</literal> in the
+                                <literal>manifest</literal>. </para>
+
+                        <para>There must not be any circular references in fallback chains.</para>
+
+                        <para><remark role="todo">TODO is it legal to have a fallback attr on an
+                                item that is a core media type?</remark></para>
+
+                        <!--
+                        <para>Fallback chains are used to reference a set of items that can be
+                            considered informational equivalents, that a Reading System can choose
+                            between in rendering content.</para>
+-->
+
+                        <!-- TODO, reintroduce perhaps, but where? NOte that "all external resources must be
+                            referenced by absolute URIs" is not true: <link meta records can be relative
+                            
+                            As well, in EPUB Publications there must not be
+                            any relative URI references of any kind to external files from any item
+                            (nor via any URI referencing mechanism, including script, in any Content
+                            Document or other content files): i.e. the manifest must include all
+                            resources that are considered part of the publication itself and
+                            referenced in a relative manner, and all external resources must be
+                            referenced by absolute URIs. 
+                        -->
+                    </section>
                     <section xml:id="elemdef-opf-item-property-values">
                         <title>Recognized values for the <literal>item</literal> element
                                 <literal>property</literal> attribute</title>
@@ -538,93 +680,43 @@
                                     >ImplementationProposalsMetadata</link></remark></para>
                         <para><remark role="todo">TODO This might better live in <xref
                                     linkend="sec-content-definitions"/></remark>?</para>
-                       
+
                     </section>
                 </section>
-
-                <section xml:id="sec-fallbacks">
-                    <title>Fallback</title>
-                    <para role="epubconf">In an EPUB Publication, for each item in the manifest
-                        whose media-type is an EPUB3 Core Media Type (as defined in Section 4.1 of
-                        this document), the resource referenced by that item must conform to the
-                        applicable specification for that Core Media Type. Each item in the manifest
-                        whose <literal>media-type</literal> is NOT one of the EPUB3 Core Media Types
-                        must specify a fallback chain that includes at least one item whose
-                            <literal>media-type</literal> is an EPUB3 Core Media Type, as further
-                        defined below. As well, in EPUB Publications there must not be any relative
-                        URI references of any kind to external files from any item (nor via any URI
-                        referencing mechanism, including script, in any Content Document or other
-                        content files): i.e. the manifest must include all resources that are
-                        considered part of the publication itself and referenced in a relative
-                        manner, and all external resources must be referenced by absolute
-                        URIs.</para>
-                    <section>
-                        <title>Fallback Chains</title>
-                        <para role="contentconf"> An item in the manifest may optionally contain the
-                            atttribute <literal>fallback</literal>. If present it must be an id
-                            reference to another item in the manifest. The ordered list of all id
-                            references that can be reached starting from any item's
-                                <literal>fallback</literal> attribute is considered to be the
-                            "fallback chain" for that item. There must not be any circular
-                            references in any fallback chains. </para>
-                        <para role="epubconf">In the context of EPUB, fallback chains are used to
-                            reference a set of items that can be considered equivalents, that a
-                            Reading System can choose between in rendering content. The detailed
-                            requirements for use of fallback chains in EPUB are described in <remark
-                                role="todo">section X.X.X</remark> below. </para>
-                    </section>
-                </section>
-
-                <section>
-                    <title><literal>manifest</literal> Examples</title>
-                    <informalexample>
+                <section xml:id="examples-manifest">
+                    <title>The <literal>manifest</literal> Element: Examples</title>
+                    <informalexample xml:id="example-manifest-1">
+                        <para>The following example shows a <literal>manifest</literal> that only
+                            contain <literal>item</literal>s that are Core Media Types.</para>
                         <synopsis>
-&lt;manifest>
-    &lt;item id="intro"
-        href="intro.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="c1"
-        href="chap1.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="c1-answerkey"
-        href="chap1-answerkey.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="c2"
-        href="chap2.dtb"
-        media-type="application/x-dtbook+xml" />
-    &lt;item id="c2-answerkey"
-        href="chap2-answerkey.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="c3"
-        href="chap3.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="c3-answerkey"
-        href="chap3-answerkey.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="note"
-        href="note.html"
-        media-type="application/xhtml+xml" />
-    &lt;item id="f1"
-        href="fig1.jpg"
-        media-type="image/jpeg" />
-    &lt;item id="f2"
-        href="fig2.jpg"
-        media-type="image/jpeg" />
-    &lt;item id="f3"
-        href="fig3.jpg"
-        media-type="image/jpeg" />
-    &lt;item id="ncx"
-        href="toc.ncx"
-        media-type="application/x-dtbncx+xml" />
-&lt;/manifest>
-</synopsis>
+<xi:include href="./examples/publications/manifest-1.xml" parse="text"/></synopsis>
                     </informalexample>
+                    <informalexample>
+                        <para>The following example shows a <literal>manifest</literal> that
+                            contains two <literal>item</literal>s that are not Core Media Types, and
+                            therefore uses the <link linkend="sec-fallbacks">fallback chain
+                                mechanism</link> to supply content alternatives. The fallback chain
+                            terminates with a Core Media Type. </para>
+                        <synopsis>
+<xi:include href="./examples/publications/manifest-2.xml" parse="text"/></synopsis>
+                    </informalexample>
+
                 </section>
 
             </section>
             <section xml:id="sec-spine-elem">
                 <title>The <literal>spine</literal> element</title>
+
+                <para>The <literal>spine</literal> element defines the default reading order of the
+                    Publication content.</para>
+
                 <variablelist xreflabel="spine" role="elem-synopsis" xml:id="elemdef-opf-spine">
+                    <varlistentry>
+                        <term>Element name</term>
+                        <listitem>
+                            <para><literal>spine</literal></para>
+                        </listitem>
+                    </varlistentry>
                     <varlistentry>
                         <term>Occurrence</term>
                         <listitem>
@@ -635,7 +727,24 @@
                     <varlistentry>
                         <term>Attributes</term>
                         <listitem>
-                            <para><remark role="todo">TODO</remark></para>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry xml:id="attrdef-spine-id">
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to <xref linkend="attrdef-common-id"/></para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry xml:id="attrdef-spine-toc">
+                                    <term><literal>toc</literal>
+                                        <option>[required]</option></term>
+                                    <listitem>
+                                        <para>An IDREF <xref linkend="refXML"/> to the manifest
+                                                <xref linkend="elemdef-opf-item"/> that represents
+                                            the <link linkend="sec-ncx">NCX</link></para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -647,66 +756,21 @@
                     </varlistentry>
                 </variablelist>
 
-                <para role="contentconf">Following the manifest, there must be one and only one
-                        <literal>spine</literal> element, which contains one or more
-                        <literal>itemref</literal> elements. Each <literal>itemref</literal> must
-                    reference (via its required <literal>idref</literal> attribute) a unique item in
-                    the manifest, thus the spine represents an ordered list of a subset of the items
-                    in the manifest. In EPUB, this represents the default reading order for the
-                    content, with content items not appearing in the spine being ancillary to those
-                    that do appear there. </para>
-                <para role="epubconf">In the context of EPUB, each <literal>item</literal>
-                    referenced by the Package File's <literal>spine</literal> element must be an
-                    Extended Content Document Reference. Note that in general such references should
-                    resolve to XHTML Content Documents rather than SVG Content Documents, unless a)
-                    such use is within a Publication that is packaged together with, and as an
-                    alternative non-default representation of, another Publication that represents
-                    effectively the same content utilizing XHTML Content Documents or b) the nature
-                    of the content being represented via SVG is inherently unsuitable to
-                    representation in XHTML.</para>
-                <para role="contentconf">The <literal>spine</literal> element must include a
-                        <literal>toc attribute</literal>, whose value is an id reference to another
-                    item in the manifest.</para>
-                <para role="epubconf"> For an EPUB Publication, the <literal>toc</literal> reference
-                    must be to the publication's one and only one NCX Document.</para>
-                <para role="contentconf">The <literal>spine</literal> element may contain an
-                    optional attribute <literal>page-progression-direction</literal>, which can have
-                    the values <literal>ltr</literal> or <literal>rtl</literal> indicating
-                    left-to-right or right-to-left presentation is expected.</para>
-                <para role="contentconf">Spine itemref elements may also contain an optional
-                    attribute <literal>linear</literal> whose default value is
-                        <literal>yes</literal>. This reference indicates whether a spine item is
-                    considered primary (linear=yes) or auxiliary (linear=no). In the context of
-                    EPUB, this may be used to enable Reading Systems to distinguish presentation of
-                    "body" content from ancillary or "sidebar" content which might be, for example,
-                    presented in a popup window, or omitted from an aural rendition. </para>
-                <para role="rsconf">Reading Systems must provide a means to render a Publication in
-                    the sequence order defined by the spine. Reading Systems must as part of this
-                    means a) recognize the first primary (linear=yes) item in spine to be the
-                    beginning of the main reading order of the publication and b) render successive
-                    primary items in the order given in spine. Reading Systems may use "next-page"
-                    style functionality when moving from one primary item to the next in spine. </para>
-                <para role="rsconferr">When providing navigation via the spine, a Reading System
-                must ignore items that are not Extended Content Document References.</para>
-                <para role="rsconferr">The following example shows a spine element corresponding to
-                    the manifest example in section 4.2 above:</para>
-                <para><informalexample>
-                    <synopsis>
-&lt;spine toc="ncx">
-     &lt;itemref idref="intro" />
-     &lt;itemref idref="c1" />
-     &lt;itemref idref="c1-answerkey" linear="no" />
-     &lt;itemref idref="c2" />
-     &lt;itemref idref="c2-answerkey" linear="no" />
-     &lt;itemref idref="c3" />
-     &lt;itemref idref="c3-answerkey" linear="no" />
-     &lt;itemref idref="note" linear="no" />
-&lt;/spine>                               
-            </synopsis>
-                </informalexample></para>                
+                <para>The <literal>spine</literal> elements <xref linkend="elemdef-spine-itemref"/>
+                    children is a list of <xref linkend="gloss-extended-content-document-reference"
+                    />s. The order in which the <literal>itemref</literal> elements appear defines
+                    the default reading order of the Publication.</para>
+
+                <para><remark role="todo">TODO placeholder - this will be @property</remark>The
+                        <literal>spine</literal> element may contain an optional attribute
+                        <literal>page-progression-direction</literal>, which can have the values
+                        <literal>ltr</literal> or <literal>rtl</literal> indicating left-to-right or
+                    right-to-left presentation is expected.</para>
+
                 <section xml:id="sec-itemref-elem" xreflabel="itemref">
                     <title>The <literal>itemref</literal> element</title>
-                    <variablelist xreflabel="itemref" role="elem-synopsis" xml:id="elemdef-spine-itemref">
+                    <variablelist xreflabel="itemref" role="elem-synopsis"
+                        xml:id="elemdef-spine-itemref">
                         <varlistentry>
                             <term>Element Name</term>
                             <listitem>
@@ -716,43 +780,48 @@
                         <varlistentry>
                             <term>Occurrence</term>
                             <listitem>
-                                <para>As a child of <xref linkend="elemdef-opf-spine"/>. Repeatable.</para>
+                                <para>As a child of <xref linkend="elemdef-opf-spine"/>.
+                                    Repeatable.</para>
                             </listitem>
                         </varlistentry>
                         <varlistentry>
                             <term>Attributes</term>
                             <listitem>
                                 <variablelist role="elem-synopsis-attlist">
-                                    <varlistentry xml:id="attrdef-itemref-idref">
+                                    <varlistentry xml:id="attrdef-itemref-idref" xreflabel="idref">
                                         <term><literal>idref</literal>
                                             <option>[required]</option></term>
                                         <listitem>
-                                            <para>Identifies via an IDREF <xref linkend="refXML"/> the
-                                            manifest item element referenced by the element.</para>
+                                            <para>Identifies via an IDREF <xref linkend="refXML"/> a
+                                                manifest <xref linkend="elemdef-opf-item"/>
+                                                element.</para>
                                         </listitem>
                                     </varlistentry>
                                     <varlistentry xml:id="attrdef-itemref-linear">
                                         <term><literal>linear</literal>
-                                            <option>[required]</option></term>
+                                            <option>[optional]</option></term>
                                         <listitem>
-                                            <para>Value must be <literal>yes</literal> or <literal>no</literal></para>
+                                            <para>Specifies whether the referenced content is
+                                                primary. Value must be <literal>yes</literal> or
+                                                  <literal>no</literal>.</para>
                                         </listitem>
                                     </varlistentry>
-                                    
+                                    <varlistentry xml:id="attrdef-itemref-id">
+                                        <term><literal>id</literal>
+                                            <option>[optional]</option></term>
+                                        <listitem>
+                                            <para>Refer to <xref linkend="attrdef-common-id"
+                                                /></para>
+                                        </listitem>
+                                    </varlistentry>
                                     <varlistentry>
-                                        <term><literal>property</literal> 
+                                        <term><literal>property</literal>
                                             <option>[optional]</option></term>
                                         <listitem>
                                             <para>
                                                 <remark role="todo">TODO</remark>
                                             </para>
-                                            
-                                        </listitem>
-                                    </varlistentry>
-                                    <varlistentry>
-                                        <term><literal>Common Package Attributes</literal> [TODO]</term>
-                                        <listitem>
-                                            <para/>
+
                                         </listitem>
                                     </varlistentry>
                                 </variablelist>
@@ -764,13 +833,63 @@
                                 <para>Empty.</para>
                             </listitem>
                         </varlistentry>
-                        
+
                     </variablelist>
-                </section>                    
+
+                    <para>Each <literal>itemref</literal> element must (via the <xref
+                            linkend="attrdef-itemref-idref"/> attribute) reference an item in the
+                        manifest. Consequently, the <literal>spine</literal> represents an ordered
+                        list of a subset of the <literal>item</literal>s in the manifest, with
+                        content items not being referenced from the <literal>spine</literal> being
+                        ancillary to those that do appear there. </para>
+
+                    <para>Each <literal>item</literal> referenced via <literal>itemref</literal>
+                        must be an <xref linkend="gloss-extended-content-document-reference"/>.
+                        Note that in general such references should resolve to XHTML Content
+                        Documents rather than SVG Content Documents, unless a) such use is within a
+                        Publication that is packaged together with, and as an alternative
+                        non-default representation of, another Publication that represents
+                        effectively the same content utilizing XHTML Content Documents or b) the
+                        nature of the content being represented via SVG is inherently unsuitable to
+                        representation in XHTML.</para>
+
+                    <para>The <literal>itemref</literal> element's <literal>linear</literal>
+                        attribute indicates whether a spine item is considered primary
+                            (<literal>linear='yes'</literal>) or auxiliary
+                            (<literal>linear='no'</literal>).The default value of
+                            <literal>linear</literal> is <literal>yes</literal>. This may be used to
+                        enable Reading Systems to distinguish presentation of "body" content from
+                        ancillary content which might be, for example, presented in a
+                        popup window, or omitted from an aural rendition. </para>
+
+                    <para>Reading Systems must provide a means to render a Publication in the order
+                        defined by the <literal>spine</literal>. Reading Systems must as part of
+                        this means a) recognize the first primary (<literal>linear='yes'</literal>)
+                        item in spine to be the beginning of the main reading order of the
+                        publication, and b) render successive primary items in the order given in
+                        spine.</para>
+                    <!--
+                    <para role="rsconferr">When providing navigation via the spine, a Reading System
+                        must ignore items that are not Extended Content Document References. <remark
+                            role="TODO">TODO is this redundant? Non-ECDR are not
+                        allowed.</remark></para>
+                    -->
+                    <section xml:id="examples-spine">
+                        <title>The <literal>spine</literal> Element: Examples</title>
+                        <informalexample>
+                            <para>The following example shows a <literal>spine</literal> element
+                                corresponding to <link linkend="example-manifest-1">the manifest
+                                    example above</link>.</para>
+                            <synopsis>
+<xi:include href="./examples/publications/spine-1.xml" parse="text"/></synopsis>
+                        </informalexample>
+                    </section>
+                </section>
 
             </section>
             <section xml:id="sec-guide-elem">
                 <title>The <literal>guide</literal> element [DEPRECATED]</title>
+                <para><remark role="todo">TODO point to the NCX section that provides the new approach to this</remark></para>
                 <variablelist xreflabel="guide" role="elem-synopsis" xml:id="elemdef-opf-guide">
                     <varlistentry>
                         <term>Occurrence</term>
@@ -783,7 +902,7 @@
                         <term>Attributes</term>
                         <listitem>
                             <para>
-                              <literal>Common Package Attributes</literal>               
+                                <literal>Common Package Attributes</literal>
                             </para>
                         </listitem>
                     </varlistentry>
@@ -806,15 +925,15 @@
                 <para role="epubconf">In the context of EPUB, the href attribute of each reference
                     element must resolve to or within a resource that is represented by an Extended
                     Content Document Reference, with each type atttribute conforming to the
-                    requirements of <xref linkend="sec-guide-reference-types"/> of this document
-                  . </para>
+                    requirements of <xref linkend="sec-guide-reference-types"/> of this document . </para>
                 <para role="rsconf">Reading Systems may provide a means to navigate a Publication
                     based on the information in its optional Guide.</para>
                 <para>Note that <code>guide</code> has been deprecated, as the required NCX provides
                     a superset of its functionality. The primary use case for a publication to
                     include a guide would be to support older version Reading Systems that may not
                     support NCX.</para>
-                <para> <remark role="todo">TODO: Guide example from OPF2</remark></para>
+                <para>
+                    <remark role="todo">TODO: Guide example from OPF2</remark></para>
                 <section xml:id="sec-guide-reference" xreflabel="reference">
                     <title>The <literal>reference</literal> element</title>
                     <variablelist xreflabel="item" role="elem-synopsis" xml:id="elemdef-reference">
@@ -827,27 +946,30 @@
                         <varlistentry>
                             <term>Occurrence</term>
                             <listitem>
-                                <para>As a child of <xref linkend="elemdef-opf-guide"/>. Repeatable.</para>
+                                <para>As a child of <xref linkend="elemdef-opf-guide"/>.
+                                    Repeatable.</para>
                             </listitem>
                         </varlistentry>
                         <varlistentry>
                             <term>Attributes</term>
                             <listitem>
                                 <variablelist role="elem-synopsis-attlist">
-                                
+
                                     <varlistentry xml:id="attrdef-reference-href">
                                         <term><literal>href</literal>
                                             <option>[required]</option></term>
                                         <listitem>
-                                            <para>Specifies the URI of the destination of the reference. May contain a
-                                                fragment identifier.</para>
+                                            <para>Specifies the URI of the destination of the
+                                                reference. May contain a fragment identifier.</para>
                                         </listitem>
                                     </varlistentry>
                                     <varlistentry xml:id="attrdef-reference-type">
                                         <term><literal>type</literal>
                                             <option>[required]</option></term>
                                         <listitem>
-                                            <para>Text string describing the type of the reference, as further detailed in <xref linkend="sec-guide-reference-types"/>. </para>
+                                            <para>Text string describing the type of the reference,
+                                                as further detailed in <xref
+                                                  linkend="sec-guide-reference-types"/>. </para>
                                         </listitem>
                                     </varlistentry>
                                     <varlistentry>
@@ -855,11 +977,12 @@
                                             <option>[required]</option></term>
                                         <listitem>
                                             <para> Text string title for the reference. </para>
-                                            
+
                                         </listitem>
                                     </varlistentry>
                                     <varlistentry>
-                                        <term><literal>Common Package Attributes</literal> [TODO]</term>
+                                        <term><literal>Common Package Attributes</literal>
+                                            [TODO]</term>
                                         <listitem>
                                             <para/>
                                         </listitem>
@@ -873,11 +996,11 @@
                                 <para>Empty.</para>
                             </listitem>
                         </varlistentry>
-                        
+
                     </variablelist>
-                    
-                    </section>
-                
+
+                </section>
+
             </section>
             <section xml:id="sec-bindings-elem">
                 <title>The <literal>bindings</literal> element</title>
@@ -992,8 +1115,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
 &lt;/slides>    
                            
             </synopsis>
-                </informalexample></para>
-                
+                    </informalexample></para>
+
                 <section xml:id="sec-mediaType" xreflabel="mediaType">
                     <title>The <literal>mediaType</literal> element</title>
                     <variablelist xreflabel="item" role="elem-synopsis" xml:id="elemdef-mediaType">
@@ -1006,14 +1129,15 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                         <varlistentry>
                             <term>Occurrence</term>
                             <listitem>
-                                <para>As a child of <xref linkend="elemdef-opf-bindings"/>. Repeatable.</para>
+                                <para>As a child of <xref linkend="elemdef-opf-bindings"/>.
+                                    Repeatable.</para>
                             </listitem>
                         </varlistentry>
                         <varlistentry>
                             <term>Attributes</term>
                             <listitem>
                                 <variablelist role="elem-synopsis-attlist">
-                                    
+
                                     <varlistentry xml:id="attrdef-mediaType-media-type">
                                         <term><literal>media-type</literal>
                                             <option>[required]</option></term>
@@ -1031,9 +1155,10 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                                                 element</para>
                                         </listitem>
                                     </varlistentry>
-                                   
+
                                     <varlistentry>
-                                        <term><literal>Common Package Attributes</literal> [TODO]</term>
+                                        <term><literal>Common Package Attributes</literal>
+                                            [TODO]</term>
                                         <listitem>
                                             <para/>
                                         </listitem>
@@ -1047,33 +1172,61 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                                 <para>Empty.</para>
                             </listitem>
                         </varlistentry>
-                        
+
                     </variablelist>
-                    
+
                 </section>
             </section>
+            <section xml:id="sec-common-package-attrs">
+                <title>Common Package Document Attributes</title>
+                <para>The following list defines the semantics of attributes that occur on multiple
+                    elements in the Package Document. These attributes are optional unless locally
+                    specified to be required. Refer to the element definitions in <xref
+                        linkend="sec-package-def"/> for details on the occurence of these
+                    attributes.</para>
+                <variablelist role="elem-synopsis-attlist">
+                    <varlistentry xml:id="attrdef-common-xmllang">
+                        <term><literal>xml:lang</literal></term>
+                        <listitem>
+                            <xi:include href="./share/xmllang-prose-para.xml"/>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry xml:id="attrdef-common-dir">
+                        <term><literal>dir</literal></term>
+                        <xi:include href="./share/dir-prose-listitem.xml"/>
+                    </varlistentry>
+                    <varlistentry xml:id="attrdef-common-id">
+                        <term><literal>id</literal></term>
+                        <listitem>
+                            <xi:include href="./share/id-prose-para.xml"/>
+                        </listitem>
+                    </varlistentry>                    
+                </variablelist>
+            </section>
         </section>
-        <section>
+        <section xml:id="sec-fallback-processing-flow">
             <title>Fallback Requirements and Processing Flow</title>
-
+            <para><remark role="todo">TODO @Bill: this needs to be cleaned up and integrated into
+                        <xref linkend="sec-fallbacks"/>, alternatively put in ContentDocs with a
+                    link from <xref linkend="sec-fallbacks"/> describing it as a set of exceptions
+                    to the general rule. </remark></para>
             <para>This section defines in detail the requirements for including fallback content in
                 a Publication, and the process by which Reading Systems must process fallback
                 information. The rules for fallback processing depend on both the type of item, and
                 how is referenced by a Content Document or other resource.</para>
-            <para role="contentconf">This specification defines a set of Core Media Types that all
-                conforming Reading Systems must support in addition to Content Documents (e.g. PNG,
-                SVG, OpenType fonts). Publications may optionally reference items of additional
-                media types. In order to ensure that all conforming Publications can be successfully
-                rendered by all conforming Reading Systems, alternative "fallback" items must be
-                provided for each such item. Fallbacks may be provided either via inherent
-                mechanisms defined for Content Documents, or via the manifest-level fallback
-                mechanism defined in this specification. </para>
-            <para role="rsconf">For every item that is not a Core Media Type, suitable fallback(s)
-                of a Core Media Type must be provided via one of these mechanisms, as detailed
-                below:</para>
-            <para role="contentconf">For <emphasis role="bold">resources referenced in Content
-                    Documents via <literal>object</literal> elements,</emphasis> legitimate
-                fallback(s) must be provided via that element’s inherent replacement capabilities. </para>
+            <para>This specification defines a set of Core Media Types that all conforming Reading
+                Systems must support in addition to Content Documents (e.g. PNG, SVG, OpenType
+                fonts). Publications may optionally reference items of additional media types. In
+                order to ensure that all conforming Publications can be successfully rendered by all
+                conforming Reading Systems, alternative "fallback" items must be provided for each
+                such item. Fallbacks may be provided either via inherent mechanisms defined for
+                Content Documents, or via the manifest-level fallback mechanism defined in this
+                specification. </para>
+            <para>For every item that is not a Core Media Type, suitable fallback(s) of a Core Media
+                Type must be provided via one of these mechanisms, as detailed below:</para>
+            <para>For <emphasis role="bold">resources referenced in Content Documents via
+                        <literal>object</literal> elements,</emphasis> legitimate fallback(s) must
+                be provided via that element’s inherent replacement capabilities. </para>
             <para role="rsconf">Reading Systems must ignore manifest-level fallbacks in resolving
                 such references (the <code>bindings</code> element described below could be
                 considered to enable a type of fallback, but not in the sense meant here of ensuring
@@ -1104,43 +1257,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
         </section>
     </chapter>
 
-    <chapter xml:id="sec-ncx">
-        <title>NCX Documents</title>
-        <para>
-            <remark role="todo">TODO</remark>
-        </para>
-        <section xml:id="sec-ncx-introduction">
-            <title>Introduction</title>
-            <para><remark role="todo">TODO</remark></para>
-            <para role="rsconf">Reading Systems must provide a means to navigate a Publication based
-                on the information in its NCX file.</para>
-        </section>
-
-        <section xml:id="sec-ncx-content-conformance">
-            <title>NCX Document Content Conformance</title>
-            <para><remark role="todo">TODO</remark></para>
-            <para role="epubconf">All references in the NCX Document must resolve to or within a
-                resource that is represented by an Extended Content Document Reference.</para>
-        </section>
-
-        <!--
-        <section xml:id="sec-ncx-reading-system-conformance">
-            <title>NCX Reading System Conformance</title>
-            <para><remark role="todo">TODO</remark></para>            
-        </section> -->
-
-        <section xml:id="sec-ncx-definition">
-            <title>NCX Document Definition</title>
-            <para><remark role="todo">TODO</remark></para>
-        </section>
-
-        <section xml:id="sec-ncx-examples" conformance="informative">
-            <title>NCX Examples</title>
-            <para><remark role="todo">TODO</remark></para>
-        </section>
-
-
-    </chapter>
+    <xi:include href="./sections/EPUB_Publications30-ncx.xml"/>
 
     <chapter xml:id="sec-content-definitions">
         <title>EPUB Content Definitions</title>
@@ -1152,6 +1269,10 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
         <section xml:id="sec-core-media-types">
             <title>Core Media Types</title>
             <para>The following table lists the EPUB Core Media Types by MIME type.</para>
+            <para>Reading Systems must support rendering of these media types.</para>
+            <para>Note that Publications may optionally reference items of additional media types.
+                In this case, a fallback chain is required to be supplied, as detailed in <xref
+                    linkend="sec-fallbacks"/>. </para>
             <para>
                 <table xml:id="ex.htmltable">
                     <caption>EPUB Core Media Types</caption>
@@ -1290,154 +1411,95 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                 selected from the list defined below when applicable. Other types may be used when
                 none of the predefined types are applicable; their names must begin with the string
                 other.. The value for the type attribute is case-sensitive. The following list of
-                type values is derived from the 13th edition of the Chicago Manual of Style: 
-                <table xml:id="ex2.htmltable">
+                type values is derived from the 13th edition of the Chicago Manual of Style: <table
+                    xml:id="ex2.htmltable">
                     <caption>Guide Reference Types</caption>
                     <tr>
-                        <td class="MarcName">
-                            cover
-                        </td>
-                        <td class="MarcValue">
-                            the book cover(s), jacket information, etc.
-                        </td>
+                        <td class="MarcName"> cover </td>
+                        <td class="MarcValue"> the book cover(s), jacket information, etc. </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            title-page
-                        </td>
-                        <td class="MarcValue">
-                            page with possibly title, author, publisher, and other metadata
-                        </td>
+                        <td class="MarcName"> title-page </td>
+                        <td class="MarcValue"> page with possibly title, author, publisher, and
+                            other metadata </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            toc
-                        </td>
-                        <td class="MarcValue">
-                            table of contents
-                        </td>
+                        <td class="MarcName"> toc </td>
+                        <td class="MarcValue"> table of contents </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            index
-                        </td>
-                        <td class="MarcValue">
-                            back-of-book style index
-                        </td>
+                        <td class="MarcName"> index </td>
+                        <td class="MarcValue"> back-of-book style index </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            glossary
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> glossary </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            acknowledgements
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> acknowledgements </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            bibliography
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> bibliography </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            colophon
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> colophon </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            copyright-page
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> copyright-page </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            dedication
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> dedication </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            epigraph
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> epigraph </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            foreword
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> foreword </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            loi
-                        </td>
-                        <td class="MarcValue">
-                            list of illustrations
-                        </td>
+                        <td class="MarcName"> loi </td>
+                        <td class="MarcValue"> list of illustrations </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            lot
-                        </td>
-                        <td class="MarcValue">
-                            list of tables
-                        </td>
+                        <td class="MarcName"> lot </td>
+                        <td class="MarcValue"> list of tables </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            notes
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> notes </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            preface
-                        </td>
-                        <td class="MarcValue">
-                        </td>
+                        <td class="MarcName"> preface </td>
+                        <td class="MarcValue"> </td>
                     </tr>
-                    
+
                     <tr>
-                        <td class="MarcName">
-                            text
-                        </td>
-                        <td class="MarcValue">
-                            First "real" page of content (e.g. "Chapter 1")
-                        </td>
+                        <td class="MarcName"> text </td>
+                        <td class="MarcValue"> First "real" page of content (e.g. "Chapter 1") </td>
                     </tr>
                 </table>
-                
-            
             </para>
         </section>
         <section xml:id="sec-ncx-epub-semantics">
@@ -1450,7 +1512,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
 
     <appendix xml:id="app-package-schema">
         <title>Package Document Schema</title>
-        <para>The normative schema for Package Documents is available at <link
+        <para>The schema for Package Documents is available at <link
                 xlink:href="./schema/opf30.nvdl">./schema/opf30.nvdl</link>.</para>
         <para>This schema is normative. In case of conflicts between the specification prose and
             this document, the schema shall be considered definitive.</para>
@@ -1468,8 +1530,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
 
     <appendix xml:id="app-ncx-schema">
         <title>NCX Document Schema</title>
-        <para>The normative schema for NCX Documents is available at <link
-                xlink:href="./schema/ncx30.nvdl">./schema/ncx30.nvdl</link>.</para>
+        <para>The schema for NCX Documents is available at <link xlink:href="./schema/ncx30.nvdl"
+                >./schema/ncx30.nvdl</link>.</para>
         <para>This schema is normative. In case of conflicts between the specification prose and
             this document, the schema shall be considered definitive.</para>
 
