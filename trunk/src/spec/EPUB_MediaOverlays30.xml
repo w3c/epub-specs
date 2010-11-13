@@ -77,9 +77,11 @@
 
         <abstract>
             <title>EPUB Media Overlays 3.0</title>
-            <para>EPUB Media Overlays 3.0 specifies ... This specification is one of a family of
-                related specifications that comprise EPUB3. The EPUB3 Overview describes the overall
-                state of EPUB3 and should be read before other EPUB3 documents. </para>
+            <para>EPUB Media Overlays 3.0 specifies a usage of SMIL, OPF, CSS, and the EPUB Content
+                Document format for representation of synchronized text and audio publications. This
+                specification is one of a family of related specifications that comprise EPUB3. The
+                EPUB3 Overview describes the overall state of EPUB3 and should be read before other
+                EPUB3 documents. </para>
         </abstract>
 
     </info>
@@ -88,7 +90,9 @@
         <title>Overview</title>
         <section xml:id="sec-overview-purpose-and-scope">
             <title>Purpose and Scope</title>
-            <para>This specification, EPUB Media Overlays 3.0, defines ...</para>
+            <para>This specification, EPUB Media Overlays 3.0, defines a usage of SMIL, OPF, CSS,
+                and the EPUB Content Document format for representation of synchronized text and
+                audio publications.</para>
             <para>While is intended that this specification be able to be reused by other
                 applications, the  illustrative examples herein are based on its use by EPUB, and
                 certain conformance requirements specific to EPUB are normatively defined. However,
@@ -99,12 +103,10 @@
         </section>
         <section xml:id="sec-overview-relationship">
             <title>Relationship to Other Specifications</title>
-            <para>This specification relies on several building-block specifications. The XHTML
-                vocabulary is defined by HTML5, and by default all terminology used in this
-                specification has the same meaning as its use in HTML5. OPS also relies on XML
-                Namespaces, and in this specification the term "XML namespace" (or just "namespace")
-                has the meaning defined in that specification. ...</para>
-            <para>This specification supersedes </para>
+            <para>This specification relies on the SMIL 3.0 specification, from which the EPUB SMIL
+            subset is derived.</para>
+            <remark role="todo">TODO: reference SMIL 3</remark>
+            <para>This specification supersedes ...</para>
             <para>
                 <remark role="todo">
                     <remark role="todo">TODO: enumerate other dependent specs </remark>
@@ -122,34 +124,18 @@
                         <para>A CSS Style Sheet conformant to this specification.</para>
                     </glossdef>
                     </glossentry>
-                    <glossentry>
-                    <glossterm>XHTML Content Document</glossterm>
-                    <glossdef>
-                        <para>An XML Document conformant with the constraints of version 5 of the
-                            XML serialization of HTML (XHTML5), which adheres to additional
-                            restrictions and may contain additional constructs as defined by this
-                            specification.</para>
-                    </glossdef>
-                    </glossentry>
-                        <glossentry> <glossterm>SVG Content Document</glossterm>
-                    <glossdef>
-                        <para>An XML Document conformant with the constraints of Scalable Vector
-                            Graphics 1.1 (SVG 1.1), which adheres to additional restrictions and may
-                            contain additional constructs as defined by this specification.</para>
-                    </glossdef>
-                    </glossentry>
                             <glossentry>
                     <glossterm>EPUB Content Document (or Content Document)</glossterm>
                     <glossdef>
-                        <para>An XHTML Content Dozcument or SVG Content Document.</para>
+                        <para>An XHTML Content Document or SVG Content Document as defined in
+                            EPUB_ContentDocs30.</para>
                     </glossdef>
                 </glossentry>
                                 <glossentry>
                     <glossterm>User Agent</glossterm>
                     <glossdef>
                         <para>A User Agent as defined in HTML5 that processes Content Documents and
-                            EPUB Style Sheets in a manner conformant with this specification.
-                        </para>
+                            EPUB Style Sheets in a manner conformant with the EPUB specification. </para>
                     </glossdef>
                 </glossentry>
             </glosslist>
@@ -163,21 +149,733 @@
     </chapter>
 
     <chapter xml:id="sec-opf-introduction">
-        <title>Introduction to Media Overlays</title>
-        <para>This specification defines...</para>
+        <title>Introduction</title>
+        <para>Media overlays are a new feature in EPUB 3. This document, the media overlays
+            specification, defines a usage of SMIL, OPF, the EPUB Style Sheet, and the EPUB Content
+            Document for representation of synchronized text and audio publications. </para>
+        <para>Books featuring audio narration synchronized with the text can be found today in
+            mainstream e-book software, educational tools, and e-books formatted for persons with
+            print disabilities. In EPUB 3, these types of books are created by adding to the EPUB
+            fileset an overlay file describing the timing for the pre-recorded audio narration and
+            how it relates to the text markup. The file format for the overlay itself is SMIL, a W3C
+            standard for representing synchronized multimedia information in XML. </para>
+        <para>It is important to note that the media overlays feature is designed to be transparent
+            and therefore will not break compatibility with text-only reading systems. It is also
+            important to note that while future versions of this specification may incorporate
+            support for video media (e.g. synchronized text/sign-language books), this version only
+            supports text and audio media.</para>
+    </chapter>
+    <chapter xml:id="sec-media-overlays-documents">
+        <title>Media Overlay Documents</title>
+    
+        <section>
+            <title>SMIL</title>
+            <section>
+                <title>Overview</title>
+                <para>SMIL (Synchronized Multimedia Integration Language) is a W3C recommendation
+                    for describing multimedia presentations in XML. This specification defines media
+                    overlays as a subset of SMIL 3.0. The purpose of a media overlay is to define
+                    synchronization of audio clips with an EPUB Content Document. </para>
+                <para>Each phrase in the EPUB Content Document is represented by a SMIL
+                        <literal>par</literal> element. That <literal>par</literal> element must
+                    contain two media element children: a <literal>text</literal> element and an
+                        <literal>audio</literal> element. The <literal>text</literal> element
+                    represents a phrase, sentence, or other segment of the content document, and
+                    that segment is referred to by its URI. The <literal>audio</literal> element
+                    represents an audio clip, consisting of an audio file (given by the <literal>src</literal> attribute
+                    and clip offsets, given by <literal>clipBegin</literal> and <literal>clipEnd</literal> attributes (where <literal>clipEnd</literal> must
+                    be chronologically after <literal>clipBegin</literal>). The ordering of the <literal>par</literal>
+                    elements shall match the default reading order of the EPUB Content Document. </para>
+                <para>An example of a basic SMIL document describing an audio overlay for an EPUB
+                    book is shown here: </para>
+                <informalexample>
+                    <synopsis>
+&lt;smil>
+    &lt;body>
+        &lt;par id="par1">
+            &lt;text src="chapter1.html#sentence1"/>
+            &lt;audio src="bookaudio.mp3" clipBegin="0s" clipEnd="10s"/>
+        &lt;/par>
+        &lt;par id="par2">
+            &lt;text src="chapter1.html#sentence2"/>
+            &lt;audio src="bookaudio.mp3" clipBegin="10s" clipEnd="20s"/>
+        &lt;/par>
+        &lt;par id="par3">
+            &lt;text src="chapter1.html#sentence3"/>
+            &lt;audio src="bookaudio.mp3" clipBegin="20s" clipEnd="30s"/>
+        &lt;/par>
+    &lt;/body>
+&lt;/smil></synopsis>
+                </informalexample>
+            </section>
+            <section>
+                <title>Relationship to the EPUB Content Document</title>
+                <section>
+                    <title>Structure</title>
+                    <para>The examples above show a overlays for very simple EPUB Content Documents
+                        that contain no nested text containers, such as sections, asides, headers,
+                        footnotes, and so on. To represent these structures, a SMIL <literal>seq</literal> element
+                        (sequence) must be used. Its children must be other <literal>seq</literal> elements or <literal>par</literal>
+                        elements. Each <literal>seq</literal> element must contain an <literal>epub:textref</literal> attribute which
+                        references, by URI, the corresponding content document element. </para>
+                    <para>Here is an example of a SMIL document with nested <literal>seq</literal> elements: </para>
+                    <remark role="todo">TODO: example</remark>
+                    <para>Here is the corresponding text document for the SMIL example above:</para>
+                    <remark role="todo">TODO: example</remark>
+                </section>
+                <section>
+                    <title>Granularity</title>
+                    <para>SMIL <literal>text</literal> elements' <literal>src</literal> attribute values refer to content document elements
+                        by using their IDs. The granularity level of the SMIL presentation therefore
+                        depends on how the content document is marked up. If the finest level of
+                        markup is at the paragraph level, then that is the finest possible level at
+                        which the media overlay synchronization can be authored. Likewise, if
+                        sub-paragraph markup is available, such as span elements wrapping phrases or
+                        sentences, then a finer level of granularity is possible in the media
+                        overlay.</para>
+                </section>
+                <section>
+                    <title>Audio and video</title>
+                    <para>Any EPUB Content Document with which a given media overlay is associated
+                        may contain embedded media objects such as video and audio. SMIL <literal>text</literal>
+                        element may refer to an embedded video or audio element by its ID
+                        value.</para>
+                </section>
+            </section>
+            <section>
+                <title>Relationship to the EPUB Style Sheet</title>
+                <para>Visual rendering information for the currently-playing EPUB Content Document
+                    text element may be expressed using the CSS pseudo class <literal>media-overlay-active</literal>.
+                    This could be a highlight or outline or other indication that the text element
+                    is "active". </para>
+            </section>
+            <section>
+                <title>Semantics</title>
+                <para>In order to express semantics, the <literal>epub:type</literal> attribute may be present in on
+                    SMIL <literal>par</literal> and <literal>seq</literal> elements.  Its values must be taken from the vocabulary defined
+                    for the publication.  This attribute facilitates intelligent decisions by the
+                    user agent regarding playback behavior appropriate for the semantic type(s)
+                    indicated.</para>
+                <remark role="todo">TODO: reference EPUB spec's vocabulary section</remark>
+                <remark role="todo">TODO: example</remark>
+            </section>
+            <section>
+                <title>Summary of SMIL elements and attributes</title>
+                <variablelist xreflabel="smil" role="elem-synopsis" xml:id="elemdef-smil">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>smil</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>smil</literal> element is the root element of the
+                                SMIL media overlay file.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>profile</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>prefix</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to [TODO link to attrdef-common-id]</para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>In this order: 
+                                <literal><xref
+                                    linkend="elemdef-smil-head"/></literal>
+                                <option>[optional]</option>, 
+                                <literal><xref
+                                    linkend="elemdef-smil-body"/></literal>
+                                <option>[required]</option></para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-head" role="elem-synopsis" xml:id="elemdef-smil-head">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>head</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>head</literal> element is the container for metadata in the
+                                SMIL media overlay file.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem><para>None.</para></listitem>
+                    </varlistentry>
+                    
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>One or more: 
+                                <literal><xref
+                                    linkend="elemdef-smil-meta"/></literal>
+                                <option>[TODO]</option></para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-meta" role="elem-synopsis" xml:id="elemdef-smil-meta">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>meta</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>meta</literal> element represents metadata for the SMIL media overlay.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>content</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>name</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>property</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>about</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>Text</para>
+                            <remark role="todo">Content model is text only if property/about are used instead of content/name attrs.</remark>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-body" role="elem-synopsis" xml:id="elemdef-smil-body">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>body</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>body</literal> element is the starting point for the presentation contained in the
+                                SMIL media overlay file.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to [TODO link to attrdef-common-id]</para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>One or more:<literal><xref
+                                    linkend="elemdef-smil-seq"/></literal>
+                                <option>[TODO]</option>, 
+                                <literal><xref
+                                    linkend="elemdef-smil-par"/></literal>
+                                <option>[TODO]</option></para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                
+                <variablelist xreflabel="smil-seq" role="elem-synopsis" xml:id="elemdef-smil-seq">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>seq</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>seq</literal> element represents a SMIL playback
+                                sequence.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to [TODO link to attrdef-common-id]</para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>epub:textref</literal>
+                                        <option>[required]</option></term>
+                                    <listitem>
+                                        <para>URI of corresponding EPUB Content Document element</para>
+                                    </listitem>
+                                </varlistentry>
+                                
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>One or more:<literal><xref
+                                linkend="elemdef-smil-seq"/></literal>
+                                <option>[TODO]</option>, 
+                                <literal><xref
+                                    linkend="elemdef-smil-par"/></literal>
+                                <option>[TODO]</option></para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-par" role="elem-synopsis" xml:id="elemdef-smil-par">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>par</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>par</literal> element contains media objects which are to be played in parallel.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <listitem>
+                                        <para/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Refer to [TODO link to attrdef-common-id]</para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>
+                                <literal><xref
+                                    linkend="elemdef-smil-text"/></literal>
+                                <option>[optional]</option>, 
+                                <literal><xref
+                                    linkend="elemdef-smil-audio"/></literal>
+                                <option>[required]</option></para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-text" role="elem-synopsis" xml:id="elemdef-smil-text">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>text</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>text</literal> element represents text media by referring to an element in an EPUB Content Document file.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>src</literal> [required]</term>
+                                    <listitem>
+                                        <para>URI</para>
+                                    </listitem>
+                                </varlistentry>
+                                
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>Empty.</para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+                <variablelist xreflabel="smil-audio" role="elem-synopsis" xml:id="elemdef-smil-audio">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>audio</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Occurrence</term>
+                        <listitem>
+                            <para>The <literal>audio</literal> element represents a clip of audio media.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>src</literal> [required]</term>
+                                    <listitem>
+                                        <para>URI</para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>clipBegin</literal> [optional]</term>
+                                    <listitem>
+                                        <para>[TODO]</para>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>clipEnd</literal> [optional]</term>
+                                    <listitem>
+                                        <para>[TODO]</para>
+                                    </listitem>
+                                </varlistentry>
+                                
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>Empty.</para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </section>
+        </section>
+        
+        <section>
+            <title>OPF</title>
+            <para>Manifest items in the OPF may specify a media overlay for that item via the
+                <literal>media-overlay</literal> attribute. Media overlays are themselves manifest items and must be
+                referred to by their IDs. For example:</para>
+            <informalexample>
+                <synopsis>&lt;manifest>
+    &lt;item id="ch1" href="chapter1.html" media-type="application/xhtml+xml" media-overlay="ch1_audio"/>
+    &lt;item id="ch1_audio" href="chapter1_audio.smil" media-type="application/smil+xml"/>
+&lt;/manifest></synopsis>
+            </informalexample>
+            <para>Manifest items which refer to SMIL media overlays must have the media-type
+                <literal>application/smil+xml</literal>.</para>
+            <para>While not every manifest item is required to have a media overlay associated with
+                it, there must be a one-to-one relationship between media overlay files and manifest
+                items; in other words, multiple manifest items cannot share a single media overlay
+                file.</para>
+            <para>This is a forwards-compatible addition: 2.0 reading systems may safely ignore the
+                media-overlay attribute and process documents in their normal fashion.</para>
+        </section>
     </chapter>
     <chapter xml:id="sec-ocf-overview">
-        <title>Media Overlay Documents</title>
+        <title>User Agent Conformance Requirements</title>
         <section xml:id="sec-xhtml-overview-conformance">
-            <title>User Agent Conformance Requirements</title>
-            <para>...</para>
-         
-            
-
+            <title>Behavior</title>
+            <para>User agents may support media overlays, and if they do, then they must adhere to
+                the conformance requirements in this section.  User agents that do not support media
+                overlays shall ignore the <literal>media-overlay</literal> attribute on manifest items and shall also
+                ignore the media overlay manifest items.</para>
+            <section>
+                <title>Loading the Media Overlay</title>
+                <para>When the user agent loads an EPUB Content Document, it shall refer to the
+                    manifest item for that content document to see if it has a corresponding media
+                    overlay. If it does, then it looks up the SMIL media overlay by ID in the manifest and loads the SMIL file. 
+                    Playback shall start either at the beginning or at a specific
+                    location within the file. When the SMIL file has finished playing, the user agent
+                    shall proceed, following the order of the spine to determine the next EPUB
+                    Content Document, and using the method described above, locate the corresponding
+                    media overlay for that next document.</para>
+            </section>
+            <section>
+                <title>Basic playback</title>
+                <para>User agents must support the EPUB SMIL subset. This is a subset of SMIL 3.0
+                    plus two attributes defined in this standard, <literal>epub:textref</literal> and <literal>epub:type</literal>.</para>
+                <remark role="todo">TODO: reference EPUB SMIL schema</remark>
+                <section>
+                    <title>SMIL</title>
+                    <para>The SMIL elements associated with synchronization behavior are called <literal>seq</literal>
+                        (sequence) and <literal>par</literal> (parallel). A SMIL media overlay is, in its simplest
+                        form, defined as a sequence of parallel (i.e. rendered together) text and
+                        audio media objects.  User agents shall render immediate children of the
+                        SMIL body element in a sequence.  Each child element will be a <literal>seq</literal> or a <literal>par</literal>.
+                        A <literal>seq</literal> element's children must be rendered in a sequence, and playback
+                        completes when the last child has finished playing.  A <literal>par</literal> element's
+                        children must be rendered at the same time, and playback completes when the
+                        all children have finished playing.  When the SMIL <literal>body</literal> element's last child has
+                        finished playing, playback of the file is done.</para>
+                </section>
+                <section>
+                    <title>Rendering Audio</title>
+                    <para>When presented with a SMIL <literal>audio</literal> element, user agents must play the audio
+                        file referenced by the <literal>src</literal> attribute, starting at the time given by
+                        <literal>clipBegin</literal> attribute and ending at the time given by the <literal>clipEnd</literal> attribute.
+                        The following rules shall be observed:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>If <literal>clipBegin</literal> is not specified, its value is assumed to be
+                                    0</para>
+                            </listitem>
+                            <listitem>
+                                <para>If <literal>clipEnd</literal> is not specified, its value is assumed to be the
+                                end of the physical media </para>
+                            </listitem>
+                            <listitem>
+                                <para>If <literal>clipEnd</literal> exceeds the duration of the physical media, then
+                                    its value is assumed to be the end of the physical media</para>
+                            </listitem>
+                        </itemizedlist>
+                        
+                    <para>User-controllable audio playback options should include timescale
+                        modification, where the playback rate is altered without distorting the
+                        pitch. The suggested range is half-speed to double speed.</para>
+                </section>
+                <section>
+                    <title>Rendering Text</title>
+                    <para>When presented with a SMIL <literal>text</literal> element, user agents must ensure the EPUB
+                        Content Document element referenced by the <literal>src</literal> attribute is visible.  User
+                        agents must apply the styling rules in the CSS pseudo class
+                        <literal>media-overlay-active</literal> to this EPUB Content Document element.</para>
+                </section>
+            </section>
+            <section>
+                <title>Interacting with the Content Document</title>
+                <section>
+                    <title>Navigation</title>
+                    <para>The SMIL media overlay is closely linked to the EPUB Content Document.
+                        The content document structure is mimicked in the SMIL file.  The content
+                        document text IDs are linked in the SMIL <literal>text</literal> elements' <literal>src</literal> attributes and
+                        the <literal>seq</literal> elements' <literal>epub:textref</literal> attributes.  This allows for the SMIL media
+                        overlay playback to closely follow user navigation of the text because it is
+                        very easy to locate a text reference in the SMIL file. </para>
+                    <para>If the user pauses synchronized text/audio playback and navigates to a
+                        different part of the document, synchronized text/audio playback must resume
+                        at that point.  For example, if a specific page number in the content
+                        document is the desired location, then this same point is located in the
+                        SMIL media overlay and playback started there. </para>
+                    <para>This same approach allows for synchronizing the SMIL playback with user
+                        selection of a navigation points in the publication's global navigation
+                        (NCX).  The user agent loads the media overlay for that file and finds the
+                        correct point for starting playback based on the ID of the navigation point
+                        target.</para>
+                </section>
+                <section>
+                    <title>Embedded Audio and Video</title>
+                    <para> Any EPUB Content Document with which a given media overlay is associated
+                        may contain embedded media objects such as video and audio. Unlike text and
+                        images, such content type is said to be "continuous" in the sense that it
+                        contains its own timing information (i.e. audio and video clips have an
+                        intrinsic duration).  Consequently, when a reading system renders the
+                        text/audio synchronization described by a media overlay, the default
+                        playback behaviors of audio and video media embedded within the associated
+                        text document must be overridden. </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>All audio and video media objects embedded within an EPUB Content
+                                Document must have their public playback interface deactivated
+                                (typically: play/pause control, time scrobbler, volume level, etc.).
+                                This is needed to avoid interference between the scheduled playback
+                                sequence defined by the media overlay, and the arbitrary playback
+                                behavior due to user interaction or script execution. This means
+                                that while the SMIL audio/text synchronization is in playback mode:
+                                the reading system must: <itemizedlist>
+                                    <listitem>
+                                        <para>Hide the individual video/audio UI controls from the
+                                            page. This overrides the default behavior defined by the
+                                            <literal>controls</literal> HTML5 attribute. </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Prevent scripts embedded within the EPUB document (i.e. authored as part of the default publication
+                                            behavior) from invoking 
+                                            the JavaScript audio/video playback API. Because this may be hard to implement in
+                                            practice, it is recommended that content producers
+                                            should avoid publishing embedded scripts dedicated to
+                                            controlling the playback of inline audio/video media
+                                            objects, so that the published media overlay can retain
+                                            full control of the synchronized text/audio
+                                            presentation, without any risk of interference with
+                                            script-enabled custom behaviors. </para>
+                                    </listitem>
+                                </itemizedlist></para>
+                        </listitem>
+                        <listitem>
+                            <para>All audio and video media objects embedded within an EPUB Content
+                                Document must be initialized to their "stopped" state, and ready to
+                                be played from the zero-position within their content stream
+                                (possibly displaying the poster image specified using the XHTML5
+                                markup). This overrides the default behavior defined by the
+                                <literal>autoplay</literal> HTML5 attribute. </para>
+                        </listitem>
+                        <listitem>
+                            <para>When a <literal>text</literal> element becomes active in the media overlay, the CSS
+                                visual highlighting rules apply regardless of the content type
+                                referred to by the <literal>src</literal> attribute. In other words, visible video
+                                and audio player controls within the host EPUB Content Document must
+                                be decorated as per the <literal>media-overlay-active</literal> CSS styling rules. </para>
+                        </listitem>
+                        <listitem>
+                            <para>In addition to the above default behavior for SMIL activation of
+                                text fragments, audio and video playback must be started and stopped
+                                according to the duration implied by the authored SMIL
+                                synchronization (as per the standard SMIL timing model). There are 2
+                                possible scenarios: <itemizedlist>
+                                    <listitem>
+                                        <para>When a <literal>text</literal> element in the SMIL markup has no
+                                            <literal>audio</literal> sibling within its <literal>par</literal> parent container, the
+                                            referenced audio or video media object must play until
+                                            it ends, at which point the SMIL <literal>text</literal> element's
+                                            lifespan terminates. In other words, the implicit
+                                            duration of the SMIL <literal>text</literal> element (and by inference,
+                                            of the parent <literal>par</literal> container) is that of the referenced
+                                            audio or video clip.</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>When a <literal>text</literal> element in the SMIL markup has an
+                                            <literal>audio</literal> sibling within its <literal>par</literal> parent container, the
+                                            playback duration of the audio or video media object
+                                            referenced by the <literal>text</literal> element must be constrained by
+                                            the duration of the <literal>audio</literal> sibling in the SMIL media
+                                            overlay. In other words, the actual duration of the parent
+                                            <literal>par</literal> container is that of the child
+                                            audio clip, regardless of the duration of the video or
+                                            audio media pointed to by the <literal>text</literal> element. This may
+                                            result in an embedded video or audio media object to end
+                                            playback prematurely (before reaching its full
+                                            duration), or to end before the playback of the parallel
+                                            <literal>audio</literal> in the SMIL markup is finished (in which case
+                                            the last-played video frame should remain visible until
+                                            the parent <literal>par</literal> container finally ends). This
+                                            is equivalent of the <literal>audio</literal> element in the SMIL markup
+                                            implicitly carrying the behavior of the <literal>endsync</literal>
+                                            attribute.<remark role="todo">TODO: reference SMIl 3 endsync.</remark></para>
+                                    </listitem>
+                                </itemizedlist></para>
+                        </listitem>
+                        <listitem>
+                            <para>When a <literal>text</literal> element becomes inactive in the SMIL media overlay,
+                                and when it points to an video or audio media object, the referenced
+                                media object must be reset to its initial "stopped" state, and ready
+                                to be played from the zero-position within their content stream
+                                (possibly displaying the poster image specified using the HTML5
+                                markup) </para>
+                        </listitem>
+                    </itemizedlist>
+                </section>
+            </section>
+            <section>
+                <title>Skippability and escapability</title>
+                <para>While reading, users may want to turn on or off certain features of the
+                    publication, such as sidebars, footnotes, page numbers, or other types of
+                    secondary content. This feature is called "skippability". User agents should use
+                    the semantic information provided by SMIL elements' <literal>epub:type</literal> attribute to
+                    determine when to offer users the option of skippable features.  The decision of
+                    whether to allow skippability or not for a given <literal>epub:type</literal> value is left to the
+                    user agent and its familiarity with the EPUB vocabulary in use in that
+                    publication.</para>
+                <remark role="todo">TODO: example of SMIL file for skippability feature</remark>
+                <para>Escapable items are SMIL representations of nested structures such as tables,
+                    lists, and sidebars that users listening to the media overlay may wish to skip
+                    and continue reading what comes next.  This is different from the skippability
+                    described above, which enables or disables entire classes of items.  In this
+                    scenario, a user has started listening to the audio for a book, encounters a
+                    table, and wishes to skip it.  User agents should allow escaping of nested
+                    structure items.  User agents shall determine the start of nested structures by
+                    their <literal>epub:type</literal> attribute (e.g. "table") and should offer users the
+                    option to skip playback of that structure and resume with whatever comes after
+                    it.</para>
+                <remark role="todo">TODO: example of SMIL file for escapability feature</remark>
+            </section>
         </section>
         <section xml:id="sec-xhtml-schema">
             <title>Schema Information</title>
-            <para>... </para>
+            <para>This specification defines a subset of SMIL 3.0 and adds two attributes defined in
+                this standard, epub:textref and epub:type.</para>
+            <remark role="todo">TODO: reference EPUB media overlay schema</remark>
            
         </section>
     </chapter>
