@@ -183,28 +183,33 @@
                     contain two media element children: a <literal>text</literal> element and an
                         <literal>audio</literal> element. The <literal>text</literal> element
                     represents a phrase, sentence, or other segment of the content document, and
-                    that segment is referred to by its URI. The <literal>audio</literal> element
-                    represents an audio clip, consisting of an audio file (given by the <literal>src</literal> attribute
-                    and clip offsets, given by <literal>clipBegin</literal> and <literal>clipEnd</literal> attributes (where <literal>clipEnd</literal> must
-                    be chronologically after <literal>clipBegin</literal>). The ordering of the <literal>par</literal>
-                    elements shall match the default reading order of the EPUB Content Document. </para>
-                <para>An example of a basic SMIL document describing an audio overlay for an EPUB
-                    book is shown here: </para>
+                    that segment is referred to by its URI. The <literal>audio</literal> element represents an audio clip, consisting of
+                    an audio file, given by the <literal>src</literal> attribute, and clip offsets,
+                    given by <literal>clipBegin</literal> and <literal>clipEnd</literal> attributes.</para>
+                <informalexample>
+                    <synopsis>&lt;par>                        
+    &lt;text src="chapter1.html#sentence1"/>
+    &lt;audio src="chapter1_audio.mp3" clipBegin="23s" clipEnd="32s"/>
+&lt;/par>              </synopsis>
+                </informalexample>
+                <para>The ordering of the <literal>par</literal> elements shall match the default
+                    reading order of the EPUB Content Document. An example of a basic SMIL document
+                    describing an audio overlay for an EPUB book is shown here: </para>
                 <informalexample>
                     <synopsis>
 &lt;smil>
     &lt;body>
         &lt;par id="par1">
             &lt;text src="chapter1.html#sentence1"/>
-            &lt;audio src="bookaudio.mp3" clipBegin="0s" clipEnd="10s"/>
+            &lt;audio src="chapter1_audio.mp3" clipBegin="0s" clipEnd="10s"/>
         &lt;/par>
         &lt;par id="par2">
             &lt;text src="chapter1.html#sentence2"/>
-            &lt;audio src="bookaudio.mp3" clipBegin="10s" clipEnd="20s"/>
+            &lt;audio src="chapter1_audio.mp3" clipBegin="10s" clipEnd="20s"/>
         &lt;/par>
         &lt;par id="par3">
             &lt;text src="chapter1.html#sentence3"/>
-            &lt;audio src="bookaudio.mp3" clipBegin="20s" clipEnd="30s"/>
+            &lt;audio src="chapter1_audio.mp3" clipBegin="20s" clipEnd="30s"/>
         &lt;/par>
     &lt;/body>
 &lt;/smil></synopsis>
@@ -220,8 +225,53 @@
                         (sequence) must be used. Its children must be other <literal>seq</literal> elements or <literal>par</literal>
                         elements. Each <literal>seq</literal> element must contain an <literal>epub:textref</literal> attribute which
                         references, by URI, the corresponding content document element. </para>
-                    <para>Here is an example of a SMIL document with nested <literal>seq</literal> elements: </para>
-                    <remark role="todo">TODO: example</remark>
+                    <para>Here is an example of a SMIL document with nested <literal>seq</literal> elements representing a 
+                        section header and a sidebar with a nested image group: </para>
+                    <informalexample>
+                        <synopsis>
+&lt;smil>
+    &lt;body>
+        &lt;seq id="id1" epub:textref="chapter1.html#sectionheader">
+            &lt;par id="id2">
+                &lt;text src="chapter1.html#section1_title"
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:23:23.84" clipEnd="0:23:34.221"/>
+            &lt;/par>
+        &lt;/seq>
+        &lt;par id="id3">
+            &lt;text src="chapter1.html#text1"/>
+            &lt;audio src="chapter1_audio.mp3" clipBegin="0:23:34.221" clipEnd="0:23:59.003"/>
+        &lt;/par>
+        &lt;par id="id4">
+            &lt;text src="chapter1.html#text2"/>
+            &lt;audio src="chapter1_audio.mp3" clipBegin="0:23:59.003" clipEnd="0:24:15.000"/>
+        &lt;/par>
+        &lt;seq id="id5" epub:textref="chapter1.html#sidebar">
+            &lt;par id="id6">
+                &lt;text src="chapter1.html#sidebartitle"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:15.000" clipEnd="0:24:18.123"/>
+            &lt;/par>
+            &lt;seq id="id7" epub:textref="chapter1.html#imagegroup">
+                &lt;par id="id8">
+                    &lt;text src="chapter1.html#photo"/>
+                    &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:18.123" clipEnd="0:24:28.764"/>
+                &lt;/par>
+                &lt;par id="id9">
+                    &lt;text src="chapter1.html#photo_caption"/>
+                    &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:28.764" clipEnd="0:24:50.010"/>
+                &lt;/par>
+            &lt;/seq>
+            &lt;par id="id10">
+                &lt;text src="chapter1.html#sidebartext3"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:50.010" clipEnd="0:25:28.530"/>
+            &lt;/par>
+            &lt;par id="id11">
+                &lt;text src="chapter1.html#sidebartext4"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:25:28.530" clipEnd="0:25:45.515"/>
+            &lt;/par>
+        &lt;seq> 
+    &lt;/body>
+&lt;/smil></synopsis>
+                    </informalexample>
                     <para>Here is the corresponding text document for the SMIL example above:</para>
                     <remark role="todo">TODO: example</remark>
                 </section>
@@ -259,7 +309,8 @@
                     user agent regarding playback behavior appropriate for the semantic type(s)
                     indicated.</para>
                 <remark role="todo">TODO: reference EPUB spec's vocabulary section</remark>
-                <remark role="todo">TODO: example</remark>
+                <remark>TODO: example of  SMIL using epub:type</remark>
+               
             </section>
             <section>
                 <title>Summary of SMIL elements and attributes</title>
@@ -395,7 +446,8 @@
                         <term>Content Model</term>
                         <listitem>
                             <para>Text</para>
-                            <remark role="todo">Content model is text only if property/about are used instead of content/name attrs.</remark>
+                            <remark role="todo">TODO: Content model is text only if property/about
+                                are used instead of content/name attrs.</remark>
                         </listitem>
                     </varlistentry>
                 </variablelist>
@@ -410,8 +462,9 @@
                     <varlistentry>
                         <term>Occurrence</term>
                         <listitem>
-                            <para>The <literal>body</literal> element is the starting point for the presentation contained in the
-                                SMIL media overlay file.</para>
+                            <para>The <literal>body</literal> element is the starting point for the
+                                presentation contained in the SMIL media overlay file.  It
+                                represents a sequence.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -419,9 +472,11 @@
                         <listitem>
                             <variablelist role="elem-synopsis-attlist">
                                 <varlistentry>
-                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <term><literal>epub:type</literal> [optional]</term>
                                     <listitem>
-                                        <para/>
+                                        <para>One or more values taken from the EPUB vocabulary.
+                                                <remark role="todo">TODO: reference epub vocabulary
+                                                section</remark></para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -467,9 +522,11 @@
                         <listitem>
                             <variablelist role="elem-synopsis-attlist">
                                 <varlistentry>
-                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <term><literal>epub:type</literal> [optional]</term>
                                     <listitem>
-                                        <para/>
+                                        <para>One or more values taken from the EPUB vocabulary.
+                                                <remark role="todo">TODO: reference epub vocabulary
+                                                section</remark></para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -483,7 +540,7 @@
                                     <term><literal>epub:textref</literal>
                                         <option>[required]</option></term>
                                     <listitem>
-                                        <para>URI of corresponding EPUB Content Document element</para>
+                                        <para>URI of corresponding EPUB Content Document element. Must use a fragment identifier to refer to a specific element.</para>
                                     </listitem>
                                 </varlistentry>
                                 
@@ -521,9 +578,11 @@
                         <listitem>
                             <variablelist role="elem-synopsis-attlist">
                                 <varlistentry>
-                                    <term><literal>epub:type</literal> [TODO]</term>
+                                    <term><literal>epub:type</literal> [optional]</term>
                                     <listitem>
-                                        <para/>
+                                        <para>One or more values taken from the EPUB vocabulary.
+                                                <remark role="todo">TODO: reference epub vocabulary
+                                                section</remark></para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -570,7 +629,7 @@
                                 <varlistentry>
                                     <term><literal>src</literal> [required]</term>
                                     <listitem>
-                                        <para>URI</para>
+                                        <para>URI with fragment identifier</para>
                                     </listitem>
                                 </varlistentry>
                                 
@@ -605,19 +664,62 @@
                                 <varlistentry>
                                     <term><literal>src</literal> [required]</term>
                                     <listitem>
-                                        <para>URI</para>
+                                        <para>URI of an audio file <remark role="todo">TODO: reference audio format requirements</remark></para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
                                     <term><literal>clipBegin</literal> [optional]</term>
                                     <listitem>
-                                        <para>[TODO]</para>
+                                        <para>Clock value expressed in either hh:mm:ss.fraction or
+                                            as a single unit, whre units must be one of
+                                                <literal>h</literal> (hours), <literal>min</literal>
+                                            (minutes), <literal>s</literal> (seconds), or
+                                                <literal>ms</literal> (milliseconds).  Examples:<itemizedlist>
+                                                <listitem>
+                                                  <para>5:34:31.396</para>
+                                                </listitem>
+                                                <listitem>
+                                                  <para>124:59:36</para>
+                                                </listitem>
+                                                <listitem>
+                                                  <para>0:05:01.2</para>
+                                                </listitem>
+                                                <listitem>
+                                                  <para>76.2s</para>
+                                                </listitem>
+                                                <listitem>
+                                                  <para>3.2h</para>
+                                                </listitem>
+                                            </itemizedlist></para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
                                     <term><literal>clipEnd</literal> [optional]</term>
                                     <listitem>
-                                        <para>[TODO]</para>
+                                        <para>Clock value expressed in either hh:mm:ss.fraction or
+                                            as a single unit, whre units must be one of
+                                                <literal>h</literal> (hours), <literal>min</literal>
+                                            (minutes), <literal>s</literal> (seconds), or
+                                                <literal>ms</literal> (milliseconds).
+                                            Examples:</para>
+                                        <itemizedlist>
+                                            <listitem>
+                                                <para>5:34:31.396</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>124:59:36</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>0:05:01.2</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>76.2s</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>3.2h</para>
+                                            </listitem>
+                                        </itemizedlist>
+                                        <para>Must be chronologically after <literal>clipBegin</literal>.</para>
                                     </listitem>
                                 </varlistentry>
                                 
@@ -635,10 +737,10 @@
         </section>
         
         <section>
-            <title>OPF</title>
-            <para>Manifest items in the OPF may specify a media overlay for that item via the
-                <literal>media-overlay</literal> attribute. Media overlays are themselves manifest items and must be
-                referred to by their IDs. For example:</para>
+            <title>Package Document</title>
+            <para>Manifest items in the publication's Package Document may specify a media overlay
+                for that item via the <literal>media-overlay</literal> attribute. Media overlays are
+                themselves manifest items and must be referred to by their IDs. For example:</para>
             <informalexample>
                 <synopsis>&lt;manifest>
     &lt;item id="ch1" href="chapter1.html" media-type="application/xhtml+xml" media-overlay="ch1_audio"/>
@@ -681,15 +783,17 @@
                 <remark role="todo">TODO: reference EPUB SMIL schema</remark>
                 <section>
                     <title>SMIL</title>
-                    <para>The SMIL elements associated with synchronization behavior are called <literal>seq</literal>
-                        (sequence) and <literal>par</literal> (parallel). A SMIL media overlay is, in its simplest
-                        form, defined as a sequence of parallel (i.e. rendered together) text and
-                        audio media objects.  User agents shall render immediate children of the
-                        SMIL body element in a sequence.  Each child element will be a <literal>seq</literal> or a <literal>par</literal>.
-                        A <literal>seq</literal> element's children must be rendered in a sequence, and playback
-                        completes when the last child has finished playing.  A <literal>par</literal> element's
-                        children must be rendered at the same time, and playback completes when the
-                        all children have finished playing.  When the SMIL <literal>body</literal> element's last child has
+                    <para>The SMIL elements associated with synchronization behavior are called
+                            <literal>seq</literal> (sequence) and <literal>par</literal> (parallel).
+                        A SMIL media overlay is, in its simplest form, defined as a sequence of
+                        parallel (i.e. rendered together) text and audio media objects. User agents
+                        shall render immediate children of the SMIL body element in a sequence. Each
+                        child element must be a <literal>seq</literal> or a <literal>par</literal>
+                        element. A <literal>seq</literal> element's children must be rendered in
+                        sequence, and playback completes when the last child has finished playing. A
+                            <literal>par</literal> element's children must be rendered starting at
+                        the same time, and playback completes when the all children have finished
+                        playing. When the SMIL <literal>body</literal> element's last child has
                         finished playing, playback of the file is done.</para>
                 </section>
                 <section>
@@ -729,12 +833,13 @@
                 <title>Interacting with the Content Document</title>
                 <section>
                     <title>Navigation</title>
-                    <para>The SMIL media overlay is closely linked to the EPUB Content Document.
-                        The content document structure is mimicked in the SMIL file.  The content
-                        document text IDs are linked in the SMIL <literal>text</literal> elements' <literal>src</literal> attributes and
-                        the <literal>seq</literal> elements' <literal>epub:textref</literal> attributes.  This allows for the SMIL media
-                        overlay playback to closely follow user navigation of the text because it is
-                        very easy to locate a text reference in the SMIL file. </para>
+                    <para>The SMIL media overlay is closely linked to the EPUB Content Document. The
+                        content document structure is mimicked in the SMIL file. The content
+                        document text IDs are used in the SMIL <literal>text</literal> elements'
+                            <literal>src</literal> attributes and the <literal>seq</literal>
+                        elements' <literal>epub:textref</literal> attributes. This allows for the
+                        SMIL media overlay playback to closely follow user navigation of the text
+                        because it is very easy to locate a text reference in the SMIL file. </para>
                     <para>If the user pauses synchronized text/audio playback and navigates to a
                         different part of the document, synchronized text/audio playback must resume
                         at that point.  For example, if a specific page number in the content
@@ -804,37 +909,45 @@
                             <para>In addition to the above default behavior for SMIL activation of
                                 text fragments, audio and video playback must be started and stopped
                                 according to the duration implied by the authored SMIL
-                                synchronization (as per the standard SMIL timing model). There are 2
-                                possible scenarios: <itemizedlist>
+                                synchronization (as per the standard SMIL timing model). There are
+                                two possible scenarios: <itemizedlist>
                                     <listitem>
-                                        <para>When a <literal>text</literal> element in the SMIL markup has no
-                                            <literal>audio</literal> sibling within its <literal>par</literal> parent container, the
+                                        <para>When a <literal>text</literal> element in the SMIL
+                                            markup has no <literal>audio</literal> sibling within
+                                            its <literal>par</literal> parent container, the
                                             referenced audio or video media object must play until
-                                            it ends, at which point the SMIL <literal>text</literal> element's
-                                            lifespan terminates. In other words, the implicit
-                                            duration of the SMIL <literal>text</literal> element (and by inference,
-                                            of the parent <literal>par</literal> container) is that of the referenced
-                                            audio or video clip.</para>
+                                            it ends, at which point the SMIL <literal>text</literal>
+                                            element's lifespan terminates. In other words, the
+                                            implicit duration of the SMIL <literal>text</literal>
+                                            element (and by inference, of the parent
+                                                <literal>par</literal> container) is that of the
+                                            referenced audio or video clip.</para>
                                     </listitem>
                                     <listitem>
-                                        <para>When a <literal>text</literal> element in the SMIL markup has an
-                                            <literal>audio</literal> sibling within its <literal>par</literal> parent container, the
+                                        <para>When a <literal>text</literal> element in the SMIL
+                                            markup has an <literal>audio</literal> sibling within
+                                            its <literal>par</literal> parent container, the
                                             playback duration of the audio or video media object
-                                            referenced by the <literal>text</literal> element must be constrained by
-                                            the duration of the <literal>audio</literal> sibling in the SMIL media
-                                            overlay. In other words, the actual duration of the parent
-                                            <literal>par</literal> container is that of the child
-                                            audio clip, regardless of the duration of the video or
-                                            audio media pointed to by the <literal>text</literal> element. This may
-                                            result in an embedded video or audio media object to end
-                                            playback prematurely (before reaching its full
-                                            duration), or to end before the playback of the parallel
-                                            <literal>audio</literal> in the SMIL markup is finished (in which case
-                                            the last-played video frame should remain visible until
-                                            the parent <literal>par</literal> container finally ends). This
-                                            is equivalent of the <literal>audio</literal> element in the SMIL markup
-                                            implicitly carrying the behavior of the <literal>endsync</literal>
-                                            attribute.<remark role="todo">TODO: reference SMIl 3 endsync.</remark></para>
+                                            referenced by the <literal>text</literal> element must
+                                            be constrained by the duration of the
+                                                <literal>audio</literal> sibling in the SMIL media
+                                            overlay. In other words, the actual duration of the
+                                            parent <literal>par</literal> container is that of the
+                                            child audio clip, regardless of the duration of the
+                                            video or audio media pointed to by the
+                                                <literal>text</literal> element. This may result in
+                                            an embedded video or audio media object to end playback
+                                            prematurely (before reaching its full duration), or to
+                                            end before the playback of the parallel
+                                                <literal>audio</literal> in the SMIL markup is
+                                            finished (in which case the last-played video frame
+                                            should remain visible until the parent
+                                                <literal>par</literal> container finally ends). This
+                                            is equivalent of the <literal>audio</literal> element in
+                                            the SMIL markup implicitly carrying the behavior of the
+                                                <literal>endsync</literal> attribute.<remark
+                                                role="todo">TODO: reference SMIl 3
+                                            endsync.</remark></para>
                                     </listitem>
                                 </itemizedlist></para>
                         </listitem>
