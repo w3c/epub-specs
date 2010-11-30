@@ -1,0 +1,61 @@
+= URI Links Proposal =
+
+== Table of Contents == 
+<wiki:toc max_depth="5" />
+
+== Introduction == 
+Historically each EPUB document has been identified using a “unique-identifier” property which references a meta element containing the unique identifier by id. Although this identifier has in theory been unique, there has been no prescribed method for insuring its uniqueness across the universe of publishers. 
+
+In addition, it has been unclear when to change a publication’s identifier. Some publishers change the identifier each time a new version is created, while others change the identifier only when a new “work” is created.
+
+As EPUBs have increased in prominence and longevity, it has become important to introduce a permanent unambiguous way of referring to an EPUB both offline and online. This proposal seeks to describe an approach to solving these problems using URIs.
+
+== URI Syntax ==
+Each EPUB will be identified by a URI that is constructed from the following components:
+
+==== scheme ====
+The URI scheme such as “http” or “ftp”. The scheme may be sued as a protocol to access the EPUB in the event that the URI happens to be a URL but there is no mandate that this be the case.
+
+==== authority ====
+The authority under which the URI has been created. The authority must be DNS registered to insure that URIs are globally unique. Example authorities include: “epubs.idpf.org” or “randomhouse.com”. 
+
+==== path ====
+The publisher controlled path of the EPUB. Publishers may choose paths in any way that is convenient to them. For example if one wished to organize content by language, one might have paths like: “/epubs/english/history” and “/epubs/japanese/cooking”.
+
+==== unique-identifier ====
+The unique identifier string identified in the EPUB’s OPF file. The definition of the unique-identifier for EPUB3 will be augmented to specify the unique-identifier of a publication will only be changed when a new “work” is created.
+
+==== version ====
+The version number specified using the new EPUB3 “opf:content-version” property specified in the EPUB. Version numbers may be specified with a varying precision. For example, if an EPUB has a version of “1.2.511” it should be considered as matching URIs that specify a version number of “1.2” or “1” or which omit the “version” segment of the URI entirely. A reference that fails to specify a more granular version number should receive the highest version available in response.
+
+==== file ====
+The name of a file within the manifest of an EPUB. This URI segment is entirely optional and in general will be omitted. It will only be present when one wishes to refer to a specific file within an EPUB to provide a deep linking capability. 
+
+==== id ====
+The id portion of the URI will only be specified when a link refers to a specific xml element within an EPUB content file. In general the id field will be omitted. If an id is specified, a file must be specified.
+
+== Canonical URI syntax ==
+Following is the canonical form a URI that may be used reference an EPUB. The segments contained within “{}” brackets may be omitted.
+
+{{{
+    scheme:://authority/path/unique-identifier{/version}{{/file}#id}
+}}}
+
+== Example URIs ==
+{{{
+    http://epub.idpf.org/us/0741021137
+    http://epub.idpf.org/us/0741021137/1.2.511
+    epub://mydomain.com/alice_in_wonderland
+}}}
+
+== URI Processing ==
+All user agents that handle EPUB links are required to handle them in such a way that version numbers degrade gracefully as described above under “version”. This would mean that if one were to process EPUB URI requests over the web, it would be necessary to return success from multiple locations depending on the specificity of the link provided.
+
+== Handling EPUB2 Publications ==
+EPUB2 publications do contain unique identifiers, but they do not contain version numbers. As a result, EPUB2 publications must only be referred to using a URI that omits the version segment. 
+
+Because EPUB2 publications do not contain a scheme, authority or path, a default for these fields must be provided. Whenever there is no scheme authority or path specified, the default, for processing purposes will be assumed to be “http://idpf.org/epub”. 
+
+== Open Issues ==
+  # Should scheme, authority and path be stored in an EPUB’s OPF file to insure that a complete URI can be constructed from the OPF?
+  # Should it be possible to specify a “file” component as part of the URI as described above? This could make it difficult to identify which part of the URL is the unique-identifier and which part is the version.  The file could also be specified as a CGI parameter.
