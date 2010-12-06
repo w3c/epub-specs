@@ -9,6 +9,7 @@
 	<property name="dir.src.spec" value="${dir.src}/spec" />
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css" />
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples" />
+	<property name="dir.src.vocab" value="${dir.src}/vocab" />
 	
 	<property name="dir.util" value="${basedir}/util" />	
 	<property name="dir.util.rng" value="${dir.util}/relaxng" />
@@ -18,6 +19,7 @@
 	<property name="dir.util.docbook.xsl" value="${dir.util.docbook}/xsl-ns"/>
 	<property name="dir.util.xhtml" value="${dir.util}/xhtml" />
 	<property name="dir.util.xhtml.dtd.catalog" value="${dir.util.xhtml}/dtd" />
+	<property name="dir.util.rdf" value="${dir.util}/rdf" />
 	
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.lib" value="${basedir}/lib" />	
@@ -51,11 +53,13 @@
 	
 
 	<target name="all" depends=" clean,
+		build-vocabs,
 		build-specs,
-		build-schemas,
-		build-archives" />
+		build-schemas,		
+		build-archives, 
+		copy-css" />
 
-	<target name="build-specs" depends="clean"> <!-- , validate-src-specs, validate-spec-examples" -->
+	<target name="build-specs" depends="clean, copy-css"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
 		<!-- run the preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}" />
@@ -101,8 +105,7 @@
 			<fileset dir="${dir.build}" includes="*.html"/>			
 		</xmlvalidate>
 				
-		<!-- copy css -->
-		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
+		
 				
 	</target>
 
@@ -115,7 +118,71 @@
 		</copy>				
 	</target>
 
-	<target name="build-archives" depends="clean, build-specs, build-schemas">
+	<target name="build-vocabs" depends="clean, copy-css">
+		<clean-dir dir="${dir.temp}/vocab/"/>
+		<build-xhtml-vocab 
+			in-n3="${dir.src.vocab}/structure.n3" 
+			out-xhtml="${dir.build}/epub-vocab-structure-30.html" 
+			vocab-canonical-uri="http://www.idpf.org/TODO/vocab/structure/"/>
+	</target>	
+	
+	<target name="copy-css">		
+		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
+	</target>
+	
+	<macrodef name="build-xhtml-vocab" 
+		description="builds an xhtml+rdfa vocab from an n3 source">
+		
+		<attribute name="in-n3" /> 				<!-- full path -->
+		<attribute name="out-xhtml" />          <!-- full path -->
+		<attribute name="vocab-canonical-uri" />
+		
+		<sequential>
+			<!-- convert the n3 to RDF/XML as an xslt source -->
+			<jena-n3-to-rdfxml 
+				in="@{in-n3}" 
+				out="${dir.temp}/vocab/rdfxml.xml"
+				vocab-uri="@{vocab-canonical-uri}"/>
+			
+			<!-- convert the  RDF/XML to RDFa -->
+			<saxon-xslt in="${dir.temp}/vocab/rdfxml.xml" 
+					out="${dir.temp}/vocab/rdfa.xhtml" 
+					style="${dir.util.rdf}/rdfxml-to-rdfa.xslt">
+					<param name="vocab-uri" expression="@{vocab-canonical-uri}" />
+					<param name="vocab-as-n3" expression="" />
+					<param name="vocab-as-rdfxml" expression="" />
+					<param name="vocab-revision-history" expression="" />
+			</saxon-xslt>
+									
+			<!-- add toc to the xhtml and place in final destination -->
+			<saxon-xslt in="${dir.temp}/vocab/rdfa.xhtml" 
+					out="@{out-xhtml}" 
+					style="${dir.util}/xhtml/xsl/toc.xsl">					
+			</saxon-xslt>
+			
+		</sequential>
+	</macrodef>
+		
+	<macrodef name="jena-n3-to-rdfxml" description="convert N3 to RDF/XML using jena.rdfcopy">
+		<attribute name="in" />
+		<attribute name="out" />
+		<attribute name="vocab-uri" /> <!-- the canonical uri of the vocab being converted -->
+		<sequential>
+			<property name="jena.intermediary" value="${dir.temp}/vocab/jena-intermediary.xml"/>
+			<java output="${jena.intermediary}" classname="jena.rdfcopy" fork="true" failonerror="true" maxmemory="512m">			
+				<arg value="@{in}"/>
+				<arg value="N3"/>			
+				<arg value="RDF/XML"/>						
+				<classpath refid="build.classpath" />
+			</java>
+			<saxon-xslt in="${jena.intermediary}" out="@{out}" 
+				style="${dir.util.rdf}/jena-rdf-fix.xslt">
+				<param name="vocab-uri" expression="@{vocab-uri}"/>
+			</saxon-xslt>
+		</sequential>
+	</macrodef>
+	
+	<target name="build-archives" depends="clean, build-vocabs, build-specs, build-schemas">
 		<zip 
 			destfile="${dir.temp}/ebup30-${TODAY}.zip" 
 			basedir="${dir.build}/" 
@@ -134,89 +201,7 @@
 		
 	</target>
 	
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
-	<target name="build-schemadoc" depends="schemadoc-depends, build-schemadoc-ops"/>
-	
-	<target name="build-schemadoc-ops" depends="schemadoc-depends">
-		<schemadoc 			
-			in-schema="${schema.src.ops}"
-			out-dir="${dir.build.schemadoc}/ops30"
-			machine-name="ops30"		
-		/>
-	</target>	
-	
-	<macrodef name="schemadoc">
-		<attribute name="in-schema" />
-		<attribute name="out-dir" />
-		<attribute name="machine-name" />
-				
-		<sequential>			
-			<mkdir dir="@{out-dir}"/>
-			
-			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
-			
-			<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
-				<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
-				<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
-				<arg value="false"/>
-				<arg value="false"/>
-				<classpath refid="build.classpath"/>					
-			</java>
-			
-			<saxon-xslt 
-				in="${dir.temp}/@{machine-name}-quasi.rng" 
-				style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
-				out="${dir.temp}/dummy-schemadoc.xml">
-				<param name="rd-summary" expression="${dir.temp}/summary.xml" />
-				<param name="output-path" expression="${dir.build.schemadoc}/@{machine-name}/" />
-				<param name="profile-machine-name" expression="ops30" />
-				<param name="debug" expression="0" />
-			</saxon-xslt> 
-			
-			<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
-			
-			<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" tofile="${dir.build.schemadoc}/@{machine-name}/schemadoc.css" />	
-		</sequential>
-		
-	</macrodef>
-	
-	<target name="schemadoc-depends">
-		<echoxml file="${dir.temp}/summary.xml">
-			<summary>
-				<profile nicename="OPS 3.0" machinename="ops30" rd-uri="http://www.idpf.org/draft/2010-10-02" />								
-			</summary>
-		</echoxml>
-	</target>
-	
-	<!-- broken on ops
-	<target name="rng-topology-ops">		 
-		<rng-topology
-			in-schema="${schema.src.ops}"
-			out-dir="${dir.build}/topology"
-			machine-name="ops30"
-		/>
-	</target>	
-	-->
-	<!--
-	<macrodef name="rng-topology">
-		<attribute name="in-schema"/>
-		<attribute name="machine-name" />
-		<attribute name="out-dir"/>
-		<sequential>
-			<mkdir dir="@{out-dir}"/>
-			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
-			<saxon-xslt 
-				in="${dir.temp}/@{machine-name}-trangd.rng" 
-				style="${dir.util.rng}/rng-topology.xsl" 
-				out="@{out-dir}/@{machine-name}-topology.html">							
-			</saxon-xslt> 			
-			<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" todir="@{out-dir}"/>
-		</sequential>
-	</macrodef>
-	-->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!--   v a l i d a t i o n - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -509,5 +494,88 @@
 			-->
 		</macrodef>
 	
+		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
+		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		<!--
+		<target name="build-schemadoc" depends="schemadoc-depends, build-schemadoc-ops"/>
+		
+		<target name="build-schemadoc-ops" depends="schemadoc-depends">
+			<schemadoc 			
+				in-schema="${schema.src.ops}"
+				out-dir="${dir.build.schemadoc}/ops30"
+				machine-name="ops30"		
+			/>
+		</target>	
+		
+		<macrodef name="schemadoc">
+			<attribute name="in-schema" />
+			<attribute name="out-dir" />
+			<attribute name="machine-name" />
+					
+			<sequential>			
+				<mkdir dir="@{out-dir}"/>
+				
+				<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
+				
+				<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
+					<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
+					<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
+					<arg value="false"/>
+					<arg value="false"/>
+					<classpath refid="build.classpath"/>					
+				</java>
+				
+				<saxon-xslt 
+					in="${dir.temp}/@{machine-name}-quasi.rng" 
+					style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
+					out="${dir.temp}/dummy-schemadoc.xml">
+					<param name="rd-summary" expression="${dir.temp}/summary.xml" />
+					<param name="output-path" expression="${dir.build.schemadoc}/@{machine-name}/" />
+					<param name="profile-machine-name" expression="ops30" />
+					<param name="debug" expression="0" />
+				</saxon-xslt> 
+				
+				<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
+				
+				<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" tofile="${dir.build.schemadoc}/@{machine-name}/schemadoc.css" />	
+			</sequential>
+			
+		</macrodef>
+		
+		<target name="schemadoc-depends">
+			<echoxml file="${dir.temp}/summary.xml">
+				<summary>
+					<profile nicename="OPS 3.0" machinename="ops30" rd-uri="http://www.idpf.org/draft/2010-10-02" />								
+				</summary>
+			</echoxml>
+		</target>
+		-->
+		<!-- broken on ops
+		<target name="rng-topology-ops">		 
+			<rng-topology
+				in-schema="${schema.src.ops}"
+				out-dir="${dir.build}/topology"
+				machine-name="ops30"
+			/>
+		</target>	
+		-->
+		<!--
+		<macrodef name="rng-topology">
+			<attribute name="in-schema"/>
+			<attribute name="machine-name" />
+			<attribute name="out-dir"/>
+			<sequential>
+				<mkdir dir="@{out-dir}"/>
+				<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
+				<saxon-xslt 
+					in="${dir.temp}/@{machine-name}-trangd.rng" 
+					style="${dir.util.rng}/rng-topology.xsl" 
+					out="@{out-dir}/@{machine-name}-topology.html">							
+				</saxon-xslt> 			
+				<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" todir="@{out-dir}"/>
+			</sequential>
+		</macrodef>
+		-->
 	
 </project>
