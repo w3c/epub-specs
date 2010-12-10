@@ -150,6 +150,7 @@
                                 linkend="gloss-content-document"/> in its fallback chain.</para>
                     </glossdef>
                 </glossentry>
+
                 <glossentry xml:id="gloss-external-resource" xreflabel="External Resource">
                     <glossterm>External Resource</glossterm>
                     <glossdef>
@@ -159,6 +160,7 @@
                             are not listed in the <xref linkend="sec-manifest-elem"/>.</para>
                     </glossdef>
                 </glossentry>
+
                 <glossentry xml:id="gloss-epub-reading-system" xreflabel="EPUB Reading System">
                     <glossterm>EPUB Reading System (or Reading System)</glossterm>
                     <glossdef>
@@ -236,18 +238,21 @@
                                 linkend="refOverlays3"/></para>
                     </listitem>
                     <listitem>
-                        <para>Zero or more additional files, all of which, together with the EPUB
-                            Content Document(s), NCX Document, and Media Overlay Documents(s) if
-                            any, must be uniquely referenced in the Package File's &lt;manifest>
+                        <para>Zero or more additional resources, all of which, together with the
+                            EPUB Content Document(s), NCX Document, and Media Overlay Documents(s)
+                            if any, must be uniquely referenced in the Package File's &lt;manifest>
                             element</para>
                     </listitem>
                 </itemizedlist>
             </para>
-            <para>In most cases, an EPUB Publication will be instantiated as an Expanded EPUB
+            <!-- <para>An EPUB Publication will be instantiated as an Expanded EPUB
                 Publication or an EPUB File, i.e. in a Filesystem or ZIP container conformant with
                     <xref linkend="refOCF3"/> (containing a valid META-INF/container.xml file and,
                 if in the ZIP container, a MIMETYPE file), potentially together with <glossterm
-                    linkend="gloss-external-resource">external resources</glossterm>.</para>
+                linkend="gloss-external-resource">external resources</glossterm>.</para> -->
+            <para>An EPUB Publication is instantiated as an EPUB File, i.e. in a ZIP container
+                conformant with <xref linkend="refOCF3"/> (containing a valid META-INF/container.xml
+                file and, if in the ZIP container, a MIMETYPE file).</para>
         </section>
         <section xml:id="sec-epub-reading-system-conformance">
             <title>Publication Reading System Conformance</title>
@@ -336,10 +341,12 @@
                     addition must conform to all content conformance constraints expressed in <xref
                         linkend="sec-package-def"/>.</member>
                 <member role="conformance-item">The Package Document filename should use the file
-                    extension <filename>.opf</filename>. Any document fragments (included via XML
-                    entities or XInclude) should not use the <filename>.opf</filename> extension.
-                        <xref linkend="refXML"/>
-                    <xref linkend="refXInclude"/></member>
+                    extension <filename>.opf</filename>. Any document fragments (included via
+                    external entities <xref linkend="refXML"/> or XInclude <xref
+                        linkend="refXInclude"/>) should not use the <filename>.opf</filename>
+                    extension. <remark role="todo">TODO check this - are RSs required to support
+                        external entites and XInclude?</remark>
+                </member>
             </simplelist>
 
         </section>
@@ -456,9 +463,9 @@
             <section xml:id="sec-manifest-elem" xreflabel="Package document manifest">
                 <title>The <literal>manifest</literal> Element</title>
 
-                <para>The <literal>manifest</literal> element, through its <literal>item</literal>
-                    element children, provides a finite list of the resources that constitute the
-                    publication.</para>
+                <para>The <literal>manifest</literal> element, through its <code><link
+                            linkend="sec-item-elem">item</link></code> element children, provides a
+                    finite list of the resources that constitute the publication.</para>
 
                 <variablelist xreflabel="manifest" role="elem-synopsis"
                     xml:id="elemdef-opf-manifest">
@@ -492,8 +499,15 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>The following list defines the resource types that must be included in the
-                    manifest:</para>
+                <para>All resources that constitute the publication must be <link
+                        linkend="sec-item-elem">referenced</link> from the <code>manifest</code>
+                    regardless of their location, i.e. regardless of whether they are available in
+                    the <link linkend="refOCF3">container</link> or remotely. Refer to <xref
+                        linkend="sec-resource-locations"/> for requirements regarding resource
+                    locations.</para>
+
+                <para>The following list defines the resource types that constitute a publication
+                    and therefore must be referenced from the manifest:</para>
 
                 <itemizedlist xml:id="sec-manifest-reqd-items">
                     <listitem>
@@ -502,21 +516,25 @@
                             of the publication; minimally one.</para>
                     </listitem>
                     <listitem>
-                        <para>All embedded resources (such as images, stylesheets, document
-                            fragments) referenced from within <xref linkend="gloss-content-document"
-                            />s and/or <xref linkend="gloss-extended-content-document-reference"/>s,
+                        <para>All embedded resources (such as images, audio, video, stylesheets,
+                            document fragments) referenced from within <xref
+                                linkend="gloss-content-document"/>s and/or <xref
+                                linkend="gloss-extended-content-document-reference"/>s,
                             recursively.</para>
                     </listitem>
                     <listitem>
-                        <para>TODO DTDs and entities, and informative note that our document types
-                            dont have DTDs anymore, only for ECDR</para>
+                        <para>In the context of an <xref
+                                linkend="gloss-extended-content-document-reference"/>, any DTDs and
+                            DTD fragments, recursively. <remark role="todo">TODO revisit - are RSs
+                                required to support DTDs?</remark></para>
                     </listitem>
                     <listitem>
                         <para>The <link linkend="sec-ncx">NCX.</link></para>
                     </listitem>
                     <listitem>
                         <para>If <link linkend="refOverlays3">Media Overlays</link> are used, all
-                            Media Overlay Documents.</para>
+                            Media Overlay Documents and the media resources referenced from
+                            them.</para>
                     </listitem>
                     <listitem>
                         <para>For each <literal>item</literal> that is not a <link
@@ -527,12 +545,24 @@
                     </listitem>
                 </itemizedlist>
 
-                <para><remark role="todo">TODO should note that we are no longer using DTDs,
-                        internal subset usage is all that remains allowed?</remark></para>
+                <para>The following list defines resource types that are considered <link
+                        linkend="gloss-external-resource">external</link> and that should therefore
+                    not be referenced from the manifest:</para>
 
-                <para>Note that a Publication may contain <xref linkend="gloss-external-resource"
-                    />s; such resources must not be included in the
-                    <literal>manifest</literal>.</para>
+                <itemizedlist xml:id="sec-external-resources">
+                    <listitem>
+                        <para>Resources referenced from the package metadata <xref
+                                linkend="sec-opf-link"/> element</para>
+                    </listitem>
+                    <listitem>
+                        <para>Content Document hyperlinks that refer to resources that are not
+                            considered part of the publication ("outgoing")</para>
+                    </listitem>
+                    <listitem>
+                        <para>Content Document metadata resources <remark role="todo">TODO be
+                                explicit</remark></para>
+                    </listitem>
+                </itemizedlist>
 
                 <para>The manifest is not self-referencing: it must not include
                         <literal>item</literal> elements referring to the resource or resources that
@@ -693,6 +723,40 @@
 
                     </section>
                 </section>
+
+                <section xml:id="sec-resource-locations">
+                    <title>Publication Resource Locations</title>
+
+                    <para>All resources that <link linkend="sec-manifest-elem">constitute the
+                            publication</link> must be located in the <link linkend="refOCF3"
+                            >container</link>, with the exceptions listed below.</para>
+
+                    <para><remark role="todo">TODO below, reference media types table (which would
+                            ideally be a categorized table)</remark></para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Audio resources, as referenced from Content Documents or Media
+                                Overlay documents, may be located in the container or
+                                remotely</para>
+                        </listitem>
+                        <listitem>
+                            <para>Video resources, as referenced from Content Documents, may be
+                                located in the container or remotely</para>
+                        </listitem>
+                    </itemizedlist>
+
+                    <para>When remote audio and video resources are included in the publication, the
+                            <literal>online</literal> metadata property must be used... <remark
+                            role="todo">TODO @DanH add link to the <literal>online</literal> meta
+                            property here when it has been added, and describe that it must be set
+                            on any content doc or media overlay that contains online resources as
+                            per the list above.</remark></para>
+
+                    <para>Content providers should prefer locating audio and video resorces in the
+                        container to allow the user access to the entire presentation regardless of
+                        connectivity status.</para>
+
+                </section>
                 <section xml:id="examples-manifest">
                     <title>The <literal>manifest</literal> Element: Examples</title>
                     <informalexample xml:id="example-manifest-1">
@@ -710,7 +774,6 @@
                         <synopsis>
 <xi:include href="./examples/publications/manifest-2.xml" parse="text"/></synopsis>
                     </informalexample>
-
                 </section>
 
             </section>
@@ -880,18 +943,17 @@
                             >TODO: this can be listed with the rest of the defined vocabulary;
                             describe interaction with page-progression-direction; finalize
                             names</remark></para>
-                    <section xml:id="examples-spine">
-                        <title>The <literal>spine</literal> Element: Examples</title>
-                        <informalexample>
-                            <para>The following example shows a <literal>spine</literal> element
-                                corresponding to <link linkend="example-manifest-1">the manifest
-                                    example above</link>.</para>
-                            <synopsis>
-<xi:include href="./examples/publications/spine-1.xml" parse="text"/></synopsis>
-                        </informalexample>
-                    </section>
                 </section>
-
+                <section xml:id="examples-spine">
+                    <title>The <literal>spine</literal> Element: Examples</title>
+                    <informalexample>
+                        <para>The following example shows a <literal>spine</literal> element
+                            corresponding to <link linkend="example-manifest-1">the manifest example
+                                above</link>.</para>
+                        <synopsis>
+<xi:include href="./examples/publications/spine-1.xml" parse="text"/></synopsis>
+                    </informalexample>
+                </section>
             </section>
             <section xml:id="sec-guide-elem">
                 <title>The <literal>guide</literal> element [DEPRECATED]</title>
@@ -1345,11 +1407,16 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false        </synopsis></para>
                                 <code>video/mp4</code> (in video element 'type' attribute:
                                     <code>"video/mp4; codecs='avc1.42E01E, mp4a.40.2'"</code>)</td>
                             <td>
-                                <link xlink:href="http://www.rfc-editor.org/rfc/rfc4337.txt">RFC4337</link>
-                                <link xlink:href="http://www.itu.int/rec/T-REC-H.264-201003-I/en">H.264</link>
-                                <link xlink:href="http://www.iso.org/iso/iso_catalogue/catalogue_ics/catalogue_detail_ics.htm?csnumber=53943">MPEG-4 Advanced Audio Coding - Low Complexity (AAC-LC)</link>
+                                <link xlink:href="http://www.rfc-editor.org/rfc/rfc4337.txt"
+                                    >RFC4337</link>
+                                <link xlink:href="http://www.itu.int/rec/T-REC-H.264-201003-I/en"
+                                    >H.264</link>
+                                <link
+                                    xlink:href="http://www.iso.org/iso/iso_catalogue/catalogue_ics/catalogue_detail_ics.htm?csnumber=53943"
+                                    >MPEG-4 Advanced Audio Coding - Low Complexity (AAC-LC)</link>
                             </td>
-                            <td> Used for MPEG-4 video with H.264 Basic Profile video and AAC audio.</td>
+                            <td> Used for MPEG-4 video with H.264 Basic Profile video and AAC
+                                audio.</td>
                         </tr>
                         <tr>
                             <td>
