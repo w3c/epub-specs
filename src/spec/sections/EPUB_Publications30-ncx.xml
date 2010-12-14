@@ -2,43 +2,97 @@
     xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1b2"
     xmlns:xi="http://www.w3.org/2001/XInclude">
     <title>NCX Documents</title>
-    <!-- TODO RS conformance reqs -->
-    <!-- 
-        <para role="rsconf"<Reading Systems must provide a means to navigate a Publication based on
-        the information in its NCX file.</para> -->
 
-    <section xml:id="sec-ncx-introduction">
+    <section xml:id="sec-ncx-introduction" conformance="informative">
         <title>Introduction</title>
-        <para> In order to enable ease of navigation and provide greater accessibility, EPUB
-            Publications support a "Navigation Center eXtended," the NCX. The NCX was originally
-            standardized by the DAISY Consortium, as defined by Section 8 of the DAISY/NISO Standard
-            formally called ANSI/NISO Z39.86-2005, Specifications for the Digital Talking Book. The
-            EPUB specification defines its own schema (XML grammar) for the NCX content type, as
-            some multimedia and metadata components from the DAISY specification are not included. </para>
-        <para> The NCX exposes the hierarchical structure of an EPUB Publication to allow the user
-            to navigate through it. The NCX is similar to a table of contents in that it enables the
-            reader to jump directly to any of the major structural elements of the document, i.e.
-            part, chapter, or section, but it will often contain more elements of the document than
-            the publisher chooses to include in the original print table of contents. It can be
-            visualized as a collapsible tree familiar to PC users. Its development was motivated by
-            the need to provide quick access to the main structural elements of a document without
-            the need to parse the entire documents. Other elements such as pages, footnotes,
-            figures, tables, etc. can be included in separate, nonhierarchical lists. </para>
+        <para> In order to increase efficacy and richness of navigation, EPUB Publications include a
+            "Navigation Center eXtended," the NCX. The NCX provides a means for the author to
+            provide a multi-purpose declarative global navigation layer that is independent of the
+            content it references.</para>
+        <para>The NCX was originally standardized by the DAISY Consortium, as defined in Section 8
+            of <xref linkend="refZ39862005"/>. The EPUB specification defines its own schema (XML
+            grammar) for the NCX content type, as some multimedia and metadata components from the
+            DAISY specification are not included.</para>
 
-        <section xml:id="sec-ncx-introduction-key-features">
-            <title>Key NCX Features</title>
-            <para><remark role="todo">TODO describe intent of navMap, pageList, and navLists.
-                    mention and link to the the special landmarks navList.</remark></para>
-            <!-- elemdef-ncx-head
-                elemdef-ncx-navMap
-                elemdef-ncx-pageList
-                elemdef-ncx-navList -->
+        <section xml:id="sec-ncx-introduction-key-components">
+            <title>Key NCX Components</title>
+            <para>The following are the key components of the NCX document:</para>
+            <variablelist>
+                <varlistentry xml:id="ncx-intro-navmap">
+                    <term><code>navMap</code></term>
+                    <listitem>
+                        <para>The <code><xref linkend="elemdef-ncx-navMap"/></code> exposes the
+                            hierarchical structure of the EPUB Publication. The provided structure
+                            is global, i.e. it transcends the boundaries of individual Content
+                            Documents in the <link linkend="sec-spine-elem">spine</link>.</para>
+                        <para>In terms of the number of links provided, the <code>navMap</code> is
+                            often more extensive than a traditional print table of contents.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry xml:id="ncx-intro-navlists">
+                    <term><code>navList</code></term>
+                    <listitem>
+                        <para>A <code><xref linkend="elemdef-ncx-navList"/></code> is a container
+                            for non-hierarchical navigational information that is secondary to the
+                                <code>navMap</code>.</para>
+                        <para>Multiple <code>navList</code>s can be provided, either representing
+                            constructs with homogenous semantics (such as list of illustrations, or
+                            all quotes of a certain author in an anthology) or with heterogenous
+                            semantics (such as the <link linkend="sec-ncx-navList-landmarks"
+                                >landmarks</link>
+                            <code>navList</code>.)</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry xml:id="ncx-intro-pagelist">
+                    <term><code>pageList</code></term>
+                    <listitem>
+                        <para>The <code><xref linkend="elemdef-ncx-pageList"/></code> is a
+                            special-purpose <code>navList</code> that allows representing the
+                            location of page boundaries in a print source. A <link
+                                linkend="sec-ncx-pageList-sourcemeta">metadata mechanism</link> is
+                            provided to allow explicit bibliographical identification of the print
+                            source being represented.</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
         </section>
+
         <section xml:id="sec-ncx-introduction-metadata">
             <title>NCX Metadata</title>
-            <para><remark role="todo">TODO note that head is optional in this version of NCX,
-                    introduce how epub:type is used to describe semantics of targets, and reference
-                    the structure vocab.</remark></para>
+            <para>The NCX provides two mechanisms for expressing metadata:</para>
+            <variablelist>
+                <varlistentry>
+                    <term>Document metadata</term>
+                    <listitem>
+                        <para>The NCX <code><xref linkend="elemdef-ncx-head"/></code> element allows
+                            the expression of metadata concerning the NCX Document as a whole. This
+                            version of this specification does not require head metadata to be
+                            provided.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Link target metadata</term>
+                    <listitem>
+                        <para>The <code>epub:type</code> attribute, as occurring on the <xref
+                                linkend="elemdef-ncx-navList"/>, <xref
+                                linkend="elemdef-ncx-navPoint"/> and <xref
+                                linkend="elemdef-ncx-navTarget"/> elements, provides
+                            machine-readable metadata about the structural semantics of link
+                            target(s). (Compare with the <xref linkend="elemdef-ncx-navLabel"/>
+                            element, which provides human-readable metadata.) </para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+
+            <para>Mappings to metadata vocabularies used when expressing document and link target
+                metadata are created using the <xref linkend="attrdef-ncx-profile"/> and <xref
+                    linkend="attrdef-ncx-prefix"/> attributes on the <link linkend="elemdef-ncx-ncx"
+                    >NCX root element</link>. The <link linkend="refEPUBStructureVocab">EPUB
+                    Structural Semantics Vocabulary</link> is the default metadata vocabulary of the
+                NCX. </para>
+
+
         </section>
 
     </section>
@@ -61,10 +115,13 @@
         </simplelist>
     </section>
 
-
     <section xml:id="sec-ncx-reading-system-conformance">
         <title>NCX Reading System Conformance</title>
         <para><remark role="todo">TODO</remark></para>
+        <!-- 
+            <para role="rsconf"<Reading Systems must provide a means to navigate a Publication based on
+            the information in its NCX file.</para> -->
+
     </section>
 
     <section xml:id="sec-ncx-def">
@@ -74,7 +131,7 @@
                 <literal>http://www.daisy.org/z3986/2005/ncx/</literal> namespace unless otherwise
             specified.</para>
 
-        <section xml:id="sec-ncx-elem">
+        <section xml:id="sec-ncx-ncx-elem">
             <title>The <literal>ncx</literal> Element</title>
 
             <variablelist xreflabel="ncx" role="elem-synopsis" xml:id="elemdef-ncx-ncx">
@@ -115,7 +172,7 @@
                                         attribute must have the value
                                             <literal>http://www.idpf.org/TODO</literal>.</para>
                                     <para>Refer to <xref linkend="sec-ncx-introduction-metadata"/>
-                                        for details.</para>
+                                        for further information.</para>
                                 </listitem>
                             </varlistentry>
                             <varlistentry xml:id="attrdef-ncx-prefix" xreflabel="prefix">
@@ -127,7 +184,7 @@
                                             linkend="attrdef-ncx-profile"/> attribute <xref
                                             linkend="refRDFa11Core"/>.</para>
                                     <para>Refer to <xref linkend="sec-ncx-introduction-metadata"/>
-                                        for details.</para>
+                                        for further information.</para>
                                 </listitem>
                             </varlistentry>
                             <varlistentry>
@@ -231,8 +288,9 @@
                                     <term><literal>property</literal>
                                         <option>[required]</option></term>
                                     <listitem>
-                                        <para>A CURIE as defined by <xref linkend="refRDFa11Core"/>,
-                                            using a prefix bound via the <code>ncx</code>
+                                        <para>A space separated list of CURIEs as defined by <xref
+                                                linkend="refRDFa11Core"/>, using metadata vocabulary
+                                            mappings defined via the <code>ncx</code>
                                             <xref linkend="attrdef-ncx-profile"/> or <xref
                                                 linkend="attrdef-ncx-prefix"/> attributes.</para>
                                     </listitem>
@@ -251,7 +309,7 @@
             </section>
         </section>
 
-        <section xml:id="sec-navMap-elem">
+        <section xml:id="sec-ncx-navMap-elem">
             <title>The <literal>navMap</literal> Element</title>
 
             <variablelist xreflabel="navMap" role="elem-synopsis" xml:id="elemdef-ncx-navMap">
@@ -341,12 +399,15 @@
                                     </listitem>
                                     </varlistentry -->
                                 <varlistentry>
-                                    <term><literal>type</literal>
+                                    <term><literal>epub:type</literal>
                                         <option>[optional]</option></term>
                                     <listitem>
-                                        <para>Text string describing a type, as further detailed in
-                                                <xref linkend="sec-structural-semantics-vocab"/>.
-                                        </para>
+                                        <para>An expression of the structural semantic of the link
+                                            target described by this <code>navPoint</code>.</para>
+                                        <para>The value is a whitespace separated list of CURIEs
+                                                <xref linkend="refRDFa11Core"/>. Refer to <xref
+                                                linkend="sec-ncx-introduction-metadata"/> for more
+                                            information.</para>
                                     </listitem>
                                 </varlistentry>
                             </variablelist>
@@ -370,7 +431,7 @@
             </section>
         </section>
 
-        <section xml:id="sec-pageList-elem">
+        <section xml:id="sec-ncx-pageList-elem">
             <title>The <literal>pageList</literal> Element</title>
 
             <variablelist xreflabel="pageList" role="elem-synopsis" xml:id="elemdef-ncx-pageList">
@@ -423,8 +484,8 @@
                 </varlistentry>
 
             </variablelist>
-            <para><remark role="todo">TODO reference the metadata item that defines which print
-                    edition the pagelist refs</remark></para>
+
+
             <section xml:id="sec-pageTarget-elem">
                 <title>The <literal>pageTarget</literal> Element</title>
 
@@ -493,13 +554,16 @@
                             </para>
                         </listitem>
                     </varlistentry>
-
                 </variablelist>
-
+            </section>
+            <section xml:id="sec-ncx-pageList-sourcemeta">
+                <title>Identifying the print source for a pageList</title>
+                <para><remark role="todo">TODO reference the metadata item that defines which print
+                        edition the pagelist refs</remark></para>
             </section>
         </section>
 
-        <section xml:id="sec-navList-elem">
+        <section xml:id="sec-ncx-navList-elem">
             <title>The <literal>navList</literal> Element</title>
 
             <variablelist xreflabel="navList" role="elem-synopsis" xml:id="elemdef-ncx-navList">
@@ -539,9 +603,12 @@
                                 <term><literal>epub:type</literal>
                                     <option>[optional]</option></term>
                                 <listitem>
-                                    <para>Text string describing a type, as further detailed in
-                                            <xref linkend="sec-structural-semantics-vocab"/>.
-                                    </para>
+                                    <para>An expression of the structural semantic of the link
+                                        targets contained within this <code>navList</code>.</para>
+                                    <para>The value is a whitespace separated list of CURIEs <xref
+                                            linkend="refRDFa11Core"/>. Refer to <xref
+                                            linkend="sec-ncx-introduction-metadata"/> for more
+                                        information.</para>
                                 </listitem>
                             </varlistentry>
                         </variablelist>
@@ -610,9 +677,16 @@
                                     <term><literal>type</literal>
                                         <option>[optional]</option></term>
                                     <listitem>
-                                        <para>Text string describing a type, as further detailed in
-                                                <xref linkend="sec-structural-semantics-vocab"/>.
-                                        </para>
+                                        <para>An expression of the structural semantic of the link
+                                            target described by this <code>navTarget</code>.</para>
+                                        <para>If the <code>epub:type</code> attribute is given on a
+                                                <code>navTarget</code>, then it overrides any
+                                            value(s) given on the parent
+                                            <code>navList</code>.</para>
+                                        <para>The value is a whitespace separated list of CURIEs
+                                                <xref linkend="refRDFa11Core"/>. Refer to <xref
+                                                linkend="sec-ncx-introduction-metadata"/> for more
+                                            information.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -642,7 +716,7 @@
             </section>
         </section>
 
-        <section xml:id="sec-content-elem">
+        <section xml:id="sec-ncx-content-elem">
             <title>The <literal>content</literal> Element</title>
 
             <variablelist xreflabel="content" role="elem-synopsis" xml:id="elemdef-ncx-content">
@@ -704,7 +778,7 @@
 
         </section>
 
-        <section xml:id="sec-navLabel-elem">
+        <section xml:id="sec-ncx-navLabel-elem">
             <title>The <literal>navLabel</literal> Element</title>
 
             <variablelist xreflabel="navLabel" role="elem-synopsis" xml:id="elemdef-ncx-navLabel">
@@ -774,7 +848,7 @@
 
         </section>
 
-        <section xml:id="sec-navInfo-elem">
+        <section xml:id="sec-ncx-navInfo-elem">
             <title>The <literal>navInfo</literal> Element</title>
 
             <variablelist xreflabel="navInfo" role="elem-synopsis" xml:id="elemdef-ncx-navInfo">
@@ -841,7 +915,7 @@
 
         </section>
 
-        <section xml:id="sec-text-elem">
+        <section xml:id="sec-ncx-text-elem">
             <title>The <literal>text</literal> Element</title>
 
             <variablelist xreflabel="text" role="elem-synopsis" xml:id="elemdef-ncx-text">
