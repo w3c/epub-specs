@@ -66,6 +66,14 @@
                 </affiliation>
             </editor>
             <editor>
+                <personname>Daniel Weck</personname>
+                <affiliation>
+                    <org>
+                        <orgname>DAISY Consortium</orgname>
+                    </org>
+                </affiliation>
+            </editor>
+            <editor>
                 <personname>
                     <remark role="todo">TBD - additional editors</remark>
                 </personname>
@@ -101,9 +109,8 @@
         </section>
         <section xml:id="sec-overview-relationship">
             <title>Relationship to Other Specifications</title>
-            <para>This specification relies on the SMIL 3.0 specification, from which the EPUB SMIL
-            subset is derived.</para>
-            <remark role="todo">TODO: reference SMIL 3</remark>
+            <para>This specification relies on SMIL 3.0 <xref linkend="refSMIL"/>, from which the
+                EPUB SMIL subset is derived.</para>
             <para>This specification supersedes ...</para>
             <para>
                 <remark role="todo">
@@ -273,21 +280,24 @@
                 </section>
                 <section>
                     <title>Granularity</title>
-                    <para>SMIL <literal>text</literal> elements' <literal>src</literal> attribute values refer to content document elements
-                        by using their IDs. The granularity level of the SMIL presentation therefore
-                        depends on how the content document is marked up. If the finest level of
-                        markup is at the paragraph level, then that is the finest possible level at
-                        which the media overlay synchronization can be authored. Likewise, if
-                        sub-paragraph markup is available, such as span elements wrapping phrases or
-                        sentences, then a finer level of granularity is possible in the media
-                        overlay.</para>
+                    <para>SMIL <literal>text</literal> elements' <literal>src</literal> attribute
+                        values refer to content document elements by using their IDs. The
+                        granularity level of the SMIL presentation therefore depends on how the
+                        content document is marked up. If the finest level of markup is at the
+                        paragraph level, then that is the finest possible level at which the media
+                        overlay synchronization can be authored. Likewise, if sub-paragraph markup
+                        is available, such as span elements wrapping phrases or sentences, then a
+                        finer level of granularity is possible in the media overlay.  Finer
+                        granularity gives users more precise results for synchronized playback when
+                        navigating by word or phrase, and when searching the text.  However, it also
+                        means that there is more markup and therefore larger files.</para>
                 </section>
                 <section>
                     <title>Audio and video</title>
                     <para>Any EPUB Content Document with which a given media overlay is associated
-                        may contain embedded media objects such as video and audio. SMIL <literal>text</literal>
-                        element may refer to an embedded video or audio element by its ID
-                        value.</para>
+                        may contain embedded media objects such as video and audio. The SMIL
+                            <literal>text</literal> element may refer to an embedded video or audio
+                        element by its ID value.</para>
                 </section>
             </section>
             <section>
@@ -299,13 +309,36 @@
             </section>
             <section>
                 <title>Semantics</title>
-                <para>In order to express semantics, the <literal>epub:type</literal> attribute may be present in on
+                <para>In order to express semantics, the <literal>epub:type</literal> attribute <xref linkend="refContentDocs3"/> may be present in on
                     SMIL <literal>par</literal> and <literal>seq</literal> elements.  Its values must be taken from the vocabulary defined
                     for the publication.  This attribute facilitates intelligent decisions by the
                     user agent regarding playback behavior appropriate for the semantic type(s)
                     indicated.</para>
-                <remark role="todo">TODO: reference EPUB spec's vocabulary section</remark>
-                <remark>TODO: example of  SMIL using epub:type</remark>
+                <remark role="todo">TODO: reference epub:type specifically if possible</remark>
+                <remark role="todo">TODO: double-check vocabulary term &quot;sidebar&quot; below</remark>
+                <informalexample>
+                    <synopsis>
+&lt;smil>
+    &lt;body>
+        ...
+        &lt;seq id="id5" epub:textref="chapter1.html#sidebar" epub:type="sidebar">
+            &lt;par id="id6">
+                &lt;text src="chapter1.html#sidebartitle"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:15.000" clipEnd="0:24:18.123"/>
+            &lt;/par>
+            &lt;par id="id10">
+                &lt;text src="chapter1.html#sidebartext3"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:50.010" clipEnd="0:25:28.530"/>
+            &lt;/par>
+            &lt;par id="id11">
+                &lt;text src="chapter1.html#sidebartext4"/>
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:25:28.530" clipEnd="0:25:45.515"/>
+            &lt;/par>
+        &lt;seq>
+        ...        
+    &lt;/body>
+&lt;/smil></synopsis>
+                </informalexample>
                
             </section>
             <section>
@@ -732,8 +765,8 @@
             </section>
         </section>
         
-        <section>
-            <title>Package Document</title>
+        <section xml:id="sec-the-package-document">
+            <title>The Package Document</title>
             <para>Manifest items in the publication's Package Document may specify a media overlay
                 for that item via the <literal>media-overlay</literal> attribute. Media overlays are
                 themselves manifest items and must be referred to by their IDs. For example:</para>
@@ -744,13 +777,17 @@
 &lt;/manifest></synopsis>
             </informalexample>
             <para>Manifest items which refer to SMIL media overlays must have the media-type
-                <literal>application/smil+xml</literal>.</para>
+                    <literal>application/smil+xml</literal> as specified in the Core Media Types
+                section of EPUB <xref linkend="refPublications3" endterm="sec-core-media-types"/>.</para>
+            <para>Manifest items for which a <literal>media-overlay</literal> attribute value is
+                specified must be EPUB Content Documents and not EPUB Extended Content
+                References <xref linkend="refPublications3" endterm="gloss-extended-content-document-reference"/>.</para>
             <para>While not every manifest item is required to have a media overlay associated with
                 it, there must be a one-to-one relationship between media overlay files and manifest
                 items; in other words, multiple manifest items cannot share a single media overlay
                 file.</para>
             <para>This is a forwards-compatible addition: 2.0 reading systems may safely ignore the
-                media-overlay attribute and process documents in their normal fashion.</para>
+            media-overlay attribute and process documents in their normal fashion.</para>
         </section>
     </chapter>
     <chapter xml:id="sec-ocf-overview">
