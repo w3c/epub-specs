@@ -109,7 +109,7 @@
                 this abstract container within a ZIP archive (the "physical container"). The rules for
                 ZIP physical containers build upon and are backward compatible with the ZIP
                 technologies used by <link linkend="refODF">Open Document Format
-                (ODF)</link>.  <remark role="todo">Add a line here about font obfuscation.</remark></para>
+                (ODF)</link>.  OCF also defines a standard method for obfuscating embedded fonts for those EPUB publications that require this functionality.</para>
             <para>OCF is the REQUIRED container technology for EPUB publications. OCF MAY play a
                 role in the following workflows:</para>
             <itemizedlist>
@@ -650,7 +650,7 @@
                     a ZIP container, streams of data MUST be compressed before they are encrypted;
                     Deflate compression MUST be used. Within the ZIP directory, encrypted files
                     SHOULD be stored rather than Deflate-compressed.</para>
-                <para><remark role="todo">JP:  This will need tweaking once font-mangling is merged into this spec.</remark>
+                <para>
                     It MAY be desired to obfuscate the storage of embedded fonts referenced by an
                     EPUB Publication to tie them to the “parent” publication and make them more
                     difficult to extract for unrestricted use. In these cases,
@@ -754,10 +754,11 @@
                             other than Deflate as being in error. </para>
                     </listitem>
                     <listitem>
-                        <para><remark role="todo">JP:  Does this wording need tweaking to reflect resolution of issue 55?</remark>
-                            Conforming OCF ZIP Containers MAY use the ZIP64 extensions and SHOULD
-                            only use those extensions when the content requires them. Conforming OCF
-                            Processors MUST support the ZIP64 extensions.</para>
+                        <para>
+                            Conforming OCF ZIP Containers MAY use the ZIP64 extensions defined as "Version 1" in section V, subsection G of
+                            the application note at <xref linkend="refZIP"/> and SHOULD
+                            only use those extensions when the content requires them.  Conforming OCF
+                            Processors MUST support the ZIP64 extensions defined as "Version 1".</para>
                     </listitem>
                     <listitem>
                         <para>Conforming OCF ZIP Containers MUST NOT use the encryption features
@@ -893,7 +894,7 @@
             <para>The algorithm employed to obfuscate the font file consists of modifying the first
                 1040 bytes (~1KB) of the font file. In the unlikely event that the file is less than
                 1040 bytes, then the entire file will be modified. The key for the algorithm must be
-                a 20 byte (160 bit) SHA-1 digest <remark role="todo">[Add reference here]</remark> of the publication's unique identifier. Details
+                a 20 byte (160 bit) <xref linkend="refSHA1"/> digest of the publication's unique identifier. Details
                 on generating this key are given in the section <xref linkend="fobfus-keygen"/>. To
                 obfuscate the original data, the result of performing a logical exclusive or (XOR)
                 on the first byte of the raw file and the first byte of the key is stored as the
@@ -932,19 +933,18 @@
         <section xml:id="fobfus-keygen">
             <title>Generating the obfuscation key</title>
             <para>To tie a font to a particular EPUB publication, it is necessary to bind to a unique
-                property of that publication. Such a value is required by the OPF specification,
-                as detailed in its section 2.1 "Package Identity".<remark role="todo">Get correct
-                    cross-references</remark> Every compliant OPF file has a
+                property of that publication. Such a value is required by the EPUB Publications 3.0 specification,
+                as detailed in its section 4.3.2.5 "Publication Identifiers". Every compliant OPF file has a
                     <code>dc:identifier</code> element which uniquely identifies the
                 publication. The OPF 3.0 specification details finding this element by examining the
                     <code>unique-identifier</code> attribute of the package file's
                     <code>package</code> element. This element provides the required
                 characteristic of being unique to a publication, however it is not suitable for use
                 directly as the obfuscation key (for instance, its length is not defined).</para>
-            <para>In order to create a suitable key that is tied to the publication, a SHA-1 digest <remark role="todo">[Add reference here]</remark>
+            <para>In order to create a suitable key that is tied to the publication, an <xref linkend="refSHA1"/> digest
                 of the unique identifier should be generated as specified by the Secure Hash
-                Standard. <remark role="todo">Add normative reference</remark> Before generating the digest, all whitespace characters as defined by
-                the XML 1.0 specification <remark role="todo">Add link to normative reference</remark>, section 2.3 are removed. Specifically the Unicode code
+                Standard. Before generating the digest, all whitespace characters as defined by
+                the XML 1.0 specification (<xref linkend="refXML"/>), section 2.3 are removed. Specifically the Unicode code
                 points <code>0x20</code>, <code>0x09</code>, <code>0x0D</code> and <code>0x0A</code> will be stripped from the string before the digest
                 is computed. This digest is then directly used as the key for the algorithm
                 described in <xref linkend="fobfus-algorithm"/>.</para>
