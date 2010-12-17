@@ -1,116 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
-    xmlns:saxon="http://icl.com/saxon"
-    xmlns:exsl="http://exslt.org/common"
-    xmlns:db="http://docbook.org/ns/docbook"
-    xmlns:d="http://docbook.org/ns/docbook"
+    xmlns:saxon="http://icl.com/saxon" xmlns:exsl="http://exslt.org/common"
+    xmlns:db="http://docbook.org/ns/docbook" xmlns:d="http://docbook.org/ns/docbook"
     xmlns="http://www.w3.org/1999/xhtml">
-    
+
     <xsl:import href="xsl-ns/xhtml-1_1/docbook.xsl"/>
-    
-    
-    <xsl:output method="xhtml" 
-        encoding="UTF-8" 
-        omit-xml-declaration="no"
-        indent="yes"
+
+
+    <xsl:output method="xhtml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"
         exclude-result-prefixes="saxon db exsl"/>
 
-    <xsl:param name="generate.toc">
-appendix  nop
-article/appendix  nop
-article   toc,title
-book      toc,title,example
-chapter   title
-part      toc,title
-preface   title
-qandadiv  toc
-qandaset  toc
-reference toc,title
-sect1     toc
-sect2     toc
-sect3     toc
-sect4     toc
-sect5     toc
-set       toc,title
-    </xsl:param>
-    
+    <xsl:param name="generate.toc"> appendix nop article/appendix nop article toc,title book
+        toc,title,example chapter title part toc,title preface title qandadiv toc qandaset toc
+        reference toc,title sect1 toc sect2 toc sect3 toc sect4 toc sect5 toc set toc,title </xsl:param>
+
     <!-- ============================================================================= -->
     <!-- crude rearrange of the leading info element to structure as an IDPF spec document  -->
     <xsl:template name="book.titlepage">
-        
+
         <!-- title -->
         <xsl:element name="h1" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">title</xsl:attribute>
-            <xsl:value-of select="./db:title" />
+            <xsl:value-of select="./db:title"/>
         </xsl:element>
-        
+
         <!-- release info -->
         <xsl:variable name="topinfo" select="db:info[1]"/>
-        
+
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">identity</xsl:attribute>
             <xsl:element name="span" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">releaseinfo</xsl:attribute>
-                <xsl:value-of select="$topinfo/db:releaseinfo" />
+                <xsl:value-of select="$topinfo/db:releaseinfo"/>
             </xsl:element>
             <xsl:text> </xsl:text>
             <xsl:element name="span" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">pubdate</xsl:attribute>
-                <xsl:value-of select="$topinfo/db:pubdate" />
+                <xsl:value-of select="$topinfo/db:pubdate"/>
             </xsl:element>
         </xsl:element>
-        
+
         <!-- history -->
         <xsl:if test="$topinfo/db:printhistory">
             <xsl:element name="dl" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">printhistory</xsl:attribute>
                 <xsl:for-each select="$topinfo/db:printhistory/db:formalpara">
                     <xsl:element name="dt" namespace="http://www.w3.org/1999/xhtml">
-  <xsl:value-of select="current()/db:title"/>        
+                        <xsl:value-of select="current()/db:title"/>
                     </xsl:element>
                     <xsl:element name="dd" namespace="http://www.w3.org/1999/xhtml">
-  <xsl:apply-templates select="current()/db:para"/>
+                        <xsl:apply-templates select="current()/db:para"/>
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
         </xsl:if>
-        
+
         <!-- copyright -->
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">legal</xsl:attribute>
             <xsl:apply-templates mode="book.titlepage.recto.mode" select="$topinfo/db:copyright"/>
             <xsl:apply-templates mode="book.titlepage.recto.mode" select="$topinfo/db:legalnotice"/>
         </xsl:element>
-        
+
         <!-- editors -->
         <xsl:if test="$topinfo/db:authorgroup">
             <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">authorgroup</xsl:attribute>
                 <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-                    <xsl:attribute name="class">bridgehead</xsl:attribute
-                    >Editors</xsl:element>              
-                    <xsl:for-each select="$topinfo/db:authorgroup/db:editor">
-  <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-      <xsl:apply-templates select="." mode="class.attribute"/>   
-      <xsl:choose>
-          <xsl:when test="db:orgname">
-              <xsl:apply-templates/>
-          </xsl:when>
-          <xsl:when test="db:personname and db:affiliation">
-              <xsl:call-template name="person.name"/>, <xsl:value-of select="db:affiliation"/>
-          </xsl:when>
-          <xsl:otherwise>              
-              <xsl:call-template name="person.name"/>
-          </xsl:otherwise>
-      </xsl:choose>  
-  </xsl:element>
-                    </xsl:for-each> 
-                </xsl:element>
+                    <xsl:attribute name="class">bridgehead</xsl:attribute>Editors</xsl:element>
+                <xsl:for-each select="$topinfo/db:authorgroup/db:editor">
+                    <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                        <xsl:apply-templates select="." mode="class.attribute"/>
+                        <xsl:choose>
+                            <xsl:when test="db:orgname">
+                                <xsl:apply-templates/>
+                            </xsl:when>
+                            <xsl:when test="db:personname and db:affiliation">
+                                <xsl:call-template name="person.name"/>, <xsl:value-of
+                                    select="db:affiliation"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:call-template name="person.name"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:element>
+                </xsl:for-each>
+            </xsl:element>
         </xsl:if>
-    </xsl:template>    
-    
+    </xsl:template>
+
     <!-- ============================================================================= -->
-    <!-- override in html.xsl: get IDs directly on the carrier instead of on child <a>  -->    
+    <!-- override in html.xsl: get IDs directly on the carrier instead of on child <a>  -->
     <xsl:template name="anchor">
         <xsl:param name="node" select="."/>
         <xsl:param name="conditional" select="1"/>
@@ -118,12 +98,25 @@ set       toc,title
             <xsl:call-template name="object.id">
                 <xsl:with-param name="object" select="$node"/>
             </xsl:call-template>
-        </xsl:variable>        
+        </xsl:variable>
         <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
             <xsl:attribute name="id" select="$id"/>
-        </xsl:if>        
+        </xsl:if>
+        <xsl:variable name="parentName" select="local-name(..)"/>
+        <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
+            <xsl:if
+                test="$node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix')">
+                <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:attribute name="class">hidden-reveal</xsl:attribute>
+                    <xsl:attribute name="title">Link here</xsl:attribute>
+                    <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
+                    <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
+                </xsl:element>
+                <xsl:text disable-output-escaping="no">&#160;</xsl:text><!-- &nbsp; -->
+            </xsl:if>
+        </xsl:if>
     </xsl:template>
-    
+
     <!-- ============================================================================= -->
     <!-- override in html.xsl: let @role take precedence when creating a value for @class -->
     <xsl:template name="common.html.attributes">
@@ -136,21 +129,21 @@ set       toc,title
                 <xsl:otherwise>
                     <xsl:value-of select="local-name(.)"/>
                 </xsl:otherwise>
-            </xsl:choose>            
-        </xsl:param>        
+            </xsl:choose>
+        </xsl:param>
         <xsl:apply-templates select="." mode="common.html.attributes">
             <xsl:with-param name="class" select="$class"/>
             <xsl:with-param name="inherit" select="$inherit"/>
         </xsl:apply-templates>
     </xsl:template>
-    
+
     <!-- ============================================================================= -->
     <!-- override titlepage hr separators -->
-    
+
     <xsl:template name="book.titlepage.separator"/>
     <xsl:template name="section.titlepage.separator"/>
-    
-  
+
+
     <!-- ============================================================================= -->
     <!-- give toc title bridgehead class -->
     <xsl:variable name="toc.title">
@@ -159,9 +152,9 @@ set       toc,title
             <xsl:call-template name="gentext">
                 <xsl:with-param name="key">TableofContents</xsl:with-param>
             </xsl:call-template>
-        </xsl:element>    
+        </xsl:element>
     </xsl:variable>
-  
+
     <!-- ============================================================================= -->
     <!-- remark[@role='todo'] ==> span[@class='todo'] -->
     <!-- Note:  template copied from inline.xsl and modified -->
@@ -188,31 +181,32 @@ set       toc,title
             </xsl:element>
         </xsl:if>
     </xsl:template>
- 
+
     <!-- ============================================================================= -->
     <!-- Fill in the docbook placeholder user.head.content template to add an http-equiv meta
         element (helps IE < 9) -->
-    
-    <xsl:template name="user.head.content">        
+
+    <xsl:template name="user.head.content">
         <xsl:element name="meta" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="http-equiv">Content-Type</xsl:attribute>
             <xsl:attribute name="content">text/html; charset=utf-8</xsl:attribute>
         </xsl:element>
     </xsl:template>
- 
+
     <!-- ============================================================================= -->
     <!-- For chapters, preface, sections, and appendices that have @conformance, add a "This section is ..." line -->
     <!-- We match on title so that we can insert the text after the heading -->
-    
+
     <xsl:template
         match="db:chapter/db:title|db:preface/db:title|db:section/db:title|db:appendix/db:title|db:bibliography/db:title">
-        <xsl:apply-imports />
+        <xsl:apply-imports/>
         <!-- Do everything the normal transform does before adding more text -->
-        <xsl:variable name="conformanceLevel" select="../@conformance" />
+        <xsl:variable name="conformanceLevel" select="../@conformance"/>
         <xsl:variable name="parentName" select="local-name(..)"/>
         <xsl:variable name="structureName">
             <xsl:choose>
-                <xsl:when test="$parentName='preface' or $parentName='chapter' or $parentName='bibliography'">
+                <xsl:when
+                    test="$parentName='preface' or $parentName='chapter' or $parentName='bibliography'">
                     <xsl:text>section</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
@@ -223,30 +217,34 @@ set       toc,title
         <xsl:if test="$conformanceLevel != ''">
             <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">
-                    <xsl:value-of select="$conformanceLevel" />
-                </xsl:attribute> This <xsl:value-of select="$structureName" /> is
-                <xsl:value-of select="$conformanceLevel" />
+                    <xsl:value-of select="$conformanceLevel"/>
+                </xsl:attribute> This <xsl:value-of select="$structureName"/> is <xsl:value-of
+                    select="$conformanceLevel"/>
             </xsl:element>
         </xsl:if>
     </xsl:template>
-    
-    
+
+
     <!-- ============================================================================= -->
     <!-- add templates as per htmltbl.xsl in order to get id and role -->
-    
+
     <xsl:template mode="htmlTableAtt" match="@xml:id">
-        <xsl:attribute name="id"><xsl:value-of select="." /></xsl:attribute>        
+        <xsl:attribute name="id">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
     </xsl:template>
-    
+
     <xsl:template mode="htmlTableAtt" match="@role">
-        <xsl:attribute name="class"><xsl:value-of select="." /></xsl:attribute>        
+        <xsl:attribute name="class">
+            <xsl:value-of select="."/>
+        </xsl:attribute>
     </xsl:template>
-    
-    
+
+
     <!-- ============================================================================= -->
     <!-- override title page templates to remove all the excess divs -->
-    
-    
+
+
     <xsl:template name="book.titlepage-nomatch">
         <xsl:variable name="recto.content">
             <xsl:call-template name="book.titlepage.before.recto"/>
@@ -254,9 +252,14 @@ set       toc,title
         </xsl:variable>
         <xsl:variable name="recto.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -269,9 +272,14 @@ set       toc,title
         </xsl:variable>
         <xsl:variable name="verso.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -280,19 +288,19 @@ set       toc,title
         </xsl:if>
         <xsl:call-template name="book.titlepage.separator"/>
     </xsl:template>
-    
+
     <xsl:template match="db:title" mode="book.titlepage.recto.auto.mode">
         <xsl:apply-templates select="." mode="book.titlepage.recto.mode"/>
     </xsl:template>
-    
+
     <xsl:template match="db:title" mode="chapter.titlepage.recto.auto.mode">
         <xsl:apply-templates select="." mode="chapter.titlepage.recto.mode"/>
     </xsl:template>
-    
+
     <xsl:template match="db:title" mode="section.titlepage.recto.auto.mode">
         <xsl:apply-templates select="." mode="section.titlepage.recto.mode"/>
     </xsl:template>
-    
+
     <xsl:template name="chapter.titlepage">
         <xsl:variable name="recto.content">
             <xsl:call-template name="chapter.titlepage.before.recto"/>
@@ -300,9 +308,14 @@ set       toc,title
         </xsl:variable>
         <xsl:variable name="recto.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -315,9 +328,14 @@ set       toc,title
         </xsl:variable>
         <xsl:variable name="verso.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -326,24 +344,29 @@ set       toc,title
         </xsl:if>
         <xsl:call-template name="chapter.titlepage.separator"/>
     </xsl:template>
-    
-    
-    
-    
+
+
+
+
     <!-- ============================================================================= -->
     <!-- override section title page templates to remove all the excess divs and correct heading levels -->
-    
+
     <xsl:template name="section.titlepage">
-        
+
         <xsl:variable name="recto.content">
             <xsl:call-template name="section.titlepage.before.recto"/>
             <xsl:call-template name="section.titlepage.recto"/>
         </xsl:variable>
         <xsl:variable name="recto.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($recto.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -356,9 +379,14 @@ set       toc,title
         </xsl:variable>
         <xsl:variable name="verso.elements.count">
             <xsl:choose>
-                <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
-                <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
-                    <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
+                <xsl:when test="function-available('exsl:node-set')">
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
+                <xsl:when
+                    test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                    <!--Xalan quirk-->
+                    <xsl:value-of select="count(exsl:node-set($verso.content)/*)"/>
+                </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -366,11 +394,11 @@ set       toc,title
             <xsl:copy-of select="$verso.content"/>
         </xsl:if>
         <xsl:call-template name="section.titlepage.separator"/>
-        
+
     </xsl:template>
-    
-    
-    
+
+
+
     <xsl:template name="section.level">
         <xsl:param name="node" select="."/>
         <xsl:choose>
@@ -391,7 +419,8 @@ set       toc,title
                     <xsl:otherwise>1</xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
-            <xsl:when test="local-name($node)='refsect1' or
+            <xsl:when
+                test="local-name($node)='refsect1' or
                 local-name($node)='refsect2' or
                 local-name($node)='refsect3' or
                 local-name($node)='refsection' or
@@ -408,23 +437,23 @@ set       toc,title
                     <xsl:when test="$node/../../db:sect4">5</xsl:when>
                     <xsl:when test="$node/../../db:sect5">5</xsl:when>
                     <xsl:when test="$node/../../db:section">
-  <xsl:choose>
-      <xsl:when test="$node/../../../../../db:section">5</xsl:when>
-      <xsl:when test="$node/../../../../db:section">4</xsl:when>
-      <xsl:when test="$node/../../../db:section">3</xsl:when>
-      <xsl:otherwise>2</xsl:otherwise>
-  </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="$node/../../../../../db:section">5</xsl:when>
+                            <xsl:when test="$node/../../../../db:section">4</xsl:when>
+                            <xsl:when test="$node/../../../db:section">3</xsl:when>
+                            <xsl:otherwise>2</xsl:otherwise>
+                        </xsl:choose>
                     </xsl:when>
                     <xsl:otherwise>1</xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
             <xsl:otherwise>1</xsl:otherwise>
         </xsl:choose>
-    </xsl:template>   
-    
+    </xsl:template>
+
     <!-- ==================================================================== -->
     <!-- copied and modified from xhtml1_1/sections.xsl, make bridgehead a p -->
-    <xsl:template match="d:bridgehead">                
+    <xsl:template match="d:bridgehead">
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">bridgehead</xsl:attribute>
             <xsl:call-template name="anchor">
@@ -433,5 +462,5 @@ set       toc,title
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-    
+
 </xsl:stylesheet>
