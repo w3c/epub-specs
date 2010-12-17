@@ -15,21 +15,31 @@
    ops.video.attlist &= ops.global.attrs & ops.av.common.attrs & ops.video.poster.attr? & ops.dimension.attrs & ops.video.audio.attr?
    ops.video.poster.attr = attribute poster { datatype.html5.URL.spaces }	
    ops.video.audio.attr = attribute audio {list { 'muted' }}
-   ops.video.flow.content = ops.av.source, ops.flow.model
-   ops.video.phrasing.content = ops.av.source, ops.phrasing.model
+   ops.video.flow.content = ops.av.source, ops.track, ops.flow.model
+   ops.video.phrasing.content = ops.av.source, ops.track, ops.phrasing.model
 
 
 
    ops.audio.flow = element audio { ops.audio.attlist & ops.audio.flow.content }
    ops.audio.phrasing = element audio { ops.audio.attlist & ops.audio.phrasing.content }
    ops.audio.attlist &= ops.global.attrs & ops.av.common.attrs   		
-   ops.audio.flow.content = ops.av.source, ops.flow.model
-   ops.audio.phrasing.content = ops.av.source, ops.phrasing.model
+   ops.audio.flow.content = ops.av.source, ops.track, ops.flow.model
+   ops.audio.phrasing.content = ops.av.source, ops.track, ops.phrasing.model
    
 
    ops.av.common.attrs =  ops.av.autoplay.attr? & ops.av.preload.attr? 
       & ops.av.controls.attr? & ops.av.loop.attr?
 		
+		
+   ops.track = element track { ops.track.attlist }	
+   ops.track.attlist &= ops.global.attrs & ops.track.kind.attr? & ops.src.attr & ops.charset.attr? 
+      & ops.track.srclang.attr? & ops.track.label.attr?
+
+   ops.track.kind.attr = attribute kind { 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata' }   
+   ops.track.srclang.attr = attribute srclang { datatype.languagecode }
+   ops.track.label.attr = attribute label { datatype.string  }
+
+
    ops.av.autoplay.attr = attribute autoplay { 'autoplay' | '' }
    ops.av.preload.attr = attribute preload { 'none' | 'metadata' | 'auto' | '' }			
    ops.av.controls.attr  = attribute controls  { 'controls' | '' }			
@@ -38,7 +48,7 @@
    ops.source = element source { ops.source.attlist }
    ops.source.attlist &= ops.global.attrs & ops.src.attr & ops.type.mime.attr? & ops.media.attr?
 
-   ops.av.source = ops.src.attr | ops.source*
+   ops.av.source = ops.src.attr | ops.source+
 
    
    
@@ -141,3 +151,4 @@
    
 # TODO SCH The ismap attribute must not be specified on an element that does not have an ancestor a element with an href attribute.
 # TODO SCH  <map>@name: If the id attribute is also specified, both attributes must have the same value.
+# TODO SCH track @label must be non-empty
