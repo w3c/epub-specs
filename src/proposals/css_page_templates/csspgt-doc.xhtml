@@ -1,0 +1,1782 @@
+﻿<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>CSS Page Templates</title>
+<link rel="stylesheet" type="text/css" href="csspgt-doc.css"/>
+</head>
+<body>
+
+<div class="head">
+<h1>CSS Page Templates</h1>
+
+<dl>
+  <dt>Revision:</dt>
+  <dd>Revision: 0.51</dd>
+  <dt>Authors:</dt>
+  <dd><a href="mailto:psorotok@adobe.com">Peter Sorotokin</a> (<a href="http://www.adobe.com">Adobe Systems, Inc.</a>)</dd>
+</dl>
+
+<p class="copyright">Copyright © 2010 Adobe Systems Inc.</p>
+</div>
+
+<hr/>
+
+<h3 id="abstract">Abstract</h3>
+<p>This module defines a model for template-based paginated layouts in CSS, a style sheet language
+      for the web. Using functionality described in the specification, content can be flowed into
+      regions of a sequence of potentially highly-designed pages, rather than being presented as a
+      single scrolled container (as per the standard CSS formatting process for on-screen display)
+      or as a scrolled container which has been simply split up into a sequence of pages (as per the
+      standard CSS formatting process for printing).</p>
+  <h3 id="status">Status of this Document</h3>
+  <p>This is an unapproved Working Draft and has no official status at this time. It may be updated,
+      replaced or rendered obsolete by other documents at any time. Its publication does not imply
+      endorsement by the IDPF membership, IDPF EPUB Working Group, W3C membership or the CSS Working
+      Group.</p>
+<h3>Table of Contents</h3>
+<ul>
+	<li><a href="#intro">Introduction</a>
+		<ul>
+			<li><a href="#features">Feature set</a></li>
+			<li><a href="#css3-rel">Relationship with CSS3 modules</a></li>
+			<li><a href="#css-other">Other notable CSS efforts</a></li>
+			<li><a href="#history">History</a></li>
+		</ul>
+	</li>
+	<li><a href="#adaptive-styling">Adaptive Styling</a>
+		<ul>
+			<li><a href="pgt-rule-def">Compatibility: ‘@pgt’ Rule</a></li>
+			<li><a href="#expr-value-def">Simple calculations: ‘expr()’ value</a></li>
+			<li><a href="#define-rule-def">Defining named values: ‘@define’ rule</a></li>
+			<li><a href="#when-rule-def">Conditional styling: ‘@when’ rule</a></li>
+		</ul>
+	</li>
+	<li><a href="#page-layout">Page Layout</a>
+		<ul>
+			<li><a href="#page-layout-terms">Flows, regions and page masters</a></li>
+			<li><a href="#flow-name-def">Assigning flows: the ‘flow-name’ property</a></li>
+			<li><a href="#flow-options-def">Types of content in the flow: ‘flow-options’ property</a></li>
+			<li><a href="#flow-linger-def">Flow content lifetime: ‘flow-linger’ property</a></li>
+			<li><a href="#flow-priority-def">Flow content selection: ‘flow-priority’ property</a></li>
+			<li><a href="#breaking-points">Controlling column/region breaking points</a></li>
+			<li><a href="#region-placement-def">Avoiding blank space: ‘region-placement’ property</a></li>
+			<li><a href="#page-master-rule-def">Defining page layout: ‘@page-master’ rule</a></li>
+			<li><a href="#region-rule-def">Partitioning page area: ‘@region’ rule</a></li>
+			<li><a href="#enabled-def">Conditional page master and region usage: ‘enabled’ property</a></li>
+			<li><a href="#page-master-selection">Page Master selection</a></li>
+			<li><a href="#page-def">Using page layout for a particular page: ‘page’ property</a></li>
+			<li><a href="#page-dims">Selecting page master based on device dimensions: ‘min-page-width’ and ‘min-page-height’ properties</a></li>
+			<li><a href="#required-def">Selecting page master based on content: ‘required’ property</a></li>
+			<li><a href="#conflicting-regions-def">Using only one in a set of regions: ‘conflicting-regions’ property</a></li>
+			<li><a href="#required-regions-def">Using multiple regions together: ‘required-regions’ property</a></li>
+			<li><a href="#mode-def">Styling content in a region: ‘mode’ property</a></li>
+			<li><a href="#snap-height-def">Snapping to the line grid: ‘snap-height’ property</a></li>
+			<li><a href="#region-overlap-def">Controlling overlap: ‘region-overlap’ property</a></li>
+			<li><a href="#outer-shape-def">Custom region shape: ‘outer-shape’ property</a></li>
+			<li><a href="#utilization-def">Lookup range: ‘utilization’ property</a></li>
+			<li><a href="#page-master-expr">Expressions inside ‘@page-master’ rule</a></li>
+			<li><a href="#mode-rule-def">Styling content in a region: ‘@mode’ rule</a></li>
+			<li><a href="#flow-rule-def">Fitting the text: ‘@flow’ rule</a></li>
+		</ul>
+	</li>
+	<li><a href="#appendix-a">Appendix A. Current state of JavaScript-based implementation</a>
+		<ul>
+			<li><a href="#limitations">General limitations</a></li>
+			<li><a href="#unimplemented">Unimplemented properties</a></li>
+			<li><a href="#incomplete">Incompletely implemented properties</a></li>
+			<li><a href="#view-placement-def">Integrating with interactive content: ‘view-placement’ property</a></li>
+			<li><a href="#pgt-params-rule-def">Passing parameters to script implementation: ‘@pgt-params’ rule</a></li>
+		</ul>
+	</li>
+</ul>
+
+<h2 id="intro">Introduction</h2>
+
+<p>This module describes functionality to dynamically layout a document into a sequence of pages (or
+      "screens"). Its primary focus is interactive display environments in which  the page size and
+      user preferred font metrics are unknown at the time of document authoring and layout has to be
+      done on the fly. This module builds on CSS 2.1 and several CSS3 modules. </p>
+    <h3 id="processing_model">Basic Processing Model</h3>
+    <p>The processing model defined by this specification enables a User Agent (UA) to flow content
+      (such as HTML) into a series of linked containers separately described by CSS page templates.
+      The separation of content and template is prevalent in document-oriented formatting systems,
+      and enhances content reusability, accessibility, and expressivity. This specification also
+      defines an associated means for style property selection to be parameterized based on dynamic
+      conditions, such as the width of the display region.</p>
+
+<h3 id="features">Feature set</h3>
+
+<p>This Page Templates specification consists of two parts:   <a href="#page-layout">Page Layout</a>
+      and <a href="#adaptive-styling">Adaptive Styling</a>.</p>
+    <p>Page Layout  defines a way to partition a page into multiple regions, associate content with
+      a specified region and add region-specific styling, as well as defining the process by which a
+      UA that supports this proposal flows content into regions.</p>
+
+<p>Adaptive Styling defines two supporting features to make Page Layout (and potentially other
+      document styling functions) depend on the environment: a means to turn styling rules on and
+      off based on conditions, and a means to perform simple calculations based on environmental
+      parameters. </p>
+    <p>While Adaptive Styling capabilities could be used independently of Page Layout, such
+      potential use is beyond the scope of  this proposal, thus the entire content of this proposal
+      is </p>
+    <h3 id="history">Background and Assumptions</h3>
+    <p>CSS Page Templates can be viewed as an adaptation of the XSL-FO master page vocabulary and
+      abstract formatting model to CSS syntax. XSL-FO is a W3C Recommendation that has seen adoption
+      in certain batch processing workflows, but is much less widely used than CSS, and is not
+      natively supported in Web browsers.</p>
+    <p>An important design constraint of this module is that a reasonable level of emulated
+      implementation in JavaScript via existing User Agents be feasible, in order that this
+      specification can be immediately useful and its major features can be tested in practical
+      applications.</p>
+
+<h3 id="css3-rel">Relationship with CSS3 modules</h3>
+<p>Note: all references point to the most recent versions of the specs</p>
+<ul>
+      <li>The Page Layout part of this specification builds on and can in some respects be viewed as
+        an extension and generalization of <a href="http://www.w3.org/TR/css3-multicol/"
+          >Multi-column Layout</a>. Many properties defined by the Multi-column Layout module are
+        reused by this specification..</li>
+<li><a href="http://www.w3.org/TR/css3-page/">Paged Media</a> is focused on the fundamentally
+        different problem of making existing scrollable content to be printable, i.e. rules for
+        dividing up a logically single scrolling container of content into a series of pages,
+        possibly decorated in a simple manner with header/footer content or additional content
+        defined <a href="http://www.w3.org/TR/css3-gcpm/">Generated Content for Paged Media</a> .
+        Several  properties defined by the Paged Media module are reused by this specification.</li>
+<li>The <a href="http://www.w3.org/TR/css3-layout/">Template Layout Module</a> draft proposal also
+        addresses a different problem: dynamic layout of Web application screens / panels. In
+        particular in the Template Layout Module each content item "knows" something about its
+        preferred location within a containing context, and templates are in effect used to assist
+        in solving the resulting constraint satisfaction problem. Whereas in this proposal's layout
+        model, a content element has no knowledge about the geometry of the template-defined page
+        regions into which it will flow.</li>
+<li><a href="http://www.w3.org/TR/css3-values/">Values and Units</a> introduces "calc" value which
+        is somewhat similar to "expr" value introduced in this specification. Unlike "expr", "calc"
+        expressions must  be resolved during CSS cascade and inheritance which would significantly
+        complicate emulated support via JavaScript on existing UAs. </li>
+<li><a href="http://www.w3.org/TR/css3-mediaqueries/">Media Queries</a> has some overlap with the
+        "@when" rule defined in this specification, relative to  dynamic style rule selection based
+        on  device dimension. However Media Queries has a much more limited expression syntax, and
+        is more oriented towards stylesheet selection. There is no conflict between Media Queries
+        and this specification and, in circumstances where "@media" provides appropriate
+        expressivity, it could be used in lieu of "@when".</li>
+</ul>
+
+<h3 id="css-other">Other notable CSS efforts</h3>
+
+<ul>
+<li><a href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a> provides a mechanism
+to define a set of values that can be referred in other parts of the stylesheet. It was implemented in WebKit
+but then removed from it. This specification creates a similar mechanism</li>
+</ul>
+
+<h2 id="conformance">Conformance </h2>
+  <h3 id="definitions">Definitions</h3>
+  <p>This specification is based on CSS 2.1 and unless otherwise specified all terms used that are key words and definitions in that specification have the meaning defined therein.</p>
+  <h3 id="error_handling">UA Conformance and Error Handling</h3>
+  <p>TODO. In particular, the interaction of this specification with <a href="http://www.w3.org/TR/css3-mediaqueries/"
+        >CSSOM</a>  is not yet defined</p>
+  
+  <h2 id="adaptive-styling">Adaptive styling</h2>
+
+  <p>This section defines two supporting features that enable the Page Layout processing model to
+      dynamically depend on the current environment:  a means to turn styling rules on and off based
+      on conditions, and a means to perform simple calculations based on environmental parameters.
+      As well this section also defines a compatibilitiy at-rule to encapsulate all the
+      funcctionality defined in this specification.</p>
+  
+  <h3 id="pgt-rule-def">Compatibility At-Rule: ‘@pgt’</h3>
+    <p>i</p>
+    <p>All constructs defined in this module must occur within a containing @pgt rule. This ensures
+      compatiblity with User Agents that do not support this module, since UAs are required to
+      ignore content inside any unsupported at-rule. As well a UA supporting this module may
+      activate its functionality conditionally. Determination of activation is UA-dependent and not
+      defined here, but this could for example include ignoring Page Templates on a very small
+      screen device unless printing, or when creating an aural rendition.</p>
+    <p>Example:</p>
+
+<pre>... Regular rules ...
+
+@pgt {
+  ... Page Template rules ...
+}
+</pre>
+
+<p>When Page Template is unsupported or not active, only regular rules are applied. When Page
+      Template is active <em>both</em> regular rules and Page Template rules are applied. Rules
+      inside pgt rule are considered to have higher specificity than regular rules for all
+      selectors.</p>
+
+<h3 id="expr-value-def">Calculated Values: ‘expr()’ </h3>
+
+<p>Achieving complex page layouts based on dynamic conditions requires taking into account various
+      parameters include the media characteristics (width, height) and user preferences (font size).
+      CSS 2.1 provides limited ways to specify property values based on container dimensions
+      (percentages) and current font size (em unit). However, this only works for some properties
+      (e.g. it is not possible to set font size based on viewport width), and some elements (e.g. it
+      is not possible to use viewport height if parent element height was not defined as a
+      percentage) and different values cannot be combined (cannot specify value based on both
+      viewport width and height). </p>
+
+<p>Page Template specification defines a generalized expression value that uses function notation in
+      this form:</p>
+<pre>expr( &lt;expression&gt; )</pre>
+  <p>This value can be use for any CSS property that is not a <a
+        href="http://www.w3.org/TR/CSS2/about.html#shorthand">shorthand property</a> as defined in
+      [CSS21]. </p>
+    <p>The expression syntax grammar is</p>
+<pre class="syntax">expression := cond_term
+cond_term = infix_term '?' infix_term ':' infix_term | infix_term
+infix_term = infix_term infix_op prefix_term | prefix_term
+prefix_term = prefix_op prefix_term | term
+term = simple_term | '(' cond_term ')' | call_term
+call_term := func '(' args ')'
+args = args ',' cond_term | cond_term
+func = identifier '.' identifier | identifier
+simple_term = number | number unit | string |
+  identifier | identifier '.' identifier
+prefix_op = '-' | '!'
+infix_op = '+' | '-' | '*' | '/' | '%' | '&lt;' | '&gt;' | '=' |
+   '==' | '&lt;=' | '&gt;=' | '!=' | '&amp;&amp;' | '||'
+</pre>
+<p>Operator priorities are given by this table from highest to lowest</p>
+<table class="operators">
+  <tr><td>'*', '/'</td></tr>
+  <tr><td>'+', '-'</td></tr>
+  <tr><td>'&lt;', '&gt;', '=', '==', '&lt;=', '&gt;=', '!='</td></tr>
+  <tr><td>'&amp;&amp;', '||'</td></tr>
+</table>
+<p>Since CSS names treat "dash" as a valid identifier character and a percent sign after a number is
+      treated as a unit designation, it is recommended to put spaces around dash and percent signs
+      (this is similar to XPath).</p> 
+<p>When an expression is evaluated the processing model is that the result is converted to string
+      and parsed as a base CSS value. If the result is of type number, it is converted to string by
+      appending "px" at the end. If it is not desired authors should explicitly convert value to
+      string by appending an empty string as part of the expression.</p>
+<p>The following values are predefined:</p>
+<dl>
+<dt>page-width</dt>
+<dd>width of page in CSS pixels</dd>
+<dt>page-height</dt>
+<dd>height of page in CSS pixels</dd>
+</dl>
+<p class="note">Note: we need to communicate user preferences: preferred orientation for
+languages that support vertical writing, night mode, high contrast mode, preferred margin,
+preferred column width, preferred body font. Conceptually these can come from the user
+stylesheet, but they need to have well-defined names.</p>
+<p>The following intrinsic functions are predefined:</p>
+<dl>
+<dt>floor(x)</dt>
+<dd>largest integer with is less than or equal to x</dd>
+<dt>ceil(x)</dt>
+<dd>smallest integer with is greater than or equal to x</dd>
+<dt>round(x)</dt>
+<dd>integer which is closest to x</dd>
+<dt>sqrt(x)</dt>
+<dd>square root of x</dd>
+<dt>min(x,y)</dt>
+<dd>smallest of x and y</dd>
+<dt>max(x,y)</dt>
+<dd>largest of x and y</dd>
+</dl>
+
+<p>Units in expr() values are always resolved in the context of the root element in the document.
+      Percentages are resolved based on width or height as defined by the appropriate property.</p>
+
+<h3 id="define-rule-def">Defining named values: the ‘@define’ rule: </h3>
+
+<p>In many cases certain combination of values appear over and over. A stylesheet is more readable
+      and efficient when these combination are factored out and given descriptive names. The
+      ‘@define’ rule enables this functionality.</p>
+
+<pre>@define {
+	&lt;name&gt;: &lt;value&gt;
+	...
+}
+</pre>
+
+<p>"name" must be a valid CSS name; "value" must be a valid CSS value or a valid "expr" calculation.
+      Names defined by @define rules can be used only inside expr() values (which includes other
+      @define rules), and wherever used the indicated value is substituted. A given name can be
+      defined at most once at the document-level scope and once within a given page-master scope
+        <b>[WM: true?]</b>: these are definitions, not "variables". Named values may be defined in
+      terms of other named values. Order does not matter, and a value can be used before it is
+      defined, as long as there is no circular dependencies. Redefining predefined values is
+      strongly discouraged.</p>
+
+<h3 id="when-rule-def">Conditional styling: ‘@when’ rule</h3>
+
+<p>Some styling rules need to be applied only under certain conditions (e.g.
+when viewport size is small). This can be achieved by ‘@when’ rule:</p>
+<pre>@when &lt;expression&gt; {
+   CSS rule
+   ....
+   }</pre>
+  
+  <p>"expression" must be a valid "expr" calculation that evaluates to "true" or "false", which determines 
+  whether the contents of the following block are enabled</p>  
+
+<h2 id="page-layout">Page Layout</h2>
+
+<h3 id="page-layout-terms">Flows, regions and page masters</h3>
+
+<p id="flow-term-def">A <em>flow</em> (n.) is a named sequence of elements that should be displayed
+      in that order, for example an article in a magazine or other collection of content. Initially
+      a document is considered to have a single flow named "body" that contains the document's root
+      element. Elements can be placed in other flows by specifying the <a class="prop-ref"
+        href="#flow-name-def">flow-name</a> property.</p>
+
+<p id="region-term-def">A <em>region</em> is an area of the page where content from a particular
+      flow can be displayed. In many cases it takes several regions on a sequence of pages (or on
+      the same page) to display all of the content from a particular flow: content is said to "flow"
+      (v.) from one region to the next. Regions can contain several columns. Regions in can either
+      grow in block progression direction to accomodate content (up to a certain limit) or can be of
+      fixed size. Regions can be of different dimensions, in particular there is <em>no</em>
+      restriction that all regions that accomodate a particular flow should have the same column
+      width. Regions are specified using the <a class="rule-ref" href="#region-rule-def">@region</a>
+      rule.</p>
+
+<p id="page-master-term-def">A <em>page master</em> is a partitioning of a page into a set of
+      regions. Regions always exist in the context of a particular page master. Page masters allow
+      authors to create visually rich presentation of content by controlling the geometry of
+      multiple regions on a page. A stylesheet can specify any number of page masters, a particular
+      page master is selected for every page algorithmically. Page masters are specified using the
+        <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rule.</p>
+
+<h3 id="flow-name-def">Assigning flows: the ‘flow-name’ property</h3>
+<dl>
+<dt><strong>‘flow-name’</strong></dt>
+<dd>
+<table class="propdef">
+    <tr>
+     <th><em>Name:</em></th>
+     <th><dfn>flow-name</dfn></th>
+    </tr>
+    <tr>
+     <td><em>Value:</em></td>
+     <td>&lt;name&gt;</td>
+    </tr>
+    <tr>
+     <td><em>Initial:</em></td>
+     <td>Value of ‘body’ is assumed to be specified on the root of the document.</td>
+    </tr>
+    <tr>
+     <td><em>Applies to:</em></td>
+     <td>block-level and inline elements (including replaced elements and tables)</td>
+    </tr>
+    <tr>
+     <td><em>Inherited:</em></td>
+     <td>no</td>
+    </tr>
+    <tr>
+     <td><em>Percentages:</em></td>
+     <td>N/A</td>
+    </tr>
+    <tr>
+     <td><em>Media:</em></td>
+     <td>visual</td>
+    </tr>
+    <tr>
+     <td><em>Computed&#xA0;value:</em></td>
+     <td>as specified</td>
+    </tr>
+</table>
+</dd>
+</dl>
+<p>The 'flow-name' property is used to assign element to a <a class="term-ref" href="#flow-term-def"
+        >flow</a>. The value is the name of the flow to which this element should be moved. The
+      process of moving the element defined to happen in the following manner:</p>
+<ul>
+<li>If the element is already in the desired flow (e.g. its ancestor was moved there), nothing
+        happens.</li>
+<li>Otherwise element is removed from its original location (as if its <code class="propname"
+          >display</code> property is set to <code class="propval">none</code>) and placed in the
+        desired flow. NOTE: its order of occurance in the flow is NOT affected by the timing of when
+        such an assignment occurs, but is always based on its order of occurance within the
+        document's content; e.g. if elements A, B, and C occur in that order in the document, and
+        are all assigned to the same flow, then they will always have the order A, B, and C in that
+        flow. <b>[WM: is this true? I could imagine it working the opposite way so this is just a
+          guess]</b></li>
+<li>Cascaded and inherited CSS properties do not change as a result of the move. Elements are always
+        considered to remain in its original place within the tree structure (DOM) of the document
+        for the purposes of styling (except that additional styles can be assigned: see <a
+          class="rule-ref" href="#mode-rule-def">@mode</a> rule). <span class="note">[Note: this is
+          not easy to implement in script]</span></li>
+<li>Enclosing containers are not duplicated in the element's new location. So if without <a
+          class="prop-ref" href="#flow-name-def">flow-name</a> property the element was to be placed
+        at a certain offset from the viewport edge because of its <em>ancestor</em> margin, that
+        margin would would not be applicable in its new place.</li> 
+</ul>
+
+<h3 id="flow-options-def">Types of content in the flow: ‘flow-options’ property</h3>
+<dl>
+<dt><strong>‘flow-options’</strong></dt>
+<dd>
+<table class="propdef">
+    <tr>
+     <th><em>Name:</em></th>
+     <th><dfn>flow-options</dfn></th>
+    </tr>
+    <tr>
+     <td><em>Value:</em></td>
+     <td>none | [ exclusive || static ]</td>
+    </tr>
+    <tr>
+     <td><em>Initial:</em></td>
+     <td>none</td>
+    </tr>
+    <tr>
+     <td><em>Applies to:</em></td>
+     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified</td>
+    </tr>
+    <tr>
+     <td><em>Inherited:</em></td>
+     <td>no</td>
+    </tr>
+    <tr>
+     <td><em>Percentages:</em></td>
+     <td>N/A</td>
+    </tr>
+    <tr>
+     <td><em>Media:</em></td>
+     <td>visual</td>
+    </tr>
+    <tr>
+     <td><em>Computed&#xA0;value:</em></td>
+     <td>as specified</td>
+    </tr>
+</table>
+</dd>
+</dl>
+<p>The 'flow-options' property affects how an element is processed in its flow <b>[WM: note I
+        intentionally remove 'once an element is placed in a flow' since the spec indicates all
+        elements start in the flow 'body' so presumably 'flow-options' could still be set on them -
+        if not please advise and I can explicitly state that this is not the case]</b> Several
+      options can be specified at once.</p>
+<dl>
+<dt id="exclusive-value-def">exclusive</dt>
+<dd>When content is selected for a region, elements marked as exclusive are considered first. Only
+        one element is used for a single region and one element is always "used up" (and removed
+        from the flow if it is not also marked as <a class="value-ref" href="#static-value-def"
+          >static</a>). If multiple elements are marked exclusive, the one that comes later is used,
+        but also see <a class="prop-ref" href="#flow-priority-def">flow-priority</a>. If no element
+        is marked exclusive, elements flow into available space in the region one by one. Partially
+        used elements are flowed into the next available region. <b>[WM: ?? this statement seems
+          inconsistent with statement above that "one element is always 'used up' "  - I'm thinking
+          maybe the above statement is not exactly right]</b></dd>
+<dt id="static-value-def">static</dt>
+<dd>When an element is "used up" in a region, it is removed from the flow, unless it is marked as
+        static. <b>[WM: the spec seems to use "flow" and "removed from the flow" in 2 different ways
+          - as part of reassignment process, in which "remove from the flow" means it is not
+          visible, and in this case, which I think is talking about what happens after it is 'used
+          up' by formatting process which is different - it is still in the flow in the sense that
+          if conditions change and a redraw happens it will be considsered again. Perhaps I could
+          find another term to use for this latter situation,  "flow source content" or something
+          (unless I've got this wrong)]</b> Static elements are placed in the flow again when they
+        are used up. When determining which element to use when multiple elements are marked <a
+          class="value-ref" href="#exclusive-value-def">exclusive</a>, element's original placement
+        on the flow is considered, not the time when the element is placed back there by the static
+        option.</dd>
+</dl>
+
+<h3 id="flow-linger-def">Flow content lifetime: ‘flow-linger’ property</h3>
+<dl>
+<dt><strong>‘flow-linger’</strong></dt>
+<dd>
+<table class="propdef">
+    <tr>
+     <th><em>Name:</em></th>
+     <th><dfn>flow-linger</dfn></th>
+    </tr>
+    <tr>
+     <td><em>Value:</em></td>
+     <td>none | &lt;integer&gt;</td>
+    </tr>
+    <tr>
+     <td><em>Initial:</em></td>
+     <td>none</td>
+    </tr>
+    <tr>
+     <td><em>Applies to:</em></td>
+     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified</td>
+    </tr>
+    <tr>
+     <td><em>Inherited:</em></td>
+     <td>no</td>
+    </tr>
+    <tr>
+     <td><em>Percentages:</em></td>
+     <td>N/A</td>
+    </tr>
+    <tr>
+     <td><em>Media:</em></td>
+     <td>visual</td>
+    </tr>
+    <tr>
+     <td><em>Computed&#xA0;value:</em></td>
+     <td>as specified</td>
+    </tr>
+</table>
+</dd>
+</dl>
+<p>The 'flow-linger' property determines for how many pages an element is kept in the flow. None
+      means it is kept forever (but removed if used if <a class="value-ref" href="#static-value-def"
+        >static</a> option is not specified). Integer must be positive and means number of pages. 1
+      means that it should be used on the same page it was placed in the flow. <b>[WM: I don't
+        understand this statement - I'm imagining something about the timing of when a 'flow-name'
+        property is encountered during the formatting process but that seems pretty complex. Or
+        maybe it just means something about it should be fully consumed on the first page in which
+        it is utilized, not sure]</b></p>
+
+<h3 id="flow-priority-def">Flow content selection: ‘flow-priority’ property</h3>
+<dl>
+<dt><strong>‘flow-priority’</strong></dt>
+<dd>
+<table class="propdef">
+    <tr>
+     <th><em>Name:</em></th>
+     <th><dfn>flow-priority</dfn></th>
+    </tr>
+    <tr>
+     <td><em>Value:</em></td>
+     <td>&lt;integer&gt;</td>
+    </tr>
+    <tr>
+     <td><em>Initial:</em></td>
+     <td>0</td>
+    </tr>
+    <tr>
+     <td><em>Applies to:</em></td>
+     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified
+       and <a class="prop-ref" href="#flow-option-def">flow-option</a>
+       <a class="value-ref" href="#exclusive-value-def">exclusive</a> is on</td>
+    </tr>
+    <tr>
+     <td><em>Inherited:</em></td>
+     <td>no</td>
+    </tr>
+    <tr>
+     <td><em>Percentages:</em></td>
+     <td>N/A</td>
+    </tr>
+    <tr>
+     <td><em>Media:</em></td>
+     <td>visual</td>
+    </tr>
+    <tr>
+     <td><em>Computed&#xA0;value:</em></td>
+     <td>as specified</td>
+    </tr>
+</table>
+</dd>
+</dl>
+<p>The 'flow-priority' property defines the priority of selection among  elements in a flow with <a
+        class="prop-ref" href="#flow-option-def">flow-option</a>
+      <a class="value-ref" href="#exclusive-value-def">exclusive</a>. The active (unused) element
+      with <em>highest</em> priority is selected next.</p>
+
+<h3 id="breaking-points">Controlling column/region breaking points</h3>
+<p>Sometimes it is necessary to keep several pieces of content together in the same column or region
+or on the same page. This can be achieved using following properties defined in CSS3 Multi-column Layout
+Module:</p>
+<ul>
+<li>break-inside</li>
+<li>break-before</li>
+<li>break-after</li>
+</ul>
+  <p>These properties may be used on flow content whether or not that content is within a
+      multi-column region (if there are no containing columns the inside/before/after values are
+      applied to regions).<b>[WM: true?]</b></p>
+
+<h3 id="region-placement-def">Avoiding blank space: ‘region-placement’ property</h3>
+<dl>
+<dt><strong>‘region-placement’</strong></dt>
+<dd>
+<table class="propdef">
+    <tr>
+     <th><em>Name:</em></th>
+     <th><dfn>region-placement</dfn></th>
+    </tr>
+    <tr>
+     <td><em>Value:</em></td>
+     <td>strict | flexible</td>
+    </tr>
+    <tr>
+     <td><em>Initial:</em></td>
+     <td>strict</td>
+    </tr>
+    <tr>
+     <td><em>Applies to:</em></td>
+     <td>block-level and inline elements, including tables</td>
+    </tr>
+    <tr>
+     <td><em>Inherited:</em></td>
+     <td>no</td>
+    </tr>
+    <tr>
+     <td><em>Percentages:</em></td>
+     <td>N/A</td>
+    </tr>
+    <tr>
+     <td><em>Media:</em></td>
+     <td>visual</td>
+    </tr>
+    <tr>
+     <td><em>Computed&#xA0;value:</em></td>
+     <td>as specified</td>
+    </tr>
+</table>
+</dd>
+</dl>
+<p>When an element that occupies significant area is not breakable (e.g an image) and has to be
+      overflown to a next column/region, it can cause quite a bit of empty space at the end of the
+      column. In some cases it is desireable to overflow the large element, but to continue flowing
+      content that follows it until the space in the column is exhausted. Setting region-placement
+      to "flexible" achieves that effect. I.e. it indicates that the natural order of placement in
+      the column/region of elements having that property  may be overridden by the formatting
+      process in such cases. <b>[WM: does "flexible" mean that paragraphs coming after a table can
+        be moved to come before it? Or other types of content? It would seem desirable to be
+        explicit here, or if the intention is to NOT be explicit by give UA's arbitrary discretion
+        to reorder content if to say so]</b></p>
+
+<h3 id="page-master-rule-def">Defining page layout: ‘@page-master’ rule</h3>
+<p>The 'page-master' rule defines a <a class="term-ref" href="#page-master-term-def">page
+      master</a>. An example:</p>
+<pre>@page-master
+{
+	&lt;propname&gt;: &lt;propvalue&gt;;
+	...
+	
+	@region &lt;name&gt; {
+		...
+	}
+	...
+}
+</pre>
+<p>Each page-master rule defines a separate <a class="term-ref" href="#page-master-term-def">page master</a>. Note
+that page-master rule can contain both property declarations and other (region) rules. Property declarations
+are optional, but at least one region must be specified. The following Page Template properties are
+applicable:</p>
+<ul>
+<li><a class="prop-ref" href="#page-def">page</a></li>
+<li><a class="prop-ref" href="#enabled-def">enabled</a></li>
+<li><a class="prop-ref" href="#min-page-height-def">min-page-height</a></li>
+<li><a class="prop-ref" href="#min-page-width-def">min-page-width</a></li>
+<li><a class="prop-ref" href="#snap-height-def">snap-height</a></li>
+</ul>
+<h3 id="region-rule-def">Partitioning page area: ‘@region’ rule</h3>
+<p>The 'region' rule defines a <a class="term-ref" href="#region-term-def">region</a> inside a page
+      master. It simply contains property declarations:</p>
+<pre>@region &lt;name&gt;
+{
+	&lt;propname&gt;: &lt;propvalue&gt;;
+	...
+}
+</pre>
+<p>The following standard CSS properties are allowed in region rule (more specific properties are also allowed where
+a shorthand property is listed):</p>
+<ul>
+<li>top</li>
+<li>left</li>
+<li>bottom</li>
+<li>right</li>
+<li>width</li>
+<li>height</li>
+<li>margin</li>
+<li>border</li>
+<li>padding</li>
+<li>background</li>
+<li>z-index</li>
+<li>opacity</li>
+</ul>
+<p>The following properties defined in CSS3 Multi-column Layout Module can be used
+to use multiple columns in a region (again, more specific properties are allowed where
+a shorthand property is listed):</p>
+<ul>
+<li>columns</li>
+<li>column-gap</li>
+<li>column-rule</li>
+<li>column-fill</li>
+</ul>
+<p>The following Page Template properties are applicable:</p>
+<ul>
+<li><a class="prop-ref" href="#flow-name-def">flow-name</a></li>
+<li><a class="prop-ref" href="#enabled-def">enabled</a></li>
+<li><a class="prop-ref" href="#required-def">required</a></li>
+<li><a class="prop-ref" href="#required-regions-def">required-regions</a></li>
+<li><a class="prop-ref" href="#conflicting-regions-def">conflicting-regions</a></li>
+<li><a class="prop-ref" href="#min-page-height-def">min-page-height</a></li>
+<li><a class="prop-ref" href="#min-page-width-def">min-page-width</a></li>
+<li><a class="prop-ref" href="#snap-height-def">snap-height</a></li>
+<li><a class="prop-ref" href="#mode-def">mode</a></li>
+</ul>
+<p>Specifying <a class="prop-ref" href="#flow-name-def">flow-name</a> property in the
+region content binds the region to the flow: content from the flow is laid out in that
+region.</p>
+<h3 id="enabled-def">Conditional page master and region usage: ‘enabled’ property</h3>
+<dl>
+  <dt>
+    <strong>‘enabled’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>enabled</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>true | false</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>true</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>true | false, see below for computation rules</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>In many cases a page master or a particular region can only be used under certain conditions.
+      Before a page master (or a region within the selected page master) is used it is first
+      determined if it is <em>enabled</em> or not. This is done by calculating the computed value of
+      the <a class="prop-ref" href="#enabled-def">enabled</a> property. For its value to be ‘true'
+      all of the following conditions mus be met:</p>
+<ul>
+  <li>
+    either <a class="prop-ref" href="#enabled-def">enabled</a> property is not specified or its value is ‘true',
+  </li>
+  <li>either <a class="prop-ref" href="#min-page-width-def">min-page-width</a> property is not specified
+  or page width is greater or equal to <a class="prop-ref" href="#min-page-width-def">min-page-width</a> computed value,</li>
+  <li>either <a class="prop-ref" href="#min-page-height-def">min-page-height</a> property is not specified or page height
+  is greater or equal to <a class="prop-ref" href="#min-page-height-def">min-page-height</a> computed value.</li>
+</ul>
+<p>For regions all of the above conditions must be satisfied, as well as several additional ones:</p>
+<ul>
+  <li>
+    either region height is explicitly set to something other than auto or some content exists
+    in the corresponding flow.
+  </li>
+  <li>
+    all regions referenced by <a class="prop-ref" href="#required-regions-def">required-regions</a>
+    property are enabled,
+  </li>
+  <li>
+    none of the regions referenced by <a class="prop-ref" href="#conflicting-regions-def">conflicting-regions</a>
+    property is enabled.
+  </li>
+</ul>
+<p>Additional conditions for page masters:</p>
+<ul>
+  <li>
+    either <a class="prop-ref" href="#page-def">page</a> property is not specified or one-based page number of the
+    page being produced equals to the computed value of the <a class="prop-ref" href="#page-def">page</a> property,
+  </li>
+  <li>
+    all of its regions for which <a class="prop-ref" href="#required-def">required</a> property is computed
+    as true are enabled.
+  </li>
+</ul>
+<h3 id="page-master-selection">Page Master selection</h3>
+<p>The Page master selection algorithm is very simple: for each page the first defined page master
+      which is <em>enabled</em> is used. Thus, all the complexities of page master selection are in
+      determining if a page master is enabled or not. The most common conditions that affect page
+      master selection are geometric (<a class="prop-ref" href="#min-page-width-def"
+        >min-page-width</a> and <a class="prop-ref" href="#min-page-height-def">min-page-height</a>
+      properties), page position in page sequence (<a class="prop-ref" href="#page-def">page</a>
+      property), and content availablity (<a class="prop-ref" href="#required-def">required</a>
+      property). </p>
+<h3 id="page-def">Using page layout for a particular page: ‘page’ property</h3>
+<dl>
+  <dt>
+    <strong>‘page’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>page</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>&lt;integer&gt;</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>not specified</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>Specifies that the page master or the region is only enabled for a particular page.</p>
+<h3 id="page-dims">Selecting page master based on device dimensions: ‘min-page-width’ and ‘min-page-height’ properties</h3>
+<dl>
+  <dt>
+    <strong>‘min-page-width’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn id="min-page-width-def">min-page-width</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>&lt;length&gt;</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>absolute length</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<dl>
+  <dt>
+    <strong>‘min-page-height’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn id="min-page-height-def">min-page-height</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>&lt;length&gt;</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>absolute length</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>These properties define minimal page dimensions for which the page master or the region are
+still usable. They participate in calculation of the <a class="prop-ref" href="#enabled-def">enabled</a>
+property computed value.
+</p>
+<h3 id="required-def">Selecting page master based on content: ‘required’ property</h3>
+<dl>
+  <dt>
+    <strong>‘required’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>required</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>true | false</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>true</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>true | false</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property determines if this region has to be present for page master to be usable. It is
+      typically used to select a particular page master based on availability of content in a
+      particular flow. It participates in calculation of the enclosing page master <a
+        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
+<h3 id="conflicting-regions-def">Using only one in a set of regions: ‘conflicting-regions’ property</h3>
+<dl>
+  <dt>
+    <strong>‘conflicting-regions’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>conflicting-regions</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>list of region names</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>empty</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p> This property determines if this region cannot be used together with one or more other regions
+      in the page master (e.g. because their use together would cause overlap or would be visually
+      "conflicting"). It participates in calculation of the enclosing page master <a
+        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
+<h3 id="required-regions-def">Using multiple regions together: ‘required-regions’ property</h3>
+<dl>
+  <dt>
+    <strong>‘required-regions’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>required-regions</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>list of region names</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>empty</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property determines if this region must be only used together with one or more other regions
+      in the page master. It participates in calculation of the enclosing page master <a
+        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
+<h3 id="mode-def">Styling content in a region: ‘mode’ property</h3>
+<dl>
+  <dt>
+    <strong>‘mode’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>mode</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td> Name of one of the <a class="rule-ref" href="#mode-rule-def">@mode</a> rules </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>empty</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property, if specified, determines what additional styling should be applied to the content
+      flowed into the region, as specified in the referenced <a class="rule-ref"
+        href="#mode-rule-def">@mode</a> rule.</p>
+<h3 id="snap-height-def">Snapping to the line grid: ‘snap-height’ property</h3>
+<dl>
+  <dt>
+    <strong>‘snap-height’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>snap-height</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>
+          &lt;length&gt; | none
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>none</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property snaps region vertical content position and vertical edges of overlapping floated regions to
+the grid with the given interval (typically the same as <code>line-height</code> property for the
+region's content). Region position is always pushed down to the next grid line. Edges of the overlaps
+are moved up for the top edge and down for the bottom edge. Note that overlapping regions themselves
+are not moved, only exclusion areas that they generate for this region are adjusted.</p>
+
+<h3 id="region-overlap-def">Controlling overlap: ‘region-overlap’ property</h3>
+<dl>
+  <dt>
+    <strong>‘region-overlap’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>region-overlap</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>
+          overlap | float | clear
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>float</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property controls how this region overlaps with the regions that follow it in the page
+      master definition. The default value <code>float</code>  causes content in all subsequent
+      regions to flow around this region (as it would for a regular CSS float). Setting the value to
+        <code>clear</code> acts as a combination of CSS 'float' and 'clear' properties: content in
+      overlapping regions is pushed down vertically to avoid overlap. Finally, the value
+        <code>overlap</code> allows following regions to simply overlap.</p>
+
+<h3 id="outer-shape-def">Custom region shape: ‘outer-shape’ property</h3>
+<dl>
+  <dt>
+    <strong>‘outer-shape’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>outer-shape</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>
+          [&lt;number&gt; &lt;number&gt;]* | none
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>none</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#region-rule-def">@region</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property defines a region's "outside" boundary. It applies only when <a class="prop-ref"
+        href="#region-overlap-def">region-overlap</a> is set to <code>float</code>. By default, when
+      such a region overlaps other regions content in other regions flows around the rectangle
+      defined by its margin edges; outer-shape allows author to instead specify an arbitrary shape.
+      The value of outer-shape is an even number of numbers, where each number pair defines the x
+      and y vertex of a polygon in a coordinate system where</p>
+<ul>
+<li>origin is located in the region top left corner,</li>
+<li>x axis goes right and scaled so that 100 corresponds to the width of the region</li>
+<li>y axis goes down and scaled so that 100 corresponds to the height of the region</li>
+</ul>
+<p>The polygon imputed by the set of vertices may be concave or convex, but must be simple<b> [WM:
+        true?]</b>, i.e. its line segments must not intersect. Outer shape does not affect how
+      content is layed out <em>inside</em> the region<b>.[WM: does this mean that if one wanted to
+        create a non-rectangular layout within a region, it is possible to do so by surrounding it
+        with other regions that have their outer-shape properties set? If so that seems a bit of a
+        hack, which makes me wonder whether directly supporting such non-rectangular layouts would
+        be preferable (inner-shape?)]</b></p>
+
+<h3 id="utilization-def">Lookup range: ‘utilization’ property</h3>
+<dl>
+  <dt>
+    <strong>‘utilization’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn>utilization</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>
+          &lt;number&gt; | auto
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>auto</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>
+          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rules
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>This property defines a range of content which is looked up ahead to find the content available
+for various regions. If the value if "auto", user agents can employ custom heuristics or use some fixed
+value (1 is recommended). If value is a number, then lookup size is determined in the following manner: the area of the
+page is measured in square em units (an area of a square with side length equal to 1em), multiplied by
+utilization and rounded. The result is the amount of content to look up forward for this page master.
+<em>Content amount</em> is calculated in this way: 
+</p>
+<ul>
+<li>Each UTF16 code point contributes 1 unit</li>
+<li>Each DOM element contributes 1 unit</li>
+</ul>
+<h3 id="page-master-expr">Expressions inside ‘@page-master’ rule</h3>
+<p>Each <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rule creates a scope for
+      named values defined by <a class="rule-ref" href="#define-def">@define</a> rule. Any value
+      defined inside <a class="rule-ref" href="#page-master-rule-def">@page-master</a> is visible
+      only within its scope. In addition, certain values related to the page master regions can be
+      accessed using region name with the "dot" notation: </p>
+<pre>&lt;region-name&gt;.&lt;value-name&gt;</pre>
+<p>or</p>
+<pre>&lt;region-name&gt;.&lt;function-name&gt;(args...)</pre>
+<p>The following values are defined:</p>
+<ul>
+  <li>
+    a property name can be used to access the <em>actual</em> value of that property (e.g. for width property,
+    the actual width of the region after all CSS rules to calculate it are applied),
+  </li>
+  <li>names in the form <code>&lt;box-name&gt;&lt;side&gt;-egde</code> where box-name can be one of
+  <ul>
+    <li>&lt;empty&gt;</li>
+    <li>padding-</li>
+    <li>border-</li>
+    <li>margin-</li>
+  </ul>
+  and side can be one of
+  <ul>
+    <li>top-</li>
+    <li>bottom-</li>
+    <li>left-</li>
+    <li>right-</li>
+  </ul>
+  these names correspond to positions of the edges of the corresponding box (empty corresponds to the content area)
+  relative to the page top left corder.
+  </li>
+</ul>
+<p>The only currently defined function is</p>
+<ul>
+  <li>columns(count) - defined as <pre>min(count,column-count) * (column-width + column-gap) - column-gap</pre>
+</li>
+</ul>
+<p>As usual, values can be used before they are defined, as long as there are no circular
+      dependencies. Rules for calculating the actual the values of the region properties are
+      implicitly included in the overall dependency resolution and value calculation. The only
+      constraint is that when the height of the region is not specified or set to "auto", CSS rules
+      prescribe to lay out the content to determine block height. Regions are always layed out in
+      the order they appear in the page master, so region parameters can depend only on the height
+      of the regions that precede that region, or of regions that expliictly specify a height.
+        <b>[WM: is last part true?]</b></p>
+<h3 id="mode-rule-def">Styling content in a region: ‘@mode’ rule</h3>
+<p>The mode rule defines additional styling that may be applied to content flowed into one or more
+      regions that specify its name via the mode property. Its block must contain one or more
+      styling rules using only class selectors; no id-based, pseudo-element, class-based, or
+      attribute-qualified selectors are allowed <b>[WM: last part true?]</b>:</p>
+<pre>@mode &lt;name&gt;
+{
+  .&lt;class-name&gt; {
+  ...
+  }
+  ...
+}
+</pre>
+<p>Before elements are flown into a region, any additional styling defined by the @mode rule named
+      by its mode property is applied to each element. Selectors inside an @mode rule are considered
+      to have higher specificity than any other selector (including other rules enclosed in <a
+        class="rule-ref" href="#pgt-rule-def">@pgt</a> rule).</p>
+  
+<h3 id="flow-rule-def">Fitting the text: ‘@flow’ rule</h3>
+<p>At most one flow rule for each flow name may exist, defining that flow's global properties as per
+      the following example: </p>
+<pre>
+@flow &lt;name&gt;
+{
+  &lt;propname&gt;: &lt;propvalue&gt;;
+  ...
+}
+</pre>
+<p>Currently two content fitting properties are defined, either or both may be set:</p>
+<dl>
+  <dt>
+    <strong>‘fitting-target’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn id="fitting-target-def">fitting-target</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>none | [[whole | &lt;integer&gt;] [pages|regions|columns]]</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>none</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>@flow rules</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>'fitting-target' defines the target of the content fitting. It can be either a specified number
+      of pages, regions or columns or the value <code>whole</code> to indicate that the content
+      should completely fill some number of them. Value <code>none</code> turns off content fitting. </p>
+<dl>
+  <dt>
+    <strong>‘fitting-properties’</strong>
+  </dt>
+  <dd>
+    <table class="propdef">
+      <tr>
+        <th>
+          <em>Name:</em>
+        </th>
+        <th>
+          <dfn id="fitting-properties-def">fitting-properties</dfn>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <em>Value:</em>
+        </td>
+        <td>letter-spacing || word-spacing || font-size</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Initial:</em>
+        </td>
+        <td>empty</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Applies to:</em>
+        </td>
+        <td>@flow rules</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Inherited:</em>
+        </td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Percentages:</em>
+        </td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Media:</em>
+        </td>
+        <td>visual</td>
+      </tr>
+      <tr>
+        <td>
+          <em>Computed&#xA0;value:</em>
+        </td>
+        <td>as specified</td>
+      </tr>
+    </table>
+  </dd>
+</dl>
+<p>'fitting-properties' defines a list of content properties that can be manipulated to make content
+  fit into the allocated space. The initial value of <code>empty</code> means that unless this value is
+      explicitly set, content fitting will be disabled even if the value of 'fitting-target' is set.
+        <b>[WM: true?]</b></p>
+</body>
+</html>
