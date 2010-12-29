@@ -61,7 +61,7 @@ Because EPUB2 publications do not contain a scheme, authority or path, a default
   # Should scheme, authority and path be stored in an EPUB’s OPF file to insure that a complete URI can be constructed from the OPF?
   # Should it be possible to specify a “file” component as part of the URI as described above? This could make it difficult to identify which part of the URL is the unique-identifier and which part is the version.  The file could also be specified as a CGI parameter.
 
-= DOI and PURL EPUB Identifiers =
+= PURL-based EPUB Identifiers =
 
 Short version:
 
@@ -79,10 +79,72 @@ Short version:
                                   text=The+mimetype+file+is+a+simple+text+file
 }}}
 
+== Summary ==
+
+A PURL-based EPUB Identifier (PEI) identifies an EPUB or EPUB 3 publication and may be created or used without network access. They are valid HTTP URIs that can be distinguished from other URIs by their consistent prefix. Additional optional metadata added to a PEI may allow an EPUB/3 publication to be identified more uniquely, a single file to be referenced inside the publication, or a single subset of a file to be referenced. Finally, some PEIs may be resolved to an available resource using HTTP GET and redirects against a Persistent Uniform Resource Locator (PURL) service hosted by the IDPF.
+
+== Notational Conventions ==
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in `[RFC2119]`.
+
+== Parts of a PEI ==
+
+PEIs are made up of three components:
+
+  # A consistent prefix for the IDPF-hosted PURL service, `http://purl.idpf.org/`
+  # A URI-escaped version of the EPUB/3 publication's Publication Identifier
+  # A number of optional parameters as key-value pairs that form a query section following a `?`
+
+{{{
+http://purl.idpf.org/{epub-publication-identifier}?{key1=value1&key2=value2...}
+}}}
+
+== Creating a PEI ==
+
+Given an EPUB or EPUB3 publication, a PEI is constructed by escaping the Publication Identifier from the EPUB/3 metadata and appending it to the address for the IDPF-hosted PURL service, `http://purl.idpf.org/`. The Publication Identifier, defined in the section "Publication Identifiers" of `[EPUBPUB3]`, is the text content of the `dc:identifier` element referenced as the publication's `unique-identifier`. This text content MUST be stripped of leading and trailing whitespace before escaping following `FIXME` (this is often referred to as "percent encoding").
+
+Additionally, PEIs SHOULD include a query component following a `?` character that contains at least two sets of key-value pairs from the EPUB/3 metadata:
+
+  * `title`: the value of the first `dc:title` element 
+  * `creator`: the value of `dc:creator` (mutiple pairs MUST be created if the metadata includes multiple `dc:creator`s)
+
+All key and value parameters pairs and MUST be stripped of leading and trailing whitespace before escaping following `FIXME`.
+
+All PEIs MUST be valid Uniform Resource Identifiers (URIs) as defined in `[RFC3986]`. 
+
+== Identifying Part of a Publication ==
+
+FIXME: More params:
+
+  * file
+  * fragment-id
+  * text
+
+== Identifying a Specific Version of a Publication ==
+
+FIXME: More params:
+
+  * version
+  * md5sum?
+
+== Using a PEI ==
+
+PEIs can be deconstructed to be used by EPUB Reading Systems or other applications by extracting and unescaping the `unique-identifier` value. This value can then be matched against the Publication Identifier of available EPUB/3 publications. This is an Exact Match. 
+
+If an Exact Match is not found, an EPUB Reading System or other applications MAY also choose to attempt a to locate similar publications based on available `title`, `creator`, and/or other parameter values from the query component, if available. This is an Approximate Match. A user SHOULD be notified if an Approximate Match is returned.
+
+Some PEIs MAY have resources availabe via HTTP `[RFC2616]`. PURLs are discussed in more detail in `[PURL-Overview]`. 
+
+== Registering a PEI ==
+
+FIXME: Register an HTTP 302 redirect with the IDPF PURL server to something related to the publication using a user/pass.
+
+== Maintaining a PEI ==
+
+FIXME: Give someone who inherits rights to the publication the user/pass that you used to register the PEI with the IDPF PURL server.
+
 == Goals ==
 
-  * Use only valid URIs to identify EPUB resources
-  * Optionally allow for DOIs to be used as EPUB identifiers
   * Identify both existing EPUB resources and to-be-created EPUB3 resources
   * Identify a single EPUB resource 
   * Identify a single subset of an EPUB resource 
@@ -97,6 +159,22 @@ The following features are not in scope for this specification:
   * Defining the techniques required to link to an EPUB from anything other than another EPUB
   * Identifying a subset of an EPUB resource that is a range
 
+== TODO ==
+
+  * Research and integrate this PEI mechanism with an effective use of EPUB/3+DOI.
+  * Clarify what should happen with localized or muliple dc:titles or dc:creators.
+  * Establish reference to Media Query Fragments and other fragment specs?
+
 == References ==
 
-  * Overview of PURLs: http://purl.org/docs/help.html#overview
+=== Normative References ===
+
+  * `[EPUBPUB3]` Conboy, G., Gylling, M., McCoy, W., Weck, D., and D. Hughes, "EPUB Publications 3.0", FIXME 2011.
+  * `[RFC2119]` Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP 14, RFC 2119, March 1997.
+  * `[RFC2616]` Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
+  * `[RFC3986]` Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform Resource Identifier (URI): Generic Syntax", STD 66, RFC 3986, January 2005.
+
+== Informative References ==
+
+  * `[PURL-Overview]` Wood, D., "Overview of of PURLs", http://purl.org/docs/help.html#overview
+
