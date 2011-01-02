@@ -65,7 +65,7 @@ Because EPUB2 publications do not contain a scheme, authority or path, a default
 
 == Summary ==
 
-A PURL-based EPUB Identifier (PEI) identifies an EPUB or EPUB 3 publication and may be created or used without network access. They are valid HTTP URIs that can be distinguished from other URIs by their consistent prefix. Additional optional metadata added to a PEI may allow an EPUB/3 publication to be identified more uniquely, a single file to be referenced inside the publication, or a single subset of a file to be referenced. Finally, some PEIs may be resolved to an available resource using HTTP GET and redirects against a Persistent Uniform Resource Locator (PURL) service hosted by the IDPF.
+A PURL-based EPUB Identifier (PEI) identifies an EPUB or EPUB 3 publication and allows EPUB/3 publications to reference other EPUB/3 publications. PEIs are valid HTTP URIs that can be distinguished from other URIs by their consistent prefix and created or used without network access. Additional optional metadata MAY be added to a PEI to identify a specific EPUB/3 publication, a single file inside the publication, or a single location inside a filei. Finally, some PEIs MAY be resolved to an available resource using HTTP and redirects against a Persistent Uniform Resource Locator (PURL) service hosted by the IDPF.
 
 == Notational Conventions ==
 
@@ -81,37 +81,37 @@ PEIs are made up of three components:
 
   # A consistent prefix for the IDPF-hosted PURL service, `http://purl.idpf.org/`
   # A URI-escaped version of the EPUB/3 publication's Publication Identifier
-  # A number of optional parameters as key-value pairs that form a query section following a `?`
+  # A number of optional query parameters as key-value pairs that form a query section following a `?`
 
 == Creating a PEI ==
 
 Given an EPUB or EPUB3 publication, a PEI is constructed by escaping the Publication Identifier from the EPUB/3 metadata and appending it to the address for the IDPF-hosted PURL service, `http://purl.idpf.org/`. The Publication Identifier, defined in the section "Publication Identifiers" of `[EPUBPUB3]`, is the text content of the `dc:identifier` element referenced as the publication's `unique-identifier`. This text content MUST be stripped of leading and trailing whitespace before escaping following `FIXME` (this is often referred to as "percent encoding").
 
-Additionally, PEIs SHOULD include a query component following a `?` character that contains at least two sets of key-value pairs from the EPUB/3 metadata:
+All PEIs MUST be valid Uniform Resource Identifiers (URIs) as defined in `[RFC3986]`. 
+
+Additionally, PEIs SHOULD include a query component following a `?` character that contains at least two sets of key-value pairs ("query parameters") from the EPUB/3 metadata:
 
   * `creator`: A reference to the creators of the EPUB/3 publication. The value of this parameter is the value of each `dc:creator` (mutiple pairs MUST be created if the metadata includes multiple `dc:creator`s) in the publication metadata.
   * `title`: A reference to the title of the EPUB/3 publication. The value of this parameter is the the value of the first `dc:title` element in the publication metadata.
 
-All key-value pairs and MUST be stripped of leading and trailing whitespace before escaping following `FIXME`.
+All query parameters MUST be stripped of leading and trailing whitespace before escaping following `FIXME`.
 
-All PEIs MUST be valid Uniform Resource Identifiers (URIs) as defined in `[RFC3986]`. 
+=== Identifying Part of a Publication ===
 
-== Identifying Part of a Publication ==
+PEIs MAY include additional query parameters to identify a single file in an EPUB/3 publication and/or a single location inside that file. These query parameter keys are defined:
 
-PEIs MAY include additional key-value pairs in the query component to identify a single file in an EPUB/3 publication and/or a single location inside that file:
+  * `file`: A reference to one file within the EPUB/3 publication. The value of this parameter is the absolute path (relative to the root of the OCF Abstract Container of the EPUB/3 publication) to one valid "File Name" (per the OCF spec).
+  * `fragment-id`: A reference to one element in XML content within the file specified by the `file` parameter. The value of this parameter is the value of the `id` attribute of the target element.
+  * `text`: A reference to one continuous section of text within any one element within XML content inside the EPUB/3 publication. The value of this parameter is the escaped text itself.
 
-  * file: A reference to one file within the EPUB/3 publication. The value of this parameter is absolute path (relative to the root of the OCF Abstract Container of the EPUB/3 publication) to one valid "File Name" (per the OCF spec).
-  * fragment-id: A reference to one element in XML content within the file specified by the `file` parameter. The value of this parameter is the value of the`id` attribute of the target element.
-  * text: A reference to one continuous section of text within any one element within XML content inside the EPUB/3 publication. The value of this parameter is the escaped text itself.
+=== Identifying a Specific Version of a Publication ===
 
-== Identifying a Specific Version of a Publication ==
+PEIs MAY include additional query parameters to more explicitly identify a precise version or instance of an EPUB/3 publication. These query parameter keys are defined:
 
-PEIs MAY include additional key-value pairs to more explicitly specify a precise version of an EPUB/3 publication:
+  * `content-version`: A reference to a specific version of an EPUB3 publication. The value of this parameter is the value of the `content-version` metadata element from an EPUB3 publication's metadata.
+  * `md5sum`: A reference to a specific EPUB/3 publication instance as a file. The value of this parameter is the MD5 message digest of the EPUB/3 publication as a file as defined in `[RFC1321]`.
 
-  * content-version: A reference to a specific version of an EPUB3 publication. The value of this parameter is the value of the `content-version` metadata element from an EPUB3 publication's metadata.
-  * md5sum: A reference to an specific EPUB/3 publication instance as a file. The value of this parameter is the MD5 message digest of the EPUB/3 publication as a file as defined in `[RFC1321]`.
-
-== Using PEIs ==
+== Using PEIs in EPUBs ==
 
 Valid PEIs MAY be used inside EPUB/3 publications to reference other EPUB/3 publications. For example, this XHTML markup could be used inside an EPUB/3 publication to reference another work:
 
@@ -120,30 +120,32 @@ For more information on creating ebooks in the EPUB format,
 see <a href="http://purl.idpf.org/0132366991?title=EPUB+Straight+to+the+Point&creator=Liz+Castro">Liz Castro's EPUB Straigh to the Point</a>.
 }}}
 
-An PEI-aware EPUB/3 reading system could use this hyperlink to switch titles (if the user already had access to this title and an Exact Match was made) or to invoke a local or remote acquisition attempt or search (following deconstruction of the PEI, as described in the section "Reading PEIs").
+A PEI-aware EPUB/3 Reading System MAY use this hyperlink to switch titles (if the user already had access to this title and an Exact Match was made) or to invoke a local or remote acquisition attempt or search (following deconstruction of the PEI, as described in the section "Reading PEIs").
 
 == Reading PEIs ==
 
-PEIs can be deconstructed to be used by EPUB Reading Systems or other applications by extracting and unescaping the `unique-identifier` value. This value can then be matched against the Publication Identifier of available EPUB/3 publications. This is an Exact Match. 
+PEIs can be deconstructed and used by EPUB/3 Reading Systems or PEI clients by extracting and unescaping the Publication Identifier value. This value can then be matched against the Publication Identifier of available EPUB/3 publications. This is an Exact Match. 
 
-If an Exact Match is not found, an EPUB Reading System or other applications MAY also choose to attempt a to locate similar publications based on available `title`, `creator`, and/or other parameter values from the query component, if available. This is an Approximate Match. A user SHOULD be notified if an Approximate Match is returned.
+If an Exact Match is not found, an EPUB/3 Reading System or PEI client MAY also choose to attempt a to locate similar publications based on available `title`, `creator`, and/or other query parameter values, if available. This is an Approximate Match. A user SHOULD be notified if an Approximate Match is returned.
 
 Some PEIs MAY have resources availabe via HTTP `[RFC2616]`, as described in the section "PEIs and PURLs". 
 
 == Processing Expectations ==
 
-Software that creates PEIs MUST NOT require an active internet connection to create a PEI from an available EPUB/3 publication.
+PEI creators PEIs MUST NOT require an active internet connection to create a PEI from an available EPUB/3 publication.
 
-Software that consumes PEIs MUST NOT:
+PEI clients MUST NOT:
 
-  * require an active internet connection to match PEIs against available EPUB/3 publications
-  * fail if a PEI is not registered with the PURL service or if a PEI requested via HTTP returns an unexpected result
+  * require an active internet connection to perform Exact Matches 
+  * stop processing or signal an error if the PURL service is unavailable
+  * stop processing or signal an error if a PEI is not registered with the PURL service 
+  * stop processing or signal an error if a PEI registered with the PURL service returns an unexpected result via HTTP
 
-Additionally, software that consumes PEIs MUST ignore unexpected query parameters in a PEI. The entire query component, including unknown parameters, SHOULD be preserved when storing or retransmitting PEIs.
+PEI clients MUST ignore unexpected query parameters in a PEI. PEI clients SHOULD preserve the entire query component, including unknown parameters, when storing or retransmitting PEIs.
 
 == PEIs and PURLs ==
 
-The IDPF will provide a PURL service for registering and maintaining HTTP redirects from valid PEIs. Please see http://purl.idpf.org for more information. 
+The IDPF will provide a PURL service for registering and maintaining HTTP redirects from valid PEIs. (FIXME some detail here.) Please see http://purl.idpf.org for more information. 
 
 PURLs are discussed in more detail in `[PURL-Overview]`. 
 
