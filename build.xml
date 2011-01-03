@@ -10,6 +10,7 @@
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css" />
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples" />
 	<property name="dir.src.vocab" value="${dir.src}/vocab" />
+	<property name="dir.src.profile" value="${dir.src}/profile" />
 	
 	<property name="dir.util" value="${basedir}/util" />	
 	<property name="dir.util.rng" value="${dir.util}/relaxng" />
@@ -28,6 +29,7 @@
 	<property name="dir.build.schema" value="${dir.build}/schema" />
 	<property name="dir.build.schemadoc" value="${dir.build}/schemadoc" />
 	<property name="dir.build.vocab" value="${dir.build}/vocab" />
+	<property name="dir.build.profile" value="${dir.build}/profile" />
 	<property name="dir.build.spec" value="${dir.build}/spec" />
 	<property name="dir.temp" value="${basedir}/temp" />
 	<property name="dir.temp.spec" value="${dir.temp}/spec" />
@@ -56,6 +58,7 @@
 
 	<target name="all" depends=" clean,
 		build-vocabs,
+		build-profiles,
 		build-specs,
 		build-schemas,		
 		build-archives, 
@@ -121,13 +124,39 @@
 		</copy>				
 	</target>
 
-	<target name="build-vocabs" depends="clean, copy-css">
-		<clean-dir dir="${dir.temp}/vocab/"/>
+	<target name="build-vocabs" depends="copy-css">
+		
+		<clean-dir dir="${dir.build.vocab}"/>
+				
+		<!-- structure vocab -->
+		<echo>building structure vocab...</echo>
 		<build-xhtml-vocab 
 			in-n3="${dir.src.vocab}/structure.n3" 
-			out-xhtml="${dir.build.vocab}/epub30-vocab-structure.html" 
-			vocab-canonical-uri="http://www.idpf.org/TODO/vocab/structure/"/>
+			out-xhtml="${dir.build.vocab}/structure/epub30-vocab-structure.html" 
+			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/structure/"/>
+		
+		<!-- package vocab -->
+		<echo>building package vocab...</echo>
+		<build-xhtml-vocab 
+			in-n3="${dir.src.vocab}/package.n3" 
+			out-xhtml="${dir.build.vocab}/package/epub30-vocab-package.html" 
+			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/package/"/>
+		
+		<!-- overlays vocab (properties for use in package docs, but in the future possibly also in smil/meta) -->
+		<echo>building overlays vocab...</echo>
+		<build-xhtml-vocab 
+			in-n3="${dir.src.vocab}/overlays.n3" 
+			out-xhtml="${dir.build.vocab}/overlays/epub30-vocab-overlays.html" 
+			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/overlays/"/>
+				
 	</target>	
+	
+	<target name="build-profiles" depends="copy-css">
+		<clean-dir dir="${dir.build.profile}"/>
+		<copy todir="${dir.build.profile}" overwrite="true">
+			<fileset dir="${dir.src.profile}" includes="**/*.html" />
+		</copy>
+	</target>
 	
 	<target name="copy-css">		
 		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
@@ -141,6 +170,9 @@
 		<attribute name="vocab-canonical-uri" />
 		
 		<sequential>
+			
+			<clean-dir dir="${dir.temp}/vocab/"/>
+			
 			<!-- convert the n3 to RDF/XML as an xslt source -->
 			<jena-n3-to-rdfxml 
 				in="@{in-n3}" 

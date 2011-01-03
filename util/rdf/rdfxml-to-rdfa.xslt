@@ -55,7 +55,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
-				<link rel="stylesheet" type="text/css" href="../epub-spec.css"/>
+				<link rel="stylesheet" type="text/css" href="../../epub-spec.css"/>
 			</head>
 			<body>
 				<h1 property="dcterms:title">
