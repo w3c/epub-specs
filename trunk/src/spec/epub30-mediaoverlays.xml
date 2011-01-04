@@ -91,8 +91,8 @@
         </section>
         <section xml:id="sec-overview-relationship">
             <title>Relationship to Other Specifications</title>
-            <para>This specification relies on <xref linkend="refSMIL"/>, from which the EPUB SMIL
-                subset defined in <xref linkend="sec-smil"/> is derived.</para>
+            <para>This specification relies on <xref linkend="refSMIL"/>, from which the EPUB Media
+                Overlay, defined in <xref linkend="sec-smil"/>, is derived.</para>
             <para>This specification supersedes ...</para>
             <para>
                 <remark role="todo">
@@ -193,8 +193,8 @@
                     Overlays as a subset of SMIL 3.0. The purpose of a Media Overlay is to define
                     synchronization points of audio narration clips with an EPUB Content Document. </para>
                 <para>Each phrase in the EPUB Content Document is represented by a
-                        <literal>par</literal> element. That <literal>par</literal> element must
-                    contain two media element children: a <literal>text</literal> element and an
+                        <literal>par</literal> element. That <literal>par</literal> element contains
+                    two media element children: a <literal>text</literal> element and an
                         <literal>audio</literal> element. The <literal>text</literal> element
                     represents a phrase, sentence, or other segment of the EPUB Content Document,
                     and that segment is referred to by its URI. The <literal>audio</literal> element
@@ -340,8 +340,11 @@
                     <title>Audio and Video</title>
                     <para>Any EPUB Content Document with which a Media Overlay is associated may
                         contain embedded media objects such as video and audio. The Media Overlay
-                            <literal>text</literal> element may refer to an embedded video or audio
+                            <literal>text</literal> element may reference an embedded video or audio
                         element by its ID value.</para>
+                    <para>When a <literal>text</literal> element references embedded audio media or
+                        video media that includes audio, no <literal>audio</literal> sibling element
+                        is required, though one is allowed. </para>
                 </section>
             </section>
             <section xml:id="sec-semantic-inflection">
@@ -763,7 +766,7 @@
                                     <literal><xref linkend="elemdef-smil-text"/></literal>
                                     <option>[required]</option>, <literal><xref
                                             linkend="elemdef-smil-audio"/></literal>
-                                    <option>[required]</option></para>
+                                    <option>[optional]</option></para>
                             </listitem>
                         </varlistentry>
                     </variablelist>
@@ -827,7 +830,7 @@
                         <varlistentry>
                             <term>Occurrence</term>
                             <listitem>
-                                <para>As a required child of the <xref linkend="elemdef-smil-par"/>
+                                <para>As an optional child of the <xref linkend="elemdef-smil-par"/>
                                     element.</para>
                             </listitem>
                         </varlistentry>
@@ -846,8 +849,13 @@
                                     <varlistentry>
                                         <term><literal>clipBegin</literal> [optional]</term>
                                         <listitem>
-                                            <para>Clock value expressed in either hh:mm:ss.fraction
-                                                or as a single unit, whre units must be one of
+                                            <para>Clock value giving the offset into the physical
+                                                media for the starting point of an audio clip. Clock
+                                                values are a subset of <link xlink:href="http://www.w3.org/TR/SMIL/smil-timing.html#q31">SMIL Wallclock-sync values</link>, 
+                                                defined in
+                                                <xref linkend="refSMIL"/>. The
+                                                Media Overlay schema <remark role="todo">[TODO: link to the schema]</remark> defines the syntax
+                                                as hh:mm:ss.s or as a single unit of
                                                   <literal>h</literal> (hours),
                                                   <literal>min</literal> (minutes),
                                                   <literal>s</literal> (seconds), or
@@ -874,14 +882,20 @@
                                     <varlistentry>
                                         <term><literal>clipEnd</literal> [optional]</term>
                                         <listitem>
-                                            <para>Clock value expressed in either hh:mm:ss.fraction
-                                                or as a single unit, whre units must be one of
-                                                  <literal>h</literal> (hours),
-                                                  <literal>min</literal> (minutes),
-                                                  <literal>s</literal> (seconds), or
-                                                  <literal>ms</literal> (milliseconds). See examples
-                                                above in <link linkend="smil-clip-examples"
-                                                  >clipBegin</link>.</para>
+                                            <para>Clock value giving the offset into the physical
+                                                media for the ending point of an audio clip.  Clock
+                                                values are a subset of <link xlink:href="http://www.w3.org/TR/SMIL/smil-timing.html#q31">SMIL Wallclock-sync values</link>, 
+                                                defined in
+                                                <xref linkend="refSMIL"/>.  The
+                                                Media Overlay schema <remark role="todo">[TODO: link to the schema]</remark> defines the syntax
+                                                as hh:mm:ss.s or as a single unit of
+                                                <literal>h</literal> (hours),
+                                                <literal>min</literal> (minutes),
+                                                <literal>s</literal> (seconds), or
+                                                <literal>ms</literal> (milliseconds).
+                                                See examples above in <link
+                                                  linkend="smil-clip-examples"
+                                                >clipBegin</link>.</para>
                                             <para>Must be chronologically after
                                                   <literal>clipBegin</literal>.</para>
                                         </listitem>
@@ -911,9 +925,10 @@
 
         <section xml:id="sec-the-package-document">
             <title>Packaging Media Overlays</title>
+            <section><title>Including Media Overlays</title>
             <para>Manifest items in the publication's Package Document may specify a Media Overlay
                 for that item via the <literal>media-overlay</literal> attribute. Media overlays are
-                themselves manifest items and must be referred to by their IDs. For example, the
+                themselves manifest items and must be referred to by their IDs. In this example, the
                 item with ID "ch1_audio" is the Media Overlay for the item with ID "ch1":</para>
             <informalexample>
                 <synopsis>&lt;manifest>
@@ -933,7 +948,45 @@
                 file.</para>
             <para>This is a forwards-compatible addition: 2.0 reading systems may safely ignore the
                     <literal>media-overlay</literal> attribute and process documents in their normal
-                fashion.</para>
+                    fashion.</para>
+            </section>
+            <section><title>Metadata for Media Overlays</title>
+                <para>The package file must include metadata about Media Overlay documents.  The following properties have been
+                     introduced for use for describing Media Overlays:</para>
+                <informaltable xml:id="tbl-meta-property-values-overlays" title="Table of @property
+                    values for Media Overlays">
+                    <thead>
+                        <tr>
+                            <th>property name</th>
+                            <th>definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><literal>duration</literal></td>
+                            <td>The duration of the entire presentation or of a specific Media Overlay. Allowed values are a subset of 
+                                <link xlink:href="http://www.w3.org/TR/SMIL/smil-timing.html#q31">SMIL Wallclock-sync values</link>, defined in
+                                <xref linkend="refSMIL"/>.  The
+                                <remark role="todo">[TODO: link to the metadata datatype definition for duration]</remark> defines the syntax
+                                as hh:mm:ss.s or as a single unit of
+                                <literal>h</literal> (hours),
+                                <literal>min</literal> (minutes),
+                                <literal>s</literal> (seconds), or
+                                <literal>ms</literal> (milliseconds).</td>
+                        </tr>
+                        <tr>
+                            <td><literal>narrator</literal></td>
+                            <td>Name of the person narrating the entire presentaion or the specific Media Overlay.</td>
+                        </tr>
+                    </tbody>                
+                </informaltable>
+                <para>The package file must include the <literal>duration</literal> of each Media
+                    Overlay as well as of the entire presentation. The package file may include
+                        <literal>narrator</literal> information as well.</para>
+                <informalexample>
+                    <synopsis><remark role="todo">TODO: example</remark></synopsis>
+                </informalexample>
+            </section>
         </section>
     </chapter>
     <chapter xml:id="sec-ocf-overview">
@@ -970,7 +1023,7 @@
                             <literal>par</literal> element. A <literal>seq</literal> element's
                         children must be rendered in sequence, and playback completes when the last
                         child has finished playing. A <literal>par</literal> element's children must
-                        be rendered in parallel, with each starting at the same time, and playback
+                        be rendered in parallel (with each starting at the same time), and playback
                         completes when all the children have finished playing. When the
                             <literal>body</literal> element's last child has finished playing,
                         playback of the file is done.</para>
@@ -1035,7 +1088,7 @@
                         finds the correct point for starting playback based on the ID of the
                         navigation point target.</para>
                 </section>
-                <section>
+                <section xml:id="sec-embedded-media">
                     <title>Embedded Audio and Video</title>
                     <para> An EPUB Content Document with which a Media Overlay is associated may
                         itself contain embedded video and audio media objects. Unlike text and
@@ -1069,11 +1122,10 @@
                                             implement in practice, it is recommended that content
                                             producers should avoid publishing embedded scripts
                                             dedicated to controlling the playback of inline
-                                            audio/video media objects, so that the published Nedia
+                                            audio/video media objects, so that the published Media
                                             Overlay can retain full control of the synchronized
                                             text/audio presentation, without any risk of
-                                            interference from script-enabled custom behaviors.
-                                        </para>
+                                            interference from script-enabled custom behaviors. </para>
                                     </listitem>
                                 </itemizedlist></para>
                         </listitem>
@@ -1165,17 +1217,15 @@
             </section>
             <section>
                 <title>Skippability and Escapability</title>
+                <section><title>Skippability</title>
                 <para>While reading, users may want to turn on or off certain features of the
                     publication, such as sidebars, footnotes, page numbers, or other types of
                     secondary content. This feature is called "skippability". User Agents should use
                     the semantic information provided by Media Overlay elements'
                         <literal>epub:type</literal> attribute to determine when to offer users the
-                    option of skippable features. The decision of whether to allow skippability or
-                    not for a given <literal>epub:type</literal> value is left to the User Agent and
-                    its familiarity with the EPUB vocabulary used in that publication. In the
-                    following example, a User Agent should offer the user the option of turning on
-                    and off the page break/page number announcements, which are often cumbersome to
-                    listen to.</para>
+                    option of skippable features. In the following example, a User Agent should
+                    offer the user the option of turning on and off the page break/page number
+                    announcements, which are often cumbersome to listen to.</para>
                 <informalexample>
                     <synopsis>
 &lt;smil profile="http://www.idpf.org/epub/30/profile/content/">
@@ -1200,6 +1250,23 @@
     &lt;/body>
 &lt;/smil></synopsis>
                 </informalexample>
+                    <para>A selection of terms from the default EPUB Vocabulary, located at
+                            <literal>http://www.idpf.org/epub/30/vocab/structure/#</literal>, for
+                        which User Agents should offer users the option of skippability is given
+                        here as an informative reference: <itemizedlist>
+                            <listitem><para>sidebar</para></listitem>
+                            <listitem><para>practice</para></listitem>
+                            <listitem><para>marginalia</para></listitem>
+                            <listitem><para>annotation</para></listitem>
+                            <listitem><para>help</para></listitem>
+                            <listitem><para>note</para></listitem>
+                            <listitem><para>footnote</para></listitem>
+                            <listitem><para>rearnote</para></listitem>
+                            <listitem><para>pagebreak</para></listitem>
+                        </itemizedlist>
+                    </para>
+                </section>
+                <section><title>Escapability</title>
                 <para>Escapable items are nested structures such as tables, lists, and sidebars that
                     listeners may wish to skip and to continue reading what comes next. This is
                     different from the skippability feature described above, which enables or
@@ -1251,13 +1318,13 @@
     &lt;/body>
 &lt;/smil></synopsis>
                 </informalexample>
-
+            </section>
             </section>
         </section>
         <section xml:id="sec-xhtml-schema">
             <title>Schema Information</title>
             <para>An informative RelaxNG schema for Media Overlay documents can be obtained at
-                TODO.</para>
+                <remark role="todo">[TODO link to the schema]</remark>.</para>
 
         </section>
     </chapter>
