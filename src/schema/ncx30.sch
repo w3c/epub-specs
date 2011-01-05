@@ -28,10 +28,6 @@
         <param name="select" value="ncx:navLabel"/>
     </pattern>
     
-    <pattern is-a="unique-sibling-lang-test">
-        <param name="select" value="ncx:navInfo"/>
-    </pattern>
-    
     <pattern id="id-unique">
         <let name="id-set" value="//*[@id]"/>        
         <rule context="*[@id]">
