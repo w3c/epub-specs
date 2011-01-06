@@ -1,4 +1,4 @@
-   
+  # TODO: what is the namespace for meta? 
 
    default namespace = "http://www.w3.org/ns/SMIL"
    namespace epub = "http://www.idpf.org/2011/epub"
@@ -8,27 +8,45 @@
    include "./mod/datatypes.rnc"
 
    start = element smil { smil.smil.attlist & smil.smil.content }
-   smil.smil.attlist = smil.id.attr? & rdfa.profile.attr? & rdfa.prefix.attr?
+   smil.smil.attlist = smil.version.attr & smil.id.attr? & smil.rdfa.profile.attr & rdfa.prefix.attr?
    smil.smil.content = smil.head?, smil.body 
    
    smil.head = element head { smil.meta* }  
    
-   smil.meta = element meta { attribute content { text }, attribute name { text } }
-      | element meta { rdfa.property.attr, rdfa.about.attr?, datatype.text }
+   smil.meta = element meta { smil.meta.attlist & smil.meta.content }
+   smil.meta.attlist = smil.id.attr? & rdfa.property.attr & rdfa.about.attr? & smil.i18n.attrs 
+   smil.meta.content = datatype.text
    
-   smil.body = element body { smil.tc.attrs & (smil.seq | smil.par)+ }   
+   smil.body = element body { smil.body.attlist & smil.body.content }   
+   smil.body.attlist = smil.tc.attrs
+   smil.body.content = (smil.seq | smil.par)+
    
-   smil.seq = element seq { smil.tc.attrs & epub.textref.attr & (smil.seq | smil.par)+ }
-    
-   smil.par = element par { smil.tc.attrs, smil.text, smil.audio? }
+   smil.seq = element seq { smil.seq.attlist & smil.seq.content }
+   smil.seq.attlist = smil.tc.attrs & epub.textref.attr
+   smil.seq.content = (smil.seq | smil.par)+
    
-   smil.text = element \text { smil.src.attr }
+   # changed , to &
+   smil.par = element par {smil.par.attlist & smil.par.content }
    
-   smil.audio = element audio { attribute clipBegin { datatype.smil.npt }? 
-      & attribute clipEnd { datatype.smil.npt }? & smil.src.attr }
-            
-            
-   smil.tc.attrs = epub.type.attr?, smil.id.attr?
+   smil.par.attlist = smil.tc.attrs
+   
+   # does the order matter?
+   smil.par.content = smil.text, smil.audio?
+   
+   smil.text = element \text { smil.text.attlist }
+   smil.text.attlist = smil.id.attr? & smil.src.attr
+   
+   smil.audio = element audio { smil.audio.attlist }
+   smil.audio.attlist = smil.id.attr? & attribute clipBegin { datatype.smil.npt }? & attribute clipEnd { datatype.smil.npt }? & smil.src.attr
+   
+   # changed , to &
+   smil.tc.attrs = epub.type.attr? & smil.id.attr?
+   
    smil.src.attr = attribute src { datatype.URI }
    smil.id.attr = attribute id { datatype.ID }
+   smil.i18n.attrs = smil.xml.lang.attr? & smil.dir.attr?
+   smil.xml.lang.attr = attribute xml:lang { datatype.languagecode }
+   smil.dir.attr = attribute dir { 'ltr' | 'rtl' }
+   smil.rdfa.profile.attr = attribute profile { 'http://www.idpf.org/epub/30/profile/content/' }
+   smil.version.attr = attribute version { '3.0' }
    epub.textref.attr = attribute epub:textref { datatype.URI }
