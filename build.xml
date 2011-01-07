@@ -5,14 +5,14 @@
 	</tstamp>	
 					
 	<property name="dir.src" value="${basedir}/src" />
-	<property name="dir.src.schema" value="${dir.src}/schema" />	
+	<property name="dir.src.schema" value="${dir.src}/schema" />
 	<property name="dir.src.spec" value="${dir.src}/spec" />
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css" />
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples" />
 	<property name="dir.src.vocab" value="${dir.src}/vocab" />
 	<property name="dir.src.profile" value="${dir.src}/profile" />
 	
-	<property name="dir.util" value="${basedir}/util" />	
+	<property name="dir.util" value="${basedir}/util" />
 	<property name="dir.util.rng" value="${dir.util}/relaxng" />
 	<property name="dir.util.rng.schemadoc" value="${dir.util.rng}/schemadoc" />
 	<property name="dir.util.docbook" value="${dir.util}/docbook" />
@@ -241,6 +241,36 @@
 	<!--   v a l i d a t i o n - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
+	<target name="validate-tests-ncx-rnc" 
+		description="validate the NCX tests using RNC (no ISO Schematron)">
+		<validate-fileset-rng
+			fileset-dir="${dir.test}" 
+			fileset-includes="ncx/**/*.ncx"
+			fileset-excludes=""
+			schema="${dir.src.schema}/ncx30.rnc"
+			failonerror="true"
+			compaxtsyntax="true" />
+	</target> <!-- NVDL (Jing-Trang implementation) has no support for ISO Schematron ==> no implementation available for schema language with namespace URI "http://purl.oclc.org/dsdl/schematron". See http://code.google.com/p/jing-trang/issues/detail?id=23 -->
+	
+	<target name="validate-tests-ncx-sch" 
+		description="validate the NCX tests using ISO Schematron">
+		<schematron
+			OutputDir="${dir.build}"
+			schema="${dir.src.schema}/ncx30.sch"
+			failOnError="true">
+			<fileset dir="${dir.test}" includes="ncx/**/*.ncx"/>
+		</schematron>
+	</target>
+	
+	<target name="validate-tests-ncx-sch-custom" 
+		description="validate a particular NCX test using ISO Schematron">
+		<schematron
+			OutputDir="${dir.build}"
+			schema="${dir.src.schema}/ncx30.sch"
+			failOnError="true">
+			<fileset dir="${dir.test}" includes="ncx/invalid/ncx-multilang_inherited.ncx"/>
+		</schematron>
+	</target>
 
 	<target name="validate-src-rng-schemas" 
 		description="validate the source schemas against the RelaxNG schema for RelaxNG">
