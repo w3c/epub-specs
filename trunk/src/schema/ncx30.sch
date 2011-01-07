@@ -15,18 +15,18 @@
         </rule>
     </pattern>
     
-    <pattern abstract="true" id="unique-sibling-lang-test">             
-        <rule context="*[count(./$select) &gt; 1]/$select">
+    <pattern id="unique-sibling-lang-test" abstract="false">
+        <rule context="*[count(./ncx:navLabel) &gt; 1]/ncx:navLabel">
             <let name="curlang" value="ancestor-or-self::*[@xml:lang][1]/@xml:lang" />            
-            <assert test="count(../$select[lang($curlang)]) &lt; 2"
-                >Sibling <value-of select="$select"/> elements must use different languages 
+            <assert test="count(../ncx:navLabel[lang($curlang)]) &lt; 2"
+                >Sibling navLabel elements must use different languages 
                 (multiple occurrences of the language '<value-of select="$curlang"/>').</assert>
         </rule>
     </pattern>
     
-    <pattern is-a="unique-sibling-lang-test">
+    <!-- pattern is-a="unique-sibling-lang-test">
         <param name="select" value="ncx:navLabel"/>
-    </pattern>
+    </pattern -->
     
     <pattern id="id-unique">
         <let name="id-set" value="//*[@id]"/>        
