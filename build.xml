@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="epub-revision" basedir="." default="all">
 	
 	<tstamp>
@@ -41,6 +42,8 @@
 	<property name="schema.xhtml11" value="${dir.util.xhtml}/relaxng/xhtml.rng" />
 	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl" />
 	<property name="xslt.biblio-cleaner" value="${dir.util.docbook}/biblio-cleaner.xsl" />
+	<property name="xslt.terminology-cleaner" value="${dir.util.docbook}/terminology-cleaner.xsl" />
+	<property name="xslt.switch"  value="${dir.util.docbook}/switch.xsl" />
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 		
 	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
@@ -64,30 +67,59 @@
 		build-archives, 
 		copy-css" />
 
-	<target name="build-specs" depends="clean, copy-css"> <!-- , validate-src-specs, validate-spec-examples" -->
+	<target name="build-specs" depends="clean, build-vocabs, copy-css"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
-		<!-- run the preprocess xslt -->
-		<mkdir dir="${dir.temp.spec}" />
-		<saxon-xslt 
-					classpathref="build.classpath"
-					basedir="${dir.src.spec}/"
-					includes="*.xml"
-					destdir="${dir.temp.spec}/"
-					extension=".xml" 			
-					style="${xslt.biblio-cleaner}">
-		</saxon-xslt>
-		
+		<mkdir dir="${dir.temp.spec}/0" />
+		<copy todir="${dir.temp.spec}/0">
+			<fileset dir="${dir.src.spec}"/>
+		</copy>
+			
 		<!-- inject package vocab defs -->
-		<saxon-xslt in="${dir.temp.spec}/epub30-publications.xml" 
-			out="${dir.temp.spec}/epub30-publications.xml" 
+		<saxon-xslt in="${dir.temp.spec}/0/epub30-publications.xml" 
+			out="${dir.temp.spec}/0/epub30-publications.xml" 
 			style="${dir.util.rdf}/rdfa-vocab-insert.xsl">
 			<param name="vocab-file" expression="${dir.build.vocab}/package/epub30-vocab-package.html" />
 			<param name="vocab-name" expression="package"/>
 		</saxon-xslt>
 		
+		<!-- TODO inject overlays vocab defs -->
+		
+		<!-- run the bibliocleaner preprocess xslt -->
+		<mkdir dir="${dir.temp.spec}/1" />		
+		<saxon-xslt description="filters out unreferenced bibliorefs"
+					classpathref="build.classpath"
+					basedir="${dir.temp.spec}/0"
+					includes="*.xml"
+					destdir="${dir.temp.spec}/1/"
+					extension=".xml" 			
+					style="${xslt.biblio-cleaner}">
+		</saxon-xslt>
+		
+		<!-- run the terminology preprocess xslt -->
+		<mkdir dir="${dir.temp.spec}/2" />
+		<saxon-xslt description="filters out unreferenced glossentries"
+					classpathref="build.classpath"
+					basedir="${dir.temp.spec}/1/"
+					includes="*.xml"
+					destdir="${dir.temp.spec}/2/"
+					extension=".xml" 			
+					style="${xslt.terminology-cleaner}">
+		</saxon-xslt>
+		
+		<!-- run the switch preprocess xslt -->		
+		<mkdir dir="${dir.temp.spec}/3" />
+		<saxon-xslt description="conditional exclude/include"
+					classpathref="build.classpath"
+					basedir="${dir.temp.spec}/2/"
+					includes="*.xml"
+					destdir="${dir.temp.spec}/3/"
+					extension=".xml" 			
+					style="${xslt.switch}">
+		</saxon-xslt>
+				
 		<!-- validate docbook sources -->
 		<validate-fileset-rng 
-					fileset-dir="${dir.temp.spec}" 
+					fileset-dir="${dir.temp.spec}/3" 
 					fileset-includes="*.xml"
 					fileset-excludes=""
 					schema="${schema.docbook}"
@@ -97,7 +129,7 @@
 		<!-- run docbook-xhtml -->
 		<saxon-xslt 
 					classpathref="build.classpath"
-					basedir="${dir.temp.spec}/"
+					basedir="${dir.temp.spec}/3/"
 					includes="*.xml"
 					destdir="${dir.build.spec}"
 					extension=".html" 			
@@ -118,6 +150,8 @@
 			<xmlcatalog refid="xhtml-catalog"/>
 			<fileset dir="${dir.build.spec}" includes="*.html"/>			
 		</xmlvalidate>
+				
+		
 				
 	</target>
 
