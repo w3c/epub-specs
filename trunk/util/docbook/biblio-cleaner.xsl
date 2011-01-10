@@ -41,7 +41,7 @@
         <xsl:sequence select="$parent//db:biblioentry[some $node in $linkends satisfies $node/@linkend eq @xml:id]" />
     </xsl:function>
     
-    <xsl:template match="*">
+    <xsl:template match="*|processing-instruction()">
         <xsl:copy>
             <xsl:copy-of select="@*" />
             <xsl:apply-templates/>
