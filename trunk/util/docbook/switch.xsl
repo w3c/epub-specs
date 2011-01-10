@@ -3,14 +3,7 @@
     xmlns:db="http://docbook.org/ns/docbook" xmlns:fn="http://idpf.org/fn" xmlns:epub="http://www.idpf.org/2011/epub">
 
     <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db"/>
-
-    <!-- 
-        Conditional inclusion. 
-        * An element becomes a switch when one of its children contains the epub:spec-include attribute.
-        * Among the children of a switch,
-          *               
-    -->
-      
+     
     <xsl:variable name="current-spec-token">           
         <xsl:choose>
             <xsl:when test="ends-with(document-uri(/), 'changes.xml')">changes</xsl:when>
