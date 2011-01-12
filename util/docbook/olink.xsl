@@ -6,8 +6,8 @@
     <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db"/>
 
     <!-- olink specialization for epub specs. Only used for cross-epub3-spec linking.
-       * to active behavior, must provide @type="epub-spec" 
-       * targetdoc must be one of the enum give in rng customization
+       * to activate behavior, must provide @type="epub-spec" 
+       * targetdoc must be one of the enum given in rng customization
        * targetpointer must be an xml:id in targetdoc
        * olinks must be empty (for now)
 
