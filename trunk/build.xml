@@ -80,7 +80,7 @@
 		<saxon-xslt in="${dir.temp.spec}/00/epub30-publications.xml" 
 			out="${dir.temp.spec}/00/epub30-publications.xml" 
 			style="${dir.util.rdf}/rdfa-vocab-insert.xsl">
-			<param name="vocab-file" expression="${dir.build.vocab}/package/epub30-vocab-package.html" />
+			<param name="vocab-file" expression="${dir.temp}/rdfxml-package.xml" />
 			<param name="vocab-name" expression="package"/>
 		</saxon-xslt>
 		
@@ -188,6 +188,7 @@
 		<echo>building structure vocab...</echo>
 		<build-xhtml-vocab 
 			in-n3="${dir.src.vocab}/structure.n3" 
+			name="structure"
 			out-xhtml="${dir.build.vocab}/structure/epub30-vocab-structure.html" 
 			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/structure/"/>
 		
@@ -195,6 +196,7 @@
 		<echo>building package vocab...</echo>
 		<build-xhtml-vocab 
 			in-n3="${dir.src.vocab}/package.n3" 
+			name="package"
 			out-xhtml="${dir.build.vocab}/package/epub30-vocab-package.html" 
 			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/package/"/>
 		
@@ -202,6 +204,7 @@
 		<echo>building overlays vocab...</echo>
 		<build-xhtml-vocab 
 			in-n3="${dir.src.vocab}/overlays.n3" 
+			name="overlays"
 			out-xhtml="${dir.build.vocab}/overlays/epub30-vocab-overlays.html" 
 			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/overlays/"/>
 				
@@ -222,6 +225,7 @@
 		description="builds an xhtml+rdfa vocab from an n3 source">
 		
 		<attribute name="in-n3" /> 				<!-- full path -->
+		<attribute name="name" /> 			<!-- string identifier -->
 		<attribute name="out-xhtml" />          <!-- full path -->
 		<attribute name="vocab-canonical-uri" />
 		
@@ -235,6 +239,9 @@
 				out="${dir.temp}/vocab/rdfxml.xml"
 				vocab-uri="@{vocab-canonical-uri}"/>
 			
+			<!-- copy the rdf/xml to the root to allow property injection later -->
+			<copy file="${dir.temp}/vocab/rdfxml.xml" tofile="${dir.temp}/rdfxml-@{name}.xml"/>
+			
 			<!-- convert the  RDF/XML to RDFa -->
 			<saxon-xslt in="${dir.temp}/vocab/rdfxml.xml" 
 					out="${dir.temp}/vocab/rdfa.xhtml" 
@@ -244,7 +251,7 @@
 					<param name="vocab-as-rdfxml" expression="" />
 					<param name="vocab-revision-history" expression="" />
 			</saxon-xslt>
-									
+			
 			<!-- add toc to the xhtml and place in final destination -->
 			<saxon-xslt in="${dir.temp}/vocab/rdfa.xhtml" 
 					out="@{out-xhtml}" 
@@ -260,7 +267,7 @@
 		<attribute name="vocab-uri" /> <!-- the canonical uri of the vocab being converted -->
 		<sequential>
 			<property name="jena.intermediary" value="${dir.temp}/vocab/jena-intermediary.xml"/>
-			<java output="${jena.intermediary}" classname="jena.rdfcopy" fork="true" failonerror="true" maxmemory="512m">			
+			<java output="${jena.intermediary}" classname="jena.rdfcopy" fork="true" failonerror="true" maxmemory="512m">
 				<arg value="@{in}"/>
 				<arg value="N3"/>			
 				<arg value="RDF/XML"/>						

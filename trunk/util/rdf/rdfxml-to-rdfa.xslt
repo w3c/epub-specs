@@ -5,8 +5,9 @@
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:role="http://www.w3.org/1999/xhtml/vocab#"
 	xmlns:zf="http://www.daisy.org/ns/xslt/functions"
+	xmlns:zt="http://www.daisy.org/ns/rdf/property#"
 	xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#"
-	exclude-result-prefixes="zf xsl rdfs rdf dcterms owl xsd role htu">
+	exclude-result-prefixes="zf xsl rdfs rdf dcterms owl xsd role htu zt">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
 
@@ -137,7 +138,7 @@
 
 		<!-- first a generic loop -->
 		<xsl:for-each
-			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage'))]">
+			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|zt:for|zt:value'))]">
 			<dd about="#{$about}" property="{name(.)}" datatype="{$datatype}">
 				<p>
 					<xsl:call-template name="wiki-links-to-xhtml">
@@ -317,6 +318,9 @@
 		<xsl:value-of select="concat('h',string($ancestors+1))"/>
 	</xsl:function>
 
+	<!-- remove zt:for and zt:value used to generate spec tables -->
+	<xsl:template match="zt:*"/>
+	
 	<xsl:template match="*"/>
 
 </xsl:stylesheet>

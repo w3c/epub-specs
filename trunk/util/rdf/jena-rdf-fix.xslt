@@ -111,7 +111,7 @@
 	
 	<xsl:template match="jena:*"/>
 	
-	<xsl:template match="zt:*"/>
+	<xsl:template match="zt:*[not(local-name()='for') and not(local-name()='value')]"/>
 	
 	<xsl:template match="*">
 		<xsl:copy copy-namespaces="no">
