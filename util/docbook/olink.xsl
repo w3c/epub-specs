@@ -17,19 +17,22 @@
 
     <xsl:param name="db-spec-base-uri" required="yes"/> <!-- must end with slash -->
     
+    <!-- translate for windows paths -->
+    <xsl:param name="db-spec-base-uri-safe" select="concat('file:///',translate($db-spec-base-uri, '\\', '/'))"/>
+    
     <!-- load all spec docs -->
     <xsl:variable name="doc-changes" 
-        select="doc(concat($db-spec-base-uri, 'epub30-changes.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub30-changes.xml'))" as="document-node()"/>
     <xsl:variable name="doc-contentdocs"
-        select="doc(concat($db-spec-base-uri, 'epub30-contentdocs.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub30-contentdocs.xml'))" as="document-node()"/>
     <xsl:variable name="doc-mediaoverlays"
-        select="doc(concat($db-spec-base-uri, 'epub30-mediaoverlays.xml'))" as="document-node()"/>
-    <xsl:variable name="doc-ocf" select="doc(concat($db-spec-base-uri, 'epub30-ocf.xml'))"
+        select="doc(concat($db-spec-base-uri-safe, 'epub30-mediaoverlays.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-ocf" select="doc(concat($db-spec-base-uri-safe, 'epub30-ocf.xml'))"
         as="document-node()"/>
-    <xsl:variable name="doc-overview" select="doc(concat($db-spec-base-uri, 'epub30-overview.xml'))"
+    <xsl:variable name="doc-overview" select="doc(concat($db-spec-base-uri-safe, 'epub30-overview.xml'))"
         as="document-node()"/>
     <xsl:variable name="doc-publications"
-        select="doc(concat($db-spec-base-uri, 'epub30-publications.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub30-publications.xml'))" as="document-node()"/>
 
     <xsl:template match="//db:olink[@type='epub-spec']">
         <!--
