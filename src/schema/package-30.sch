@@ -93,11 +93,6 @@
         <param name="dc" value="/opf:package/opf:metadata/dc:language[@opf:override]"/>           
     </pattern>
          
-    <pattern id="id-unique">
-        <let name="id-set" value="//*[@id]"/>        
-        <rule context="*[@id]">
-            <assert test="count($id-set[@id = current()/@id]) = 1"
-                >Duplicate ID '<value-of select="current()/@id"/>'</assert>
-        </rule>
-    </pattern>         
+    <include href="./mod/id-unique.sch"/>     
+             
 </schema>
