@@ -138,7 +138,7 @@
 
 		<!-- first a generic loop -->
 		<xsl:for-each
-			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|zt:for|zt:value'))]">
+			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|zt:extends|zt:for|zt:value'))]">
 			<dd about="#{$about}" property="{name(.)}" datatype="{$datatype}">
 				<p>
 					<xsl:call-template name="wiki-links-to-xhtml">
@@ -318,9 +318,6 @@
 		<xsl:value-of select="concat('h',string($ancestors+1))"/>
 	</xsl:function>
 
-	<!-- remove zt:for and zt:value used to generate spec tables -->
-	<xsl:template match="zt:*"/>
-	
 	<xsl:template match="*"/>
 
 </xsl:stylesheet>
