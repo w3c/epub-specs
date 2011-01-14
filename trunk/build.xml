@@ -45,6 +45,7 @@
 	<property name="xslt.terminology-cleaner" value="${dir.util.docbook}/terminology-cleaner.xsl" />
 	<property name="xslt.switch"  value="${dir.util.docbook}/switch.xsl" />
 	<property name="xslt.olink"  value="${dir.util.docbook}/olink.xsl" />
+	<property name="xslt.link-decorator"  value="${dir.util.docbook}/link-decorator.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 		
 	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
@@ -132,10 +133,21 @@
 					extension=".xml" 			
 					style="${xslt.switch}">
 		</saxon-xslt>
-				
+		
+		<!-- run the link decorator xslt -->		
+		<mkdir dir="${dir.temp.spec}/50" />
+		<saxon-xslt description="decorate links with @role"
+			classpathref="build.classpath"
+			basedir="${dir.temp.spec}/40/"
+			includes="*.xml"
+			destdir="${dir.temp.spec}/50/"
+			extension=".xml" 			
+			style="${xslt.link-decorator}">
+		</saxon-xslt>
+
 		<!-- validate docbook sources -->
 		<validate-fileset-rng 
-					fileset-dir="${dir.temp.spec}/40" 
+					fileset-dir="${dir.temp.spec}/50" 
 					fileset-includes="*.xml"
 					fileset-excludes=""
 					schema="${schema.docbook}"
@@ -145,7 +157,7 @@
 		<!-- run docbook-xhtml -->
 		<saxon-xslt 
 					classpathref="build.classpath"
-					basedir="${dir.temp.spec}/40/"
+					basedir="${dir.temp.spec}/50/"
 					includes="*.xml"
 					destdir="${dir.build.spec}"
 					extension=".html" 			
