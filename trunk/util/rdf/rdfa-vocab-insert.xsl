@@ -7,6 +7,8 @@
 	xmlns:zt="http://www.daisy.org/ns/rdf/property#"
 	exclude-result-prefixes="xsl xsd rdf rdfs dcterms zt">
 	
+	<xsl:include href="wiki-link-handler.xsl"/>
+	
 	<xsl:param name="vocab-file" as="xsd:string" required="yes"/>
 	<xsl:param name="vocab-name" as="xsd:string" required="yes"/>
 
@@ -16,9 +18,10 @@
 	<xsl:variable name="vocab" select="document($vocab-filepath-corrected)/rdf:RDF"/>
 	
 	<!-- name of the PIs to replace for this vocab -->
-	<xsl:variable name="vocab-pi" select="concat('insert-',$vocab-name,'-vocab')"/>
+	<xsl:variable name="vocab-values" select="concat('insert-',$vocab-name,'-vocab-values')"/>
+	<xsl:variable name="vocab-properties" select="concat('insert-',$vocab-name,'-vocab-properties')"/>
 	
-	<xsl:template match="processing-instruction()[name()=$vocab-pi]" priority="1">
+	<xsl:template match="processing-instruction()[name()=$vocab-properties]" priority="1">
 		<xsl:variable name="bag-name" select="."/>
 		
 		<!-- strip the -props extension on bag names for use in table id -->
@@ -36,43 +39,28 @@
 						<tbody>
 							<tr>
 								<td class="rdfa-prop-label" colspan="2">
-									<literal><xsl:value-of select="rdfs:label"/></literal>
+									<literal><xsl:apply-templates select="rdfs:label/node()" mode="vocab"/></literal>
 								</td>
 							</tr>
 							<tr>
-								<th>Description:</th>
-								<td>
-									<xsl:call-template name="wikiParse">
-										<xsl:with-param name="str" select="rdfs:comment/node()"/>
-									</xsl:call-template>
-								</td>
-							</tr>
-							<tr>
-								<th>Used with:</th>
-								<td>
-									<xsl:choose>
-										<xsl:when test="child::zt:for">
-											<literal><xsl:value-of select="child::zt:for"/></literal>
-										</xsl:when>
-										<xsl:otherwise><literal>meta</literal></xsl:otherwise>
-									</xsl:choose>
+								<th class="rdfa-prop-header">Description:</th>
+								<td class="rdfa-prop-desc">
+									<xsl:apply-templates select="rdfs:comment/node()" mode="vocab"/>
 								</td>
 							</tr>
 							<xsl:if test="not(child::zt:value='N/A')">
 								<tr>
-									<th>Allowed value(s):</th>
-									<td>
+									<th class="rdfa-prop-header">Allowed value(s):</th>
+									<td class="rdfa-prop-desc">
 										<xsl:choose>
 											<xsl:when test="not(child::zt:value)"><literal>xsd:string</literal></xsl:when>
 											<xsl:otherwise>
 												<xsl:choose>
 													<xsl:when test="starts-with(child::zt:value, 'xsd')">
-														<literal><xsl:value-of select="child::zt:value/node()"/></literal>
+														<literal><xsl:apply-templates select="child::zt:value/node()" mode="vocab"/></literal>
 													</xsl:when>
 													<xsl:otherwise>
-														<xsl:call-template name="wikiParse">
-															<xsl:with-param name="str" select="child::zt:value/node()"/>
-														</xsl:call-template>
+														<xsl:apply-templates select="child::zt:value/node()" mode="vocab"/>
 													</xsl:otherwise>
 												</xsl:choose>
 											</xsl:otherwise>
@@ -82,8 +70,8 @@
 							</xsl:if>
 							<xsl:if test="child::zt:extends">
 								<tr>
-									<th>Extends:</th>
-									<td>
+									<th class="rdfa-prop-header">Extends:</th>
+									<td class="rdfa-prop-desc">
 										<xsl:choose>
 											<xsl:when test="child::zt:extends = 'all'">All properties.</xsl:when>
 											<xsl:otherwise>
@@ -91,7 +79,7 @@
 													<xsl:if test="not(position()=1)">
 														<xsl:text>, </xsl:text>
 													</xsl:if>
-													<literal><xsl:value-of select="."/></literal>
+													<literal><xsl:apply-templates select="./node()" mode="vocab"/></literal>
 												</xsl:for-each>
 											</xsl:otherwise>
 										</xsl:choose>
@@ -104,6 +92,58 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	
+	
+	<xsl:template match="processing-instruction()[name()=$vocab-values]" priority="1">
+		<xsl:variable name="bag-name" select="."/>
+		
+		<!-- strip the -props extension on bag names for use in table id -->
+		<xsl:variable name="bag-nicename" select="replace($bag-name, '-props', '')"/>
+		
+		<xsl:choose>
+			<xsl:when test="not($vocab/rdf:Bag[@rdf:ID=$bag-name])">
+				<xsl:message>ERROR: No matching bag found for <xsl:value-of select="$bag-name"/></xsl:message>
+			</xsl:when>
+			<xsl:otherwise>
+				<informaltable class="property-table" cellspacing="0" cellpadding="0">
+					<xsl:attribute name="xml:id">tbl-opf-meta-property-<xsl:value-of select="rdfs:label"/></xsl:attribute>
+					<xsl:attribute name="title"><xsl:value-of select="$vocab//rdf:Bag[@rdf:ID=$bag-name]/dcterms:title"/></xsl:attribute>
+					<thead>
+						<tr>
+							<th class="rdfa-value-header">Value</th>
+							<th class="rdfa-desc-header">Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<xsl:for-each select="$vocab/rdf:Bag[@rdf:ID=$bag-name]/rdf:Description">
+							<tr>
+								<td class="rdfa-value-label">
+									<literal><xsl:apply-templates select="rdfs:label/node()" mode="vocab"/></literal>
+								</td>
+								<td class="rdfa-value-desc">
+									<xsl:apply-templates select="rdfs:comment/node()" mode="vocab"/>
+								</td>
+							</tr>
+						</xsl:for-each>
+					</tbody>
+				</informaltable>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template match="text()" priority="1" mode="vocab">
+		<xsl:variable name="text">
+			<xsl:call-template name="wiki-links-to-docbook">
+				<xsl:with-param name="text" select="."/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:call-template name="wikiParse">
+			<xsl:with-param name="str" select="$text"/>
+		</xsl:call-template>
+	</xsl:template>
+	
 	
 	<xsl:template name="wikiParse">
 		<xsl:param name="str"/>
