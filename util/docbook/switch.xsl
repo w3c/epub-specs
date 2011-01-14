@@ -23,8 +23,7 @@
     
     <!-- dont copy if we have value other than 'default' and other than spec token -->
     <xsl:template match="*[@epub:spec-include and not(@epub:spec-include eq 'default') and not(@epub:spec-include eq $current-spec-token)]" />
-    
-            
+                
     <xsl:template match="*|comment()">
         <xsl:copy>
             <xsl:copy-of select="@*[not(namespace-uri() eq 'http://www.idpf.org/2011/epub')]"/>
