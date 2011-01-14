@@ -91,6 +91,8 @@
 
     <!-- ============================================================================= -->
     <!-- override in html.xsl: get IDs directly on the carrier instead of on child <a>  -->
+    <!-- TODO this seems to crash when xml:id appears on certain element types -->
+    
     <xsl:template name="anchor">
         <xsl:param name="node" select="."/>
         <xsl:param name="conditional" select="1"/>
@@ -112,30 +114,29 @@
                     <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
                     <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
                 </xsl:element>
-                <xsl:text disable-output-escaping="no">&#160;</xsl:text><!-- &nbsp; -->
+                <xsl:text disable-output-escaping="no">&#160;</xsl:text>
             </xsl:if>
         </xsl:if>
-    </xsl:template>
+        </xsl:template> 
 
     <!-- ============================================================================= -->
-    <!-- override in html.xsl: let @role take precedence when creating a value for @class -->
-    <xsl:template name="common.html.attributes">
-        <xsl:param name="inherit" select="0"/>
-        <xsl:param name="class">
-            <xsl:choose>
-                <xsl:when test="./@role">
-                    <xsl:value-of select="./@role"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="local-name(.)"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:param>
-        <xsl:apply-templates select="." mode="common.html.attributes">
-            <xsl:with-param name="class" select="$class"/>
-            <xsl:with-param name="inherit" select="$inherit"/>
-        </xsl:apply-templates>
+    <!-- override in html.xsl --> 
+    
+    <xsl:template match="*" mode="class.value">
+        <xsl:param name="class" select="local-name(.)"/>
+        <xsl:choose>
+            <xsl:when test="@xrefstyle">
+                <xsl:value-of select="@xrefstyle"/>
+            </xsl:when>
+            <xsl:when test="@role">
+                <xsl:value-of select="@role"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$class"/>
+            </xsl:otherwise>
+        </xsl:choose>                        
     </xsl:template>
+
 
     <!-- ============================================================================= -->
     <!-- override titlepage hr separators -->
@@ -462,5 +463,19 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+
+    <!-- ==================================================================== -->
+    <!-- override gentext to get "Chapter" etc out of link labels -->
+
+    <xsl:param name="local.l10n.xml" select="document('')"/> 
+    <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"> 
+        <l:l10n language="en"> 
+            <l:context name="xref-number-and-title">  
+                <l:template name="chapter" text="%n, %t"/>
+                <l:template name="section" text="%n, “%t”"/>
+            </l:context>    
+        </l:l10n>
+    </l:i18n>
+
 
 </xsl:stylesheet>
