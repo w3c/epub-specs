@@ -16,10 +16,10 @@
             <xsl:copy-of select="@*"/>
             <xsl:choose>
                 <xsl:when test="local-name($target) eq 'glossentry'">
-                    <xsl:attribute name="xrefstyle">glossterm</xsl:attribute>
+                    <xsl:attribute name="role">glossterm</xsl:attribute>
                 </xsl:when>
                 <xsl:when test="local-name($target) eq 'biblioentry'">
-                    <xsl:attribute name="xrefstyle">biblioref</xsl:attribute>
+                    <xsl:attribute name="role">biblioref</xsl:attribute>
                 </xsl:when>
             </xsl:choose>            
             <xsl:apply-templates/>

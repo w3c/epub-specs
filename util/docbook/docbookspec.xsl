@@ -63,30 +63,47 @@
         </xsl:element>
 
         <!-- editors -->
-        <xsl:if test="$topinfo/db:authorgroup">
-            <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
-                <xsl:attribute name="class">authorgroup</xsl:attribute>
-                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-                    <xsl:attribute name="class">bridgehead</xsl:attribute>Editors</xsl:element>
-                <xsl:for-each select="$topinfo/db:authorgroup/db:editor">
-                    <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-                        <xsl:apply-templates select="." mode="class.attribute"/>
-                        <xsl:choose>
-                            <xsl:when test="db:orgname">
-                                <xsl:apply-templates/>
-                            </xsl:when>
-                            <xsl:when test="db:personname and db:affiliation">
-                                <xsl:call-template name="person.name"/>, <xsl:value-of
-                                    select="db:affiliation"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:call-template name="person.name"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:element>
-                </xsl:for-each>
-            </xsl:element>
+        <xsl:if test="$topinfo/db:authorgroup[not(@role) or @role='current']">
+            <xsl:call-template name="render-authorgroup">
+                <xsl:with-param name="title">Editors (this version)</xsl:with-param>
+                <xsl:with-param name="node" select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
+            </xsl:call-template>
+        </xsl:if>        
+        <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
+            <xsl:call-template name="render-authorgroup">
+                <xsl:with-param name="title">Editors (previous versions)</xsl:with-param>
+                <xsl:with-param name="node" select="$topinfo/db:authorgroup[@role='previous']"/>
+            </xsl:call-template>
         </xsl:if>
+    </xsl:template>
+    
+    <xsl:template name="render-authorgroup">
+        <xsl:param name="title" />
+        <xsl:param name="node" />
+        <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:attribute name="class">authorgroup</xsl:attribute>
+            <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class">bridgehead</xsl:attribute>
+                <xsl:value-of select="$title"/>
+            </xsl:element>
+            <xsl:for-each select="$node/db:editor">
+                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:apply-templates select="." mode="class.attribute"/>
+                    <xsl:choose>
+                        <xsl:when test="db:orgname">
+                            <xsl:apply-templates/>
+                        </xsl:when>
+                        <xsl:when test="db:personname and db:affiliation">
+                            <xsl:call-template name="person.name"/>, <xsl:value-of
+                                select="db:affiliation"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:call-template name="person.name"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:element>
+            </xsl:for-each>
+        </xsl:element>        
     </xsl:template>
 
     <!-- ============================================================================= -->
@@ -471,8 +488,8 @@
     <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"> 
         <l:l10n language="en"> 
             <l:context name="xref-number-and-title">  
-                <l:template name="chapter" text="%n, %t"/>
-                <l:template name="section" text="%n, “%t”"/>
+                <l:template name="chapter" text="%t"/> <!-- %n, -->
+                <l:template name="section" text="“%t”"/> <!-- %n, -->
             </l:context>    
         </l:l10n>
     </l:i18n>
