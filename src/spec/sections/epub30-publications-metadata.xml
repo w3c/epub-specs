@@ -14,6 +14,12 @@
             (<xref linkend="refDCTERMS"/>). These metadata terms can be
             further enhanced and extended by a set of optional properties also defined in this specification.</para>
         
+        <para>
+            Properties from other RDF vocabularies may be added to the <literal>metadata</literal> section
+            to enhance package and content metadata and to supplement required and optional properties,
+            but Reading System support for them should not be assumed.
+        </para>
+        
         <variablelist xreflabel="metadata" role="elem-synopsis" xml:id="elemdef-opf-metadata">
             <varlistentry>
                 <term>Element Name</term>
@@ -418,17 +424,6 @@
         </section>
         
         
-        <section xml:id="sec-metadata-extensibility" xreflabel="Metadata Extensibility Mechanism">
-            <title>Metadata extensibility</title>
-            <para>This specification introduces a mechanism for metadata extensibility that is modeled
-                on the RDFa 1.1 profile mechanism.</para>
-            <para>By utilizing the <literal>package</literal> element <literal>profile</literal>
-                attribute, content authors can incorporate non-prefered metadata vocabularies as needed,
-                and have access to the properties of the non-prefered vocabulary available for use
-                globally in the publication package.</para>
-            
-        </section>
-        
         <section xml:id="sec-metadata-identifiers">
             <title>Publication Identifiers</title>
             <para><remark role="todo">TODO pending finalization of WG discussion</remark></para>
@@ -447,66 +442,97 @@
     <section xml:id="sec-opf-meta" xreflabel="meta">
         <title>The <literal>meta</literal> element</title>
         
-        <para>The meta element is a generic placeholder to express metadata, or further describe
-            other metadata. This is accomplished by means of an RDFa 1.1 mechanism utilizing the
-            required <literal>property</literal> attribute, and the optional
-                <literal>about</literal> attribute. </para>
+        <section xml:id="sec-opf-meta-def">
+            <title>Definition</title>
+            
+            <para>The <literal>meta</literal> element provides a generic means of expressing metadata, both to
+                express primary metadata about the package or content or to refine that metadata. 
+                All <literal>meta</literal> elements must attach the RDFa <literal>property</literal> attribute 
+                (<xref linkend="refRDFa11Core"/>) that contains a CURIE that resolves to a property from an RDF vocabulary
+                (it is not required that Reading System be able to resolve the CURIES).</para>
+                
+            <para>
+                If a <literal>meta</literal> element only includes a <literal>property</literal> attribute, the metadata 
+                is assumed to apply to the package or content as a whole.
+            </para>
+            
+            <informalexample>
+                <para>The following example shows an instance of package metadata.</para>
+                <synopsis>
+                    <xi:include parse="text" href="../examples/publications/meta-package.xml"/>
+                </synopsis>
+            </informalexample>
+            
+            <para>
+                To enahnce metadata properties defined in the 
+                <xref linkend="refDCMES"/> elements or in other <literal>meta</literal> elements, the
+                RDFa <literal>about</literal> attribute must be attached. The value of this attribute must be
+                an IDREF to the <literal>xml:id</literal> of the element being refined.
+            </para>
+            
+            <informalexample>
+                <para>The following example shows an instance of ancillary metadata.</para>
+                <synopsis>
+                    <xi:include parse="text" href="../examples/publications/meta-package.xml"/>
+                </synopsis>
+            </informalexample>
+            
+            <variablelist xreflabel="Meta Element" role="elem-synopsis" xml:id="elemdef-opf-meta">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para>
+                            <literal>meta</literal>
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Occurrence</term>
+                    <listitem>
+                        <para>As child of the <xref linkend="elemdef-opf-metadata"/> element.
+                            Repeatable.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry xml:id="attrdef-meta-property">
+                                <term>
+                                    <literal>property</literal>
+                                    <option>[required]</option>
+                                </term>
+                                <listitem>
+                                    <para>Specifies the by name a DCTERMS or ancillary metadata property
+                                        being expressed.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>                        
+                                <term>
+                                    <literal>about</literal>
+                                    <option>[optional unless required]</option>
+                                </term>
+                                <listitem>
+                                    <para>A reference by id to the subject of the <literal>meta</literal> element property
+                                        being expressed. Optional only when a <literal>meta</literal> element contains a
+                                        non-empty child text node. When the <literal>meta</literal> element contains an
+                                        empty child text-node, the about attribute is required and must
+                                        contain a valid id of another meta element.</para>
+                                </listitem>                            
+                            </varlistentry>
+                            
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>Text or Empty.</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
         
-        <variablelist xreflabel="Meta Element" role="elem-synopsis" xml:id="elemdef-opf-meta">
-            <varlistentry>
-                <term>Element Name</term>
-                <listitem>
-                    <para>
-                        <literal>meta</literal>
-                    </para>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Occurrence</term>
-                <listitem>
-                    <para>As child of the <xref linkend="elemdef-opf-metadata"/> element.
-                        Repeatable.</para>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Attributes</term>
-                <listitem>
-                    <variablelist role="elem-synopsis-attlist">
-                        <varlistentry xml:id="attrdef-meta-property">
-                            <term>
-                                <literal>property</literal>
-                                <option>[required]</option>
-                            </term>
-                            <listitem>
-                                <para>Specifies the by name a DCTERMS or ancillary metadata property
-                                being expressed.</para>
-                            </listitem>
-                        </varlistentry>
-                        <varlistentry>                        
-                        <term>
-                                <literal>about</literal>
-                                <option>[optional unless required]</option>
-                            </term>
-                            <listitem>
-                                <para>A reference by id to the subject of the <literal>meta</literal> element property
-                                    being expressed. Optional only when a <literal>meta</literal> element contains a
-                                    non-empty child text node. When the <literal>meta</literal> element contains an
-                                    empty child text-node, the about attribute is required and must
-                                    contain a valid id of another meta element.</para>
-                            </listitem>                            
-                        </varlistentry>
-                        
-                    </variablelist>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Content Model</term>
-                <listitem>
-                    <para>Text or Empty.</para>
-                </listitem>
-            </varlistentry>
-        </variablelist>
-
 
         <section xml:id="elemdef-opf-meta-property-values-dcterms">
             <title>Recognized DCTERMS values for the <literal>meta</literal> element
@@ -619,10 +645,10 @@
             </varlistentry>
         </variablelist>
 
-        <para>The resources identified by the <literal>link</literal> element <literal>href</literal> attribute are considered <glossterm
-                linkend="gloss-external-resource">external resources</glossterm>, and must therefore not be identified as items in the
+        <para>The resources identified by the <literal>link</literal> element <literal>href</literal> attribute are considered <xref
+            linkend="gloss-external-resource"/>s, and must therefore not be identified as items in the
             <link linkend="sec-manifest-elem">manifest</link>.</para>
-        
+
         <para>If metadata provided in an external record conflicts with metadata given inline in the
             Package Document metadata element, then the external metadata should be given
             precedence.</para>
