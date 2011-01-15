@@ -4,7 +4,7 @@
     xmlns:db="http://docbook.org/ns/docbook" xmlns:d="http://docbook.org/ns/docbook"
     xmlns="http://www.w3.org/1999/xhtml">
 
-    <xsl:import href="xsl-ns/xhtml-1_1/docbook.xsl"/>
+    <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl"/>
 
 
     <xsl:output method="xhtml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"
