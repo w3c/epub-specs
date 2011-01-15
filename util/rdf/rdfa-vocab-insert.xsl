@@ -33,13 +33,15 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:for-each select="$vocab/rdf:Bag[@rdf:ID=$bag-name]/rdf:Description">
+					<xsl:variable name="prop-name" select="rdfs:label"/>
 					<informaltable class="property-table" cellspacing="0" cellpadding="0">
-						<xsl:attribute name="xml:id"><xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="rdfs:label"/></xsl:attribute>
+						<xsl:attribute name="xml:id"><xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="$prop-name"/></xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="$vocab//rdf:Bag[@rdf:ID=$bag-name]/dcterms:title"/></xsl:attribute>
 						<tbody>
 							<tr>
-								<td class="rdfa-prop-label" colspan="2">
-									<literal><xsl:apply-templates select="rdfs:label/node()" mode="vocab"/></literal>
+								<th class="rdfa-prop-header">Property:</th>
+								<td class="rdfa-prop-desc prop-name">
+									<literal><xsl:apply-templates select="$prop-name" mode="vocab"/></literal>
 								</td>
 							</tr>
 							<tr>
@@ -85,6 +87,18 @@
 										</xsl:choose>
 									</td>
 								</tr>
+							</xsl:if>
+							<xsl:if test="child::zt:ex">
+								<xsl:variable name="linkend">sec-metadata-examples-<xsl:value-of select="child::zt:ex"/></xsl:variable>
+									<tr>
+										<th class="rdfa-prop-header">Example:</th>
+										<td class="rdfa-prop-desc">
+											<link>
+												<xsl:attribute name="linkend" select="$linkend"/>
+												<xsl:text>[Example]</xsl:text>
+											</link>
+										</td>
+									</tr>
 							</xsl:if>
 						</tbody>
 					</informaltable>
