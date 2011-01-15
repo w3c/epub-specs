@@ -49,11 +49,12 @@
             <a href="full-uri">destination label</a> in <a href="#refXXX">[BIBLIOLABEL]</a>                       
         -->
 
+        <xsl:variable name="olink" select="."/>
         <xsl:variable name="targetdoc" select="./@targetdoc"/>
         <xsl:variable name="targetptr" select="./@targetptr"/>
 
         <xsl:variable name="dest-doc-uri" select="fn:getDestDocHTMLURI($targetdoc)"/>
-        <xsl:variable name="dest-label" select="fn:getDestLabel($targetdoc, $targetptr)"/>
+        <xsl:variable name="link-label" select="fn:getLinkLabel($olink, $targetdoc, $targetptr)"/>
         <xsl:variable name="biblioref" select="fn:getBiblioRef($targetdoc)"/>
 
         <xsl:element name="phrase" namespace="http://docbook.org/ns/docbook">
@@ -65,7 +66,7 @@
                 <xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
                     <xsl:value-of select="$dest-doc-uri"/>#<xsl:value-of select="$targetptr"/>
                 </xsl:attribute>
-                <xsl:value-of select="$dest-label"/>
+                <xsl:value-of select="$link-label"/>
             </xsl:element>
 
             <xsl:text> (</xsl:text>
@@ -81,7 +82,8 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:function name="fn:getDestLabel" as="text()">
+    <xsl:function name="fn:getLinkLabel" as="text()">
+        <xsl:param name="olink" as="element()"/>
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:param name="targetptr" as="attribute()"/>
 
@@ -93,6 +95,9 @@
         </xsl:if>
 
         <xsl:choose>
+            <xsl:when test="string-length($olink/text())>0">
+                <xsl:value-of select="$olink/text()"/>
+            </xsl:when>
             <xsl:when test="$curelem/@xreflabel">
                 <xsl:value-of select="$curelem/@xreflabel"/>
             </xsl:when>

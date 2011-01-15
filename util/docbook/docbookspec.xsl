@@ -14,6 +14,9 @@
         toc,title,example chapter title part toc,title preface title qandadiv toc qandaset toc
         reference toc,title sect1 toc sect2 toc sect3 toc sect4 toc sect5 toc set toc,title </xsl:param>
 
+    <xsl:param name="admon.style"></xsl:param>
+    <xsl:param name="admon.textlabel">0</xsl:param>
+
     <!-- ============================================================================= -->
     <!-- crude rearrange of the leading info element to structure as an IDPF spec document  -->
     <xsl:template name="book.titlepage">
