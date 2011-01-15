@@ -35,8 +35,8 @@
 				<xsl:for-each select="$vocab/rdf:Bag[@rdf:ID=$bag-name]/rdf:Description">
 					<xsl:variable name="prop-name" select="rdfs:label"/>
 					<informaltable class="property-table" cellspacing="0" cellpadding="0">
-						<xsl:attribute name="xml:id"><xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="$prop-name"/></xsl:attribute>
-						<xsl:attribute name="title"><xsl:value-of select="$vocab//rdf:Bag[@rdf:ID=$bag-name]/dcterms:title"/></xsl:attribute>
+						<xsl:attribute name="xml:id">rdfa-<xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="$prop-name"/></xsl:attribute>
+						<xsl:attribute name="title"><xsl:value-of select="$prop-name "/> property</xsl:attribute>
 						<tbody>
 							<tr>
 								<th class="rdfa-prop-header">Property:</th>
@@ -121,7 +121,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<informaltable class="property-table" cellspacing="0" cellpadding="0">
-					<xsl:attribute name="xml:id">rdfa-<xsl:value-of select="$bag-nicename"/>-values</xsl:attribute>
+					<xsl:attribute name="xml:id">rdfa-<xsl:value-of select="$bag-nicename"/>-values-<xsl:value-of select="$bag-nicename"/></xsl:attribute>
 					<xsl:attribute name="title"><xsl:value-of select="$vocab//rdf:Bag[@rdf:ID=$bag-name]/dcterms:title"/></xsl:attribute>
 					<thead>
 						<tr>
