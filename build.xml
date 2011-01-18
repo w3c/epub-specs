@@ -75,14 +75,6 @@
 			<fileset dir="${dir.src.spec}"/>
 		</copy>
 			
-		<!-- inject package vocab defs -->
-		<saxon-xslt in="${dir.temp.spec}/00/epub30-publications.xml" 
-			out="${dir.temp.spec}/00/epub30-publications.xml" 
-			style="${dir.util.rdf}/rdfa-vocab-insert.xsl">
-			<param name="vocab-file" expression="${dir.temp}/rdfxml-package.xml" />
-			<param name="vocab-name" expression="package"/>
-		</saxon-xslt>
-		
 		<!-- TODO inject overlays vocab defs -->
 		
 		<!-- run the olink preprocess xslt -->		
@@ -204,11 +196,11 @@
 		
 		<!-- package vocab -->
 		<echo>building package vocab...</echo>
-		<build-xhtml-vocab 
-			in-n3="${dir.src.vocab}/package.n3" 
+		<build-vocab-from-docbook
+			in-db="${dir.src.spec}/epub30-publications.xml" 
 			name="package"
 			out-xhtml="${dir.build.vocab}/package/epub30-vocab-package.html" 
-			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/package/"/>
+			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/package/" />
 		
 		<!-- overlays vocab (properties for use in package docs, but in the future possibly also in smil/meta) -->
 		<echo>building overlays vocab...</echo>
@@ -249,10 +241,7 @@
 				out="${dir.temp}/vocab/rdfxml.xml"
 				vocab-uri="@{vocab-canonical-uri}"/>
 			
-			<!-- copy the rdf/xml to the root to allow property injection later -->
-			<copy file="${dir.temp}/vocab/rdfxml.xml" tofile="${dir.temp}/rdfxml-@{name}.xml"/>
-			
-			<!-- convert the  RDF/XML to RDFa -->
+			<!-- extract the RDFa from the docbook -->
 			<saxon-xslt in="${dir.temp}/vocab/rdfxml.xml" 
 					out="${dir.temp}/vocab/rdfa.xhtml" 
 					style="${dir.util.rdf}/rdfxml-to-rdfa.xslt">
@@ -271,6 +260,35 @@
 		</sequential>
 	</macrodef>
 		
+	<macrodef name="build-vocab-from-docbook" 
+		description="builds an xhtml+rdfa vocab from a docbook source">
+		
+		<attribute name="in-db" /> 				<!-- full path -->
+		<attribute name="name" /> 			<!-- string identifier -->
+		<attribute name="out-xhtml" />          <!-- full path -->
+		<attribute name="vocab-canonical-uri" />
+		
+		<sequential>
+			
+			<clean-dir dir="${dir.temp}/vocab/"/>
+			
+			<!-- convert the n3 to RDF/XML as an xslt source -->
+			<saxon-xslt in="@{in-db}" 
+				out="${dir.temp}/vocab/docbook.xhtml" 
+				style="${dir.util.rdf}/docbook-to-rdfa.xslt">
+				<param name="vocab-canonical-uri" expression="@{vocab-canonical-uri}" />
+				<param name="vocab-name" expression="@{name}"/>
+			</saxon-xslt>
+			
+			<!-- add toc to the xhtml and place in final destination -->
+			<saxon-xslt in="${dir.temp}/vocab/docbook.xhtml" 
+				out="@{out-xhtml}" 
+				style="${dir.util}/xhtml/xsl/toc.xsl">
+			</saxon-xslt>
+			
+		</sequential>
+	</macrodef>
+	
 	<macrodef name="jena-n3-to-rdfxml" description="convert N3 to RDF/XML using jena.rdfcopy">
 		<attribute name="in" />
 		<attribute name="out" />

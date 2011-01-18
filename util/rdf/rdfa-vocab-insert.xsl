@@ -32,77 +32,79 @@
 				<xsl:message>ERROR: No matching bag found for <xsl:value-of select="$bag-name"/></xsl:message>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:for-each select="$vocab/rdf:Bag[@rdf:ID=$bag-name]/rdf:Description">
-					<xsl:variable name="prop-name" select="rdfs:label"/>
-					<informaltable class="property-table" cellspacing="0" cellpadding="0">
-						<xsl:attribute name="xml:id">rdfa-<xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="$prop-name"/></xsl:attribute>
-						<xsl:attribute name="title"><xsl:value-of select="$prop-name "/> property</xsl:attribute>
-						<tbody>
-							<tr>
-								<th class="rdfa-prop-header">Property:</th>
-								<td class="rdfa-prop-desc prop-name">
-									<literal><xsl:apply-templates select="$prop-name" mode="vocab"/></literal>
-								</td>
-							</tr>
-							<tr>
-								<th class="rdfa-prop-header">Description:</th>
-								<td class="rdfa-prop-desc">
-									<xsl:apply-templates select="rdfs:comment/node()" mode="vocab"/>
-								</td>
-							</tr>
-							<xsl:if test="not(child::zt:value='N/A')">
-								<tr>
-									<th class="rdfa-prop-header">Allowed value(s):</th>
-									<td class="rdfa-prop-desc">
-										<xsl:choose>
-											<xsl:when test="not(child::zt:value)"><literal>xsd:string</literal></xsl:when>
-											<xsl:otherwise>
-												<xsl:choose>
-													<xsl:when test="starts-with(child::zt:value, 'xsd')">
-														<literal><xsl:apply-templates select="child::zt:value/node()" mode="vocab"/></literal>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:apply-templates select="child::zt:value/node()" mode="vocab"/>
-													</xsl:otherwise>
-												</xsl:choose>
-											</xsl:otherwise>
-										</xsl:choose>
-									</td>
-								</tr>
-							</xsl:if>
-							<xsl:if test="child::zt:extends">
-								<tr>
-									<th class="rdfa-prop-header">Extends:</th>
-									<td class="rdfa-prop-desc">
-										<xsl:choose>
-											<xsl:when test="child::zt:extends = 'all'">All properties.</xsl:when>
-											<xsl:otherwise>
-												<xsl:for-each select="child::zt:extends">
-													<xsl:if test="not(position()=1)">
-														<xsl:text>, </xsl:text>
-													</xsl:if>
-													<literal><xsl:apply-templates select="./node()" mode="vocab"/></literal>
-												</xsl:for-each>
-											</xsl:otherwise>
-										</xsl:choose>
-									</td>
-								</tr>
-							</xsl:if>
-							<xsl:if test="child::zt:ex">
-								<xsl:variable name="linkend">sec-metadata-examples-<xsl:value-of select="child::zt:ex"/></xsl:variable>
-									<tr>
-										<th class="rdfa-prop-header">Example:</th>
-										<td class="rdfa-prop-desc">
+				<informaltable>
+					<xsl:attribute name="xml:id">rdfa-vocab-<xsl:value-of select="$vocab-name"/>-bag-<xsl:value-of select="$bag-name"/></xsl:attribute>
+					<xsl:for-each select="$vocab/rdf:Bag[@rdf:ID=$bag-name]/rdf:Description">
+						<tgroup cols="2">
+							<xsl:variable name="prop-name" select="rdfs:label"/>
+							<tbody>
+								<row>
+									<entry>Property:</entry>
+									<entry role="rdfa-property">
+										<xsl:attribute name="xml:id">rdfa-vocab-<xsl:value-of select="$vocab-name"/>-bag-<xsl:value-of select="$bag-nicename"/>-property-<xsl:value-of select="$prop-name"/></xsl:attribute>
+										<literal><xsl:apply-templates select="$prop-name" mode="vocab"/></literal>
+									</entry>
+								</row>
+								<row>
+									<entry>Description:</entry>
+									<entry role="rdfa-property-desc">
+										<xsl:apply-templates select="rdfs:comment/node()" mode="vocab"/>
+									</entry>
+								</row>
+								<xsl:if test="not(child::zt:value='N/A')">
+									<row>
+										<entry>Allowed value(s):</entry>
+										<entry>
+											<xsl:choose>
+												<xsl:when test="not(child::zt:value)"><literal>xsd:string</literal></xsl:when>
+												<xsl:otherwise>
+													<xsl:choose>
+														<xsl:when test="starts-with(child::zt:value, 'xsd')">
+															<literal><xsl:apply-templates select="child::zt:value/node()" mode="vocab"/></literal>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:apply-templates select="child::zt:value/node()" mode="vocab"/>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:otherwise>
+											</xsl:choose>
+										</entry>
+									</row>
+								</xsl:if>
+								<xsl:if test="child::zt:extends">
+									<row>
+										<entry>Extends:</entry>
+										<entry>
+											<xsl:choose>
+												<xsl:when test="child::zt:extends = 'all'">All properties.</xsl:when>
+												<xsl:otherwise>
+													<xsl:for-each select="child::zt:extends">
+														<xsl:if test="not(position()=1)">
+															<xsl:text>, </xsl:text>
+														</xsl:if>
+														<literal><xsl:apply-templates select="./node()" mode="vocab"/></literal>
+													</xsl:for-each>
+												</xsl:otherwise>
+											</xsl:choose>
+										</entry>
+									</row>
+								</xsl:if>
+								<xsl:if test="child::zt:ex">
+									<xsl:variable name="linkend">sec-metadata-examples-<xsl:value-of select="child::zt:ex"/></xsl:variable>
+									<row>
+										<entry>Example:</entry>
+										<entry>
 											<link>
 												<xsl:attribute name="linkend" select="$linkend"/>
 												<xsl:text>[Example]</xsl:text>
 											</link>
-										</td>
-									</tr>
-							</xsl:if>
-						</tbody>
-					</informaltable>
-				</xsl:for-each>
+										</entry>
+									</row>
+								</xsl:if>
+							</tbody>
+						</tgroup>
+					</xsl:for-each>
+				</informaltable>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
