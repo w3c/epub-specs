@@ -130,7 +130,7 @@
 	
 	<xsl:template match="db:tgroup|db:row" mode="vocab-builder">
 		<xsl:variable name="about">
-			<xsl:value-of select="normalize-space(.//db:entry[@role='rdfa-property'])"/>
+			<xsl:value-of select="normalize-space(.//db:entry[some $role in tokenize(@role,' +') satisfies $role='rdfa-property'])"/>
 		</xsl:variable>
 		<dt id="{$about}" about="#{$about}" typeof="rdf:Property">
 			<xsl:value-of select="$about"/>
@@ -151,7 +151,7 @@
 
 		<dd about="#{$about}" property="rdfs:comment" datatype="{$datatype}">
 			<p>
-				<xsl:apply-templates select=".//db:entry[@role='rdfa-property-desc']/node()" mode="vocab-builder"/>
+				<xsl:apply-templates select=".//db:entry[some $role in tokenize(@role, ' +') satisfies $role='rdfa-property-desc']/node()" mode="vocab-builder"/>
 			</p>
 			<xsl:if test="not(matches($datatype, 'xsd:string'))">
 				<p>Datatype: <code><xsl:value-of select="$datatype"/></code>.</p>
