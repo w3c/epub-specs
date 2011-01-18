@@ -82,43 +82,51 @@
 				</div>
 
 				<div id="vocab" class="vocabulary">
-					<xsl:for-each select="$vocab-meta/z:bags/z:bag">
-						<xsl:apply-templates select="." mode="vocab-builder"/>
+					<xsl:for-each select="tokenize($vocab-meta/z:bag-order, ', *')">
+						<xsl:variable name="bag-name" select="concat('rdfa-vocab-',$vocab-name,'-bag-',.)"/>
+						<xsl:variable name="bag" select="$vocab-meta/ancestor::db:book//db:informaltable[@xml:id=$bag-name]"/>
+						<xsl:call-template name="create-bag">
+							<xsl:with-param name="id" select="."/>
+							<xsl:with-param name="bag" select="$bag"/>
+						</xsl:call-template>
 					</xsl:for-each>
 				</div>
 			</body>
 		</html>
 	</xsl:template>
 
-	<xsl:template match="z:bag" mode="vocab-builder">
-		<xsl:variable name="id" select="normalize-space(./dc:identifier)"/>
+	<xsl:template name="create-bag">
+		<xsl:param name="id" as="xsd:string"/>
+		<xsl:param name="bag" as="element()"/>
+		
 		<div id="{$id}" about="#{$id}" typeof="rdf:Bag">
 			<xsl:element name="h2">
 				<xsl:attribute name="id">h_<xsl:value-of select="$id"/></xsl:attribute>
 				<xsl:attribute name="about">#<xsl:value-of select="$id"/></xsl:attribute>
 				<xsl:attribute name="rev">dcterms:title</xsl:attribute>
-				<xsl:apply-templates select="./dc:title/text()"/>
+				<xsl:apply-templates select="$bag/db:info/db:annotation/db:para/text()"/>
 			</xsl:element>
-			<xsl:if test="child::dc:description">
+			<xsl:if test="$bag/child::dc:description">
 				<xsl:for-each select="child::dc:description">
 					<p about="#{$id}" rev="dcterms:description">
 						<xsl:apply-templates mode="vocab-builder"/>
 					</p>
 				</xsl:for-each>
 			</xsl:if>
-			<xsl:variable name="bag-name" select="concat('rdfa-vocab-',$vocab-name,'-bag-',$id)"/>
 			<dl about="#{$id}" rev="rdfs:member">
 				<xsl:choose>
 					<xsl:when test="contains($id, '-types')">
-						<xsl:apply-templates select="//db:informaltable[@xml:id=$bag-name]/db:tgroup/db:tbody/*" mode="vocab-builder"/>
+						<xsl:apply-templates select="$bag/db:tgroup/db:tbody/*" mode="vocab-builder"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="//db:informaltable[@xml:id=$bag-name]/*" mode="vocab-builder"/>
+						<xsl:apply-templates select="$bag/*" mode="vocab-builder"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</dl>
 		</div>
 	</xsl:template>
+	
+	<xsl:template match="db:info" mode="vocab-builder"/>
 	
 	<xsl:template match="db:tgroup|db:row" mode="vocab-builder">
 		<xsl:variable name="about">
