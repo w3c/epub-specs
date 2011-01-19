@@ -154,7 +154,7 @@
         <title>Introduction</title>
         <para>Books featuring audio narration synchronized with the text are found in mainstream
             e-books, educational tools, and e-books formatted for persons with print disabilities.
-            In EPUB3, these types of books are created using Media Overlay Documents, which describe
+            In EPUB3, these types of books are created by using Media Overlay Documents to describe
             the timing for the pre-recorded audio narration and how it relates to the text markup.
             The file format for Media Overlays is defined by <link linkend="refSMIL">SMIL</link>, a 
             W3C standard for representing synchronized multimedia information in XML.</para>
@@ -176,20 +176,18 @@
                 <para>A pre-recorded narration of a publication can be represented as a series of audio
                     clips, each corresponding to part of the text. A single audio clip, for example, typically
                     represents a single phrase or paragraph, but infers no order relative
-                    to the other clips, which is where Media Overlays come into play. The purpose of 
-                    a Media Overlay is to synchronize the structured audio narration with the 
+                    to the other clips or to the text of a document. Media Overlays solve this problem of 
+                    synchronization by tying the structured audio narration to its corresponding text in the 
                     <xref linkend="gloss-content-document"/> using <link linkend="refSMIL">SMIL</link> 
-                    markup. Media Overlays are, in fact, a simplified  subset of SMIL 3.0 that allow the 
-                    playback sequence of these clips to be defined, and allow each to be tied to text 
-                    element that goes with it.</para>
+                    markup. Media Overlays are, in fact, a simplified subset of SMIL 3.0 that allow the 
+                    playback sequence of these clips to be defined.</para>
                 <para>The SMIL elements primarily used for structuring Media Overlays are <literal>body</literal> 
                     (used for the main sequence), <literal>seq</literal> (sequence) and <literal>par</literal>
                     (parallel). (Refer to <xref linkend="sec-overlays-elem-attr"/> for more information on these and other
                     SMIL elements.)</para>
-                <para>The <literal>body</literal> element of the Overlay is broken down into a set of 
-                    <literal>par</literal> elements, each corresponding to a phrase in the EPUB Content Document. 
-                    Each <literal>par</literal> element additionally provides two key pieces of information: 
-                    1) the audio clip containing the narration for the phrase; and 2) a pointer
+                <para>The <literal>par</literal> element is the basic building block of an overlay and corresponds to a
+                    phrase in the EPUB Content Document. The element provides two key pieces of information for synchronizing 
+                    content: 1) the audio clip containing the narration for the phrase; and 2) a pointer
                     to the associated text. The <literal>par</literal> element
                     uses two media element children to represent this information: a
                         <literal>text</literal> element and an <literal>audio</literal> element.
@@ -209,8 +207,10 @@
                     </synopsis>
                 </informalexample>
 
-                <para><literal>par</literal> elements are placed together sequentially within the 
-                    <literal>body</literal> to form a series of phrases or sentences.</para>
+                <para><literal>par</literal> elements are placed together sequentially to form a series of phrases or 
+                    sentences. The ordering of the elements must match the default reading 
+                    order of the EPUB Content Document.
+                </para>
                 
                 <informalexample>
                     <para>The following example shows a basic Media Overlay Document containing a sequence of 
@@ -224,10 +224,6 @@
                 <para><literal>par</literal> elements can also be added to <literal>seq</literal>
                     elements to define more complex structures such as parts and chapters (see 
                     <xref linkend="sec-media-overlays-structure"/>).
-                </para>
-                
-                <para>The ordering of the <literal>par</literal> elements must match the default reading 
-                    order of the EPUB Content Document.
                 </para>
 
             </section>
@@ -880,12 +876,13 @@
             <para>Manifest items which refer to Media Overlays must have the media-type
                     <literal>application/smil+xml</literal> as specified in the Core Media Types
                 section of EPUB <xref linkend="refPublications3"/>.</para>
-            <para>Manifest items for which a <literal>media-overlay</literal> attribute value is
-                specified must be <xref linkend="gloss-content-document"/>s and not EPUB
-                Extended Content References <xref linkend="refPublications3"/>.</para>
+            <para>The <literal>media-overlay</literal> attribute must only be attached to manifest 
+                <literal>items</literal> that reference <xref linkend="gloss-content-document"/>s.
+                The attribute must not be attached to <literal>item</literal>s that reference
+                Foreign Content Documents as defined in <xref linkend="refPublications3"/>.</para>
             <para>While not every manifest item is required to have a Media Overlay associated
                 with it, there must be a one-to-one relationship between Media Overlay files and
-                manifest items; in other words, multiple EPUB Content Documents cannot share a
+                manifest items. Multiple EPUB Content Documents cannot share a
                 single Media Overlay file.</para>
             <para>This is a forwards-compatible addition: 2.0 Reading Systems may safely ignore
                 the <literal>media-overlay</literal> attribute and process documents in their
@@ -923,13 +920,13 @@
                     </tr>
                 </tbody>
             </informaltable>
+            <remark role="todo">TODO: matt - standarize with publications property tables and possibly auto-gen</remark>
             <para>The Package Document must include the <literal>duration</literal> of each
                 Media Overlay as well as of the entire publication. The Package Document may
-                include <literal>narrator</literal> information as well, with two distinct
-                scenarios: either each Media Overlay has its own narrator, or there is one
-                narrator specified for the entire publication. As in the example below,
-                    <literal>meta</literal> elements that are specific to a single Media Overlay
-                Document use the <literal>about</literal> attribute to indicate which one.
+                include <literal>narrator</literal> information, as well, in particular when each Media Overlay 
+                has its own narrator or there is one narrator specified for the entire publication.
+                When <literal>meta</literal> elements that are specific to a single Media Overlay
+                Document, the <literal>about</literal> attribute is used to reference which one.
                     <literal>Meta</literal> elements with no <literal>about</literal> attribute
                 are considered to be about the entire publication.</para>
             <informalexample>
@@ -944,23 +941,23 @@
         <title>User Agent Conformance Requirements</title>
         <section xml:id="sec-xhtml-overview-conformance">
             <title>Behavior</title>
-            <para>User Agents may support Media Overlays. They then must adhere to the conformance
-                requirements in this section. User Agents that do not support Media Overlays shall
-                ignore the <literal>media-overlay</literal> attribute on manifest
-                    <literal>item</literal> elements and shall also ignore the manifest
+            <para>If a User Agents supports Media Overlays, it must adhere to the conformance
+                requirements in this section. User Agents that do not support Media Overlays must
+                ignore both the <literal>media-overlay</literal> attribute on manifest
+                    <literal>item</literal> elements and the manifest
                     <literal>item</literal> elements where the <literal>media-type</literal>
                 attribute value is <literal>application/smil+xml</literal>.</para>
             <section>
                 <title>Loading the Media Overlay</title>
-                <para>When the User Agent loads a <xref linkend="gloss-package-document"/>, it shall
+                <para>When the User Agent loads a <xref linkend="gloss-package-document"/>, it must
                     refer to the manifest <literal>item</literal> elements'
-                        <literal>media-overlay</literal> attribute to discover the corresponding
-                    Media Overlays for <xref linkend="gloss-content-document"/> s. When the User
+                        <literal>media-overlay</literal> attributes to discover the corresponding
+                    Media Overlays for <xref linkend="gloss-content-document"/>s. When the User
                     Agent loads an EPUB Content Document, it also loads the corresponding Media
-                    Overlay Document. Playback shall start either at the beginning or at a specific
+                    Overlay Document. Playback must start either at the beginning or at a specific
                     location within the Media Overlay Document (for example, if loading a bookmarked
                     position). When the Media Overlay Document has finished playing, the User Agent
-                    shall load the next EPUB Content Document (as specified in the Package Document
+                    must load the next EPUB Content Document (as specified in the Package Document
                     spine) and also load its corresponding Media Overlay Document.</para>
             </section>
             <section>
@@ -1061,26 +1058,26 @@
                             <para>All audio and video media objects embedded within an EPUB Content
                                 Document must have their public playback interface deactivated
                                 (typically: play/pause control, time slider, volume level, etc.).
-                                This is needed to avoid interference between the scheduled playback
+                                This behavior is required to avoid interference between the scheduled playback
                                 sequence defined by the Media Overlay, and the arbitrary playback
-                                behavior due to user interaction or script execution. This means
-                                that when the Reading System is in playback mode, it must: <itemizedlist>
+                                behavior due to user interaction or script execution. As a result,
+                                when the Reading System is in playback mode, it must: <itemizedlist>
                                     <listitem>
                                         <para>Hide the individual video/audio UI controls from the
-                                            page. This overrides the default behavior defined by the
+                                            page, which overrides the default behavior defined by the
                                                 <literal>controls</literal> HTML5 attribute. </para>
                                     </listitem>
                                     <listitem>
                                         <para>Prevent scripts embedded within the EPUB Content
-                                            Document (i.e. authored as part of the default
-                                            publication behavior) from invoking the JavaScript
-                                            audio/video playback API. Because this may be hard to
+                                            Document from invoking the JavaScript
+                                            audio/video playback API (i.e. authored as part of the default
+                                            publication behavior). As this requirement may be hard to
                                             implement in practice, it is recommended that content
                                             producers should avoid publishing embedded scripts
                                             dedicated to controlling the playback of inline
-                                            audio/video media objects, so that the published Media
-                                            Overlay can retain full control of the synchronized
-                                            text/audio presentation, without any risk of
+                                            audio/video media objects. The published Media
+                                            Overlay can then retain full control of the synchronized
+                                            text/audio presentation without any risk of
                                             interference from script-enabled custom behaviors.
                                         </para>
                                     </listitem>
@@ -1088,20 +1085,20 @@
                         </listitem>
                         <listitem>
                             <para>All audio and video media objects embedded within an EPUB Content
-                                Document must be initialized to their "stopped" state, and ready to
+                                Document must be initialized to their "stopped" state, and be ready to
                                 be played from the zero-position within their content stream
                                 (possibly displaying the <literal>poster</literal> image specified
-                                using the XHTML5 markup). This overrides the default behavior
+                                using the XHTML5 markup). This requirement overrides the default behavior
                                 defined by the <literal>autoplay</literal> HTML5 attribute. </para>
                         </listitem>
                         <listitem>
                             <para>When a <literal>text</literal> element becomes active within the
                                 Media Overlay, the <xref linkend="gloss-stylesheet"/> visual
                                 highlighting rules apply regardless of the content type referred to
-                                by the <literal>src</literal> attribute. In other words, visible
+                                by the <literal>src</literal> attribute (e.g., visible
                                 video and audio player controls within the host EPUB Content
                                 Document must be decorated as per the
-                                    <literal>media-overlay-active</literal> CSS rules. </para>
+                                    <literal>media-overlay-active</literal> CSS rules). </para>
                         </listitem>
                         <listitem>
                             <para>In addition to the default behavior of Media Overlay activation
@@ -1115,7 +1112,7 @@
                                                 <literal>par</literal> parent container, the
                                             referenced audio or video media object must play until
                                             it ends, at which point the <literal>text</literal>
-                                            element's lifespan terminates. In other words, the
+                                            element's lifespan terminates. In this case, the
                                             implicit duration of the <literal>text</literal> element
                                             (and by inference, of the parent <literal>par</literal>
                                             container) is that of the referenced audio or video
@@ -1129,18 +1126,18 @@
                                             referenced by the <literal>text</literal> element must
                                             be constrained by the duration of the
                                                 <literal>audio</literal> sibling in the Media
-                                            Overlay. In other words, the actual duration of the
+                                            Overlay. In this case, the actual duration of the
                                             parent <literal>par</literal> container is that of the
                                             child audio clip, regardless of the duration of the
                                             video or audio media pointed to by the
-                                                <literal>text</literal> element. This may result in
-                                            an embedded video or audio media object to end playback
-                                            prematurely (before reaching its full duration), or to
-                                            end before the playback of the parallel Media Overlay
+                                                <literal>text</literal> element. This behavior may result in
+                                            an embedded video or audio media object ending playback
+                                            prematurely (before reaching its full duration), or
+                                            ending before the playback of the parallel Media Overlay
                                                 <literal>audio</literal> is finished (in which case
                                             the last-played video frame should remain visible until
                                             the parent <literal>par</literal> container finally
-                                            ends). This is equivalent of the Media Overlay
+                                            ends). This behavior is equivalent of the Media Overlay
                                                 <literal>audio</literal> element implicitly carrying
                                             the behavior of the <link
                                                 xlink:href="http://www.w3.org/TR/SMIL/smil-timing.html#adef-endsync"
@@ -1148,7 +1145,7 @@
                                             defined in <xref linkend="refSMIL"/>.</para>
                                         <para> Furthermore, Reading Systems should expose user
                                             controls for the volume levels of each independent audio
-                                            tracks (i.e. from the <literal>audio</literal> element
+                                            track (i.e., from the <literal>audio</literal> element
                                             of the Media Overlay, and from the embedded audio or
                                             video media objects within the Content Document), so
                                             that audio output can be adjusted to match listeners'
@@ -1159,7 +1156,7 @@
                                             overlapping audio situations are carefully examined and
                                             dealt with at production stage, as Reading Systems are
                                             not required to handle simultaneous volume levels in any
-                                            particular given way.</para>
+                                            particular way.</para>
                                     </listitem>
                                 </itemizedlist></para>
                         </listitem>
@@ -1180,7 +1177,7 @@
                     <title>Skippability</title>
                     <para>While reading, users may want to turn on or off certain features of the
                         publication, such as sidebars, footnotes, page numbers, or other types of
-                        secondary content. This feature is called "skippability". User Agents should
+                        secondary content. This feature is called skippability. User Agents should
                         use the semantic information provided by Media Overlay elements'
                             <literal>epub:type</literal> attribute to determine when to offer users
                         the option of skippable features. In the following example, a User Agent
@@ -1190,9 +1187,9 @@
                         <para>The following example shows a Media Overlay Document with a pagebreak.</para>
                         <synopsis><xi:include parse="text" href="./examples/overlays/overlay-4.xml"/></synopsis>
                     </informalexample>
-                    <para>A selection of terms from the <xref linkend="refEPUBStructureVocab"/> for
-                        which User Agents should offer users the option of skippability is given
-                        here as an informative reference: <itemizedlist>
+                    <para>The following selection of terms from the <xref linkend="refEPUBStructureVocab"/> for
+                        which User Agents should offer users the option of skippability is provided as an informative 
+                        reference: <itemizedlist>
                             <listitem>
                                 <para>sidebar</para>
                             </listitem>
@@ -1222,25 +1219,28 @@
                             </listitem>
                         </itemizedlist>
                     </para>
-                    <para>Media Overlays may use another vocabulary in addition to those included in
-                        the document profile by using the <literal>prefix</literal> attribute on the
-                        root <literal>smil</literal> element. When the User Agent encounters
-                            <literal>epub:type</literal> values taken from this additional
-                        vocabulary, it shall decide whether to enable skippability based on
-                        familiarity with this vocabulary.</para>
+                    <para>Media Overlays may use additional vocabularies to those specified in
+                        the metadata profile by defining them in the <literal>prefix</literal> attribute on the
+                        root <literal>smil</literal> element. User Agents support for skippability based
+                        on <literal>epub:type</literal> values should not be assumed.</para>
+                    <remark role="todo">clarification: unclear to me what the last sentence was saying.
+                        please review this edit, as it appears that all skippability is UA-dependent and
+                        familiarity doesn't "spec" as nicely as something concrete (even for defined
+                        vocabs it is discretionary, no?)
+                    </remark>
                 </section>
                 <section>
                     <title>Escapability</title>
                     <para>Escapable items are nested structures such as tables, lists, and sidebars
-                        that listeners may wish to skip over, continuing to read what comes after
-                        the nested structure. This is different from the skippability feature
-                        described above, which enables or disables entire types of items. In this
-                        scenario, a user has started listening to the audio for a book, encounters a
-                        table, and wishes to skip it. User Agents should allow escaping of nested
+                        that listeners may wish to skip over, continuing to read from the point immediately
+                        after the nested structure. Escapable items differs differ skippable features in
+                        that they do not enable or disable entire types of items, but provide an exit
+                        from them (e.g., a user can listen to some of the content before choosing to escape). 
+                        User Agents should allow escaping of nested
                         structure items. User Agents shall determine the start of nested structures
-                        by their <literal>epub:type</literal> attribute (e.g. "glossary") and should
-                        offer users the option to skip playback of that structure and resume with
-                        whatever comes after it. </para>
+                        by the value of <literal>epub:type</literal> attribute (e.g. <literal>glossary</literal>)
+                        and should offer users the option to skip playback of that structure and resume with
+                        whatever content comes after it. </para>
                     <informalexample>
                         <para>The following example shows the Media Overlay Document for an EPUB Content
                             Document containing a paragraph, a glossary, and another paragraph. A
