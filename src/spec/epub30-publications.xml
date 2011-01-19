@@ -268,6 +268,72 @@ are defined by other specifications. -->
                     (http://www.w3.org/TR/xml-proc-profiles/#profiles), alternatively extract and
                     echo the relevant items.</remark></para>
         </section>
+    
+        <section xml:id="sec-epub-identifiers">
+            <title>Publication Identifiers</title>
+            
+            <para>The Package Document's author is responsible for including a
+                primary identifier that is unique to one and only one particular 
+                <xref linkend="gloss-epub-publication"/>. The primary identifier, whether chosen or assigned, must 
+                be stored in a <literal>dc:identifier</literal> element in the Package <literal>metadata</literal> 
+                section, and be referenced as the unique identifier in the <literal>package</literal> element's 
+                <literal>unique-identifier</literal> attibute (refer to <xref linkend="sec-opf-dcidentifier"/>
+                for more information).
+            </para>
+            
+            <para>The uniqueness of a publication typically does not change in concert with
+                each revision to the package or its contents, as unique identifiers are intended
+                to have maximal persistence both for referencing and distribution purposes.
+                Each release of a publication typically requires that the new version be uniquely identifiable, however,
+                which results in the contradictory need for reliable unique identifiers that are changeable.</para>
+            
+            <para>To redress this problem of identifying minor releases without changing the unique identifier, the 
+                <link linkend="rdfa-vocab-package-bag-package-property-content-version"><literal>content-version</literal></link> 
+                property should always be included in the package metadata. Taken together with the publication unique 
+                identifier, the two represent a reliably unique means of identifying any particular EPUB instance. 
+                As the <literal>content-version</literal> value must always be incremented with each release 
+                &#8212; regardless of changes to the unique identifier &#8212; it ensures that no two packages 
+                can have the same identifier, while at the same time allowing packages to be identified as containing 
+                different versions of the same publication.
+            </para>
+            
+            <remark role="todo">TODO: should content-version be required and only one instance?</remark>
+            
+            <para>Although not static, changes to the unique identifier for a publication should be made
+                as infrequently as possible. New identifiers should not be issued when updating metadata, 
+                fixing errata or making other minor changes to the package. Some instances where a new 
+                unique identifier for the publication should be considered might include:
+            </para>
+            
+            <itemizedlist>
+                <listitem>
+                    <para>the addition or removal of complete or partial sections of a publication, such as a new introduction or foreword;</para>
+                </listitem>
+                <listitem>
+                    <para>re-release under a new imprint;</para>
+                </listitem>
+            </itemizedlist>
+            
+            <remark role="todo">TODO: need more/better examples of triggers for changing</remark>
+            
+            <para>Although the semantics of the identifier segments of the <literal>content-version</literal>
+                are not strongly defined in this specification, each revision requires that the property
+                value be changed in order to maintain the uniqueness of the new publication. In the case 
+                of numeric identifiers, this process may only require that the minor segment be incremented.
+            </para>
+            
+            <remark role="todo">clarification: discussion noted that minor segment must always increment,
+                but shouldn't the requirement just be that at least one segment change? you may not use the third 
+                segment or it could be at .1 invalidating a change to a new mid/major version with a .1 minor, 
+                for example. wording above may need to change.
+            </remark>
+            
+            <para role="rsconferr">Reading Systems must not fail catastrophically if they
+                encounter two distinct EPUB Publications with the same purportedly unique
+                primary identifier. </para>
+            <remark role="todo">TODO: fit this conf. req. somewhere else?</remark>
+        </section>
+     
     </chapter>
 
     <chapter xml:id="sec-package-documents">
@@ -399,7 +465,7 @@ are defined by other specifications. -->
                                                 the <literal><xref linkend="sec-opf-dcidentifier"
                                                   /></literal> element that provides the package's
                                                 preferred, or primary, identifier.</para>
-                                            <para>Refer to <xref linkend="sec-metadata-identifiers"
+                                            <para>Refer to <xref linkend="sec-epub-identifiers"
                                                 /> for details.</para>
                                         </listitem>
                                     </varlistentry>
@@ -527,1382 +593,1364 @@ are defined by other specifications. -->
 
                 </section>
             </section>
-
-<section xmlns="http://docbook.org/ns/docbook" xml:id="sec-metadata-elem"
-    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1"
-    xmlns:xi="http://www.w3.org/2001/XInclude">
-    <title>The <literal>metadata</literal> Element</title>
-    
-    <section xml:id="sec-opf-metadata-overview">
-        <title>Overview</title>
-
-        <para>The <literal>metadata</literal> element encapsulates information about the publication as a
-            whole, including metadata that applies to the publication package and to the abstract content 
-            contained within the package. Metadata is expressed through a combination of three required 
-            Dublin Core Metadata Element Set <xref linkend="refDCMES"/> properties &#8212; title, identifier
-            and language &#8212; coupled with optional properties from DCMI Metadata Terms 
-            <xref linkend="refDCTERMS"/>. These metadata terms can be
-            further enhanced and extended by a set of optional properties also defined in this specification.</para>
-        
-        <para>
-            Properties from other RDF vocabularies may be added to the <literal>metadata</literal> section
-            to enhance package and content metadata and to supplement required and optional properties,
-            but Reading System support for them should not be assumed.
-        </para>
-    </section>
-    
-    <section xml:id="sec-opf-metadata-def">
-        <title>Definition</title>
-        
-        <variablelist xreflabel="metadata" role="elem-synopsis" xml:id="elemdef-opf-metadata">
-            <varlistentry>
-                <term>Element Name</term>
-                <listitem>
-                    <para><literal>metadata</literal></para>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Usage</term>
-                <listitem>
-                    <para>Required first child of <xref linkend="elemdef-opf-package"/>.</para>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Attributes</term>
-                <listitem>
-                    <para>The <literal>metadata</literal> element has no attributes defined in this
-                        specification.</para>
-                </listitem>
-            </varlistentry>
-            <varlistentry>
-                <term>Content Model</term>
-                <listitem>
-                    <para>In any order: <literal><xref linkend="elemdef-opf-dcidentifier"/></literal>
-                        <option>[required]</option>, <literal><xref linkend="elemdef-opf-dctitle"
-                        /></literal>
-                        <option>[required]</option>, <literal><xref linkend="elemdef-opf-dclanguage"
-                        /></literal>
-                        <option>[required]</option>, <literal><xref linkend="elemdef-opf-meta"
-                        /></literal>
-                        <option>[optional]</option>, <literal><xref linkend="elemdef-opf-link"
-                        /></literal>
-                        <option>[optional]</option></para>
-                </listitem>
-            </varlistentry>
-        </variablelist>
-    </section>
-    
-    <section xml:id="sec-opf-metadata-dublin-core">
-        <title>Package metadata</title>
-        
-        <section xml:id="sec-opf-metadata-dcmi-transition">
-            <title>Dublin Core Metadata Vocabulary Transition</title>
             
-            <para>
-                This specification represents the beginning of a shift from traditional XML-based grammars to 
-                RDFa vocabularies for expressing metadata. Unlike XML grammars, which intrude
-                into host grammars and require specific accommodations to work, RDFa is a more natural and
-                fluid means of expressing metadata, working within existing attributes to a greater degree of
-                semantic richness than would otherwise be possible.
-            </para>
-            
-            <para>
-                The addition of RDFa support for the expression of metadata now allows properties from a wide 
-                variety of vocabularies to be easily incorporated for expressing and refining information about the 
-                package and its contents.
-                RDFa properties also do not require the importing of new grammars, but allow properties to 
-                be expressed via <code>meta</code> elements. (For more information, refer to the <xref
-                    linkend="sec-metadata-extensibility"/>.)</para>
-            
-            <para>Although the requirement to include the core title, identifier and language <xref linkend="refDCMES"/>
-                elements has not changed with this release, their inclusion is focused on 
-                maintaining backwards compatibility during this period of transition, and their deprecation is 
-                expected in a future version. Content authors are instead encouraged to begin using the new properties
-                from the Dublin Core Metadata Terms <xref linkend="refDCTERMS"/> vocabulary, including
-                the properties that supersede the required DCMES elements (see <remark role="todo">add link to override</remark>).
-            </para>
-        </section>
-        
-        <section xml:id="sec-opf-dcidentifier" xreflabel="dc:identifier">
-            <title>The DCMES <literal>identifier</literal> Element</title>
-            
-            <para>Every <code>metadata</code> section must include at least one <literal>identifier</literal> element
-                containing an unambiguous identifier for the package.
-                Multiple <literal>identifier</literal> elements are permitted, but only one can be marked as 
-                the primary identifier for the package via the <code>package</code> element's 
-                <link linkend="attrdef-unique-identifier">unique-identifier</link> attribute.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows the unique <literal>identifier</literal> element for a publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/identifier.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>The <xref linkend="refDCTERMS"/> <literal>identifier</literal> property will supersede
-                the <literal>identifier</literal> element in a future version of the specification, but its inclusion
-                is currently optional. Authors are encouraged to include both versions using the
-                <literal>prefer</literal> attribute on the <literal>identifier</literal> element to indicate to Reading
-                Systems that the property should be used in preference.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows how an <literal>identifier</literal> element and property
-                    should co-exist within a publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/identifier-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>
-                This specification imposes no additional restrictions or requirements on identifiers except that they must be
-                at least one character in length.
-            </para>
-            
-            <para>
-                If the <literal>identifier</literal> (element or property) conforms to a established system
-                or has been granted by an issuing authority, the scheme employed should be identified by
-                attaching the optional <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-scheme">scheme</link></literal> 
-                ancillary property to the <literal>identifier</literal>.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows how an <literal>identifier</literal> can be marked as an ISBN.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/identifier-2.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>
-                This specification does not require or endorse the use of any scheme for identifiers, but authors
-                are encouraged to use established identifiers for schemes such as provided by the ONIX and MARC
-                standards. The scheme identifier used should conform to the requirements of the chosen system; this
-                specification imposes no restrictions or requirements on scheme identifiers.
-            </para>
-            
-            <variablelist xreflabel="dc:identifier" role="elem-synopsis"
-                xml:id="elemdef-opf-dcidentifier">
-                <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
-                        <para>
-                            <literal>dc:identifier</literal>
-                        </para>
-                    </listitem>
-                </varlistentry>
+            <section xml:id="sec-metadata-elem">
+                <title>The <literal>metadata</literal> Element</title>
                 
-                <varlistentry>
-                    <term>Namespace</term>
-                    <listitem>
-                        <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
-                    </listitem>
-                </varlistentry>
+                <section xml:id="sec-opf-metadata-overview">
+                    <title>Overview</title>
+                    
+                    <para>The <literal>metadata</literal> element encapsulates information about the publication as a
+                        whole, including metadata that applies to the publication package and to the abstract content 
+                        contained within the package. Metadata is expressed through a combination of three required 
+                        Dublin Core Metadata Element Set <xref linkend="refDCMES"/> properties &#8212; title, identifier
+                        and language &#8212; coupled with optional properties from DCMI Metadata Terms 
+                        <xref linkend="refDCTERMS"/>. These metadata terms can be
+                        further enhanced and extended by a set of optional properties also defined in this specification.</para>
+                    
+                    <para>
+                        Properties from other RDF vocabularies may be added to the <literal>metadata</literal> section
+                        to enhance package and content metadata and to supplement required and optional properties,
+                        but Reading System support for them should not be assumed.
+                    </para>
+                </section>
                 
-                <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                        <para>Required child of <xref linkend="elemdef-opf-metadata"/>.
-                            Repeatable.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
+                <section xml:id="sec-opf-metadata-def">
+                    <title>Definition</title>
+                    
+                    <variablelist xreflabel="metadata" role="elem-synopsis" xml:id="elemdef-opf-metadata">
+                        <varlistentry>
+                            <term>Element Name</term>
+                            <listitem>
+                                <para><literal>metadata</literal></para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Usage</term>
+                            <listitem>
+                                <para>Required first child of <xref linkend="elemdef-opf-package"/>.</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Attributes</term>
+                            <listitem>
+                                <para>The <literal>metadata</literal> element has no attributes defined in this
+                                    specification.</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Content Model</term>
+                            <listitem>
+                                <para>In any order: <literal><xref linkend="elemdef-opf-dcidentifier"/></literal>
+                                    <option>[required]</option>, <literal><xref linkend="elemdef-opf-dctitle"
+                                    /></literal>
+                                    <option>[required]</option>, <literal><xref linkend="elemdef-opf-dclanguage"
+                                    /></literal>
+                                    <option>[required]</option>, <literal><xref linkend="elemdef-opf-meta"
+                                    /></literal>
+                                    <option>[optional]</option>, <literal><xref linkend="elemdef-opf-link"
+                                    /></literal>
+                                    <option>[optional]</option></para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+                </section>
+                
+                <section xml:id="sec-opf-metadata-dublin-core">
+                    <title>Dublin Core metadata</title>
+                    
+                    <section xml:id="sec-opf-metadata-dcmi-transition">
+                        <title>Dublin Core Metadata Vocabulary Transition</title>
                         
-                        <variablelist role="elem-synopsis-attlist">
-                            
-                            <varlistentry xml:id="attrdef-dcidentifier-id">
-                                <term>
-                                    <literal>id</literal>
-                                    <option>[required]</option>
-                                </term>
-                                <listitem>
-                                    <para></para>
-                                </listitem>
-                            </varlistentry>
-                            
-                            <varlistentry xml:id="attrdef-dcidentifier-override">
-                                <term>
-                                    <literal>override</literal>
-                                    <option>[optional]</option>
-                                </term>
-                                <listitem>
-                                    <para></para>
-                                </listitem>
-                            </varlistentry>
-                        </variablelist>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                        <para>Text</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
-        </section>
-        
-        <section xml:id="elemdef-opf-dctitle" xreflabel="dc:title">
-            <title>The DCMES <literal>title</literal> Element</title>
-            
-            <para> Every <code>metadata</code> section must include at least one <literal>title</literal> 
-                element containing the title for the publication. Multiple <literal>title</literal> elements are
-                permitted, but the optional <literal>sort-order</literal> property should be attached to each
-                to indicate their primacy for display and other rendering purposes. If no means of establishing
-                the primary title for the publication is included, Reading Systems must treat the first 
-                <literal>title</literal> element encountered as the primary title.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows how to indicate the display order for 
-                    multiple <literal>title</literal> elements.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/title.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>The <xref linkend="refDCTERMS"/> <literal>title</literal> property will supersede
-                the <literal>title</literal> element in a future version of the specification, but its inclusion
-                is currently optional. Authors are encouraged to include both versions using the
-                <literal>prefer</literal> attribute on the <literal>title</literal> element to indicate to Reading
-                Systems that the property should be used in preference.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows how a <literal>title</literal> element and property
-                    should co-exist within a publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/title-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>
-                This specification imposes no additional restrictions or requirements on titles except that they
-                must be at least one character in length.
-            </para>
-            
-            <para>
-                The <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-file-as">file-as</link></literal> property can be attached to a 
-                <literal>title</literal> to include a normalized representation of the title for machine and
-                bibliographic sorting purposes.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows a <literal>title</literal> and its normalized form
-                    for sorting.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/title-3.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>
-                The <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-alternate-script">alternate-script</link></literal> property can  
-                also be attached to provide a rendition of the <literal>title</literal> in another language and/or script.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows alternate renditions of a <literal>title</literal> for French
-                    and English readers.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/title-4.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <variablelist xreflabel="dc:title" role="elem-synopsis">
-                <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
                         <para>
-                            <literal>dc:title</literal>
+                            This specification represents the beginning of a shift from traditional XML-based grammars to 
+                            RDFa vocabularies for expressing metadata. Unlike XML grammars, which intrude
+                            into host grammars and require specific accommodations to work, RDFa is a more natural and
+                            fluid means of expressing metadata, working within existing attributes to a greater degree of
+                            semantic richness than would otherwise be possible.
                         </para>
-                    </listitem>
-                </varlistentry>
-                
-                <varlistentry>
-                    <term>Namespace</term>
-                    <listitem>
-                        <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
-                    </listitem>
-                </varlistentry>
-                
-                <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                        <para>Required child of <xref linkend="elemdef-opf-metadata"/>.
-                            Repeatable.</para>
-                    </listitem>
-                </varlistentry>
-                
-                <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                        <variablelist role="elem-synopsis-attlist">
-                            
-                            <varlistentry xml:id="attrdef-dctitle-id">
-                                <term>
-                                    <literal>id</literal> [optional]</term>
-                                <listitem><para></para></listitem>
-                            </varlistentry>
-                            
-                            <varlistentry xml:id="attrdef-dctitle-override">
-                                <term>
-                                    <literal>override</literal>
-                                    <option>[optional]</option>
-                                </term>
-                                <listitem><para></para></listitem>
-                            </varlistentry>
-                            
-                        </variablelist>
-                    </listitem>
-                </varlistentry>
-                
-                
-                <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                        <para>Text</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
-        </section>
-        
-        <section xml:id="elemdef-opf-dclanguage" xreflabel="dc:language">
-            <title>The DCMES <literal>language</literal> Element</title>
-            <para> Every <code>metadata</code> section must include a single <literal>language</literal> 
-                element containing the default language of the publication content. The language specified
-                must be either:
-            </para>
-            
-            <itemizedlist>
-                <listitem>
-                    <para>a 2-letter language code as defined in <xref linkend="refISO6391"/>; or</para>
-                </listitem>
-                <listitem>
-                    <para>a 3-letter language code as defined in <xref linkend="refISO6392T"/>.</para>
-                </listitem>
-            </itemizedlist>
-            
-            <para>
-                The language identifier may include an optional dash-separated country code as defined in 
-                <xref linkend="refISO3166"/>.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows a publication in U.S. English.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/language.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>The <xref linkend="refDCTERMS"/> <literal>language</literal> property will supersede
-                the <literal>language</literal> element in a future version of the specification, but its inclusion
-                is currently optional. Authors are encouraged to include both versions using the
-                <literal>prefer</literal> attribute on the <literal>language</literal> element to indicate to Reading
-                Systems that the property should be used in preference.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows how a <literal>language</literal> element and property
-                    should co-exist within a publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/language-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <variablelist xreflabel="dc:language" role="elem-synopsis">
-                <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
+                        
                         <para>
-                            <literal>dc:language</literal>
+                            The addition of RDFa support for the expression of metadata now allows properties from a wide 
+                            variety of vocabularies to be easily incorporated for expressing and refining information about the 
+                            package and its contents.
+                            RDFa properties also do not require the importing of new grammars, but allow properties to 
+                            be expressed via <code>meta</code> elements. (For more information, refer to the <xref
+                                linkend="sec-metadata-extensibility"/>.)</para>
+                        
+                        <para>Although the requirement to include the core title, identifier and language <xref linkend="refDCMES"/>
+                            elements has not changed with this release, their inclusion is focused on 
+                            maintaining backwards compatibility during this period of transition, and their deprecation is 
+                            expected in a future version. Content authors are instead encouraged to begin using the new properties
+                            from the Dublin Core Metadata Terms <xref linkend="refDCTERMS"/> vocabulary, including
+                            the properties that supersede the required DCMES elements (see <remark role="todo">add link to override</remark>).
                         </para>
-                    </listitem>
-                </varlistentry>
-                
-                <varlistentry>
-                    <term>Namespace</term>
-                    <listitem>
-                        <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
-                    </listitem>
-                </varlistentry>
-                
-                <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                        <para>Required child of <xref linkend="elemdef-opf-metadata"/>.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                        <variablelist role="elem-synopsis-attlist">
-                            <varlistentry xml:id="attrdef-dclanguage-override">
-                                <term>
-                                    <literal>override</literal>
-                                    <option>[optional]</option>
-                                </term>
+                    </section>
+                    
+                    <section xml:id="sec-opf-dcidentifier" xreflabel="dc:identifier">
+                        <title>The DCMES <literal>identifier</literal> Element</title>
+                        
+                        <para>Every <code>metadata</code> section must include at least one <literal>identifier</literal> element
+                            containing an unambiguous identifier for the package.
+                            Multiple <literal>identifier</literal> elements are permitted, but only one can be marked as 
+                            the primary identifier for the package via the <code>package</code> element's 
+                            <link linkend="attrdef-unique-identifier">unique-identifier</link> attribute.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows the unique <literal>identifier</literal> element for a publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/identifier.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>The <xref linkend="refDCTERMS"/> <literal>identifier</literal> property will supersede
+                            the <literal>identifier</literal> element in a future version of the specification, but its inclusion
+                            is currently optional. Authors are encouraged to include both versions using the
+                            <literal>prefer</literal> attribute on the <literal>identifier</literal> element to indicate to Reading
+                            Systems that the property should be used in preference.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows how an <literal>identifier</literal> element and property
+                                should co-exist within a publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/identifier-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>
+                            This specification imposes no additional restrictions or requirements on identifiers except that they must be
+                            at least one character in length.
+                        </para>
+                        
+                        <para>
+                            If the <literal>identifier</literal> (element or property) conforms to a established system
+                            or has been granted by an issuing authority, the scheme employed should be identified by
+                            attaching the optional <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-scheme">scheme</link></literal> 
+                            ancillary property to the <literal>identifier</literal>.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows how an <literal>identifier</literal> can be marked as an ISBN.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/identifier-2.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>
+                            This specification does not require or endorse the use of any scheme for identifiers, but authors
+                            are encouraged to use established identifiers for schemes such as provided by the ONIX and MARC
+                            standards. The scheme identifier used should conform to the requirements of the chosen system; this
+                            specification imposes no restrictions or requirements on scheme identifiers.
+                        </para>
+                        
+                        <variablelist xreflabel="dc:identifier" role="elem-synopsis"
+                            xml:id="elemdef-opf-dcidentifier">
+                            <varlistentry>
+                                <term>Element Name</term>
                                 <listitem>
-                                    <para/>
+                                    <para>
+                                        <literal>dc:identifier</literal>
+                                    </para>
+                                </listitem>
+                            </varlistentry>
+                            
+                            <varlistentry>
+                                <term>Namespace</term>
+                                <listitem>
+                                    <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
+                                </listitem>
+                            </varlistentry>
+                            
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>Required child of <xref linkend="elemdef-opf-metadata"/>.
+                                        Repeatable.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Attributes</term>
+                                <listitem>
+                                    
+                                    <variablelist role="elem-synopsis-attlist">
+                                        
+                                        <varlistentry xml:id="attrdef-dcidentifier-id">
+                                            <term>
+                                                <literal>id</literal>
+                                                <option>[required]</option>
+                                            </term>
+                                            <listitem>
+                                                <para></para>
+                                            </listitem>
+                                        </varlistentry>
+                                        
+                                        <varlistentry xml:id="attrdef-dcidentifier-override">
+                                            <term>
+                                                <literal>override</literal>
+                                                <option>[optional]</option>
+                                            </term>
+                                            <listitem>
+                                                <para></para>
+                                            </listitem>
+                                        </varlistentry>
+                                    </variablelist>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Content Model</term>
+                                <listitem>
+                                    <para>Text</para>
                                 </listitem>
                             </varlistentry>
                         </variablelist>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                        <para>Text</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
-        </section>
-        
-        <section xml:id="sec-metadata-identifiers">
-            <title>Publication Identifiers</title>
-            <para><remark role="todo">TODO pending finalization of WG discussion</remark></para>
-            <!-- TODO reenable
-                <para>The Package Document's author is responsible for choosing a
-                primary identifier that is unique to one and only one particular package (i.e.,
-                the set of resources referenced from the package document's manifest).</para> 
-                <para role="rsconferr">Reading Systems must not fail catastrophically if they
-                encounter two distinct EPUB Publications with the same purportedly unique
-                primary identifier. </para>
-            -->
-        </section>
-        
-    </section>
-    
-    <section xml:id="sec-opf-meta" xreflabel="meta">
-        <title>The <literal>meta</literal> element</title>
-        
-        <section xml:id="sec-opt-meta-overview">
-            <title>Overview</title>
-            
-            <para>The <literal>meta</literal> element provides a generic means of expressing metadata, both to
-                express primary metadata about the package or content or to refine that metadata. 
-                All <literal>meta</literal> elements must attach the RDFa <literal>property</literal> attribute 
-                <xref linkend="refRDFa11Core"/> that contains a CURIE that resolves to a property from an RDF vocabulary
-                (it is not required that Reading System be able to resolve the CURIES).</para>
-            
-            <para>
-                If a <literal>meta</literal> element only includes a <literal>property</literal> attribute, the metadata 
-                is assumed to apply to the package or content as a whole.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows an instance of package metadata.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-package.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>
-                To enahnce metadata properties defined in the 
-                <xref linkend="refDCMES"/> elements or in other <literal>meta</literal> elements, the
-                RDFa <literal>about</literal> attribute must be attached. The value of this attribute must be
-                an IDREF to the <literal>xml:id</literal> of the element being refined.
-            </para>
-            
-            <informalexample>
-                <para>The following example shows an instance of ancillary metadata.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-package.xml"/>
-                </synopsis>
-            </informalexample>
-            
-        </section>
-        
-        <section xml:id="sec-opf-meta-def">
-            <title>Definition</title>
-            
-            <variablelist xreflabel="Meta Element" role="elem-synopsis" xml:id="elemdef-opf-meta">
-                <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
-                        <para>
-                            <literal>meta</literal>
+                    </section>
+                    
+                    <section xml:id="elemdef-opf-dctitle" xreflabel="dc:title">
+                        <title>The DCMES <literal>title</literal> Element</title>
+                        
+                        <para> Every <code>metadata</code> section must include at least one <literal>title</literal> 
+                            element containing the title for the publication. Multiple <literal>title</literal> elements are
+                            permitted, but the optional <literal>sort-order</literal> property should be attached to each
+                            to indicate their primacy for display and other rendering purposes. If no means of establishing
+                            the primary title for the publication is included, Reading Systems must treat the first 
+                            <literal>title</literal> element encountered as the primary title.
                         </para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                        <para>As child of the <xref linkend="elemdef-opf-metadata"/> element.
-                            Repeatable.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                        <variablelist role="elem-synopsis-attlist">
-                            <varlistentry xml:id="attrdef-meta-property">
-                                <term>
-                                    <literal>property</literal>
-                                    <option>[required]</option>
-                                </term>
+                        
+                        <informalexample>
+                            <para>The following example shows how to indicate the display order for 
+                                multiple <literal>title</literal> elements.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/title.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>The <xref linkend="refDCTERMS"/> <literal>title</literal> property will supersede
+                            the <literal>title</literal> element in a future version of the specification, but its inclusion
+                            is currently optional. Authors are encouraged to include both versions using the
+                            <literal>prefer</literal> attribute on the <literal>title</literal> element to indicate to Reading
+                            Systems that the property should be used in preference.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows how a <literal>title</literal> element and property
+                                should co-exist within a publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/title-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>
+                            This specification imposes no additional restrictions or requirements on titles except that they
+                            must be at least one character in length.
+                        </para>
+                        
+                        <para>
+                            The <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-file-as">file-as</link></literal> property can be attached to a 
+                            <literal>title</literal> to include a normalized representation of the title for machine and
+                            bibliographic sorting purposes.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows a <literal>title</literal> and its normalized form
+                                for sorting.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/title-3.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>
+                            The <literal><link linkend="rdfa-vocab-package-bag-ancillary-property-alternate-script">alternate-script</link></literal> property can  
+                            also be attached to provide a rendition of the <literal>title</literal> in another language and/or script.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows alternate renditions of a <literal>title</literal> for French
+                                and English readers.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/title-4.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <variablelist xreflabel="dc:title" role="elem-synopsis">
+                            <varlistentry>
+                                <term>Element Name</term>
                                 <listitem>
-                                    <para>A CURIE <xref linkend="refRDFa11Core"/> that resolves to a term in
-                                        one of the vocabularies defined in the metadata profile or <literal>package</literal> 
-                                        element's <xref linkend="attrdef-package-prefix"/> attribute.</para>
+                                    <para>
+                                        <literal>dc:title</literal>
+                                    </para>
                                 </listitem>
                             </varlistentry>
-                            <varlistentry>                        
-                                <term>
-                                    <literal>about</literal>
-                                    <option>[context dependent]</option>
-                                </term>
+                            
+                            <varlistentry>
+                                <term>Namespace</term>
                                 <listitem>
-                                    <para>A reference by id to the subject of the <literal>meta</literal> element property
-                                        being expressed. Optional only when a <literal>meta</literal> element contains a
-                                        non-empty child text node. When the <literal>meta</literal> element contains an
-                                        empty child text-node, the about attribute is required and must
-                                        contain a valid id of another meta element.</para>
-                                </listitem>                            
+                                    <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
+                                </listitem>
                             </varlistentry>
                             
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>Required child of <xref linkend="elemdef-opf-metadata"/>.
+                                        Repeatable.</para>
+                                </listitem>
+                            </varlistentry>
+                            
+                            <varlistentry>
+                                <term>Attributes</term>
+                                <listitem>
+                                    <variablelist role="elem-synopsis-attlist">
+                                        
+                                        <varlistentry xml:id="attrdef-dctitle-id">
+                                            <term>
+                                                <literal>id</literal> [optional]</term>
+                                            <listitem><para></para></listitem>
+                                        </varlistentry>
+                                        
+                                        <varlistentry xml:id="attrdef-dctitle-override">
+                                            <term>
+                                                <literal>override</literal>
+                                                <option>[optional]</option>
+                                            </term>
+                                            <listitem><para></para></listitem>
+                                        </varlistentry>
+                                        
+                                    </variablelist>
+                                </listitem>
+                            </varlistentry>
+                            
+                            
+                            <varlistentry>
+                                <term>Content Model</term>
+                                <listitem>
+                                    <para>Text</para>
+                                </listitem>
+                            </varlistentry>
                         </variablelist>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                        <para>Text or Empty.</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
-        </section>
-        
-        <section xml:id="elemdef-opf-meta-vocabs">
-            <title>Metadata properties</title>
-            
-            <section xml:id="elemdef-opf-meta-overview" conformance="informative">
-                <title>Overview</title>
+                    </section>
+                    
+                    <section xml:id="elemdef-opf-dclanguage" xreflabel="dc:language">
+                        <title>The DCMES <literal>language</literal> Element</title>
+                        <para> Every <code>metadata</code> section must include a single <literal>language</literal> 
+                            element containing the default language of the publication content. The language specified
+                            must be either:
+                        </para>
+                        
+                        <itemizedlist>
+                            <listitem>
+                                <para>a 2-letter language code as defined in <xref linkend="refISO6391"/>; or</para>
+                            </listitem>
+                            <listitem>
+                                <para>a 3-letter language code as defined in <xref linkend="refISO6392T"/>.</para>
+                            </listitem>
+                        </itemizedlist>
+                        
+                        <para>
+                            The language identifier may include an optional dash-separated country code as defined in 
+                            <xref linkend="refISO3166"/>.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows a publication in U.S. English.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/language.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>The <xref linkend="refDCTERMS"/> <literal>language</literal> property will supersede
+                            the <literal>language</literal> element in a future version of the specification, but its inclusion
+                            is currently optional. Authors are encouraged to include both versions using the
+                            <literal>prefer</literal> attribute on the <literal>language</literal> element to indicate to Reading
+                            Systems that the property should be used in preference.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows how a <literal>language</literal> element and property
+                                should co-exist within a publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/language-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <variablelist xreflabel="dc:language" role="elem-synopsis">
+                            <varlistentry>
+                                <term>Element Name</term>
+                                <listitem>
+                                    <para>
+                                        <literal>dc:language</literal>
+                                    </para>
+                                </listitem>
+                            </varlistentry>
+                            
+                            <varlistentry>
+                                <term>Namespace</term>
+                                <listitem>
+                                    <para><literal>http://purl.org/dc/elements/1.1/</literal></para>
+                                </listitem>
+                            </varlistentry>
+                            
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>Required child of <xref linkend="elemdef-opf-metadata"/>.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Attributes</term>
+                                <listitem>
+                                    <variablelist role="elem-synopsis-attlist">
+                                        <varlistentry xml:id="attrdef-dclanguage-override">
+                                            <term>
+                                                <literal>override</literal>
+                                                <option>[optional]</option>
+                                            </term>
+                                            <listitem>
+                                                <para/>
+                                            </listitem>
+                                        </varlistentry>
+                                    </variablelist>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Content Model</term>
+                                <listitem>
+                                    <para>Text</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </section>
+                    
+                </section>
                 
-                <para>
-                    The following sections enumerate key RDF vocabularies and properties both defined as
-                    part of this specification and by external agencies. It is not intended to be a comprehensive 
-                    list of RDF vocabularies or properties that can be used to add or annotate package metadata.
-                </para>
+                <section xml:id="sec-opf-meta" xreflabel="meta">
+                    <title>The <literal>meta</literal> element</title>
+                    
+                    <section xml:id="sec-opt-meta-overview">
+                        <title>Overview</title>
+                        
+                        <para>The <literal>meta</literal> element provides a generic means of expressing metadata, both to
+                            express primary metadata about the package or content or to refine that metadata. 
+                            All <literal>meta</literal> elements must attach the RDFa <literal>property</literal> attribute 
+                            <xref linkend="refRDFa11Core"/> that contains a CURIE that resolves to a property from an RDF vocabulary
+                            (it is not required that Reading System be able to resolve the CURIES).</para>
+                        
+                        <para>
+                            If a <literal>meta</literal> element only includes a <literal>property</literal> attribute, the metadata 
+                            is assumed to apply to the package or content as a whole.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows an instance of package metadata.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-package.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>
+                            To enahnce metadata properties defined in the 
+                            <xref linkend="refDCMES"/> elements or in other <literal>meta</literal> elements, the
+                            RDFa <literal>about</literal> attribute must be attached. The value of this attribute must be
+                            an IDREF to the <literal>xml:id</literal> of the element being refined.
+                        </para>
+                        
+                        <informalexample>
+                            <para>The following example shows an instance of ancillary metadata.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-package.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                    </section>
+                    
+                    <section xml:id="sec-opf-meta-def">
+                        <title>Definition</title>
+                        
+                        <variablelist xreflabel="Meta Element" role="elem-synopsis" xml:id="elemdef-opf-meta">
+                            <varlistentry>
+                                <term>Element Name</term>
+                                <listitem>
+                                    <para>
+                                        <literal>meta</literal>
+                                    </para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>As child of the <xref linkend="elemdef-opf-metadata"/> element.
+                                        Repeatable.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Attributes</term>
+                                <listitem>
+                                    <variablelist role="elem-synopsis-attlist">
+                                        <varlistentry xml:id="attrdef-meta-property">
+                                            <term>
+                                                <literal>property</literal>
+                                                <option>[required]</option>
+                                            </term>
+                                            <listitem>
+                                                <para>A CURIE <xref linkend="refRDFa11Core"/> that resolves to a term in
+                                                    one of the vocabularies defined in the metadata profile or <literal>package</literal> 
+                                                    element's <xref linkend="attrdef-package-prefix"/> attribute.</para>
+                                            </listitem>
+                                        </varlistentry>
+                                        <varlistentry>                        
+                                            <term>
+                                                <literal>about</literal>
+                                                <option>[context dependent]</option>
+                                            </term>
+                                            <xi:include href="./share/about-prose-listitem.xml"/>
+                                        </varlistentry>
+                                        
+                                    </variablelist>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Content Model</term>
+                                <listitem>
+                                    <para>Text or Empty.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </section>
+                    
+                    <section xml:id="elemdef-opf-meta-vocabs">
+                        <title>Metadata properties</title>
+                        
+                        <section xml:id="elemdef-opf-meta-overview" conformance="informative">
+                            <title>Overview</title>
+                            
+                            <para>
+                                The following sections enumerate key RDF vocabularies and properties both defined as
+                                part of this specification and by external agencies. It is not intended to be a comprehensive 
+                                list of RDF vocabularies or properties that can be used to add or annotate package metadata.
+                            </para>
+                            
+                            <para>
+                                With the exception of <link linkend="elemdef-opf-meta-property-values-package">package properties</link>,
+                                all metadata properties noted in the following sections can be used to annotate other metadata
+                                properties in the package.
+                            </para>
+                        </section>
+                        
+                        <section xml:id="elemdef-opf-meta-property-values-dcterms">
+                            <title>DCTERMS</title>
+                            
+                            <para>The <literal>meta</literal> element <literal>property</literal> attribute may
+                                define any property from DCMI Metadata Terms <xref linkend="refDCTERMS"/>
+                                for expressing metadata about the package and its contents.</para>
+                            
+                            <para>
+                                For more information about these properties and their use, please refer to the
+                                vocabulary.
+                            </para>
+                            
+                        </section>
+                        
+                        <section xml:id="elemdef-opf-meta-property-values-package">
+                            <title>Package</title>
+                            
+                            <para>Package properties define information about the package and are not
+                                intended for use annotating other attributes. These properties are defined
+                                canonically in the 
+                                <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
+                            </para>
+                            
+                            <para>The following table enumerates the available properties.</para>
+                            
+                            <informaltable xml:id="rdfa-vocab-package-bag-package-props">
+                                <info role="rdfa-vocab-info"><annotation><para>Package-level properties</para></annotation></info>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-content-version">
+                                                <literal>content-version</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>content-version</literal> property provides the 
+                                                version of the publication. The semantics of the three segments and how they 
+                                                are incremented for any given publication is not defined, but authors are encouraged to
+                                                treat them as representing a major.mid.minor version value. Each segment of the identifier
+                                                must consist of one or more alphanumeric characters.
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>A string of the form x.x.x</entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-publication-type">
+                                                <literal>publication-type</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>publication-type</literal> property describes the 
+                                                nature of a specialized type of EPUB Package. The value <literal>dictionary</literal> indicates 
+                                                that the package contains a dictionary as defined in <remark role="todo">TODO</remark> 
+                                                and the value <literal>annotation</literal> that the package contains an annotation as defined 
+                                                in <remark role="todo">TODO</remark>.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>dictionary | annotation</entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-source-identifier">
+                                                <literal>source-identifier</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>source-identifier</literal> property references the 
+                                                <literal>identifier</literal> (element or property) that is the source of the NCX pageList 
+                                                (i.e., the publication from which the pagination was derived).</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:string</literal>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-page-progression-direction">
+                                                <literal>page-progression-direction</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>page-progression-direction</literal> property indicates 
+                                                the global direction in which the publication content flows. This property can be overriden by 
+                                                individual manifest <literal>items</literal>s.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>rtl</literal> | <literal>ltr</literal>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                            
+                        </section>
+                        
+                        <section xml:id="elemdef-opf-meta-property-values-ancillary">
+                            <title>Ancillary</title>
+                            
+                            <para>Ancillary properties represent metadata about metadata and are intended to augment 
+                                metadata defined elsewhere in the package. These properties are defined canonically in the 
+                                <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
+                            </para>
+                            
+                            <para>The following table enumerates the available properties.</para>
+                            
+                            <informaltable xml:id="rdfa-vocab-package-bag-ancillary-props">
+                                <info role="rdfa-vocab-info"><annotation><para>Ancillary properties</para></annotation></info>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-alternate-script">
+                                                <literal>alternate-script</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>alternate-script</literal> property provides an 
+                                                alternate expression of the associated property value in a language and script identified by 
+                                                the <literal>xml:lang</literal> attribute. The property is typically attached to 
+                                                <literal>creator</literal> and <literal>title</literal> properties for internationalization purposes.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:string</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>All properties.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-creator">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-date-ref">
+                                                <literal>date-ref</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>date-ref</literal> property relates an 
+                                                <link linkend="rdfa-vocab-package-bag-ancillary-property-event"><literal>event</literal></link>
+                                                to the <literal>date</literal> on which it occurred. This property is 
+                                                typically used to tie changes to metadata to the corresponding revision date for the publication. 
+                                                <remark role="todo">Why was this under metadata authority props? Is it global?</remark>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:IDREF</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>All properties.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-title">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-display-seq">
+                                                <literal>display-seq</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>display-seq</literal> property indicates the numeric position in which to display the current property relative to identical metadata properties. For example, to indicate the order in which to render multiple <literal>title</literal> elements or properties.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:unsignedInt</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>All properties.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-title">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-event">
+                                                <literal>event</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>event</literal> property indicates a significant event in the lifecycle of a publication. Events are typically modify <literal>date</literal> elements or properties to provide the reason for a change to the publication. A set of standard values are defined for this property but no restrictions are imposed on the extension of this list.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>creation | meta-update | modification | publication | <literal>xsd:string</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>dcterms:date</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-identifier">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-file-as">
+                                                <literal>file-as</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>file-as</literal> property provides the normalized form of the associated property for sorting.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:string</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>All properties.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-title">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-role">
+                                                <literal>role</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>role</literal> property describes the nature of work performed by a <literal>creator</literal> or <literal>contributor</literal>, for example that they represent the author or editor of a publication.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>It is recommended that values be drawn from 
+                                                <db:link xmlns:db="http://docbook.org/ns/docbook" xlink:href="http://www.loc.gov/marc/relators/relacode.html">MARC Code List for Relators</db:link> and 
+                                                <db:link xmlns:db="http://docbook.org/ns/docbook" xlink:href="http://www.editeur.org/files/ONIX%203/ONIX_Code_Lists_Issue_12_Changes.pdf">ONIX 3.0 Code List 17</db:link>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>dcterms:contributor</literal>, <literal>dcterms:creator</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-creator">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-scheme">
+                                                <literal>scheme</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>scheme</literal> property identifies the formal system used to express the value of an <literal>identifier</literal> or <literal>subject</literal> element or property.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>Values for dcterms:subject should be drawn from ONIX 3.0 Code List 27.<remark role="todo">TODO: note different schemes for different types or leave unspecified?</remark>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>dcterms:subject</literal>, <literal>dcterms:identifier</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-identifier">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-title-order">
+                                                <literal>title-order</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>title-order</literal> property indicates the numeric position in which to sort the associated <literal>title</literal> relative to other titles identified with the same <literal>
+                                                title-type</literal> value. <remark role="todo">was sort-order, but unclear if any other use for the property with display-seq, and whether this is already covered by file-as.</remark>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:unsignedInt</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>dcterms:title</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-title">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-title-type">
+                                                <literal>title-type</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>title-type</literal> property indicates the form or nature of a <literal>title</literal>. A set of standard values are defined for this property but no restrictions are imposed on the extension of this list. <remark role="todo">isn't this a role?</remark>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>primary</literal> | <literal>short</literal> | <literal>long</literal> | <literal>sub</literal> | <literal>series</literal> | <literal>collection</literal> | <literal>edition</literal> | <literal>slang</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>dcterms:title</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-title">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                            
+                            <remark role="todo">Where do these properties fit in in relation to the above?</remark>
+                            
+                            <informaltable xml:id="rdfa-vocab-package-bag-meta-auth-props">
+                                <info role="rdfa-vocab-info"><annotation><para>Metadata Authority properties</para></annotation></info>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-authority">
+                                                <literal>authority</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>authority</literal> property references the metadata authority (<literal>
+                                                meta-auth</literal>) responsible for an instance of package metadata.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:IDREF</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-meta-auth">
+                                                <literal>meta-auth</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>meta-auth</literal> property provides the name of a party or authority responsible for the package metadata.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:string</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                                <tgroup cols="2">
+                                    <tbody>
+                                        <row>
+                                            <entry role="rdfa-property-header">Property:</entry>
+                                            <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-signature">
+                                                <literal>signature</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Description:</entry>
+                                            <entry role="rdfa-property-desc">The <literal>signature</literal> property relates a metadata authority (<literal>
+                                                meta-auth</literal>) responsible for creating or updating package metadata to an XML Signature contained in the Signatures.xml file.</entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Allowed value(s):</entry>
+                                            <entry>
+                                                <literal>xsd:IDREF</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Extends:</entry>
+                                            <entry>
+                                                <literal>meta-auth</literal>
+                                            </entry>
+                                        </row>
+                                        <row>
+                                            <entry role="rdfa-property-header">Example:</entry>
+                                            <entry>
+                                                <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
+                                            </entry>
+                                        </row>
+                                    </tbody>
+                                </tgroup>
+                            </informaltable>
+                            
+                        </section>
+                        
+                    </section>
+                    
+                </section>
                 
-                <para>
-                    With the exception of <link linkend="elemdef-opf-meta-property-values-package">package properties</link>,
-                    all metadata properties noted in the following sections can be used to annotate other metadata
-                    properties in the package.
-                </para>
+                <section xml:id="sec-opf-link" xreflabel="link">
+                    <title>The <literal>link</literal> element</title>
+                    
+                    <section xml:id="sec-opf-link-overview">
+                        <title>Overview</title>
+                        <para>This specification introdcues a new mechanism for associating metadata and bibliographic 
+                            records with a publication. One or more <literal>link</literal> elements can now be added to the 
+                            <link linkend="sec-metadata-elem">metadata</link> section to identify each record.</para>
+                        
+                        <para>
+                            The <literal>href</literal> attribute of the <literal>link</literal> element identifies the location
+                            of the resource and the RDFa <literal>rel</literal> attribute defines the type of record (see 
+                            <xref linkend="elemdef-opf-link-rel-values"/> the list of record types).
+                        </para>
+                        
+                        <!-- There is no provision for specifying the version of the record (this assumes that version information is available inline in the referenced resources) -->
+                        
+                        <informalexample>
+                            <para>The following example shows the <literal>link</literal> element used to
+                                associate an ONIX record with the publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/link-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <para>The resources identified by the <literal>link</literal> element's <literal>href</literal> attribute are 
+                            considered <xref linkend="gloss-external-resource"/>s, and must therefore not be identified as items in the
+                            <link linkend="sec-manifest-elem">manifest</link>.</para>
+                        
+                        <para>If metadata provided in an external record conflicts with metadata given inline in the
+                            Package Document metadata element, then the external metadata should be given
+                            precedence.</para>
+                        
+                        <para>Reading Systems are not required to dereference the resources identified through the <literal>link</literal> element.</para>
+                        
+                    </section>
+                    
+                    <section xml:id="sec-opf-link-def">
+                        <title>Definition</title>
+                        
+                        <variablelist xreflabel="link" role="elem-synopsis" xml:id="elemdef-opf-link">
+                            <varlistentry>
+                                <term>Element Name</term>
+                                <listitem>
+                                    <para>
+                                        <literal>link</literal>
+                                    </para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>As a child of <xref linkend="elemdef-opf-metadata"/>. Repeatable.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Attributes</term>
+                                <listitem>
+                                    <variablelist role="elem-synopsis-attlist">
+                                        <varlistentry xml:id="attrdef-link-href">
+                                            <term>
+                                                <literal>href</literal>
+                                                <option>[required]</option>
+                                            </term>
+                                            <listitem>
+                                                <para>A valid URL [TODO RFC link] to an external metadata
+                                                    resource.</para>
+                                            </listitem>
+                                        </varlistentry>
+                                        <varlistentry xml:id="attrdef-link-rel">
+                                            <term>
+                                                <literal>rel</literal>
+                                                <option>[required]</option>
+                                            </term>
+                                            <listitem>
+                                                <para>A token that describes the nature of the external resource
+                                                    (its relation to the publication). See further <xref
+                                                        linkend="elemdef-opf-link-rel-values"/>.</para>
+                                            </listitem>
+                                        </varlistentry>
+                                        <varlistentry xml:id="attrdef-link-id">
+                                            <term>
+                                                <literal>id</literal>
+                                                <option>[optional]</option>
+                                            </term>
+                                            <listitem>                                
+                                                <xi:include href="share/id-prose-para.xml"/>                                
+                                            </listitem>
+                                        </varlistentry>
+                                    </variablelist>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Content Model</term>
+                                <listitem>
+                                    <para>Empty.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                        
+                    </section>
+                    
+                    <section xml:id="elemdef-opf-link-rel-values">
+                        <title>Metadata record types</title>
+                        
+                        <para>A list of predefined metadata record identifiers is provided in the table below.
+                            These values are defined canonically in the 
+                            <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
+                        </para>
+                        
+                        <informaltable xml:id="rdfa-vocab-package-bag-metarec-types">
+                            <info role="rdfa-vocab-info"><annotation><para>Metadata record types</para></annotation></info>
+                            <tgroup cols="2">
+                                <tbody>
+                                    <row>
+                                        <entry role="rdfa-property header" xml:id="metarec-property-onix-record">
+                                            <literal>onix-record</literal>
+                                        </entry>
+                                        <entry role="rdfa-property-desc">The <literal>onix-record</literal> property indicates the referenced resource is an ONIX record.</entry>
+                                    </row>
+                                    <row>
+                                        <entry role="rdfa-property header" xml:id="metarec-property-mods-record">
+                                            <literal>mods-record</literal>
+                                        </entry>
+                                        <entry role="rdfa-property-desc">The <literal>mods-record</literal> property indicates the referenced resource is a MODS record.</entry>
+                                    </row>
+                                    <row>
+                                        <entry role="rdfa-property header" xml:id="metarec-property-xmp-record">
+                                            <literal>xmp-record</literal>
+                                        </entry>
+                                        <entry role="rdfa-property-desc">The <literal>xmp-record</literal> property indicates the referenced resource is an XMP record.</entry>
+                                    </row>
+                                    <row>
+                                        <entry role="rdfa-property header" xml:id="metarec-property-marc21xml-record">
+                                            <literal>marc21xml-record</literal>
+                                        </entry>
+                                        <entry role="rdfa-property-desc">The <literal>marc21xml-record</literal> property indicates the referenced resource is a MARC21 record.</entry>
+                                    </row>
+                                </tbody>
+                            </tgroup>
+                        </informaltable>
+                        
+                        <para>Additional identifiers can be added so long as they adhere to the requirements defined in
+                            <xref linkend="sec-metadata-extensibility"/> for referencing external vocabularies.</para>
+                        
+                    </section>
+                    
+                    <section xml:id="sec-opf-link-examples">
+                        <title><literal>link</literal> element examples</title>
+                        
+                        <informalexample>
+                            <para>The following example shows the <literal>link</literal> element used to
+                                associate two external resources with the publication: an XMP record, and a link
+                                to an informational web page. Note that as the <literal>foaf:homepage</literal>
+                                token is <link linkend="elemdef-opf-link-rel-values">not defined by this
+                                    specification</link>, the 
+                                <link linkend="sec-metadata-extensibility">metadata extensibility mechanism</link> is employed.
+                            </para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/link-2.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                    </section>
+                </section>
+                
+                <section xml:id="sec-metadata-examples">
+                    <title>Metadata Examples</title>
+                    
+                    <section xml:id="sec-metadata-examples-version">
+                        <title>Versioning</title>
+                        
+                        <informalexample>
+                            <para>The following example shows a typical version identifier in a package file.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-versioning.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following examples shows how major and minor revision changes might appear in a package.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-versioning-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                    <section xml:id="sec-metadata-examples-identifier">
+                        <title>Identifiers</title>
+                        
+                        <informalexample>
+                            <para>The following examples show how different identifiers can be distinguished within a package
+                                by their <literal>scheme</literal> attributes.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-identifiers.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                    <section xml:id="sec-metadata-examples-meta-auth">
+                        <title>Metadata authority</title>
+                        
+                        <informalexample>
+                            <para>The following example shows an identifier that has been added by a metadata authority
+                                but that has not changed the unique the identifier for the package.
+                            </para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-meta-auth.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following example shows how a retailer can replace the publisher supplied
+                                unique identifier with their own.
+                            </para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-meta-auth-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                    <section xml:id="sec-metadata-examples-creator">
+                        <title>Creators</title>
+                        
+                        <informalexample>
+                            <para>The following example references the ID of the <literal>dcterms:creator</literal> element to express 
+                                additional metadata properties of the <code>dcterms:creator</code> element.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-creator.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following example shows how ancillary properties can be attached to a creator
+                                to provide alternate representations of their name.
+                            </para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-creator-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following examples shows how party identifiers can be associated with an author.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-creator-2.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                    <section xml:id="sec-metadata-examples-title">
+                        <title>Titles</title>
+                        
+                        <informalexample>
+                            <para>The following example shows a title for a publication.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-title.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following example shows a title in two scripts.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-title-1.xml"/>
+                            </synopsis>
+                        </informalexample>
+                        
+                        <informalexample>
+                            <para>The following complex example shows the book "The Great Cookbooks of the World: Mon premier guide 
+                                de cuisson, un Mémoire. The New French Cuisine Masters, Volume Two. Special Anniversary Edition" could
+                                be classified.
+                            </para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-title-2.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                    <section xml:id="sec-metadata-examples-publication-type">
+                        <title>Publication type</title>
+                        
+                        <informalexample>
+                            <para>The following example shows how a publication can be identified as a dictionary.</para>
+                            <synopsis>
+                                <xi:include parse="text" href="examples/publications/meta-ex-pub-type.xml"/>
+                            </synopsis>
+                        </informalexample>
+                    </section>
+                    
+                </section>
+                
             </section>
             
-            <section xml:id="elemdef-opf-meta-property-values-dcterms">
-                <title>DCTERMS</title>
-                
-                <para>The <literal>meta</literal> element <literal>property</literal> attribute may
-                    define any property from DCMI Metadata Terms <xref linkend="refDCTERMS"/>
-                    for expressing metadata about the package and its contents.</para>
-                
-                <para>
-                    For more information about these properties and their use, please refer to the
-                    vocabulary.
-                </para>
-                
-            </section>
-            
-            <section xml:id="elemdef-opf-meta-property-values-package">
-                <title>Package</title>
-                
-                <para>Package properties define information about the package and are not
-                intended for use annotating other attributes. These properties are defined
-                canonically in the 
-                    <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
-                </para>
-                
-                <para>The following table enumerates the available properties.</para>
-                
-                <informaltable xml:id="rdfa-vocab-package-bag-package-props">
-                    <info role="rdfa-vocab-info"><annotation><para>Package-level properties</para></annotation></info>
-                    <tgroup cols="2">
-                        <tbody>
-                            <row>
-                                <entry role="rdfa-property-header">Property:</entry>
-                                <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-content-version">
-                                    <literal>content-version</literal>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Description:</entry>
-                                <entry role="rdfa-property-desc">The <literal>content-version</literal> property provides the 
-                                    version number of the publication. The semantics of the three digit sequences and how they 
-                                    are incremented for any given publication is not defined.</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                <entry>A string of the form #.#.#</entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                    <tgroup cols="2">
-                        <tbody>
-                            <row>
-                                <entry role="rdfa-property-header">Property:</entry>
-                                <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-publication-type">
-                                    <literal>publication-type</literal>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Description:</entry>
-                                <entry role="rdfa-property-desc">The <literal>publication-type</literal> property describes the 
-                                    nature of a specialized type of EPUB Package. The value <literal>dictionary</literal> indicates 
-                                    that the package contains a dictionary as defined in <remark role="todo">TODO</remark> 
-                                    and the value <literal>annotation</literal> that the package contains an annotation as defined 
-                                    in <remark role="todo">TODO</remark>.</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                <entry>dictionary | annotation</entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                    <tgroup cols="2">
-                        <tbody>
-                            <row>
-                                <entry role="rdfa-property-header">Property:</entry>
-                                <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-source-identifier">
-                                    <literal>source-identifier</literal>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Description:</entry>
-                                <entry role="rdfa-property-desc">The <literal>source-identifier</literal> property references the 
-                                    <literal>identifier</literal> (element or property) that is the source of the NCX pageList 
-                                    (i.e., the publication from which the pagination was derived).</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                <entry>
-                                    <literal>xsd:string</literal>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                    <tgroup cols="2">
-                        <tbody>
-                            <row>
-                                <entry role="rdfa-property-header">Property:</entry>
-                                <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-package-property-page-progression-direction">
-                                    <literal>page-progression-direction</literal>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Description:</entry>
-                                <entry role="rdfa-property-desc">The <literal>page-progression-direction</literal> property indicates 
-                                    the global direction in which the publication content flows. This property can be overriden by 
-                                    individual manifest <literal>items</literal>s.</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                <entry>
-                                    <literal>rtl</literal> | <literal>ltr</literal>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                </informaltable>
-                
-            </section>
-            
-            <section xml:id="elemdef-opf-meta-property-values-ancillary">
-                <title>Ancillary</title>
-                
-                <para>Ancillary properties represent metadata about metadata and are intended to augment 
-                    metadata defined elsewhere in the package. These properties are defined canonically in the 
-                    <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
-                </para>
-                
-                <para>The following table enumerates the available properties.</para>
-                
-                     <informaltable xml:id="rdfa-vocab-package-bag-ancillary-props">
-                         <info role="rdfa-vocab-info"><annotation><para>Ancillary properties</para></annotation></info>
-                         <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-alternate-script">
-                                    <literal>alternate-script</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>alternate-script</literal> property provides an 
-                                     alternate expression of the associated property value in a language and script identified by 
-                                     the <literal>xml:lang</literal> attribute. The property is typically attached to 
-                                     <literal>creator</literal> and <literal>title</literal> properties for internationalization purposes.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:string</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>All properties.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-creator">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-date-ref">
-                                    <literal>date-ref</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>date-ref</literal> property relates an 
-                                     <link linkend="rdfa-vocab-package-bag-ancillary-property-event"><literal>event</literal></link>
-                                     to the <literal>date</literal> on which it occurred. This property is 
-                                     typically used to tie changes to metadata to the corresponding revision date for the publication. 
-                                     <remark role="todo">Why was this under metadata authority props? Is it global?</remark>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:IDREF</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>All properties.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-title">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-display-seq">
-                                    <literal>display-seq</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>display-seq</literal> property indicates the numeric position in which to display the current property relative to identical metadata properties. For example, to indicate the order in which to render multiple <literal>title</literal> elements or properties.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:unsignedInt</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>All properties.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-title">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-event">
-                                    <literal>event</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>event</literal> property indicates a significant event in the lifecycle of a publication. Events are typically modify <literal>date</literal> elements or properties to provide the reason for a change to the publication. A set of standard values are defined for this property but no restrictions are imposed on the extension of this list.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>creation | meta-update | modification | publication | <literal>xsd:string</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>dcterms:date</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-identifier">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-file-as">
-                                    <literal>file-as</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>file-as</literal> property provides the normalized form of the associated property for sorting.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:string</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>All properties.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-title">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-role">
-                                    <literal>role</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>role</literal> property describes the nature of work performed by a <literal>creator</literal> or <literal>contributor</literal>, for example that they represent the author or editor of a publication.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>It is recommended that values be drawn from 
-<db:link xmlns:db="http://docbook.org/ns/docbook" xlink:href="http://www.loc.gov/marc/relators/relacode.html">MARC Code List for Relators</db:link> and 
-<db:link xmlns:db="http://docbook.org/ns/docbook" xlink:href="http://www.editeur.org/files/ONIX%203/ONIX_Code_Lists_Issue_12_Changes.pdf">ONIX 3.0 Code List 17</db:link>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>dcterms:contributor</literal>, <literal>dcterms:creator</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-creator">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-scheme">
-                                    <literal>scheme</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>scheme</literal> property identifies the formal system used to express the value of an <literal>identifier</literal> or <literal>subject</literal> element or property.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>Values for dcterms:subject should be drawn from ONIX 3.0 Code List 27.<remark role="todo">TODO: note different schemes for different types or leave unspecified?</remark>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>dcterms:subject</literal>, <literal>dcterms:identifier</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-identifier">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-title-order">
-                                    <literal>title-order</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>title-order</literal> property indicates the numeric position in which to sort the associated <literal>title</literal> relative to other titles identified with the same <literal>
-title-type</literal> value. <remark role="todo">was sort-order, but unclear if any other use for the property with display-seq, and whether this is already covered by file-as.</remark>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:unsignedInt</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>dcterms:title</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-title">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-ancillary-property-title-type">
-                                    <literal>title-type</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>title-type</literal> property indicates the form or nature of a <literal>title</literal>. A set of standard values are defined for this property but no restrictions are imposed on the extension of this list. <remark role="todo">isn't this a role?</remark>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>primary</literal> | <literal>short</literal> | <literal>long</literal> | <literal>sub</literal> | <literal>series</literal> | <literal>collection</literal> | <literal>edition</literal> | <literal>slang</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>dcterms:title</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-title">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                     </informaltable>
-                
-                     <remark role="todo">Where do these properties fit in in relation to the above?</remark>
-                
-                     <informaltable xml:id="rdfa-vocab-package-bag-meta-auth-props">
-                         <info role="rdfa-vocab-info"><annotation><para>Metadata Authority properties</para></annotation></info>
-                         <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-authority">
-                                    <literal>authority</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>authority</literal> property references the metadata authority (<literal>
-meta-auth</literal>) responsible for an instance of package metadata.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:IDREF</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-meta-auth">
-                                    <literal>meta-auth</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>meta-auth</literal> property provides the name of a party or authority responsible for the package metadata.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:string</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                        <tgroup cols="2">
-                           <tbody>
-                              <row>
-                                 <entry role="rdfa-property-header">Property:</entry>
-                                 <entry role="rdfa-property simple-property" xml:id="rdfa-vocab-package-bag-meta-auth-property-signature">
-                                    <literal>signature</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Description:</entry>
-                                 <entry role="rdfa-property-desc">The <literal>signature</literal> property relates a metadata authority (<literal>
-meta-auth</literal>) responsible for creating or updating package metadata to an XML Signature contained in the Signatures.xml file.</entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                 <entry>
-                                    <literal>xsd:IDREF</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Extends:</entry>
-                                 <entry>
-                                    <literal>meta-auth</literal>
-                                 </entry>
-                              </row>
-                              <row>
-                                 <entry role="rdfa-property-header">Example:</entry>
-                                 <entry>
-                                    <link linkend="sec-metadata-examples-meta-auth">[Example]</link>
-                                 </entry>
-                              </row>
-                           </tbody>
-                        </tgroup>
-                     </informaltable>
-                
-            </section>
-            
-        </section>
-        
-    </section>
-
-    <section xml:id="sec-opf-link" xreflabel="link">
-        <title>The <literal>link</literal> element</title>
-        
-        <section xml:id="sec-opf-link-overview">
-            <title>Overview</title>
-            <para>This specification introdcues a new mechanism for associating metadata and bibliographic 
-                records with a publication. One or more <literal>link</literal> elements can now be added to the 
-                <link linkend="sec-metadata-elem">metadata</link> section to identify each record.</para>
-            
-            <para>
-                The <literal>href</literal> attribute of the <literal>link</literal> element identifies the location
-                of the resource and the RDFa <literal>rel</literal> attribute defines the type of record (see 
-                <xref linkend="elemdef-opf-link-rel-values"/> the list of record types).
-            </para>
-            
-            <!-- There is no provision for specifying the version of the record (this assumes that version information is available inline in the referenced resources) -->
-            
-            <informalexample>
-                <para>The following example shows the <literal>link</literal> element used to
-                    associate an ONIX record with the publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/link-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <para>The resources identified by the <literal>link</literal> element's <literal>href</literal> attribute are 
-                considered <xref linkend="gloss-external-resource"/>s, and must therefore not be identified as items in the
-                <link linkend="sec-manifest-elem">manifest</link>.</para>
-            
-            <para>If metadata provided in an external record conflicts with metadata given inline in the
-                Package Document metadata element, then the external metadata should be given
-                precedence.</para>
-            
-            <para>Reading Systems are not required to dereference the resources identified through the <literal>link</literal> element.</para>
-            
-        </section>
-        
-        <section xml:id="sec-opf-link-def">
-            <title>Definition</title>
-            
-            <variablelist xreflabel="link" role="elem-synopsis" xml:id="elemdef-opf-link">
-                <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
-                        <para>
-                            <literal>link</literal>
-                        </para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                        <para>As a child of <xref linkend="elemdef-opf-metadata"/>. Repeatable.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                        <variablelist role="elem-synopsis-attlist">
-                            <varlistentry xml:id="attrdef-link-href">
-                                <term>
-                                    <literal>href</literal>
-                                    <option>[required]</option>
-                                </term>
-                                <listitem>
-                                    <para>A valid URL [TODO RFC link] to an external metadata
-                                        resource.</para>
-                                </listitem>
-                            </varlistentry>
-                            <varlistentry xml:id="attrdef-link-rel">
-                                <term>
-                                    <literal>rel</literal>
-                                    <option>[required]</option>
-                                </term>
-                                <listitem>
-                                    <para>A token that describes the nature of the external resource
-                                        (its relation to the publication). See further <xref
-                                            linkend="elemdef-opf-link-rel-values"/>.</para>
-                                </listitem>
-                            </varlistentry>
-                            <varlistentry xml:id="attrdef-link-id">
-                                <term>
-                                    <literal>id</literal>
-                                    <option>[optional]</option>
-                                </term>
-                                <listitem>                                
-                                    <xi:include href="share/id-prose-para.xml"/>                                
-                                </listitem>
-                            </varlistentry>
-                        </variablelist>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                        <para>Empty.</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
-            
-        </section>
-
-        <section xml:id="elemdef-opf-link-rel-values">
-            <title>Metadata record types</title>
-            
-            <para>A list of predefined metadata record identifiers is provided in the table below.
-                These values are defined canonically in the 
-                <link xlink:href="http://www.idpf.org/epub/30/vocab/package/">EPUB3 Package Metadata Vocabulary</link>.
-            </para>
-            
-            <informaltable xml:id="rdfa-vocab-package-bag-metarec-types">
-                <info role="rdfa-vocab-info"><annotation><para>Metadata record types</para></annotation></info>
-                <tgroup cols="2">
-                    <tbody>
-                        <row>
-                            <entry role="rdfa-property header" xml:id="metarec-property-onix-record">
-                                <literal>onix-record</literal>
-                            </entry>
-                            <entry role="rdfa-property-desc">The <literal>onix-record</literal> property indicates the referenced resource is an ONIX record.</entry>
-                        </row>
-                        <row>
-                            <entry role="rdfa-property header" xml:id="metarec-property-mods-record">
-                                <literal>mods-record</literal>
-                            </entry>
-                            <entry role="rdfa-property-desc">The <literal>mods-record</literal> property indicates the referenced resource is a MODS record.</entry>
-                        </row>
-                        <row>
-                            <entry role="rdfa-property header" xml:id="metarec-property-xmp-record">
-                                <literal>xmp-record</literal>
-                            </entry>
-                            <entry role="rdfa-property-desc">The <literal>xmp-record</literal> property indicates the referenced resource is an XMP record.</entry>
-                        </row>
-                        <row>
-                            <entry role="rdfa-property header" xml:id="metarec-property-marc21xml-record">
-                                <literal>marc21xml-record</literal>
-                            </entry>
-                            <entry role="rdfa-property-desc">The <literal>marc21xml-record</literal> property indicates the referenced resource is a MARC21 record.</entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
-            
-            <para>Additional identifiers can be added so long as they adhere to the requirements defined in
-                <xref linkend="sec-metadata-extensibility"/> for referencing external vocabularies.</para>
-            
-        </section>
-
-        <section xml:id="sec-opf-link-examples">
-            <title><literal>link</literal> element examples</title>
-
-            <informalexample>
-                <para>The following example shows the <literal>link</literal> element used to
-                    associate two external resources with the publication: an XMP record, and a link
-                    to an informational web page. Note that as the <literal>foaf:homepage</literal>
-                    token is <link linkend="elemdef-opf-link-rel-values">not defined by this
-                    specification</link>, the 
-                    <link linkend="sec-metadata-extensibility">metadata extensibility mechanism</link> is employed.
-                </para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/link-2.xml"/>
-                </synopsis>
-            </informalexample>
-
-        </section>
-    </section>
-
-    <section xml:id="sec-metadata-examples">
-        <title>Metadata Examples</title>
-        
-        <section xml:id="sec-metadata-examples-version">
-            <title>Versioning</title>
-            
-            <informalexample>
-                <para>The following example shows a typical version identifier in a package file.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-versioning.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following examples shows how major and minor revision changes might appear in a package.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-versioning-1.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-        <section xml:id="sec-metadata-examples-identifier">
-            <title>Identifiers</title>
-            
-            <informalexample>
-                <para>The following examples show how different identifiers can be distinguished within a package
-                    by their <literal>scheme</literal> attributes.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-identifiers.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-        <section xml:id="sec-metadata-examples-meta-auth">
-            <title>Metadata authority</title>
-            
-            <informalexample>
-                <para>The following example shows an identifier that has been added by a metadata authority
-                    but that has not changed the unique the identifier for the package.
-                </para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-meta-auth.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following example shows how a retailer can replace the publisher supplied
-                    unique identifier with their own.
-                </para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-meta-auth-1.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-        <section xml:id="sec-metadata-examples-creator">
-            <title>Creators</title>
-            
-            <informalexample>
-                <para>The following example references the ID of the <literal>dcterms:creator</literal> element to express 
-                    additional metadata properties of the <code>dcterms:creator</code> element.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-creator.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following example shows how ancillary properties can be attached to a creator
-                    to provide alternate representations of their name.
-                </para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-creator-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following examples shows how party identifiers can be associated with an author.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-creator-2.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-        <section xml:id="sec-metadata-examples-title">
-            <title>Titles</title>
-            
-            <informalexample>
-                <para>The following example shows a title for a publication.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-title.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following example shows a title in two scripts.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-title-1.xml"/>
-                </synopsis>
-            </informalexample>
-            
-            <informalexample>
-                <para>The following complex example shows the book "The Great Cookbooks of the World: Mon premier guide 
-                    de cuisson, un Mémoire. The New French Cuisine Masters, Volume Two. Special Anniversary Edition" could
-                    be classified.
-                </para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-title-2.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-        <section xml:id="sec-metadata-examples-publication-type">
-            <title>Publication type</title>
-            
-            <informalexample>
-                <para>The following example shows how a publication can be identified as a dictionary.</para>
-                <synopsis>
-                    <xi:include parse="text" href="examples/publications/meta-ex-pub-type.xml"/>
-                </synopsis>
-            </informalexample>
-        </section>
-        
-    </section>
-
-</section>
-
             <section xml:id="sec-manifest-elem">
                 <title>The <literal>manifest</literal> Element</title>
 
@@ -2279,6 +2327,7 @@ meta-auth</literal>) responsible for creating or updating package metadata to an
                 </section>
 
             </section>
+            
             <section xml:id="sec-spine-elem">
                 <title>The <literal>spine</literal> element</title>
 
@@ -2458,6 +2507,7 @@ meta-auth</literal>) responsible for creating or updating package metadata to an
                     </informalexample>
                 </section>
             </section>
+            
             <section xml:id="sec-guide-elem">
                 <title>The <literal>guide</literal> element [DEPRECATED]</title>
 
@@ -2574,6 +2624,7 @@ meta-auth</literal>) responsible for creating or updating package metadata to an
                 </section>
 
             </section>
+            
             <section xml:id="sec-bindings-elem">
                 <title>The <literal>bindings</literal> element</title>
                 <variablelist xreflabel="bindings" role="elem-synopsis"
