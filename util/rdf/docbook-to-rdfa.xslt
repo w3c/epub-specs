@@ -82,7 +82,7 @@
 				</div>
 
 				<div id="vocab" class="vocabulary">
-					<xsl:for-each select="tokenize($vocab-meta/z:bag-order, ', *')">
+					<xsl:for-each select="tokenize($vocab-meta/z:bag-order, ',\s*')">
 						<xsl:variable name="bag-name" select="concat('rdfa-vocab-',$vocab-name,'-bag-',.)"/>
 						<xsl:variable name="bag" select="$vocab-meta/ancestor::db:book//db:informaltable[@xml:id=$bag-name]|$vocab-meta/ancestor::db:book//db:variablelist[@xml:id=$bag-name]"/>
 						<xsl:call-template name="create-bag">
