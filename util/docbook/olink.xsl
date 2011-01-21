@@ -69,15 +69,13 @@
                 <xsl:value-of select="$link-label"/>
             </xsl:element>
 
-            <xsl:text> (</xsl:text>
+            <xsl:text> </xsl:text>
 
             <xsl:element name="xref" namespace="http://docbook.org/ns/docbook">
                 <xsl:attribute name="linkend">
                     <xsl:value-of select="$biblioref"/>
                 </xsl:attribute>
             </xsl:element>
-            
-            <xsl:text>)</xsl:text>
             
         </xsl:element>
     </xsl:template>
