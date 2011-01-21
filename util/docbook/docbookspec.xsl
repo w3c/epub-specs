@@ -493,7 +493,10 @@
             <l:context name="xref-number-and-title">  
                 <l:template name="chapter" text="%t"/> <!-- %n, -->
                 <l:template name="section" text="“%t”"/> <!-- %n, -->
-            </l:context>    
+            </l:context>
+            <l:context name="title">
+                <l:template name="note" text="%t:&#160;"/>
+            </l:context>
         </l:l10n>
     </l:i18n>
 
