@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet exclude-result-prefixes="xs rng xd dcterms z rdf zrng zsd a x sch db" version="2.0"
 	xmlns="http://www.w3.org/1999/xhtml" xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -8,43 +9,44 @@
 	xmlns:zrng="http://www.daisy.org/ns/rng/annotations" xmlns:x="http://www.w3.org/1999/xhtml"
 	xmlns:zsd="http://www.daisy.org/ns/rng/schemadoc"
 	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
-	xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-	xmlns:db="http://docbook.org/ns/docbook"
+	xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:db="http://docbook.org/ns/docbook"
 	xpath-default-namespace="http://relaxng.org/ns/structure/1.0">
 
 
 	<!-- Include acm (and related) mode templates: -->
-	<xsl:include href="schemadoc2-acm.xsl" />
+	<xsl:include href="schemadoc2-acm.xsl"/>
 
 	<!-- Include ecm (and related) mode templates: -->
-	<xsl:include href="schemadoc2-ecm.xsl" />
+	<xsl:include href="schemadoc2-ecm.xsl"/>
 
 	<!-- Include other mode templates: -->
-	<xsl:include href="schemadoc2-other-modes.xsl" />
+	<xsl:include href="schemadoc2-other-modes.xsl"/>
 
 	<!-- Include a few functions: -->
-	<xsl:include href="schemadoc2-functions.xsl" />
+	<xsl:include href="schemadoc2-functions.xsl"/>
 
-	<xsl:param as="xs:string" name="output-path" select="'undefined'" />
-	<xsl:param as="xs:string" name="profile-machine-name" select="'undefined'" />
-	<xsl:param name="rd-summary" as="xs:string" select="'undefined'" />
+	<xsl:param as="xs:string" name="output-path" select="'undefined'"/>
+	<xsl:param as="xs:string" name="profile-machine-name" select="'undefined'"/>
+	<xsl:param name="rd-summary" as="xs:string" select="'undefined'"/>
+	<xsl:param name="group-rdf-a" as="xs:string" select="'yes'"/>
+	<xsl:variable name="groupRDFa" as="xs:boolean" select="matches($group-rdf-a,'yes','i')"/>
 	<!--<xsl:param as="document-node()" name="summary" />-->
 
-	<xsl:variable name="rdSummary" as="xs:string" select="zsd:adjustURI($rd-summary,false())" />
+	<xsl:variable name="rdSummary" as="xs:string" select="zsd:adjustURI($rd-summary,false())"/>
 
-	<xsl:variable name="summary" as="document-node()" select="doc($rdSummary)" />
+	<xsl:variable name="summary" as="document-node()" select="doc($rdSummary)"/>
 	<!--	<xsl:variable name="profile-version" as="xs:string?"
 		select="replace($summary//*:profile[@machinename eq $profile-machine-name]/@rd-uri,'^.+/(.+?)/','$1')" />-->
 
-	<xsl:variable name="outputPath" as="xs:string" select="zsd:adjustURI($output-path,true())" />
+	<xsl:variable name="outputPath" as="xs:string" select="zsd:adjustURI($output-path,true())"/>
 
-	<xsl:variable name="newLine" as="xs:string" select="'&#10;'" />
+	<xsl:variable name="newLine" as="xs:string" select="'&#10;'"/>
 
 	<xsl:variable name="profile-nice-name" as="xs:string"
-		select="$summary//*:profile[@machinename eq $profile-machine-name]/@nicename" />
+		select="$summary//*:profile[@machinename eq $profile-machine-name]/@nicename"/>
 
 	<xsl:variable name="rdfa.attribs" as="xs:string*"
-		select="distinct-values(//define[matches(@name,'^rdfa\..+\.attrib$')]/@name)" />
+		select="distinct-values(//define[matches(@name,'^rdfa\..+\.attrib$')]/@name)"/>
 	<xd:doc>
 		<xd:desc>
 			<xd:p>control output of debug information.</xd:p>
@@ -60,79 +62,78 @@
 			<xd:p>Case is not relevant.</xd:p>
 		</xd:desc>
 	</xd:doc>
-	<xsl:param as="xs:string" name="debug" select="'yes'" />
-	<xsl:variable as="xs:boolean" name="Debug" select="matches($debug,'^yes|1|ok|true$','i')" />
+	<xsl:param as="xs:string" name="debug" select="'yes'"/>
+	<xsl:variable as="xs:boolean" name="Debug" select="matches($debug,'^yes|1|ok|true$','i')"/>
 
 	<xsl:variable name="xhtml-files.banner.top" as="element()">
 		<div class="top-banner">
 			<xsl:text>Schema Documentation - </xsl:text>
-			<xsl:value-of select="$profile-nice-name" />
+			<xsl:value-of select="$profile-nice-name"/>
 			<span class="titlesub">
-				<br />
+				<br/>
 				<xsl:text> version </xsl:text>
 				<xsl:value-of
 					select="replace($summary//*:profile[@machinename eq $profile-machine-name]/@rd-uri,'^.+/(.+?)/','$1')"
-				 />
+				/>
 			</span>
 		</div>
 	</xsl:variable>
 	<xsl:variable name="xhtml-files.attributes.link-to-main-menu" as="element()">
-		<a class="link-to-main-menu" href="../index.html">Back to<br /> main menu</a>
+		<a class="link-to-main-menu" href="../index.html">Back to<br/> main menu</a>
 	</xsl:variable>
 
 	<!-- Subfolder for the large number of doc files (may be left empty, but if not, should end with a slash) -->
-	<xsl:variable as="xs:string" name="documentation.subfolder" select="'subfiles/'" />
+	<xsl:variable as="xs:string" name="documentation.subfolder" select="'subfiles/'"/>
 	<xsl:variable name="documentation.attribute-information.filename" as="xs:string"
-		select="'attributes.html'" />
+		select="'attributes.html'"/>
 	<xsl:variable name="documentation.datatype-information.filename" as="xs:string"
-		select="'datatypes.html'" />
+		select="'datatypes.html'"/>
 
-	<xsl:output method="text" />
-	<xsl:output encoding="UTF-8" indent="yes" method="xml" name="plain-xml" />
+	<xsl:output method="text"/>
+	<xsl:output encoding="UTF-8" indent="yes" method="xml" name="plain-xml"/>
 	<xsl:output doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" encoding="UTF-8"
-		indent="yes" method="xhtml" name="xhtml" />
+		indent="yes" method="xhtml" name="xhtml"/>
 
-	<xsl:variable name="SCHEMA" as="document-node()" select="/" />
+	<xsl:variable name="SCHEMA" as="document-node()" select="/"/>
 	<xsl:variable as="xs:string*" name="SCHEMA.feature-names"
-		select="distinct-values(//@zrng:feature[. ne 'none'])" />
+		select="distinct-values(//@zrng:feature[. ne 'none'])"/>
 	<xsl:variable as="xs:string" name="SCHEMA.base-filename"
-		select="replace(base-uri(/),'^.+/(.+)\..+?$','$1')" />
+		select="replace(base-uri(/),'^.+/(.+)\..+?$','$1')"/>
 
 	<xsl:variable name="SCHEMA.NAMESPACE-MAP" as="element()">
 		<namespace-map xmlns="http://www.daisy.org/ns/rng/schemadoc">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each select="in-scope-prefixes(/grammar)[. ne '']">
 				<ns prefix="{.}">
 					<xsl:attribute name="ns-uri"
-						select="namespace-uri-for-prefix(.,$SCHEMA/grammar)" />
+						select="namespace-uri-for-prefix(.,$SCHEMA/grammar)"/>
 				</ns>
 			</xsl:for-each>
 		</namespace-map>
 	</xsl:variable>
 	<xsl:variable name="SCHEMA.ELEMENT-LIST" as="element()">
-		<xsl:variable as="xs:string" name="start.ref.name" select="//start/ref/@name" />
+		<xsl:variable as="xs:string" name="start.ref.name" select="//start/ref/@name"/>
 		<rng-element-list xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<named-elements>
 				<xsl:for-each select="/grammar/define/element[@name]">
 					<xsl:copy copy-namespaces="no">
-						<xsl:attribute name="zsd:define-name" select="../@name" />
+						<xsl:attribute name="zsd:define-name" select="../@name"/>
 						<xsl:attribute name="zsd:qname">
 							<xsl:choose>
 								<xsl:when test="zsd:elementNamespacePrefix(@ns) ne ''">
 									<xsl:value-of
-										select="concat(zsd:elementNamespacePrefix(@ns),':',@name)"
-									 />
+										select="concat(zsd:elementNamespacePrefix(@ns),':',@name)"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:value-of select="@name" />
+									<xsl:value-of select="@name"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
-						<xsl:attribute name="zsd:isRootElement" select="../@name eq $start.ref.name" />
-						<xsl:attribute name="zsd:define-name" select="../@name" />
-						<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)" />
+						<xsl:attribute name="zsd:isRootElement" select="../@name eq $start.ref.name"/>
+						<xsl:attribute name="zsd:define-name" select="../@name"/>
+						<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)"/>
 						<xsl:attribute name="zsd:doc-pointer"
 							select="concat(
 						'e-',
@@ -140,9 +141,9 @@
 						format-number(
 						count(preceding::element[@name eq current()/@name]) + 1,
 						'00'),
-						'.html')" />
+						'.html')"/>
 						<!-- MG <xsl:if test="descendant::dcterms:title/@z:short"> -->
-						<xsl:if test="descendant::db:title/@xreflabel"> 
+						<xsl:if test="descendant::db:title/@xreflabel">
 							<xsl:attribute name="zsd:context">
 								<xsl:choose>
 									<!-- MG <xsl:when
@@ -154,17 +155,17 @@
 										test="matches(descendant::db:title/@xreflabel,'^.+ \(.+\)$')">
 										<xsl:value-of
 											select="replace(descendant::db:title/@xreflabel,'^.+ \((.+)\)$','$1')"
-										/>	
+										/>
 									</xsl:when>
-									<xsl:otherwise>										
+									<xsl:otherwise>
 										<!-- MG <xsl:value-of select="descendant::dcterms:title/@z:short" /> -->
-										<xsl:value-of select="descendant::db:title/@xreflabel" />
+										<xsl:value-of select="descendant::db:title/@xreflabel"/>
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:attribute>
 						</xsl:if>
-						<xsl:copy-of select="@*" />
-						<xsl:copy-of select="child::node()" copy-namespaces="no" />
+						<xsl:copy-of select="@*"/>
+						<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 					</xsl:copy>
 				</xsl:for-each>
 			</named-elements>
@@ -198,18 +199,18 @@
 	</xsl:variable>
 
 	<xsl:variable as="element()" name="SCHEMA.ROOT-ELEMENT"
-		select="$SCHEMA.ELEMENT-LIST//element[@zsd:isRootElement eq 'true']" />
+		select="$SCHEMA.ELEMENT-LIST//element[@zsd:isRootElement eq 'true']"/>
 
 	<xsl:variable as="element()" name="SCHEMA.ELEMENT-LIST.GROUPED">
 		<rng-element-list-grouped xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each-group group-by="@zsd:qname"
 				select="$SCHEMA.ELEMENT-LIST/named-elements/element">
 				<element-group
 					zsd:doc-pointer="{concat('_',translate(current-group()[1]/@zsd:qname,':','-'),'.html')}"
 					zsd:multiplicity="{count(current-group())}" zsd:qname="{current-grouping-key()}">
 					<!--<xsl:copy-of select="current-group()[1]/@name, current-group()[1]/@ns" />-->
-					<xsl:copy-of select="current-group()" />
+					<xsl:copy-of select="current-group()"/>
 				</element-group>
 			</xsl:for-each-group>
 		</rng-element-list-grouped>
@@ -217,19 +218,19 @@
 
 	<xsl:variable as="element()" name="SCHEMA.ATTRIBUTE-LIST">
 		<rng-attribute-list xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each select="/grammar/define/attribute[@name]">
 				<xsl:copy copy-namespaces="no">
-					<xsl:attribute name="zsd:define-name" select="../@name" />
-					<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)" />
+					<xsl:attribute name="zsd:define-name" select="../@name"/>
+					<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)"/>
 					<xsl:attribute name="zsd:qname">
 						<xsl:choose>
 							<xsl:when test="zsd:elementNamespacePrefix(@ns) ne ''">
 								<xsl:value-of
-									select="concat(zsd:elementNamespacePrefix(@ns),':',@name)" />
+									select="concat(zsd:elementNamespacePrefix(@ns),':',@name)"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="@name" />
+								<xsl:value-of select="@name"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
@@ -243,41 +244,42 @@
 						count(preceding::attribute[parent::define and @name eq current()/@name]) + 1,
 						'00')
 						)
-						" />
-					<xsl:copy-of select="@*" />
+						"/>
+					<xsl:copy-of select="@*"/>
 					<!-- Do we have any RDF siblings? -->
 					<!-- MG <xsl:if test="preceding-sibling::rdf:RDF or following-sibling::rdf:RDF"> -->
-					<xsl:if test="preceding-sibling::db:annotation or following-sibling::db:annotation">
+					<xsl:if
+						test="preceding-sibling::db:annotation or following-sibling::db:annotation">
 						<!-- If so, copy the preceding sibling, or if no preceding, copy the following -->
 						<zsd:rdf-doc>
 							<!-- MG <xsl:copy-of
 								select="(preceding-sibling::rdf:RDF,following-sibling::rdf:RDF)[1]" copy-namespaces="no"
 								/> -->
 							<xsl:copy-of
-								select="(preceding-sibling::db:annotation,following-sibling::db:annotation)[1]" 
-								copy-namespaces="no" />
+								select="(preceding-sibling::db:annotation,following-sibling::db:annotation)[1]"
+								copy-namespaces="no"/>
 						</zsd:rdf-doc>
 					</xsl:if>
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</xsl:copy>
 			</xsl:for-each>
 		</rng-attribute-list>
 	</xsl:variable>
 	<xsl:variable as="element()" name="SCHEMA.OPTIONAL-ATTRIBUTE-LIST">
 		<rng-optional-attribute-list xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each select="/grammar/define/optional/attribute[@name]">
 				<xsl:copy copy-namespaces="no">
-					<xsl:attribute name="zsd:define-name" select="../../@name" />
-					<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)" />
+					<xsl:attribute name="zsd:define-name" select="../../@name"/>
+					<xsl:attribute name="zsd:ns-prefix" select="zsd:elementNamespacePrefix(@ns)"/>
 					<xsl:attribute name="zsd:qname">
 						<xsl:choose>
 							<xsl:when test="zsd:elementNamespacePrefix(@ns) ne ''">
 								<xsl:value-of
-									select="concat(zsd:elementNamespacePrefix(@ns),':',@name)" />
+									select="concat(zsd:elementNamespacePrefix(@ns),':',@name)"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="@name" />
+								<xsl:value-of select="@name"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
@@ -301,9 +303,9 @@
 						'-',
 						generate-id()
 						)
-						" />
-					<xsl:copy-of select="@*" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+						"/>
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</xsl:copy>
 			</xsl:for-each>
 		</rng-optional-attribute-list>
@@ -311,13 +313,13 @@
 
 	<xsl:variable name="SCHEMA.ATTRIBUTE-LIST.GROUPED" as="element()">
 		<rng-attribute-list-grouped xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each-group group-by="@zsd:qname" select="$SCHEMA.ATTRIBUTE-LIST/attribute">
 				<attribute-group
 					zsd:doc-pointer="{concat($documentation.attribute-information.filename,'#',translate(current-group()[1]/@zsd:qname,':','-'))}"
 					zsd:multiplicity="{count(current-group())}">
-					<xsl:copy-of select="current-group()[1]/@zsd:qname, current-group()[1]/@ns" />
-					<xsl:copy-of select="current-group()" />
+					<xsl:copy-of select="current-group()[1]/@zsd:qname, current-group()[1]/@ns"/>
+					<xsl:copy-of select="current-group()"/>
 				</attribute-group>
 			</xsl:for-each-group>
 		</rng-attribute-list-grouped>
@@ -327,9 +329,9 @@
 		<rng-unnamed-elements xmlns="http://relaxng.org/ns/structure/1.0">
 			<xsl:for-each select="//define/element[not(@name)]">
 				<xsl:copy copy-namespaces="no">
-					<xsl:attribute name="zsd:define-name" select="../@name" />
-					<xsl:copy-of select="@*" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+					<xsl:attribute name="zsd:define-name" select="../@name"/>
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</xsl:copy>
 			</xsl:for-each>
 		</rng-unnamed-elements>
@@ -338,9 +340,9 @@
 		<rng-unnamed-attributes xmlns="http://relaxng.org/ns/structure/1.0">
 			<xsl:for-each select="//define/attribute[not(@name)]">
 				<xsl:copy copy-namespaces="no">
-					<xsl:attribute name="zsd:define-name" select="../@name" />
-					<xsl:copy-of select="@*" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+					<xsl:attribute name="zsd:define-name" select="../@name"/>
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</xsl:copy>
 			</xsl:for-each>
 		</rng-unnamed-attributes>
@@ -358,16 +360,16 @@
 
 	<xsl:variable as="element()" name="SCHEMA.OTHER-FEATURE-STUFF">
 		<rng-other-feature-stuff xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
 			<xsl:for-each
 				select="//*[
 				not(matches(local-name(),'^(element|attribute|data)$')) (: Exluded the data element as well, after communicating with Markus :)
 				and @zrng:feature ne 'none' 
 				and (every $e in ancestor::* satisfies not($e/@zrng:feature) or $e/@zrng:feature eq 'none')]">
 				<xsl:copy copy-namespaces="no">
-					<xsl:attribute name="zsd:define-name" select="ancestor::define/@name" />
-					<xsl:copy-of select="@*" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+					<xsl:attribute name="zsd:define-name" select="ancestor::define/@name"/>
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</xsl:copy>
 			</xsl:for-each>
 		</rng-other-feature-stuff>
@@ -380,10 +382,10 @@
 			<xsl:for-each
 				select="//define[count(child::*) eq 2 and count(child::data) eq 1 and count(child::db:annotation) eq 1]">
 				<datatype>
-					<xsl:attribute name="zsd:define-name" select="@name" />
+					<xsl:attribute name="zsd:define-name" select="@name"/>
 					<xsl:attribute name="zsd:doc-pointer"
-						select="concat($documentation.datatype-information.filename,'#',@name)" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+						select="concat($documentation.datatype-information.filename,'#',@name)"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</datatype>
 			</xsl:for-each>
 		</rng-datatypes>
@@ -395,23 +397,23 @@
 			<xsl:for-each
 				select="//define[not(element or attribute or optional/attribute)][not(count(child::*) eq 2 and count(child::data) eq 1 and count(child::db:annotation) eq 1)]">
 				<some-stuff>
-					<xsl:attribute name="zsd:define-name" select="@name" />
-					<xsl:copy-of select="child::node()" copy-namespaces="no" />
+					<xsl:attribute name="zsd:define-name" select="@name"/>
+					<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 				</some-stuff>
 			</xsl:for-each>
 		</rng-other-stuff>
 	</xsl:variable>
 	<xsl:variable name="SCHEMA.REORGANIZED" as="element()">
 		<rng-reorganized xmlns="http://relaxng.org/ns/structure/1.0">
-			<xsl:attribute name="timestamp" select="current-dateTime()" />
-			<xsl:copy-of select="$SCHEMA.ELEMENT-LIST.GROUPED" />
-			<xsl:copy-of select="$SCHEMA.UNNAMED-ELEMENTS" />
-			<xsl:copy-of select="$SCHEMA.ATTRIBUTE-LIST.GROUPED" />
-			<xsl:copy-of select="$SCHEMA.OPTIONAL-ATTRIBUTE-LIST" />
-			<xsl:copy-of select="$SCHEMA.UNNAMED-ATTRIBUTES" />
-			<xsl:copy-of select="$SCHEMA.OTHER-FEATURE-STUFF" />
-			<xsl:copy-of select="$SCHEMA.DATATYPES" />
-			<xsl:copy-of select="$SCHEMA.OTHER-STUFF" />
+			<xsl:attribute name="timestamp" select="current-dateTime()"/>
+			<xsl:copy-of select="$SCHEMA.ELEMENT-LIST.GROUPED"/>
+			<xsl:copy-of select="$SCHEMA.UNNAMED-ELEMENTS"/>
+			<xsl:copy-of select="$SCHEMA.ATTRIBUTE-LIST.GROUPED"/>
+			<xsl:copy-of select="$SCHEMA.OPTIONAL-ATTRIBUTE-LIST"/>
+			<xsl:copy-of select="$SCHEMA.UNNAMED-ATTRIBUTES"/>
+			<xsl:copy-of select="$SCHEMA.OTHER-FEATURE-STUFF"/>
+			<xsl:copy-of select="$SCHEMA.DATATYPES"/>
+			<xsl:copy-of select="$SCHEMA.OTHER-STUFF"/>
 		</rng-reorganized>
 	</xsl:variable>
 
@@ -422,24 +424,24 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="$Debug">
-					<xsl:call-template name="presentDebugInformation" />
+					<xsl:call-template name="presentDebugInformation"/>
 				</xsl:if>
-				<xsl:call-template name="generateSchemaDoc" />
+				<xsl:call-template name="generateSchemaDoc"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template name="generateSchemaDoc">
 		<!-- generate the XHTML menu file -->
-		<xsl:call-template name="generateXhtmlMenu" />
+		<xsl:call-template name="generateXhtmlMenu"/>
 		<!-- generate the XHTML files per element -->
-		<xsl:call-template name="generateXhtmlFilesForElements" />
+		<xsl:call-template name="generateXhtmlFilesForElements"/>
 
-		<xsl:call-template name="generateXhtmlFilesForMultiplyDefinedElements" />
+		<xsl:call-template name="generateXhtmlFilesForMultiplyDefinedElements"/>
 
 		<!-- generate the XHTML file containing all attribute information -->
 
-		<xsl:call-template name="generateAttributeInformation" />
+		<xsl:call-template name="generateAttributeInformation"/>
 	</xsl:template>
 
 	<xsl:template name="generateAttributeInformation">
@@ -450,27 +452,29 @@
 					<title>
 						<xsl:text>Schema Documentation: attribute information</xsl:text>
 					</title>
-					<link href="../schemadoc.css" rel="stylesheet" type="text/css" />
+					<link href="../schemadoc.css" rel="stylesheet" type="text/css"/>
 				</head>
 				<body class="attributeInformation">
-					<xsl:copy-of select="$xhtml-files.banner.top" />
+					<xsl:copy-of select="$xhtml-files.banner.top"/>
 					<h1>Attributes</h1>
 					<xsl:for-each
 						select="$SCHEMA.REORGANIZED//attribute-group[attribute[not(matches(@zsd:define-name,'^rdfa\..+\.attrib$'))]]">
-						<xsl:sort select="@zsd:qname" />
+						<xsl:sort select="@zsd:qname"/>
 						<div class="attributeGroup" id="{substring-after(@zsd:doc-pointer,'#')}">
 							<xsl:variable name="attributeMultiplicity" as="xs:integer"
-								select="xs:integer(@zsd:multiplicity)" />
+								select="xs:integer(@zsd:multiplicity)"/>
 							<xsl:for-each
 								select="attribute[not(matches(@zsd:define-name,'^rdfa\..+\.attrib$'))]">
-								<xsl:sort select="@zsd:qname" />
+								<xsl:sort select="@zsd:qname"/>
 								<div class="attributeInformation"
 									id="{substring-after(@zsd:doc-pointer,'#')}">
-									<xsl:copy-of select="$xhtml-files.attributes.link-to-main-menu" />
+									<xsl:copy-of select="$xhtml-files.attributes.link-to-main-menu"/>
 									<h2>
 										<xsl:text>The </xsl:text>
-										<code><xsl:value-of select="@zsd:qname" /></code>
-<!--										<span class="attribute">
+										<code>
+											<xsl:value-of select="@zsd:qname"/>
+										</code>
+										<!--										<span class="attribute">
 											<xsl:value-of select="@zsd:qname" />
 										</span>-->
 										<xsl:text> attribute</xsl:text>
@@ -480,7 +484,7 @@
 										<p>
 											<xsl:text>This attribute is contributed by the </xsl:text>
 											<xsl:value-of
-												select="$summary//*:feature[@machinename eq current()/@zrng:feature]/@nicename" />
+												select="$summary//*:feature[@machinename eq current()/@zrng:feature]/@nicename"/>
 											<xsl:text>.</xsl:text>
 										</p>
 									</xsl:if>
@@ -488,14 +492,14 @@
 									<!-- MG <xsl:if
 										test="descendant::dcterms:description or local-name(child::*[1]) eq 'documentation'"> -->
 									<xsl:if
-											test="descendant::db:para[contains(@role,'desc-main')] or local-name(child::*[1]) eq 'documentation'">	
+										test="descendant::db:para[contains(@role,'desc-main')] or local-name(child::*[1]) eq 'documentation'">
 										<!--<h3>Description</h3>-->
 										<!-- MG <xsl:apply-templates
 										select="descendant::dcterms:description,descendant::z:info" /> -->
 										<xsl:apply-templates
-											select="descendant::db:para[contains(@role,'desc-')]" />
+											select="descendant::db:para[contains(@role,'desc-')]"/>
 										<xsl:apply-templates
-											select="child::*[1][local-name() eq 'documentation']" />
+											select="child::*[1][local-name() eq 'documentation']"/>
 										<xsl:if test="descendant::*:longDesc">
 											<p class="longdesc-link">
 												<xsl:text>Usage details available in the </xsl:text>
@@ -510,7 +514,7 @@
 									<xsl:if test="$attributeMultiplicity gt 1">
 										<xsl:call-template name="presentAttributeMultiplicity">
 											<xsl:with-param name="attributeMultiplicity"
-												as="xs:integer" select="$attributeMultiplicity" />
+												as="xs:integer" select="$attributeMultiplicity"/>
 										</xsl:call-template>
 									</xsl:if>
 
@@ -519,24 +523,24 @@
 										<h3>Usage Example</h3>
 										<xsl:for-each select="descendant::*:shortSample">
 											<pre>
-							<xsl:copy-of select="child::node()" />
+							<xsl:copy-of select="child::node()"/>
 						</pre>
 										</xsl:for-each>
 									</xsl:if>
 
 									<!-- Present possible parent elements -->
-									<xsl:call-template name="presentAttributeParentElements" />
+									<xsl:call-template name="presentAttributeParentElements"/>
 									<!-- Attribute content model -->
 									<xsl:call-template name="presentAttributeContentModel">
 										<xsl:with-param name="t-feature" as="xs:string"
-											select="@zrng:feature" tunnel="yes" />
+											select="@zrng:feature" tunnel="yes"/>
 									</xsl:call-template>
 
 									<!-- Usage Details -->
 									<xsl:if test="descendant::*:longDesc">
 										<h3>Usage Details</h3>
 										<xsl:copy-of select="descendant::*:longDesc/child::node()"
-											copy-namespaces="no" />
+											copy-namespaces="no"/>
 									</xsl:if>
 
 								</div>
@@ -545,15 +549,17 @@
 					</xsl:for-each>
 					<xsl:for-each
 						select="$SCHEMA.REORGANIZED//rng-optional-attribute-list/attribute">
-						<xsl:sort select="@zsd:qname" />
+						<xsl:sort select="@zsd:qname"/>
 						<div class="attributeInformation"
 							id="{substring-after(@zsd:doc-pointer,'#')}">
-							<xsl:copy-of select="$xhtml-files.attributes.link-to-main-menu" />
+							<xsl:copy-of select="$xhtml-files.attributes.link-to-main-menu"/>
 
 							<h2>
 								<xsl:text>The </xsl:text>
-								<code><xsl:value-of select="@zsd:qname" /></code>
-<!--								<span class="attribute">
+								<code>
+									<xsl:value-of select="@zsd:qname"/>
+								</code>
+								<!--								<span class="attribute">
 									<xsl:value-of select="@zsd:qname" />
 								</span>-->
 								<xsl:text> attribute</xsl:text>
@@ -565,37 +571,39 @@
 								<!-- MG <xsl:apply-templates
 									select="descendant::dcterms:description,descendant::z:info" /> -->
 								<xsl:apply-templates
-									select="descendant::db:para[contains(@role,'desc-')]" />
+									select="descendant::db:para[contains(@role,'desc-')]"/>
 							</xsl:if>
 							<!-- Present possible parent elements -->
-							<xsl:call-template name="presentAttributeParentElements" />
+							<xsl:call-template name="presentAttributeParentElements"/>
 							<!-- Attribute content model -->
-							<xsl:call-template name="presentAttributeContentModel" />
+							<xsl:call-template name="presentAttributeContentModel"/>
 						</div>
 					</xsl:for-each>
 					<xsl:if
 						test="$SCHEMA.REORGANIZED//attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]">
-						<hr />
+						<hr/>
 						<h1 id="rdfa">RDFa attributes</h1>
 						<xsl:for-each
 							select="$SCHEMA.REORGANIZED//attribute-group[attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]]">
-							<xsl:sort select="@zsd:qname" />
+							<xsl:sort select="@zsd:qname"/>
 							<div class="attributeGroup"
 								id="rdfa-{substring-after(@zsd:doc-pointer,'#')}">
 								<xsl:variable name="attributeMultiplicity" as="xs:integer"
-									select="xs:integer(@zsd:multiplicity)" />
+									select="xs:integer(@zsd:multiplicity)"/>
 								<xsl:for-each
 									select="attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]">
-									<xsl:sort select="@zsd:qname" />
+									<xsl:sort select="@zsd:qname"/>
 									<div class="attributeInformation"
 										id="{substring-after(@zsd:doc-pointer,'#')}">
 										<xsl:copy-of
-											select="$xhtml-files.attributes.link-to-main-menu" />
+											select="$xhtml-files.attributes.link-to-main-menu"/>
 
 										<h2>
 											<xsl:text>The RDFa </xsl:text>
-											<code><xsl:value-of select="@zsd:qname" /></code>
-<!--											<span class="attribute">
+											<code>
+												<xsl:value-of select="@zsd:qname"/>
+											</code>
+											<!--											<span class="attribute">
 												<xsl:value-of select="@zsd:qname" />
 											</span>-->
 											<xsl:text> attribute</xsl:text>
@@ -605,7 +613,7 @@
 											<p>
 												<xsl:text>This attribute is contributed by the </xsl:text>
 												<xsl:value-of
-												select="$summary//*:feature[@machinename eq current()/@zrng:feature]/@nicename" />
+												select="$summary//*:feature[@machinename eq current()/@zrng:feature]/@nicename"/>
 												<xsl:text>.</xsl:text>
 											</p>
 										</xsl:if>
@@ -616,23 +624,35 @@
 											test="descendant::db:para[contains(@role,'desc-main')] or local-name(child::*[1]) eq 'documentation'">
 											<h3>Description</h3>
 											<xsl:apply-templates
-												select="db:para[contains(@role,'desc-')]" />
+												select="descendant::db:para[contains(@role,'desc-')]"/>
 											<xsl:apply-templates
 												select="child::*[1][local-name() eq 'documentation']"
-											 />
+											/>
 										</xsl:if>
 										<!-- Handle attribute multiplicity -->
 										<xsl:if test="$attributeMultiplicity gt 1">
 											<xsl:call-template
 												name="presentAttributeMultiplicityRDFa">
 												<xsl:with-param name="attributeMultiplicity"
-												as="xs:integer" select="$attributeMultiplicity" />
+												as="xs:integer" select="$attributeMultiplicity"/>
 											</xsl:call-template>
 										</xsl:if>
+										
+										<!-- Usage Example -->
+										<xsl:if test="descendant::*:shortSample">
+											<h3>Usage Example</h3>
+											<xsl:for-each select="descendant::*:shortSample">
+												<pre>
+													<xsl:copy-of select="child::node()"/>
+												</pre>
+											</xsl:for-each>
+										</xsl:if>
+										
+										
 										<!-- Present possible parent elements -->
-										<xsl:call-template name="presentAttributeParentElements" />
+										<xsl:call-template name="presentAttributeParentElements"/>
 										<!-- Attribute content model -->
-										<xsl:call-template name="presentAttributeContentModel" />
+										<xsl:call-template name="presentAttributeContentModel"/>
 									</div>
 								</xsl:for-each>
 							</div>
@@ -649,7 +669,7 @@
 			<xsl:variable name="attributeContent" as="element()">
 				<grammar xmlns="http://relaxng.org/ns/structure/1.0"
 					name="{substring-after(@zsd:doc-pointer,'#')}">
-					<xsl:apply-templates mode="acm1" />
+					<xsl:apply-templates mode="acm1"/>
 				</grammar>
 			</xsl:variable>
 			<!--<xsl:if test="$debug">
@@ -665,7 +685,7 @@
 						<div class="rng">text</div>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="$attributeContent/child::rng:*" mode="acm2" />
+						<xsl:apply-templates select="$attributeContent/child::rng:*" mode="acm2"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</div>
@@ -679,14 +699,14 @@
 
 
 	<xsl:template name="attributeFeatureContribution">
-		<xsl:param name="t-feature" as="xs:string" tunnel="yes" select="'[undefined]'" />
+		<xsl:param name="t-feature" as="xs:string" tunnel="yes" select="'[undefined]'"/>
 		<!--   and @zrng:feature ne $t-feature -->
 		<xsl:if test="@zrng:feature and @zrng:feature ne 'none' and @zrng:feature ne $t-feature">
 			<div class="documentation">
 				<xsl:text>Contributed by the </xsl:text>
 				<xsl:value-of
 					select="$summary//*:feature[@machinename eq current()/@zrng:feature]/@nicename"
-				 />
+				/>
 			</div>
 		</xsl:if>
 	</xsl:template>
@@ -694,7 +714,7 @@
 
 	<xsl:template name="presentAttributeParentElements">
 		<xsl:variable name="elements" as="element()*"
-			select="$SCHEMA.REORGANIZED//element-group/element[some $a in descendant::ref satisfies $a/@name eq current()/@zsd:define-name and $a/@zrng:define eq 'attribute']" />
+			select="$SCHEMA.REORGANIZED//element-group/element[some $a in descendant::ref satisfies $a/@name eq current()/@zsd:define-name and $a/@zrng:define eq 'attribute']"/>
 		<div class="attributeElementList">
 			<h3>Parent elements</h3>
 			<p>
@@ -705,14 +725,14 @@
 					<xsl:when test="count($elements) eq 1">
 						<xsl:text>This attribute occurs on the </xsl:text>
 						<xsl:call-template name="presentElementnamesWithLinks">
-							<xsl:with-param name="elems" as="element()+" select="$elements" />
+							<xsl:with-param name="elems" as="element()+" select="$elements"/>
 						</xsl:call-template>
 						<xsl:text> element</xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>This attribute occurs on the following elements: </xsl:text>
 						<xsl:call-template name="presentElementnamesWithLinks">
-							<xsl:with-param name="elems" as="element()+" select="$elements" />
+							<xsl:with-param name="elems" as="element()+" select="$elements"/>
 						</xsl:call-template>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -721,15 +741,15 @@
 	</xsl:template>
 
 	<xsl:template name="presentAttributeMultiplicity">
-		<xsl:param name="attributeMultiplicity" as="xs:integer" />
+		<xsl:param name="attributeMultiplicity" as="xs:integer"/>
 		<div class="attributeVariants">
 			<p>
 				<strong>Note: </strong>
 				<xsl:text>There are </xsl:text>
-				<xsl:value-of select="../@zsd:multiplicity" />
+				<xsl:value-of select="../@zsd:multiplicity"/>
 				<xsl:text> different attributes with the name </xsl:text>
 				<span class="attribute">
-					<xsl:value-of select="@zsd:qname" />
+					<xsl:value-of select="@zsd:qname"/>
 				</span>
 				<xsl:choose>
 					<xsl:when
@@ -739,13 +759,13 @@
 						following-sibling::attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]">
 						<xsl:text>, amongst them </xsl:text>
 						<xsl:value-of
-							select="count(preceding-sibling::attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]) + count(following-sibling::attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')])" />
+							select="count(preceding-sibling::attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')]) + count(following-sibling::attribute[matches(@zsd:define-name,'^rdfa\..+\.attrib$')])"/>
 						<xsl:text> </xsl:text>
 						<a href="#rdfa-{substring-after(../@zsd:doc-pointer,'#')}">RDFa
 							attribute(s)</a>
 						<xsl:text>. You will find information about the other non-RDFa </xsl:text>
 						<span class="attribute">
-							<xsl:value-of select="@zsd:qname" />
+							<xsl:value-of select="@zsd:qname"/>
 						</span>
 						<xsl:text> attribute(s) immediately </xsl:text>
 						<xsl:choose>
@@ -777,18 +797,18 @@
 									>after</a>
 								<!--<xsl:text>after</xsl:text>-->
 							</xsl:when>
-							<xsl:otherwise />
+							<xsl:otherwise/>
 						</xsl:choose>
 						<xsl:text> the presentation of this </xsl:text>
 						<span class="attribute">
-							<xsl:value-of select="@zsd:qname" />
+							<xsl:value-of select="@zsd:qname"/>
 						</span>
 						<xsl:text> attribute.</xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>. You will find information about the other </xsl:text>
 						<span class="attribute">
-							<xsl:value-of select="@zsd:qname" />
+							<xsl:value-of select="@zsd:qname"/>
 						</span>
 						<xsl:text> attribute(s) immediately </xsl:text>
 						<xsl:choose>
@@ -819,11 +839,11 @@
 									>after</a>
 							</xsl:when>
 
-							<xsl:otherwise />
+							<xsl:otherwise/>
 						</xsl:choose>
 						<xsl:text> the presentation of this </xsl:text>
 						<span class="attribute">
-							<xsl:value-of select="@zsd:qname" />
+							<xsl:value-of select="@zsd:qname"/>
 						</span>
 						<xsl:text> attribute.</xsl:text>
 					</xsl:otherwise>
@@ -833,19 +853,19 @@
 	</xsl:template>
 
 	<xsl:template name="presentAttributeMultiplicityRDFa">
-		<xsl:param name="attributeMultiplicity" as="xs:integer" />
+		<xsl:param name="attributeMultiplicity" as="xs:integer"/>
 		<div class="attributeVariants">
 			<p>
 				<strong>Note: </strong>
 				<xsl:text>There are </xsl:text>
-				<xsl:value-of select="../@zsd:multiplicity" />
+				<xsl:value-of select="../@zsd:multiplicity"/>
 				<xsl:text> different attributes with the name </xsl:text>
 				<span class="attribute">
-					<xsl:value-of select="@zsd:qname" />
+					<xsl:value-of select="@zsd:qname"/>
 				</span>
 				<xsl:text>. You will find information about the other </xsl:text>
 				<span class="attribute">
-					<xsl:value-of select="@zsd:qname" />
+					<xsl:value-of select="@zsd:qname"/>
 				</span>
 				<xsl:text> attribute(s) by following </xsl:text>
 				<a href="{../@zsd:doc-pointer}">this link</a>
@@ -856,26 +876,25 @@
 
 	<xsl:template name="generateXhtmlMenu">
 		<xsl:variable as="xs:string+" name="uniqueElementNames"
-			select="distinct-values($SCHEMA.ELEMENT-LIST/element/@name)" />
+			select="distinct-values($SCHEMA.ELEMENT-LIST/element/@name)"/>
 		<xsl:result-document format="xhtml" href="{concat($outputPath,'index.html')}">
 			<html xml:lang="en">
-				<xsl:comment>generated: <xsl:value-of select="current-dateTime()" /></xsl:comment>
-				<xsl:comment>input file: <xsl:value-of select="document-uri(/)" /></xsl:comment>
-				
+				<xsl:comment>generated: <xsl:value-of select="current-dateTime()"/></xsl:comment>
+				<xsl:comment>input file: <xsl:value-of select="document-uri(/)"/></xsl:comment>
+
 				<head>
-					<title>Schema Documentation: <xsl:value-of select="$profile-nice-name"
-						 /></title>
-					<link href="schemadoc.css" rel="stylesheet" type="text/css" />
+					<title>Schema Documentation: <xsl:value-of select="$profile-nice-name"/></title>
+					<link href="schemadoc.css" rel="stylesheet" type="text/css"/>
 				</head>
 				<body style="margin-top:4em;margin-bottom:2em;">
 					<h1>Schema Documentation: <span class="doctitle"><xsl:value-of
-								select="$profile-nice-name" /></span>
+								select="$profile-nice-name"/></span>
 						<span class="titlesub">
-							<br />
+							<br/>
 							<xsl:text> version </xsl:text>
 							<xsl:value-of
 								select="replace($summary//*:profile[@machinename eq $profile-machine-name]/@rd-uri,'^.+/(.+?)/','$1')"
-							 />
+							/>
 						</span></h1>
 					<p class="alert">This schema documentation is an informative rendition based on
 						this profiles' normative schema and associated definitions. In the case of
@@ -883,13 +902,13 @@
 						schema takes precedence.</p>
 					<p>
 						<xsl:text>Below is a list of all elements in this profile.</xsl:text>
-						<br />
+						<br/>
 						<xsl:text>An asterisk (*) after the element name indicates an element available in multiple variants.</xsl:text>
-						<br />
+						<br/>
 						<xsl:text>The root element in this grammar is </xsl:text>
 						<a class="element"
 							href="{concat($documentation.subfolder,$SCHEMA.ROOT-ELEMENT/@zsd:doc-pointer)}">
-							<xsl:value-of select="$SCHEMA.ROOT-ELEMENT/@name" />
+							<xsl:value-of select="$SCHEMA.ROOT-ELEMENT/@name"/>
 						</a>
 					</p>
 					<h2>Core Elements</h2>
@@ -897,25 +916,25 @@
 						<!-- psps: visit this again (should be 'every'? )-->
 						<xsl:with-param name="elementGroup" as="element()+"
 							select="$SCHEMA.REORGANIZED//element-group[every $e in element satisfies $e/@zrng:feature eq 'none']"
-						 />
+						/>
 					</xsl:call-template>
 					<xsl:call-template name="presentNamespaceInfoInMenu">
 						<xsl:with-param as="element()+" name="elementGroup"
 							select="$SCHEMA.REORGANIZED//element-group[every $e in element satisfies $e/@zrng:feature eq 'none']"
-						 />
+						/>
 					</xsl:call-template>
 
 					<xsl:variable name="coreAttributes" as="element()*"
-						select="$SCHEMA.REORGANIZED//attribute-group[some $a in attribute satisfies $a/@zrng:feature eq 'none']" />
+						select="$SCHEMA.REORGANIZED//attribute-group[some $a in attribute satisfies $a/@zrng:feature eq 'none']"/>
 					<xsl:if test="$coreAttributes">
 						<h2>Core Attributes</h2>
 						<xsl:call-template name="presentAttributesInMenu">
-							<xsl:with-param name="ag" as="element()*" select="$coreAttributes" />
-							<xsl:with-param name="feature" as="xs:string" select="'none'" />
+							<xsl:with-param name="ag" as="element()*" select="$coreAttributes"/>
+							<xsl:with-param name="feature" as="xs:string" select="'none'"/>
 						</xsl:call-template>
 						<xsl:call-template name="presentNamespaceInfoInMenu">
 							<xsl:with-param as="element()+" name="elementGroup"
-								select="$coreAttributes" />
+								select="$coreAttributes"/>
 						</xsl:call-template>
 					</xsl:if>
 					<xsl:if test="count($SCHEMA.feature-names) gt 0">
@@ -923,24 +942,24 @@
 						<!--<p>Depending on the variant of the profile, some features may not be
 							available.</p>-->
 						<xsl:for-each select="$SCHEMA.feature-names">
-							<xsl:sort select="." />
+							<xsl:sort select="."/>
 							<xsl:variable name="feature.nicename"
-								select="$summary//*:feature[@machinename eq current()]/@nicename" />
+								select="$summary//*:feature[@machinename eq current()]/@nicename"/>
 							<xsl:variable name="feature.rd-uri" as="xs:string"
-								select="$summary//*:feature[@machinename eq current()]/@rd-uri" />
+								select="$summary//*:feature[@machinename eq current()]/@rd-uri"/>
 							<xsl:variable as="element()*" name="elementGroups"
-								select="$SCHEMA.REORGANIZED//element-group[some $e in element satisfies $e/@zrng:feature eq current()]" />
+								select="$SCHEMA.REORGANIZED//element-group[some $e in element satisfies $e/@zrng:feature eq current()]"/>
 							<xsl:variable as="element()*" name="attributeGroups"
-								select="$SCHEMA.REORGANIZED//attribute-group[some $e in attribute satisfies $e/@zrng:feature eq current()]" />
+								select="$SCHEMA.REORGANIZED//attribute-group[some $e in attribute satisfies $e/@zrng:feature eq current()]"/>
 							<xsl:variable name="otherFeatureStuff" as="element()*"
-								select="$SCHEMA.REORGANIZED/rng-other-feature-stuff/*[@zrng:feature eq current()]" />
+								select="$SCHEMA.REORGANIZED/rng-other-feature-stuff/*[@zrng:feature eq current()]"/>
 							<h3>
-								<xsl:value-of select="$feature.nicename" />
+								<xsl:value-of select="$feature.nicename"/>
 							</h3>
 							<p>
 								<xsl:text>More information about this feature is available at the </xsl:text>
 								<a href="{$feature.rd-uri}"><xsl:value-of select="$feature.nicename"
-									 /> Resource Directory</a>
+									/> Resource Directory</a>
 								<xsl:text>.</xsl:text>
 							</p>
 							<!-- Present the feature elements, if any -->
@@ -952,18 +971,18 @@
 									<xsl:otherwise>
 										<p>
 											<xsl:text>This feature contributes the following </xsl:text>
-											<xsl:value-of select="count($elementGroups)" />
+											<xsl:value-of select="count($elementGroups)"/>
 											<xsl:text> elements:</xsl:text>
 										</p>
 									</xsl:otherwise>
 								</xsl:choose>
 								<xsl:call-template name="presentElementsInMenu">
 									<xsl:with-param as="element()+" name="elementGroup"
-										select="$elementGroups" />
+										select="$elementGroups"/>
 								</xsl:call-template>
 								<xsl:call-template name="presentNamespaceInfoInMenu">
 									<xsl:with-param as="element()+" name="elementGroup"
-										select="$elementGroups" />
+										select="$elementGroups"/>
 								</xsl:call-template>
 							</xsl:if>
 
@@ -982,20 +1001,20 @@
 											<xsl:text>This feature </xsl:text>
 											<xsl:if test="$elementGroups">also</xsl:if>
 											<xsl:text> contributes the following </xsl:text>
-											<xsl:value-of select="count($attributeGroups)" />
+											<xsl:value-of select="count($attributeGroups)"/>
 											<xsl:text> attributes:</xsl:text>
 										</p>
 									</xsl:otherwise>
 								</xsl:choose>
 								<xsl:call-template name="presentAttributesInMenu">
 									<xsl:with-param as="element()+" name="ag"
-										select="$attributeGroups" />
+										select="$attributeGroups"/>
 									<xsl:with-param name="feature" as="xs:string" select="current()"
-									 />
+									/>
 								</xsl:call-template>
 								<xsl:call-template name="presentNamespaceInfoInMenu">
 									<xsl:with-param as="element()+" name="elementGroup"
-										select="$attributeGroups" />
+										select="$attributeGroups"/>
 								</xsl:call-template>
 
 							</xsl:if>
@@ -1009,7 +1028,7 @@
 								</p>
 								<xsl:call-template name="presentOtherFeatureStuffInMenu">
 									<xsl:with-param name="otherStuff" as="element()+"
-										select="$otherFeatureStuff" />
+										select="$otherFeatureStuff"/>
 								</xsl:call-template>
 							</xsl:if>
 						</xsl:for-each>
@@ -1020,28 +1039,28 @@
 	</xsl:template>
 
 	<xsl:template name="presentNamespaceInfoInMenu">
-		<xsl:param name="elementGroup" as="element()+" />
+		<xsl:param name="elementGroup" as="element()+"/>
 		<xsl:choose>
 			<xsl:when test="local-name($elementGroup[1]) eq 'element-group'">
 				<xsl:variable name="namespaceprefixes" as="xs:string*"
-					select="distinct-values($elementGroup/element/@zsd:ns-prefix[. ne ''])" />
+					select="distinct-values($elementGroup/element/@zsd:ns-prefix[. ne ''])"/>
 				<xsl:if test="count($namespaceprefixes) gt 0">
 					<xsl:choose>
 						<xsl:when test="count($namespaceprefixes) = 1">
 							<p>where elements prefixed with <code><xsl:value-of
-										select="$namespaceprefixes" /></code> are associated with
-								the namespace <code><xsl:value-of
+										select="$namespaceprefixes"/></code> are associated with the
+								namespace <code><xsl:value-of
 										select="zsd:elementNamespaceURI($namespaceprefixes)"
-									 /></code></p>
+									/></code></p>
 						</xsl:when>
 						<xsl:otherwise>
 							<p>where</p>
 							<ul>
 								<xsl:for-each select="$namespaceprefixes">
 									<li>elements prefixed with <code><xsl:value-of select="."
-											 /></code> are associated with the namespace
+											/></code> are associated with the namespace
 												<code><xsl:value-of
-												select="zsd:elementNamespaceURI(.)" /></code>
+												select="zsd:elementNamespaceURI(.)"/></code>
 									</li>
 								</xsl:for-each>
 							</ul>
@@ -1051,24 +1070,24 @@
 			</xsl:when>
 			<xsl:when test="local-name($elementGroup[1]) eq 'attribute-group'">
 				<xsl:variable name="namespaceprefixes" as="xs:string*"
-					select="distinct-values($elementGroup/attribute/@zsd:ns-prefix[. ne ''])" />
+					select="distinct-values($elementGroup/attribute/@zsd:ns-prefix[. ne ''])"/>
 				<xsl:if test="count($namespaceprefixes) gt 0">
 					<xsl:choose>
 						<xsl:when test="count($namespaceprefixes) = 1">
 							<p>where attributes prefixed with <code><xsl:value-of
-										select="$namespaceprefixes" /></code> are associated with
-								the namespace <code><xsl:value-of
+										select="$namespaceprefixes"/></code> are associated with the
+								namespace <code><xsl:value-of
 										select="zsd:elementNamespaceURI($namespaceprefixes)"
-									 /></code></p>
+									/></code></p>
 						</xsl:when>
 						<xsl:otherwise>
 							<p>where</p>
 							<ul>
 								<xsl:for-each select="$namespaceprefixes">
 									<li>attributes prefixed with <code><xsl:value-of select="."
-											 /></code> are associated with the namespace
+											/></code> are associated with the namespace
 												<code><xsl:value-of
-												select="zsd:elementNamespaceURI(.)" /></code>
+												select="zsd:elementNamespaceURI(.)"/></code>
 									</li>
 								</xsl:for-each>
 							</ul>
@@ -1084,28 +1103,28 @@
 
 
 	<xsl:template name="presentOtherFeatureStuffInMenu">
-		<xsl:param name="otherStuff" as="element()+" />
+		<xsl:param name="otherStuff" as="element()+"/>
 		<xsl:for-each select="$otherStuff">
 			<div class="menu-rng">
-				<xsl:apply-templates select="." mode="menu-present-other-feature-stuff" />
+				<xsl:apply-templates select="." mode="menu-present-other-feature-stuff"/>
 			</div>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template name="presentElementsInMenu">
-		<xsl:param as="element()+" name="elementGroup" />
+		<xsl:param as="element()+" name="elementGroup"/>
 		<ul class="main-element-toc">
 			<xsl:for-each select="$elementGroup">
-				<xsl:sort select="@zsd:qname" />
+				<xsl:sort select="@zsd:qname"/>
 				<li>
 					<xsl:choose>
 						<xsl:when test="number(@zsd:multiplicity) = 1">
 							<a href="{concat($documentation.subfolder,element/@zsd:doc-pointer)}">
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 							</a>
 						</xsl:when>
 						<xsl:otherwise>
 							<a href="{concat($documentation.subfolder,@zsd:doc-pointer)}">
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 								<xsl:text> *</xsl:text>
 							</a>
 						</xsl:otherwise>
@@ -1117,18 +1136,18 @@
 	</xsl:template>
 
 	<xsl:template name="presentAttributesInMenu">
-		<xsl:param as="element()+" name="ag" />
-		<xsl:param name="feature" as="xs:string" />
+		<xsl:param as="element()+" name="ag"/>
+		<xsl:param name="feature" as="xs:string"/>
 		<ul class="main-attribute-toc">
 			<xsl:for-each select="$ag">
-				<xsl:sort select="@zsd:qname" />
+				<xsl:sort select="@zsd:qname"/>
 				<!--<xsl:variable name="group-doc-pointer" as="xs:string" select="@zsd:doc-pointer" />-->
 				<li>
 					<xsl:choose>
 						<xsl:when test="count(attribute[@zrng:feature eq $feature]) eq 1">
 							<a
 								href="{concat($documentation.subfolder,attribute[@zrng:feature eq $feature]/@zsd:doc-pointer)}">
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 							</a>
 						</xsl:when>
 						<!--						<xsl:when test="number(@zsd:multiplicity) = 1">
@@ -1138,7 +1157,7 @@
 						</xsl:when>-->
 						<xsl:otherwise>
 							<a href="{concat($documentation.subfolder,@zsd:doc-pointer)}">
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 								<xsl:text> * </xsl:text>
 							</a>
 						</xsl:otherwise>
@@ -1151,28 +1170,28 @@
 	<xsl:template name="generateXhtmlFilesForElements">
 		<xsl:for-each select="$SCHEMA.ELEMENT-LIST/named-elements/element">
 			<xsl:call-template name="generateXhtmlFileForElement">
-				<xsl:with-param name="element-from-list" as="element()" select="." />
+				<xsl:with-param name="element-from-list" as="element()" select="."/>
 			</xsl:call-template>
 		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template name="generateXhtmlFileForElement">
-		<xsl:param name="element-from-list" as="element()" />
+		<xsl:param name="element-from-list" as="element()"/>
 		<xsl:variable as="xs:string" name="filename"
-			select="concat($outputPath,$documentation.subfolder,@zsd:doc-pointer)" />
-		<xsl:variable name="defineName" select="@zsd:define-name" as="xs:string" />
+			select="concat($outputPath,$documentation.subfolder,@zsd:doc-pointer)"/>
+		<xsl:variable name="defineName" select="@zsd:define-name" as="xs:string"/>
 		<xsl:variable name="elementMultiplicity" as="xs:integer"
-			select="$SCHEMA.ELEMENT-LIST.GROUPED/element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/@zsd:multiplicity" />
+			select="$SCHEMA.ELEMENT-LIST.GROUPED/element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/@zsd:multiplicity"/>
 		<xsl:variable as="node()+" name="element.title">
 			<xsl:text>The </xsl:text>
 			<xsl:if test="$elementMultiplicity gt 1">
 				<span class="element-variant">
-					<xsl:value-of select="zsd:elementVariant($element-from-list)" />
+					<xsl:value-of select="zsd:elementVariant($element-from-list)"/>
 				</span>
 				<xsl:text> variant of  the </xsl:text>
 			</xsl:if>
 			<span class="element">
-				<xsl:value-of select="@name" />
+				<xsl:value-of select="@name"/>
 			</span>
 			<xsl:text> element</xsl:text>
 		</xsl:variable>
@@ -1180,43 +1199,43 @@
 		<xsl:variable name="elementContentBuild" as="element()">
 			<grammar xmlns="http://relaxng.org/ns/structure/1.0"
 				name="{substring-before(@zsd:doc-pointer,'.html')}">
-				<xsl:apply-templates select="rng:*" mode="ecm-build" />
+				<xsl:apply-templates select="rng:*" mode="ecm-build"/>
 			</grammar>
 		</xsl:variable>
-		<!--<xsl:if test="$debug and false()">
+		<xsl:if test="$debug and true()">
 			<xsl:result-document
 				href="{concat('ecm/',substring-before(@zsd:doc-pointer,'.html'),'-build.rng')}"
 				method="xml" indent="yes">
 				<xsl:copy-of select="$elementContentBuild" />
 			</xsl:result-document>
-		</xsl:if>-->
+		</xsl:if>
 
 		<xsl:variable name="elementContentStrippedRDFa" as="element()">
 			<grammar xmlns="http://relaxng.org/ns/structure/1.0"
 				name="{substring-before(@zsd:doc-pointer,'.html')}">
 				<xsl:variable name="replaceRDFaAttribsWithLink" as="xs:boolean"
-					select="count($elementContentBuild//attribute[@isRDFa eq 'yes']) = count($rdfa.attribs)" />
+					select="$groupRDFa and count($elementContentBuild//attribute[@isRDFa eq 'yes']) = count($rdfa.attribs)"/>
 				<xsl:if test="$replaceRDFaAttribsWithLink">
-					<link to="rdfa" />
+					<link to="rdfa"/>
 				</xsl:if>
 				<xsl:apply-templates select="$elementContentBuild" mode="ecm-rdfa">
 					<xsl:with-param name="stripRDFa" as="xs:boolean"
-						select="$replaceRDFaAttribsWithLink" tunnel="yes" />
+						select="$replaceRDFaAttribsWithLink" tunnel="yes"/>
 				</xsl:apply-templates>
 			</grammar>
 		</xsl:variable>
-		<!--<xsl:if test="$debug and false()">
+		<xsl:if test="$debug and true()">
 			<xsl:result-document
 				href="{concat('ecm/',substring-before(@zsd:doc-pointer,'.html'),'-striprdfa.rng')}"
 				method="xml" indent="yes">
 				<xsl:copy-of select="$elementContentStrippedRDFa" />
 			</xsl:result-document>
-		</xsl:if>-->
+		</xsl:if>
 
 		<xsl:variable name="elementContentClean" as="element()">
-			<xsl:apply-templates select="$elementContentStrippedRDFa" mode="ecm-clean" />
+			<xsl:apply-templates select="$elementContentStrippedRDFa" mode="ecm-clean"/>
 		</xsl:variable>
-		<!--<xsl:if test="$debug and false()">
+		<xsl:if test="$debug and true()">
 			<xsl:result-document
 				href="{concat('ecm/',substring-before(@zsd:doc-pointer,'.html'),'-clean.rng')}"
 				method="xml" indent="yes">
@@ -1225,29 +1244,29 @@
 				</xsl:comment>
 				<xsl:copy-of select="$elementContentClean" />
 			</xsl:result-document>
-		</xsl:if>-->
-
+		</xsl:if>
 
 		<xsl:variable name="elementContentOrdered" as="element()">
-			<xsl:apply-templates select="$elementContentClean" mode="ecm-order" />
+			<xsl:apply-templates select="$elementContentClean" mode="ecm-order"/>
 		</xsl:variable>
-		<!--<xsl:if test="$debug and false()">
+		<xsl:if test="$debug and true()">
 			<xsl:result-document
 				href="{concat('ecm/',substring-before(@zsd:doc-pointer,'.html'),'-ordered.rng')}"
 				method="xml" indent="yes">
 				<xsl:comment>
-					<xsl:value-of select="current-dateTime()" />
+					<xsl:value-of select="current-dateTime()"/>
 				</xsl:comment>
-				<xsl:copy-of select="$elementContentOrdered" />
+				<xsl:copy-of select="$elementContentOrdered"/>
 			</xsl:result-document>
-		</xsl:if>-->
+		</xsl:if>
 
 		<!-- Create the variable containing most of the information about this element -->
 		<xsl:variable name="element.core.info" as="element()">
 			<div class="element-coreinfo" xmlns="http://www.w3.org/1999/xhtml">
 				<!-- Description (but avoid using lower level a:documentation, as these may document something else than the element) -->
 				<!-- MG <xsl:if test="descendant::dcterms:description or child::a:documentation"> -->
-				<xsl:if test="descendant::db:para[contains(@role,'desc-main')] or child::a:documentation">
+				<xsl:if
+					test="descendant::db:para[contains(@role,'desc-main')] or child::a:documentation">
 					<div class="main-description">
 						<!--<h2>Description</h2>-->
 						<xsl:choose>
@@ -1256,12 +1275,12 @@
 								<!-- MG <xsl:apply-templates
 									select="descendant::dcterms:description, descendant::z:info" /> -->
 								<xsl:apply-templates
-									select="descendant::db:para[contains(@role,'desc-')]" />
+									select="descendant::db:para[contains(@role,'desc-')]"/>
 							</xsl:when>
 							<xsl:when test="child::a:documentation">
-								<xsl:apply-templates select="child::a:documentation" />
+								<xsl:apply-templates select="child::a:documentation"/>
 							</xsl:when>
-							<xsl:otherwise />
+							<xsl:otherwise/>
 						</xsl:choose>
 						<xsl:if test="$element-from-list//*:longDesc">
 							<p class="longdesc-link">
@@ -1280,7 +1299,7 @@
 					<h2>Usage Example</h2>
 					<xsl:for-each select="$element-from-list//*:shortSample">
 						<pre>
-							<xsl:copy-of select="child::node()" />
+							<xsl:copy-of select="child::node()"/>
 						</pre>
 					</xsl:for-each>
 					<!--					<xsl:if test="$element-from-list//*:longDesc">
@@ -1300,12 +1319,11 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:variable name="parents" as="element()*"
-							select="$SCHEMA.ELEMENT-LIST//named-elements/element[some $ref in descendant::ref satisfies $ref/@name eq $element-from-list/@zsd:define-name]" />
+							select="$SCHEMA.ELEMENT-LIST//named-elements/element[some $ref in descendant::ref satisfies $ref/@name eq $element-from-list/@zsd:define-name]"/>
 						<xsl:if test="count($parents) gt 0">
 							<p>
 								<xsl:call-template name="presentElementnamesWithLinks">
-									<xsl:with-param name="elems" as="element()+" select="$parents"
-									 />
+									<xsl:with-param name="elems" as="element()+" select="$parents"/>
 								</xsl:call-template>
 							</p>
 						</xsl:if>
@@ -1315,10 +1333,10 @@
 				<h2>Allowed children</h2>
 				<!-- Let's first get the parent elements of all text elem descendants -->
 				<xsl:variable name="textelementparents" as="element()*"
-					select="$element-from-list//*[text]" />
+					select="$element-from-list//*[text]"/>
 				<!-- Let's have a look at possible children -->
 				<xsl:variable name="children.refs" as="element()*"
-					select="$element-from-list//ref[@zrng:define eq 'element']" />
+					select="$element-from-list//ref[@zrng:define eq 'element']"/>
 
 				<xsl:choose>
 					<xsl:when test="not($textelementparents or $children.refs)">
@@ -1345,13 +1363,13 @@
 						<xsl:choose>
 							<xsl:when test="$children.refs">
 								<xsl:variable name="children.refs.optional" as="element()*"
-									select="$children.refs[some $e in ancestor::* satisfies matches(local-name($e),'^(optional|choice|zeroOrMore)$')]" />
+									select="$children.refs[some $e in ancestor::* satisfies matches(local-name($e),'^(optional|choice|zeroOrMore)$')]"/>
 								<xsl:variable name="children.refs.mandatory" as="element()*"
-									select="$children.refs except $children.refs.optional" />
+									select="$children.refs except $children.refs.optional"/>
 								<xsl:variable name="children.optional" as="element()*"
-									select="for $n in distinct-values($children.refs.optional/@name) return $SCHEMA.ELEMENT-LIST/named-elements/element[@zsd:define-name eq $n]" />
+									select="for $n in distinct-values($children.refs.optional/@name) return $SCHEMA.ELEMENT-LIST/named-elements/element[@zsd:define-name eq $n]"/>
 								<xsl:variable name="children.mandatory" as="element()*"
-									select="for $n in distinct-values($children.refs.mandatory/@name) return $SCHEMA.ELEMENT-LIST/named-elements/element[@zsd:define-name eq $n]" />
+									select="for $n in distinct-values($children.refs.mandatory/@name) return $SCHEMA.ELEMENT-LIST/named-elements/element[@zsd:define-name eq $n]"/>
 								<xsl:if test="$children.mandatory">
 									<p>
 										<xsl:text>This element </xsl:text>
@@ -1359,7 +1377,7 @@
 										<xsl:text> contain the following children: </xsl:text>
 										<xsl:call-template name="presentElementnamesWithLinks">
 											<xsl:with-param name="elems" as="element()+"
-												select="$children.mandatory" />
+												select="$children.mandatory"/>
 										</xsl:call-template>
 									</p>
 								</xsl:if>
@@ -1370,7 +1388,7 @@
 										<xsl:text> contain the following children: </xsl:text>
 										<xsl:call-template name="presentElementnamesWithLinks">
 											<xsl:with-param name="elems" as="element()+"
-												select="$children.optional" />
+												select="$children.optional"/>
 										</xsl:call-template>
 									</p>
 								</xsl:if>
@@ -1392,7 +1410,9 @@
 				</xsl:if>-->
 
 				<!-- Assertions -->
-				<xsl:if test="$element-from-list//sch:assert">
+				<!--
+					ps (2010-11-25): Schematron assertions are placed inside the presentation of the content model
+					<xsl:if test="$element-from-list//sch:assert">
 					<h2>Assertions</h2>
 					<xsl:choose>
 						<xsl:when test="count($element-from-list//sch:assert) eq 1">
@@ -1400,7 +1420,7 @@
 								<xsl:text>Use of this element must respect the following assertion: 
 								</xsl:text>
 								<xsl:copy-of select="$element-from-list//sch:assert/child::node()"
-									copy-namespaces="no" />
+									copy-namespaces="no"/>
 							</p>
 						</xsl:when>
 						<xsl:otherwise>
@@ -1408,19 +1428,29 @@
 							<ul>
 								<xsl:for-each select="$element-from-list//sch:assert">
 									<li>
-										<xsl:copy-of select="child::node()" copy-namespaces="no" />
+										<xsl:copy-of select="child::node()" copy-namespaces="no"/>
 									</li>
 								</xsl:for-each>
 							</ul>
 						</xsl:otherwise>
 					</xsl:choose>
 
-				</xsl:if>
+				</xsl:if>-->
 
 				<!-- Content model -->
-				<h2>Content model</h2>
+				<h2>
+					<xsl:text>Content model</xsl:text>
+					<xsl:if test="$element-from-list//sch:assert | $element-from-list//sch:report">
+						<xsl:text> and additional requirements</xsl:text>
+					</xsl:if>
+				</h2>
 				<xsl:call-template name="presentElementContentModelNew">
-					<xsl:with-param name="grammar" as="element()" select="$elementContentOrdered" />
+					<xsl:with-param name="grammar" as="element()" select="$elementContentOrdered"/>
+					<xsl:with-param name="element-before-cleaning" as="element()"
+						select="$element-from-list"/>
+					<xsl:with-param name="element-is-empty" as="xs:boolean"
+						select="not($element-from-list//*[text] or $element-from-list//ref[@zrng:define eq 'element'])"
+					/>
 				</xsl:call-template>
 
 				<!-- Other variants ? -->
@@ -1428,24 +1458,24 @@
 					<h2>Variants</h2>
 					<p>
 						<xsl:text>This element exists in </xsl:text>
-						<xsl:value-of select="$elementMultiplicity" />
+						<xsl:value-of select="$elementMultiplicity"/>
 						<xsl:text> variants. The other </xsl:text>
 						<xsl:choose>
 							<xsl:when test="$elementMultiplicity eq 2">
 								<!-- Just one other variant -->
 								<xsl:variable name="variant" as="element()"
-									select="$SCHEMA.REORGANIZED//element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/element[@zsd:define-name ne $element-from-list/@zsd:define-name]" />
+									select="$SCHEMA.REORGANIZED//element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/element[@zsd:define-name ne $element-from-list/@zsd:define-name]"/>
 								<xsl:text>variant is the </xsl:text>
 								<a href="{$variant/@zsd:doc-pointer}">
 									<span class="element-variant">
-										<xsl:value-of select="zsd:elementVariant($variant)" />
+										<xsl:value-of select="zsd:elementVariant($variant)"/>
 									</span>
 									<xsl:text> variant.</xsl:text>
 								</a>
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- Several other variants -->
-								<xsl:value-of select="$elementMultiplicity - 1" />
+								<xsl:value-of select="$elementMultiplicity - 1"/>
 								<xsl:text>  variants are:</xsl:text>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -1458,11 +1488,11 @@
 									<a href="{@zsd:doc-pointer}">
 										<xsl:text>The </xsl:text>
 										<span class="element-variant">
-											<xsl:value-of select="zsd:elementVariant(.)" />
+											<xsl:value-of select="zsd:elementVariant(.)"/>
 										</span>
 										<xsl:text> variant of  the </xsl:text>
 										<span class="element">
-											<xsl:value-of select="@zsd:qname" />
+											<xsl:value-of select="@zsd:qname"/>
 										</span>
 										<xsl:text> element</xsl:text>
 									</a>
@@ -1477,14 +1507,14 @@
 				<h2>Namespace</h2>
 				<p>
 					<span class="namespace">
-						<xsl:value-of select="@ns" />
+						<xsl:value-of select="@ns"/>
 					</span>
 				</p>
 				<!-- Usage Details -->
 				<xsl:if test="$element-from-list//*:longDesc">
 					<h2 id="schemadoc-longdesc">Usage Details</h2>
 					<xsl:copy-of select="$element-from-list//*:longDesc/child::node()"
-						copy-namespaces="no" />
+						copy-namespaces="no"/>
 				</xsl:if>
 			</div>
 		</xsl:variable>
@@ -1494,31 +1524,31 @@
 				<head>
 					<title>
 						<xsl:text>Schema Documentation: the </xsl:text>
-						<xsl:value-of select="@name" />
+						<xsl:value-of select="@name"/>
 						<xsl:text> element</xsl:text>
 					</title>
-					<link href="../schemadoc.css" rel="stylesheet" type="text/css" />
+					<link href="../schemadoc.css" rel="stylesheet" type="text/css"/>
 				</head>
 				<body>
-					<xsl:copy-of select="$xhtml-files.banner.top" />
+					<xsl:copy-of select="$xhtml-files.banner.top"/>
 					<xsl:comment>Used to have a nav box with link to toc, and prev/next element. Not
 						included yet</xsl:comment>
 					<h1>
-						<xsl:copy-of select="$element.title" />
+						<xsl:copy-of select="$element.title"/>
 					</h1>
 					<div class="elementInformation">
 						<div class="element-toc-container">
 							<strong>On this page:</strong>
 							<ul class="element-toc">
 								<li id="link-to-main-menu">
-									<a href="../index.html">Back to<br /> main menu</a>
+									<a href="../index.html">Back to<br/> main menu</a>
 								</li>
 								<xsl:apply-templates
 									select="$element.core.info//x:h1 | $element.core.info//x:h2 | $element.core.info//x:h3"
-									mode="toc01" />
+									mode="toc01"/>
 							</ul>
 						</div>
-						<xsl:apply-templates select="$element.core.info" mode="toc02" />
+						<xsl:apply-templates select="$element.core.info" mode="toc02"/>
 					</div>
 				</body>
 			</html>
@@ -1526,10 +1556,71 @@
 	</xsl:template>
 
 	<xsl:template name="presentElementContentModelNew">
-		<xsl:param name="grammar" as="element()" />
+		<xsl:param name="grammar" as="element()"/>
+		<xsl:param name="element-before-cleaning" as="element()"/>
+		<xsl:param name="element-is-empty" as="xs:boolean"/>
 
 		<div class="element-content-model">
-			<xsl:apply-templates select="$grammar" mode="ecm-display" />
+			<xsl:apply-templates select="$grammar" mode="ecm-display"/>
+			<xsl:if test="$element-is-empty">
+				<div class="rng">This element is empty</div>
+			</xsl:if>
+			<!-- 
+				ps (2010-11-25):
+				Based on suggestion from Matt G, present schematron assertions as part of the content model: -->
+			<xsl:if
+				test="$element-before-cleaning//sch:assert or $element-before-cleaning//sch:report">
+				<!--				<xsl:message>assertions: <xsl:value-of select="count($element-before-cleaning//sch:assert)"/></xsl:message>
+				<xsl:message>reports: <xsl:value-of select="count($element-before-cleaning//sch:report)"/></xsl:message>-->
+				<div class="schematron-asserts-and-reports">
+					<xsl:text>Note that in addition to restrictions presented in the content model  above, 
+					use of this element must also respect the following </xsl:text>
+					<xsl:choose>
+						<xsl:when
+							test="count($element-before-cleaning//sch:assert | $element-before-cleaning//sch:report) eq 1">
+							<xsl:text>requirement:</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>requirements:</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ul>
+						<xsl:for-each
+							select="$element-before-cleaning//sch:assert | $element-before-cleaning//sch:report">
+							<li>
+								<xsl:copy-of select="child::node()" copy-namespaces="no"/>
+							</li>
+						</xsl:for-each>
+					</ul>
+
+					<!--<xsl:choose>
+						<xsl:when
+							test="count($element-before-cleaning//sch:assert | $element-before-cleaning//sch:report) eq 1">
+							<xsl:text>use of this element must also respect the following requirement:</xsl:text>
+							<ul>
+								<li>
+									<xsl:copy-of
+										select="$element-before-cleaning//sch:assert/child::node() | $element-before-cleaning//sch:report/child::node()"
+										copy-namespaces="no"/>
+								</li>
+							</ul>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>use of this element must also respect the following requirements:</xsl:text>
+							<ul>
+								<xsl:for-each
+									select="$element-before-cleaning//sch:assert | $element-before-cleaning//sch:report">
+									<li>
+										<xsl:copy-of select="child::node()" copy-namespaces="no"/>
+									</li>
+								</xsl:for-each>
+							</ul>
+						</xsl:otherwise>
+					</xsl:choose>-->
+					<div>Such requirements take precedence over any conflicting statements in the
+						content model or in the lists above of allowed children and parents.</div>
+				</div>
+			</xsl:if>
 		</div>
 	</xsl:template>
 	<xsl:template name="presentElementContentModel">
@@ -1540,24 +1631,24 @@
 			<!-- Start with straight forward optional attributes -->
 			<xsl:if test="optional/ref[@zrng:define='attribute']">
 				<xsl:variable name="optional-attributes" as="element()+"
-					select="for $e in optional/ref[@zrng:define='attribute'] return $SCHEMA.REORGANIZED//attribute[@zsd:define-name eq $e/@name]" />
+					select="for $e in optional/ref[@zrng:define='attribute'] return $SCHEMA.REORGANIZED//attribute[@zsd:define-name eq $e/@name]"/>
 				<xsl:variable name="optional-attributes.rdfa" as="element()*"
-					select="$optional-attributes[starts-with(@zsd:define-name,'rdfa.')]" />
+					select="$optional-attributes[starts-with(@zsd:define-name,'rdfa.')]"/>
 				<xsl:variable name="optional-attributes.non-rdfa" as="element()*"
-					select="$optional-attributes[not(starts-with(@zsd:define-name,'rdfa.'))]" />
+					select="$optional-attributes[not(starts-with(@zsd:define-name,'rdfa.'))]"/>
 
 				<xsl:if test="$optional-attributes.non-rdfa">
 					<div class="rng-optional-attributes">
 						<xsl:text>optional attributes: </xsl:text>
 						<xsl:text> </xsl:text>
 						<xsl:for-each select="$optional-attributes.non-rdfa">
-							<xsl:sort select="@zsd:qname" />
+							<xsl:sort select="@zsd:qname"/>
 							<a class="attribute" href="{@zsd:doc-pointer}">
 								<xsl:text>@</xsl:text>
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 							</a>
 							<xsl:choose>
-								<xsl:when test="position() eq last()" />
+								<xsl:when test="position() eq last()"/>
 								<xsl:when test="position() eq last() - 1">
 									<xsl:text> and </xsl:text>
 								</xsl:when>
@@ -1565,7 +1656,7 @@
 									<xsl:text>, </xsl:text>
 								</xsl:otherwise>
 							</xsl:choose>
-							<xsl:value-of select="$newLine" />
+							<xsl:value-of select="$newLine"/>
 						</xsl:for-each>
 					</div>
 				</xsl:if>
@@ -1574,13 +1665,13 @@
 						<xsl:text>optional RDFa attributes: </xsl:text>
 						<xsl:text> </xsl:text>
 						<xsl:for-each select="$optional-attributes.rdfa">
-							<xsl:sort select="@zsd:qname" />
+							<xsl:sort select="@zsd:qname"/>
 							<a class="attribute" href="{@zsd:doc-pointer}">
 								<xsl:text>@</xsl:text>
-								<xsl:value-of select="@zsd:qname" />
+								<xsl:value-of select="@zsd:qname"/>
 							</a>
 							<xsl:choose>
-								<xsl:when test="position() eq last()" />
+								<xsl:when test="position() eq last()"/>
 								<xsl:when test="position() eq last() - 1">
 									<xsl:text> and </xsl:text>
 								</xsl:when>
@@ -1588,7 +1679,7 @@
 									<xsl:text>, </xsl:text>
 								</xsl:otherwise>
 							</xsl:choose>
-							<xsl:value-of select="$newLine" />
+							<xsl:value-of select="$newLine"/>
 						</xsl:for-each>
 					</div>
 				</xsl:if>
@@ -1599,7 +1690,7 @@
 					<p>This element is empty</p>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="rng:*" mode="ecm" />
+					<xsl:apply-templates select="rng:*" mode="ecm"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</div>
@@ -1607,20 +1698,20 @@
 
 	<xsl:template name="presentElementnamesWithLinks">
 		<!-- As parameter: one or more elements from $SCHEMA.ELEMENT-LIST -->
-		<xsl:param name="elems" as="element()+" />
+		<xsl:param name="elems" as="element()+"/>
 		<xsl:for-each select="$elems">
-			<xsl:sort select="@name" />
+			<xsl:sort select="@name"/>
 
-			<xsl:variable name="defineName" select="@zsd:define-name" as="xs:string" />
+			<xsl:variable name="defineName" select="@zsd:define-name" as="xs:string"/>
 			<xsl:variable name="elementMultiplicity" as="xs:integer"
-				select="$SCHEMA.ELEMENT-LIST.GROUPED/element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/@zsd:multiplicity" />
+				select="$SCHEMA.ELEMENT-LIST.GROUPED/element-group[some $e in element satisfies $e/@zsd:define-name eq $defineName]/@zsd:multiplicity"/>
 			<a class="element" href="{@zsd:doc-pointer}">
 				<xsl:choose>
 					<xsl:when test="@zsd:ns-prefix eq ''">
-						<xsl:value-of select="@name" />
+						<xsl:value-of select="@name"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="concat(@zsd:ns-prefix,':',@name)" />
+						<xsl:value-of select="concat(@zsd:ns-prefix,':',@name)"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if
@@ -1630,29 +1721,29 @@
 					count($elems[@zsd:qname eq current()/@zsd:qname]) gt 1">
 					<xsl:text>&#160;(</xsl:text>
 					<span class="element-variant">
-						<xsl:value-of select="zsd:elementVariant(.)" />
+						<xsl:value-of select="zsd:elementVariant(.)"/>
 					</span>
 					<xsl:text>&#160;variant)</xsl:text>
 				</xsl:if>
 			</a>
 			<xsl:choose>
-				<xsl:when test="position() = last()" />
+				<xsl:when test="position() = last()"/>
 				<xsl:when test="position() = last()-1"> and </xsl:when>
 				<xsl:otherwise>, </xsl:otherwise>
 			</xsl:choose>
-			<xsl:value-of select="'&#10;'" />
+			<xsl:value-of select="'&#10;'"/>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template name="generateXhtmlFilesForMultiplyDefinedElements">
 		<xsl:for-each
 			select="$SCHEMA.ELEMENT-LIST.GROUPED/element-group[number(@zsd:multiplicity) gt 1]">
 			<xsl:variable as="xs:string" name="filename"
-				select="concat($outputPath,$documentation.subfolder,@zsd:doc-pointer)" />
+				select="concat($outputPath,$documentation.subfolder,@zsd:doc-pointer)"/>
 			<xsl:result-document format="xhtml" href="{$filename}">
 				<xsl:variable as="node()+" name="element.title">
 					<xsl:text>The </xsl:text>
 					<span class="element">
-						<xsl:value-of select="@zsd:qname" />
+						<xsl:value-of select="@zsd:qname"/>
 					</span>
 					<xsl:text> element</xsl:text>
 				</xsl:variable>
@@ -1660,19 +1751,19 @@
 					<head>
 						<title>
 							<xsl:text>Schema Documentation: the </xsl:text>
-							<xsl:value-of select="@zsd:qname" />
+							<xsl:value-of select="@zsd:qname"/>
 							<xsl:text> element</xsl:text>
 						</title>
-						<link href="../schemadoc.css" rel="stylesheet" type="text/css" />
+						<link href="../schemadoc.css" rel="stylesheet" type="text/css"/>
 					</head>
 					<body>
-						<xsl:copy-of select="$xhtml-files.banner.top" />
+						<xsl:copy-of select="$xhtml-files.banner.top"/>
 						<h1>
-							<xsl:copy-of select="$element.title" />
+							<xsl:copy-of select="$element.title"/>
 						</h1>
 						<p>
 							<xsl:text>This element exists in </xsl:text>
-							<xsl:value-of select="@zsd:multiplicity" />
+							<xsl:value-of select="@zsd:multiplicity"/>
 							<xsl:text> variants:</xsl:text>
 						</p>
 						<ul>
@@ -1681,11 +1772,11 @@
 									<a href="{@zsd:doc-pointer}">
 										<xsl:text>The </xsl:text>
 										<span class="element-variant">
-											<xsl:value-of select="(@zsd:context,'UNDEFINED')[1]" />
+											<xsl:value-of select="(@zsd:context,'UNDEFINED')[1]"/>
 										</span>
 										<xsl:text> variant of  the </xsl:text>
 										<span class="element">
-											<xsl:value-of select="@zsd:qname" />
+											<xsl:value-of select="@zsd:qname"/>
 										</span>
 										<xsl:text> element</xsl:text>
 									</a>
@@ -1710,15 +1801,15 @@
 			href="{concat('_',$SCHEMA.base-filename,'_namespace-map.xml')}">
 			<xsl:copy-of select="$SCHEMA.NAMESPACE-MAP" />
 		</xsl:result-document>-->
-		<xsl:message> ## debug: writing reorganized schema to <xsl:value-of select="concat('_',$SCHEMA.base-filename,'_reorganized.xml')" /></xsl:message>
+		<xsl:message> ## debug: writing reorganized schema to <xsl:value-of select="concat('_',$SCHEMA.base-filename,'_reorganized.xml')"/></xsl:message>
 		<xsl:result-document format="plain-xml"
 			href="{concat('_',$SCHEMA.base-filename,'_reorganized.xml')}">
-			<xsl:copy-of select="$SCHEMA.REORGANIZED" />
+			<xsl:copy-of select="$SCHEMA.REORGANIZED"/>
 		</xsl:result-document>
-		<xsl:message> ## debug: writing list of elements to <xsl:value-of select="concat('_',$SCHEMA.base-filename,'_element-list.xml')" /></xsl:message>
+		<xsl:message> ## debug: writing list of elements to <xsl:value-of select="concat('_',$SCHEMA.base-filename,'_element-list.xml')"/></xsl:message>
 		<xsl:result-document format="plain-xml"
 			href="{concat('_',$SCHEMA.base-filename,'_element-list.xml')}">
-			<xsl:copy-of select="$SCHEMA.ELEMENT-LIST" />
+			<xsl:copy-of select="$SCHEMA.ELEMENT-LIST"/>
 		</xsl:result-document>
 		<!--		<xsl:message> ## debug: writing list of other feature stuff to <xsl:value-of select="concat('_',$SCHEMA.base-filename,'_other-feature-list.xml')" /></xsl:message>
 		<xsl:result-document format="plain-xml"
@@ -1772,32 +1863,32 @@
 	<!-- MG <xsl:template match="dcterms:description | z:info | a:documentation"> -->
 	<xsl:template match="db:para[contains(@role,'desc-')] | a:documentation">
 		<p class="description {substring-before(name(),':')}">
-			<xsl:apply-templates />
+			<xsl:apply-templates/>
 		</p>
 	</xsl:template>
 
 	<xsl:template match="x:*">
 		<xsl:copy copy-namespaces="no">
-			<xsl:copy-of select="@*" />
-			<xsl:apply-templates />
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
 
 	<xsl:template match="x:a[starts-with(@href,'#')]">
 		<!-- Links on this form are used to direct the reader of the doc to other pages inside the set of doc files -->
-		<xsl:variable name="define-name" as="xs:string" select="substring-after(@href,'#')" />
+		<xsl:variable name="define-name" as="xs:string" select="substring-after(@href,'#')"/>
 		<!-- Are we referencing an element? -->
 		<xsl:variable name="e-filename" as="xs:string?"
-			select="$SCHEMA.ELEMENT-LIST//element[@zsd:define-name eq $define-name]/@zsd:doc-pointer" />
+			select="$SCHEMA.ELEMENT-LIST//element[@zsd:define-name eq $define-name]/@zsd:doc-pointer"/>
 		<!-- ...or an attribute? -->
 		<xsl:variable name="a-filename" as="xs:string?"
-			select="$SCHEMA.ATTRIBUTE-LIST//attribute[@zsd:define-name eq $define-name]/@zsd:doc-pointer" />
+			select="$SCHEMA.ATTRIBUTE-LIST//attribute[@zsd:define-name eq $define-name]/@zsd:doc-pointer"/>
 		<!-- And then choose the proper one: -->
-		<xsl:variable name="filename" as="xs:string" select="($e-filename,$a-filename)[1]" />
+		<xsl:variable name="filename" as="xs:string" select="($e-filename,$a-filename)[1]"/>
 		<xsl:copy copy-namespaces="no">
-			<xsl:copy-of select="@* except @href" />
-			<xsl:attribute name="href" select="$filename" />
-			<xsl:apply-templates />
+			<xsl:copy-of select="@* except @href"/>
+			<xsl:attribute name="href" select="$filename"/>
+			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
 
