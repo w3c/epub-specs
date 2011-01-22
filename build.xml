@@ -33,7 +33,14 @@
 	<property name="dir.temp" value="${basedir}/temp" />
 	<property name="dir.temp.spec" value="${dir.temp}/spec" />
 		
-	<property name="schema.src.ops" value="${dir.src.schema}/ops30.rnc"/>
+	<property name="schema.epub.xhtml.rnc" value="${dir.src.schema}/epub-xhtml-30.rnc"/>
+	<property name="schema.epub.xhtml.sch" value="${dir.src.schema}/epub-xhtml-30.sch"/>
+	<property name="schema.epub.svg.rng" value="${dir.src.schema}/epub-svg-30.rng"/>
+	<property name="schema.epub.nav.rnc" value="${dir.src.schema}/epub-nav-30.rnc"/>
+	<property name="schema.epub.mediaoverlay.rnc" value="${dir.src.schema}/media-overlay-30.rnc"/>
+	<property name="schema.epub.mediaoverlay.sch" value="${dir.src.schema}/media-overlay-30.sch"/>
+	<property name="schema.epub.package.rnc" value="${dir.src.schema}/package-30.rnc"/>
+	<property name="schema.epub.package.sch" value="${dir.src.schema}/package-30.sch"/>
 	
 	<property name="schema.rng" value="${dir.util.rng}/relaxng.rng" />
 	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl" />
@@ -332,37 +339,89 @@
 	<!--   v a l i d a t i o n - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
-	<target name="validate-tests-ncx-rnc" 
-		description="validate the NCX tests using RNC (no ISO Schematron)">
-		<validate-fileset-rng
-			fileset-dir="${dir.test}" 
-			fileset-includes="ncx/**/*.ncx"
-			fileset-excludes=""
-			schema="${dir.src.schema}/ncx30.rnc"
-			failonerror="true"
-			compaxtsyntax="true" />
-	</target> <!-- NVDL (Jing-Trang implementation) has no support for ISO Schematron ==> no implementation available for schema language with namespace URI "http://purl.oclc.org/dsdl/schematron". See http://code.google.com/p/jing-trang/issues/detail?id=23 -->
+	<!-- NVDL (Jing-Trang implementation) has no support for ISO Schematron 
+		==> no implementation available for schema language with namespace URI 
+		"http://purl.oclc.org/dsdl/schematron". 
+		See http://code.google.com/p/jing-trang/issues/detail?id=23 -->
 	
-	<target name="validate-tests-ncx-sch" 
-		description="validate the NCX tests using ISO Schematron">
-		<schematron
-			OutputDir="${dir.build}"
-			schema="${dir.src.schema}/ncx30.sch"
-			failOnError="true">
-			<fileset dir="${dir.test}" includes="ncx/**/*.ncx"/>
-		</schematron>
+	<target name="validate-tests" 
+		depends="validate-tests-package, validate-tests-overlays, 
+				 validate-tests-xhtml" />
+		
+	<target name="validate-tests-package">
+		<validate-tests-impl
+ 			dir="package" 
+			schema-rng="${schema.epub.package.rnc}"
+			schema-sch="${schema.epub.package.sch}"
+			includes="*.opf"
+			excludes="" />			
 	</target>
 	
-	<!-- target name="validate-tests-ncx-sch-custom" 
-		description="validate a particular NCX test using ISO Schematron">
-		<schematron
-			OutputDir="${dir.build}"
-			schema="${dir.src.schema}/ncx30.sch"
-			failOnError="true">
-			<fileset dir="${dir.test}" includes="ncx/invalid/ncx-multilang_inherited.ncx"/>
-		</schematron>
-	</target -->
-
+	<target name="validate-tests-overlays">
+		<validate-tests-impl
+ 			dir="overlays" 
+			schema-rng="${schema.epub.mediaoverlay.rnc}"
+			schema-sch="${schema.epub.mediaoverlay.sch}"
+			includes="*.smil"
+			excludes="" />			
+	</target>
+	
+	<target name="validate-tests-xhtml">
+		<validate-tests-impl
+ 			dir="xhtml" 
+			schema-rng="${schema.epub.xhtml.rnc}"
+			schema-sch="${schema.epub.xhtml.sch}"
+			includes="*.xhtml"
+			excludes="" />			
+	</target>
+	
+	<macrodef name="validate-tests-impl">
+		<attribute name="dir"/>
+		<attribute name="includes"/>
+		<attribute name="excludes"/>
+		<attribute name="schema-rng"/>
+		<attribute name="schema-sch"/>
+		
+		<sequential>
+			<echo> </echo>
+			<echo> </echo>
+			<echo>test validation: @{dir}; valid branch</echo>
+			<validate-fileset-rng
+				fileset-dir="${dir.test}/@{dir}/valid"
+				fileset-includes="@{includes}"
+				fileset-excludes="@{excludes}"
+				compaxtsyntax="true"
+				failonerror="true"
+				schema="@{schema-rng}"
+			/>
+			<schematron
+				OutputDir="${dir.build}"
+				schema="@{schema-sch}"
+				failOnError="true">
+				<fileset dir="${dir.test}/@{dir}/valid" includes="@{includes}" excludes="@{excludes}"/>
+			</schematron>
+			
+			<echo> </echo>
+			<echo> </echo>
+			<echo>test validation: @{dir}; invalid branch</echo>
+			<validate-fileset-rng
+				fileset-dir="${dir.test}/@{dir}/invalid"
+				fileset-includes="@{includes}"
+				fileset-excludes="@{excludes}"
+				compaxtsyntax="true"
+				failonerror="false"
+				schema="@{schema-rng}"
+			/>
+			<schematron
+				OutputDir="${dir.build}"
+				schema="@{schema-sch}"
+				failOnError="false">
+				<fileset dir="${dir.test}/@{dir}/invalid" includes="@{includes}" excludes="@{excludes}"/>
+			</schematron>
+			
+		</sequential>
+	</macrodef>
+		
 	<target name="validate-src-rng-schemas" 
 		description="validate the source schemas against the RelaxNG schema for RelaxNG">
 		<validate-fileset-rng 
@@ -658,88 +717,79 @@
 			-->
 		</macrodef>
 	
-		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
-		<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<!--
-		<target name="build-schemadoc" depends="schemadoc-depends, build-schemadoc-ops"/>
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 		
-		<target name="build-schemadoc-ops" depends="schemadoc-depends">
-			<schemadoc 			
-				in-schema="${schema.src.ops}"
-				out-dir="${dir.build.schemadoc}/ops30"
-				machine-name="ops30"		
-			/>
-		</target>	
+	<target name="build-schemadoc" depends="build-schemadoc-xhtml, build-schemadoc-package"/>
 		
-		<macrodef name="schemadoc">
-			<attribute name="in-schema" />
-			<attribute name="out-dir" />
-			<attribute name="machine-name" />
-					
-			<sequential>			
-				<mkdir dir="@{out-dir}"/>
-				
-				<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
-				
-				<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
-					<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
-					<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
-					<arg value="false"/>
-					<arg value="false"/>
-					<classpath refid="build.classpath"/>					
-				</java>
-				
-				<saxon-xslt 
-					in="${dir.temp}/@{machine-name}-quasi.rng" 
-					style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
-					out="${dir.temp}/dummy-schemadoc.xml">
-					<param name="rd-summary" expression="${dir.temp}/summary.xml" />
-					<param name="output-path" expression="${dir.build.schemadoc}/@{machine-name}/" />
-					<param name="profile-machine-name" expression="ops30" />
-					<param name="debug" expression="0" />
-				</saxon-xslt> 
-				
-				<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
-				
-				<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" tofile="${dir.build.schemadoc}/@{machine-name}/schemadoc.css" />	
-			</sequential>
-			
-		</macrodef>
-		
-		<target name="schemadoc-depends">
-			<echoxml file="${dir.temp}/summary.xml">
-				<summary>
-					<profile nicename="OPS 3.0" machinename="ops30" rd-uri="http://www.idpf.org/draft/2010-10-02" />								
-				</summary>
-			</echoxml>
-		</target>
-		-->
-		<!-- broken on ops
-		<target name="rng-topology-ops">		 
-			<rng-topology
-				in-schema="${schema.src.ops}"
-				out-dir="${dir.build}/topology"
-				machine-name="ops30"
-			/>
-		</target>	
-		-->
-		<!--
-		<macrodef name="rng-topology">
-			<attribute name="in-schema"/>
-			<attribute name="machine-name" />
-			<attribute name="out-dir"/>
-			<sequential>
-				<mkdir dir="@{out-dir}"/>
-				<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
-				<saxon-xslt 
-					in="${dir.temp}/@{machine-name}-trangd.rng" 
-					style="${dir.util.rng}/rng-topology.xsl" 
-					out="@{out-dir}/@{machine-name}-topology.html">							
-				</saxon-xslt> 			
-				<copy file="${dir.util.rng.schemadoc}/schemadoc2.css" todir="@{out-dir}"/>
-			</sequential>
-		</macrodef>
-		-->
+	<target name="build-schemadoc-xhtml">		
+		<echoxml file="${dir.temp}/summary.xml">
+			<summary>
+				<profile nicename="EPUB XHTML Content Documents" machinename="epub-xhtml-30" rd-uri="http://www.idpf.org/epub/30/" />								
+			</summary>
+		</echoxml>		
+		<schemadoc-rnc 			
+			in-schema="${schema.epub.xhtml}"
+			out-dir="${dir.build.schemadoc}/xhtml"
+			machine-name="epub-xhtml-30"
+			summary="${dir.temp}/summary.xml"
+		/>
+	</target>	
 	
+	<target name="build-schemadoc-package">		
+		<echoxml file="${dir.temp}/summary.xml">
+			<summary>
+				<profile nicename="EPUB Package Documents" machinename="epub-package-30" rd-uri="http://www.idpf.org/epub/30/" />								
+			</summary>
+		</echoxml>		
+		<schemadoc-rnc 			
+			in-schema="${schema.epub.package}"
+			out-dir="${dir.build.schemadoc}/package"
+			machine-name="epub-package-30"
+			summary="${dir.temp}/summary.xml"
+		/>
+	</target>
+		
+	<macrodef name="schemadoc-rnc">
+		<attribute name="in-schema" />
+		<attribute name="out-dir" />
+		<attribute name="machine-name" />
+		<attribute name="summary" />
+				
+		<sequential>	
+			
+			<echo>Building schemadoc for @{in-schema}... </echo>
+			
+			<clean-dir dir="@{out-dir}"/>
+			
+			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
+			
+			<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
+				<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
+				<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
+				<arg value="false"/>
+				<arg value="false"/>
+				<classpath refid="build.classpath"/>					
+			</java>
+			
+			<saxon-xslt 
+				in="${dir.temp}/@{machine-name}-quasi.rng" 
+				style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
+				out="${dir.temp}/dummy-schemadoc.xml">
+				<param name="rd-summary" expression="@{summary}" />
+				<param name="output-path" expression="@{out-dir}/" />
+				<param name="profile-machine-name" expression="@{machine-name}" />
+				<param name="debug" expression="0" />
+				<param name="group-rdf-a" expression="0" />
+			</saxon-xslt> 
+			
+			<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
+			
+			<copy file="${dir.util.rng.schemadoc}/schemadoc2-alt.css" tofile="@{out-dir}/schemadoc.css" />	
+		</sequential>
+		
+	</macrodef>
+	
+			
 </project>
