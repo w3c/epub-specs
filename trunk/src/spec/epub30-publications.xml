@@ -259,75 +259,103 @@ are defined by other specifications. -->
 
         <section xml:id="sec-epub-identifiers">
             <title>Publication Identifiers</title>
-
-            <para>The Package Document's author is responsible for including a primary identifier
-                that is unique to one and only one particular <xref linkend="gloss-epub-publication"
-                />. The primary identifier, whether chosen or assigned, must be stored in a
+            
+            <section xml:id="sec-epub-ids-uid">
+                <title>Unique Identifier</title>
+                
+                <para>The Package Document's author is responsible for including a primary identifier
+                    that is unique to one and only one particular <xref linkend="gloss-epub-publication"
+                    />. The primary identifier, whether chosen or assigned, must be stored in a
                     <literal>dc:identifier</literal> element in the Package
-                    <literal>metadata</literal> section, and be referenced as the unique identifier
-                in the <literal>package</literal> element's <literal>unique-identifier</literal>
-                attibute (refer to <xref linkend="sec-opf-dcidentifier"/> for more information). </para>
-
-            <para>The uniqueness of a publication typically does not change in concert with each
-                revision to the package or its contents, as unique identifiers are intended to have
-                maximal persistence both for referencing and distribution purposes. Each release of
-                a publication typically requires that the new version be uniquely identifiable,
-                however, which results in the contradictory need for reliable unique identifiers
-                that are changeable.</para>
-
-            <para>To redress this problem of identifying minor releases without changing the unique
-                identifier, the package metadata must include a <literal>dcterms:creation</literal> date
-                and optionally a single <literal>dcterms:modified</literal> date corresponding to the
-                most recent release of the Publication. The format for these dates ...
-                <remark role="todo">specify here or elsewhere the exact iso 8601 format they must use</remark>.</para>
+                    <literal>metadata</literal> section and be referenced as the unique identifier
+                    in the <literal>package</literal> element's <literal>unique-identifier</literal>
+                    attibute (refer to <xref linkend="sec-opf-dcidentifier"/> for more information). </para>
+                
+                <para>Although not static, changes to the unique identifier for a publication should be
+                    made as infrequently as possible. New identifiers should not be issued when updating
+                    metadata, fixing errata or making other minor changes to the package. Some instances
+                    where a new unique identifier for the publication should be considered might
+                    include: </para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>the addition or removal of complete or partial sections of a publication,
+                            such as a new introduction or foreword;</para>
+                    </listitem>
+                    <listitem>
+                        <para>re-release under a new imprint;</para>
+                    </listitem>
+                </itemizedlist>
+                
+                <remark role="todo">TODO: need more/better examples of triggers for changing</remark>
+                
+                <remark role="todo">TODO: fit this conf. req. somewhere else?</remark>
+                <para role="rsconferr">Reading Systems must not fail catastrophically if they encounter
+                    two distinct EPUB Publications with the same purportedly unique primary identifier. </para>
             
-            <para>Taken together with the publication unique identifier, the combined value 
-                represents the Package Identity for any particular EPUB instance. The unique identifier
-                half of the Package Identity is the static identifier that indicates that two Publications
-                contain the same content, while the date portion indicates if the Publications are identical
-                or sequentially before or after one another.</para>
+            </section>
             
-            <para>The Package Identity does not superseded the unique identifier, and is not a separate
-                instance of package metadata from the two elements that are combined to form it. 
-                What it represents instead is the means by which different versions of the same publication 
-                can be identified in distribution channels and by Reading Systems. The chronological order of 
-                the date stamp places Publications in order without requiring knowledge of the exact 
-                identifier that came before (it is possible that the most recent version of a Publication may
-                not be the authoritative version, but this problem is outside the scope of this specification).</para>
-            
-            <para>Although not static, changes to the unique identifier for a publication should be
-                made as infrequently as possible. New identifiers should not be issued when updating
-                metadata, fixing errata or making other minor changes to the package. Some instances
-                where a new unique identifier for the publication should be considered might
-                include: </para>
-
-            <itemizedlist>
-                <listitem>
-                    <para>the addition or removal of complete or partial sections of a publication,
-                        such as a new introduction or foreword;</para>
-                </listitem>
-                <listitem>
-                    <para>re-release under a new imprint;</para>
-                </listitem>
-            </itemizedlist>
-
-            <remark role="todo">TODO: need more/better examples of triggers for changing</remark>
-
-            <para>Although the semantics of the identifier segments of the
-                    <literal>content-version</literal> are not strongly defined in this
-                specification, each revision requires that the property value be changed in order to
-                maintain the uniqueness of the new publication. In the case of numeric identifiers,
-                this process may only require that the minor segment be incremented. </para>
-
-            <remark role="todo">clarification: discussion noted that minor segment must always
-                increment, but shouldn't the requirement just be that at least one segment change?
-                you may not use the third segment or it could be at .1 invalidating a change to a
-                new mid/major version with a .1 minor, for example. wording above may need to
-                change. </remark>
-
-            <para role="rsconferr">Reading Systems must not fail catastrophically if they encounter
-                two distinct EPUB Publications with the same purportedly unique primary identifier. </para>
-            <remark role="todo">TODO: fit this conf. req. somewhere else?</remark>
+            <section xml:id="sec-epub-ids-pid">
+                <title>Package Identifier</title>
+                
+                <para>The uniqueness of a publication typically does not change in concert with each
+                    revision to the package or its contents, as unique identifiers are intended to have
+                    maximal persistence both for referencing and distribution purposes. Each release of
+                    a publication normally requires that the new version be uniquely identifiable,
+                    however, which results in the contradictory need for reliable unique identifiers
+                    that are changeable.</para>
+                
+                <para>To redress this problem of identifying minor releases without changing the unique
+                    identifier, this specification defines the semantics for a Package Identifier, or 
+                    means of distinguishing and sequentially ordering Publications with the same 
+                    unique identifer. The Package Identifier is not an actual property in the Package 
+                    <literal>metadata</literal> section, but is a value that can be obtained from two
+                    required pieces of metadata: the unique identifier and creation or last modification
+                    date of the Publication.</para>
+                
+                <para>When the creation or modification date is taken together with the Publication's unique 
+                    identifier, the combined value represents a unique identity that can be used to distinguish
+                    any particular EPUB instance from another. When a Publication includes both a creation
+                    and modification date, the modification date must be used to construct the Identifier.</para>
+                
+                <para>To ensure that a Package Identifier can be constructed, the following metadata requirements
+                    must be satisfied in addition to those specified in <xref linkend="sec-metadata-elem"/>:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>the Publication must include exactly one <literal>dcterms:creation</literal> property containing
+                            the creation date of the Publication.  The value of this property must be an 
+                            ISO 8601 [ISO8601] conformant date of the form <remark role="todo">TODO: format</remark>.</para>
+                    </listitem>
+                    <listitem>
+                        <para>the Publication may optionally include one and only one <literal>dcterms:modified</literal> property 
+                            containing the last modification date of the Publication. The value of this property must be an 
+                            ISO 8601 [ISO8601] conformant date of the form <remark role="todo">TODO: format</remark>.</para>
+                    </listitem>
+                    <listitem>
+                        <para>if both <literal>dcterms:creation</literal> and <literal>dcterms:modified</literal> properties
+                            are specified, the <literal>dcterms:modified</literal> date value must be chronologically after
+                            the <literal>dcterms:creation</literal> date.</para>
+                    </listitem>
+                </itemizedlist>
+                
+                <para>The Package Identifier does not supersede the unique identifier, but represents the 
+                    means by which different versions of the same publication can be identified in distribution 
+                    channels and by Reading Systems. The chronological order inherent in the required format 
+                    of the datestamp also places Publications in order without requiring knowledge of the exact 
+                    identifier that came before.</para>
+                
+                <para>The Package Identifier consequently allows a set of Publications to be inspected to determine if
+                    they represent the same the same version of the same Publication, different versions of
+                    a single Publication or any combination of differing and similar Publications.</para>
+                
+                <note>
+                    <para>Although it is possible in some instances that the most recent version of a Publication 
+                        may not be the authoritative version, or that parallel branches of the same Publication may
+                        exist, production control problems such as these are outside the scope of this specification.</para>
+                </note>
+                
+            </section>
         </section>
 
     </chapter>
