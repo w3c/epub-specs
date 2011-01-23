@@ -12,6 +12,10 @@
         <xsl:variable name="ref"><xsl:value-of select="@linkend"/></xsl:variable>
         <xsl:variable name="target" select="//*[@xml:id eq $ref]" as="element()" />
         
+        <xsl:if test="not($target)">
+            <xsl:message terminate="yes">No target found for <xsl:value-of select="$target"/> </xsl:message>
+        </xsl:if>
+        
         <xsl:element name="{local-name(.)}" namespace="http://docbook.org/ns/docbook">
             <xsl:copy-of select="@*"/>
             <xsl:choose>

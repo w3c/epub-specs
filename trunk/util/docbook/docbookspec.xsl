@@ -14,7 +14,7 @@
         toc,title,example chapter title part toc,title preface title qandadiv toc qandaset toc
         reference toc,title sect1 toc sect2 toc sect3 toc sect4 toc sect5 toc set toc,title </xsl:param>
 
-    <xsl:param name="admon.style"></xsl:param>
+    <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
 
     <!-- ============================================================================= -->
@@ -69,9 +69,10 @@
         <xsl:if test="$topinfo/db:authorgroup[not(@role) or @role='current']">
             <xsl:call-template name="render-authorgroup">
                 <xsl:with-param name="title">Editors (this version)</xsl:with-param>
-                <xsl:with-param name="node" select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
+                <xsl:with-param name="node"
+                    select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
             </xsl:call-template>
-        </xsl:if>        
+        </xsl:if>
         <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
             <xsl:call-template name="render-authorgroup">
                 <xsl:with-param name="title">Editors (previous versions)</xsl:with-param>
@@ -79,10 +80,10 @@
             </xsl:call-template>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template name="render-authorgroup">
-        <xsl:param name="title" />
-        <xsl:param name="node" />
+        <xsl:param name="title"/>
+        <xsl:param name="node"/>
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">authorgroup</xsl:attribute>
             <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
@@ -106,13 +107,33 @@
                     </xsl:choose>
                 </xsl:element>
             </xsl:for-each>
-        </xsl:element>        
+        </xsl:element>
     </xsl:template>
 
     <!-- ============================================================================= -->
-    <!-- override in html.xsl: get IDs directly on the carrier instead of on child <a>  -->
-    <!-- TODO this seems to crash when xml:id appears on certain element types -->
-    
+    <!-- overrides in html.xsl to get @id on elements instead of in child anchor -->
+
+    <xsl:template match="*" mode="common.html.attributes">
+        <xsl:param name="class" select="local-name(.)"/>
+        <xsl:param name="inherit" select="0"/>
+
+        <xsl:apply-imports>
+            <xsl:with-param name="class" select="$class"/>
+            <xsl:with-param name="inherit" select="$inherit"/>
+        </xsl:apply-imports>
+
+        <xsl:variable name="id">
+            <xsl:call-template name="object.id">
+                <xsl:with-param name="object" select="."/>
+            </xsl:call-template>
+        </xsl:variable>
+
+        <xsl:if test="./@id or ./@xml:id">
+            <xsl:attribute name="id" select="$id"/>
+        </xsl:if>
+
+    </xsl:template>
+
     <xsl:template name="anchor">
         <xsl:param name="node" select="."/>
         <xsl:param name="conditional" select="1"/>
@@ -121,27 +142,104 @@
                 <xsl:with-param name="object" select="$node"/>
             </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
-            <xsl:attribute name="id" select="$id"/>
-        </xsl:if>
+        
         <xsl:variable name="parentName" select="local-name(..)"/>
+        
         <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
             <xsl:if
-                test="$node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix')">
-                <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
-                    <xsl:attribute name="class">hidden-reveal</xsl:attribute>
-                    <xsl:attribute name="title">Link here</xsl:attribute>
-                    <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
-                    <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
-                </xsl:element>
-                <xsl:text disable-output-escaping="no">&#160;</xsl:text>
+                test="($node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix'))
+                or($node[d:term] and $parentName='variablelist')">
+                
+                <xsl:call-template name="render-link-here-anchor">
+                    <xsl:with-param name="id" select="$id"/>
+                </xsl:call-template>
             </xsl:if>
         </xsl:if>
-        </xsl:template> 
+        
+    </xsl:template>
+
+    <xsl:template name="render-link-here-anchor">
+        <xsl:param name="id" required="yes"/>
+        <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:attribute name="class">hidden-reveal</xsl:attribute>
+            <xsl:attribute name="title">Link here</xsl:attribute>
+            <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
+            <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
+        </xsl:element>
+        <xsl:text disable-output-escaping="no">&#160;</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="d:glossentry">
+        <xsl:element name="dt" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:apply-templates select="." mode="common.html.attributes"/>
+            <xsl:choose>
+                <xsl:when test="$glossentry.show.acronym = 'primary'">
+                    <xsl:call-template name="anchor">
+                        <xsl:with-param name="conditional">
+                            <xsl:choose>
+                                <xsl:when test="$glossterm.auto.link != 0">0</xsl:when>
+                                <xsl:otherwise>1</xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                    <xsl:choose>
+                        <xsl:when test="d:acronym|d:abbrev">
+                            <xsl:apply-templates select="d:acronym|d:abbrev"/>
+                            <xsl:text> (</xsl:text>
+                            <xsl:apply-templates select="d:glossterm"/>
+                            <xsl:text>)</xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="d:glossterm"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$glossentry.show.acronym = 'yes'">
+                    <xsl:call-template name="anchor">
+                        <xsl:with-param name="conditional">
+                            <xsl:choose>
+                                <xsl:when test="$glossterm.auto.link != 0">0</xsl:when>
+                                <xsl:otherwise>1</xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                    <xsl:apply-templates select="d:glossterm"/>
+                    <xsl:if test="d:acronym|d:abbrev">
+                        <xsl:text> (</xsl:text>
+                        <xsl:apply-templates select="d:acronym|d:abbrev"/>
+                        <xsl:text>)</xsl:text>
+                    </xsl:if>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="anchor">
+                        <xsl:with-param name="conditional">
+                            <xsl:choose>
+                                <xsl:when test="$glossterm.auto.link != 0">0</xsl:when>
+                                <xsl:otherwise>1</xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                    <xsl:apply-templates select="d:glossterm"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
+        <xsl:apply-templates select="d:indexterm|d:revhistory|d:glosssee|d:glossdef"/>
+    </xsl:template>
+
+    <xsl:template match="d:varlistentry">
+        <xsl:element name="dt" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:apply-templates select="." mode="common.html.attributes"/>
+            <xsl:call-template name="anchor"/>
+            <xsl:apply-templates select="d:term"/>
+        </xsl:element>
+        <xsl:element name="dd" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:apply-templates select="d:listitem"/>
+        </xsl:element>
+    </xsl:template>
 
     <!-- ============================================================================= -->
-    <!-- override in html.xsl --> 
-    
+    <!-- override in html.xsl to set preference order for creating a class value -->
+
     <xsl:template match="*" mode="class.value">
         <xsl:param name="class" select="local-name(.)"/>
         <xsl:choose>
@@ -154,7 +252,7 @@
             <xsl:otherwise>
                 <xsl:value-of select="$class"/>
             </xsl:otherwise>
-        </xsl:choose>                        
+        </xsl:choose>
     </xsl:template>
 
 
@@ -366,9 +464,6 @@
         <xsl:call-template name="chapter.titlepage.separator"/>
     </xsl:template>
 
-
-
-
     <!-- ============================================================================= -->
     <!-- override section title page templates to remove all the excess divs and correct heading levels -->
 
@@ -417,8 +512,6 @@
         <xsl:call-template name="section.titlepage.separator"/>
 
     </xsl:template>
-
-
 
     <xsl:template name="section.level">
         <xsl:param name="node" select="."/>
@@ -477,9 +570,6 @@
     <xsl:template match="d:bridgehead">
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="class">bridgehead</xsl:attribute>
-            <xsl:call-template name="anchor">
-                <xsl:with-param name="conditional" select="0"/>
-            </xsl:call-template>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
@@ -487,12 +577,14 @@
     <!-- ==================================================================== -->
     <!-- override gentext to get "Chapter" etc out of link labels -->
 
-    <xsl:param name="local.l10n.xml" select="document('')"/> 
-    <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"> 
-        <l:l10n language="en"> 
-            <l:context name="xref-number-and-title">  
-                <l:template name="chapter" text="%t"/> <!-- %n, -->
-                <l:template name="section" text="“%t”"/> <!-- %n, -->
+    <xsl:param name="local.l10n.xml" select="document('')"/>
+    <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
+        <l:l10n language="en">
+            <l:context name="xref-number-and-title">
+                <l:template name="chapter" text="%t"/>
+                <!-- %n, -->
+                <l:template name="section" text="“%t”"/>
+                <!-- %n, -->
             </l:context>
             <l:context name="title">
                 <l:template name="note" text="%t:&#160;"/>
