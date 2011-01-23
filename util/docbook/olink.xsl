@@ -89,7 +89,7 @@
         <xsl:if test="not($curelem)">
             <xsl:message terminate="yes">Failed retrieving a target element for id '<xsl:value-of
                     select="$targetptr"/>' in <xsl:value-of select="$targetdoc"/> in
-                olink.xsl#fn:getDestLabel</xsl:message>
+                olink.xsl#fn:getLinkLabel</xsl:message>
         </xsl:if>
 
         <xsl:choose>
@@ -102,9 +102,14 @@
             <xsl:when test="$curelem/db:title">
                 <xsl:value-of select="$curelem/db:title"/>
             </xsl:when>
+            <xsl:when test="$curelem/db:term">
+                <xsl:value-of select="$curelem/db:term"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">Failed retrieving a label in
-                    olink.xsl#fn:getDestLabel</xsl:message>
+                    olink.xsl#fn:getLinkLabel for id '<xsl:value-of
+                        select="$targetptr"/>' in <xsl:value-of select="$targetdoc"/> in
+                    olink.xsl#fn:getLinkLabel</xsl:message>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
