@@ -10,9 +10,11 @@
     <xsl:output method="xhtml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"
         exclude-result-prefixes="saxon db exsl"/>
 
-    <xsl:param name="generate.toc"> appendix nop article/appendix nop article toc,title book
-        toc,title,example chapter title part toc,title preface title qandadiv toc qandaset toc
-        reference toc,title sect1 toc sect2 toc sect3 toc sect4 toc sect5 toc set toc,title </xsl:param>
+    <xsl:param name="generate.toc"> 
+        book toc,title
+        part nop
+        chapter nop        
+    </xsl:param>
 
     <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
@@ -588,6 +590,16 @@
             <l:context name="title">
                 <l:template name="note" text="%t:&#160;"/>
                 <l:template name="caution" text="%t:&#160;"/>
+                <l:template name="chapter" text="%t"/>
+                <l:template name="table" text="%t"/>
+            </l:context>
+            <l:context name="title-unnumbered">
+                <l:template name="chapter" text="%t"/>
+                <l:template name="section" text="%t"/>
+            </l:context>
+            <l:context name="title-numbered">
+                <l:template name="chapter" text="%t"/>
+                <l:template name="section" text="%t"/>
             </l:context>
         </l:l10n>
     </l:i18n>
