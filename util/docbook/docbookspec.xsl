@@ -603,6 +603,53 @@
             </l:context>
         </l:l10n>
     </l:i18n>
-
-
+    
+    
+    <!-- ==================================================================== -->
+    <!-- override informal.object to @add id to informalexample divs for linking -->
+    
+    <xsl:template name="informal.object">
+        <xsl:param name="class" select="local-name(.)"/>
+        
+        <xsl:variable name="content">
+            <xsl:element name="div">
+                <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
+                <xsl:if test="@xml:id">
+                    <xsl:attribute name="id" select="@xml:id"/>
+                </xsl:if>
+                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
+                <xsl:call-template name="anchor"/>
+                <xsl:apply-templates/>
+                
+                <!-- HACK: This doesn't belong inside formal.object; it 
+                    should be done by the table template, but I want 
+                    the link to be inside the DIV, so... -->
+                <xsl:if test="local-name(.) = 'informaltable'">
+                    <xsl:call-template name="table.longdesc"/>
+                </xsl:if>
+                
+                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
+            </xsl:element>
+        </xsl:variable>
+        
+        <xsl:variable name="floatstyle">
+            <xsl:call-template name="floatstyle"/>
+        </xsl:variable>
+        
+        <xsl:choose>
+            <xsl:when test="$floatstyle != ''">
+                <xsl:call-template name="floater">
+                    <xsl:with-param name="class"><xsl:value-of 
+                        select="$class"/>-float</xsl:with-param>
+                    <xsl:with-param name="floatstyle" select="$floatstyle"/>
+                    <xsl:with-param name="content" select="$content"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$content"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+    </xsl:template>
+    
 </xsl:stylesheet>

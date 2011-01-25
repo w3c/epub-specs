@@ -995,7 +995,7 @@
                 <remark role="todo">TODO extend examples with property metadata</remark>
                 <informalexample xml:id="example-manifest-1">
                     <para>The following example shows a <literal>manifest</literal> that only
-                        contain <literal>item</literal>s that are Core Media Types.</para>
+                        contains Core Media Type <literal>item</literal>s.</para>
                     <synopsis><xi:include href="./examples/publications/manifest-1.xml" parse="text"/></synopsis>
                 </informalexample>
                 <informalexample>
@@ -1207,11 +1207,10 @@
                 
                 <note xml:id="note-ncx">
                     <!-- TODO move some or all of this to RS conformance -->
-                    <para>The NCX feature as defined in <xref linkend="refOPF2"/> is superseded by
+                    <para>The NCX feature defined in <xref linkend="refOPF2"/> is superseded by
                         the EPUB3 <xref linkend="gloss-content-document-nav"/> feature. EPUB3
-                        Publications may include an NCX for EPUB 2 Reading System forward
-                        compatibility purposes. EPUB3 Reading Systems must ignore the NCX when
-                        provided in EPUB3 Publications in favor of the EPUB Navigation
+                        Publications may include an NCX for compatibility with EPUB 2 Reading Systems,
+                        but EPUB3 Reading Systems must ignore the NCX in favor of the EPUB Navigation
                         Document.</para>
                 </note>
                 
@@ -1228,11 +1227,6 @@
             <section xml:id="sec-itemref-elem" xreflabel="itemref">
                 <title>The <code>itemref</code> Element</title>
                 <!-- TODO: -->
-                
-                <para>The <code>spine</code> elements <code>itemref</code> children represents a
-                    sequential list of content documents. The order in which the
-                    <code>itemref</code> elements appear defines the default reading order
-                    of the Publication.</para>
                 
                 <variablelist xreflabel="itemref" role="elem-synopsis"
                     xml:id="elemdef-spine-itemref">
@@ -1270,8 +1264,9 @@
                                         <option>[optional]</option></term>
                                     <listitem>
                                         <para>Specifies whether the referenced content is
-                                            primary. Value must be <literal>yes</literal> or
-                                            <literal>no</literal>.</para>
+                                            primary.</para>
+                                        <para>The value of the attribute must be <literal>yes</literal> or
+                                            <literal>no</literal>. The default value <literal>yes</literal>.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry xml:id="attrdef-itemref-id">
@@ -1305,57 +1300,59 @@
                     
                 </variablelist>
                 
-                <para>Each <code>itemref</code> element must (via the <code><xref
-                    linkend="attrdef-itemref-idref"/> attribute)</code> reference a
-                    <xref linkend="gloss-manifest"/>
-                    <code><xref linkend="elemdef-package-item"/></code> element that represents
+                <para>The child <code>itemref</code>s of the <code>spine</code> represents a
+                    sequential list of <xref linkend="gloss-content-document"/>s, and their order 
+                    defines the default reading order of the Publication.</para>
+                
+                <para>Each <code>itemref</code> element must reference, via its <code><xref
+                    linkend="attrdef-itemref-idref"/></code> attribute, an
+                    <code><xref linkend="elemdef-package-item"/></code> in the
+                    <xref linkend="gloss-manifest"/> that represents
                     either an <xref linkend="gloss-content-document"/>, <xref
                         linkend="gloss-content-document-nav"/> or a <xref
-                            linkend="gloss-content-document-foreign"/>.</para>
-                <para>Consequently, the <code>spine</code> represents an ordered list of a
-                    subset of the Publication resources in the manifest, with content items not
-                    being referenced being ancillary to those that do appear there. </para>
+                            linkend="gloss-content-document-foreign"/>.
+                    The <code>spine</code> consequently represents an ordered 
+                    subset of the Publication resources listed in the manifest, with content items not
+                    being referenced being ancillary to the Publication those that do appear there. </para>
                 
                 <note>
-                    <para>Because of the <link linkend="sec-fallback-processing-flow"
-                        >requirements for fallback</link>, the <code>itemref</code>
-                        reference will either a) directly refer to an <xref
+                    <para>Although the <xref linkend="gloss-content-document-nav"/> is <link
+                        linkend="confreq-nav-occur">required in EPUB Publications</link>, it
+                        is optional to include it in the <code>spine</code>.</para>
+                </note>
+                
+                <para> The references provided in the spine should typically resolve to 
+                    <xref linkend="gloss-content-document-xhtml"/>s, not 
+                    <xref linkend="gloss-content-document-svg"/>s. Exceptions include:
+                    1) when such use is within a Publication that is packaged together with
+                    &#8212; and as an alternative non-default representation of &#8212; another 
+                    Publication that represents effectively the same content utilizing XHTML Content
+                    Documents; or 2) when the nature of the content being represented in SVG is
+                    inherently unsuitable to representation in XHTML.</para>
+                
+                <note>
+                    <para><link linkend="sec-fallback-processing-flow"
+                        >Fallback requirements</link> necessitate that the <code>itemref</code>
+                        reference either: a) directly refer to an <xref
                             linkend="gloss-content-document"/> or an <xref
-                                linkend="gloss-content-document-nav"/>, or b) refer to a <xref
+                                linkend="gloss-content-document-nav"/>; or, b) refer to a <xref
                                     linkend="gloss-content-document-foreign"/> that includes an <xref
                                         linkend="gloss-content-document"/> or an <xref
                                             linkend="gloss-content-document-nav"/> in its fallback chain.</para>
                 </note>
                 
-                <note>
-                    <para>While the <xref linkend="gloss-content-document-nav"/> is <link
-                        linkend="confreq-nav-occur">required in EPUB Publications</link>, it
-                        is optional to include it in the <code>spine</code>.</para>
-                </note>
-                
-                <note>
-                    <para> The references provided in the spine should resolve to XHTML Content
-                        Documents rather than SVG Content Documents, unless a) such use is
-                        within a Publication that is packaged together with, and as an
-                        alternative non-default representation of, another Publication that
-                        represents effectively the same content utilizing XHTML Content
-                        Documents or b) the nature of the content being represented via SVG is
-                        inherently unsuitable to representation in XHTML.</para>
-                </note>
-                
                 <para>The <code>itemref</code> element's <code>linear</code> attribute indicates
-                    whether a spine item is considered primary (<literal>linear='yes'</literal>)
-                    or auxiliary (<literal>linear='no'</literal>).The default value of
-                    <code>linear</code> is <literal>yes</literal>. This may be used to
-                    enable Reading Systems to distinguish presentation of "body" content from
-                    ancillary content which might be, for example, presented in a popup window,
+                    whether a spine item is considered primary (<literal>yes</literal>)
+                    or auxiliary (<literal>no</literal>). This may be used to
+                    enable Reading Systems to distinguish presentation of body content from
+                    supplementary content which might be, for example, presented in a popup window,
                     or omitted from an aural rendition. </para>
                 
-                <para>Reading Systems must provide a means to render a Publication in the order
-                    defined by the <code>spine</code>. Reading Systems must as part of this
-                    means a) recognize the first primary (<literal>linear='yes'</literal>) item
-                    in spine to be the beginning of the main reading order of the publication,
-                    and b) render successive primary items in the order given in spine.</para>
+                <para>Reading Systems must provide a means of rendering a Publication in the order
+                    defined by the <code>spine</code>, which includes: a) recognizing the first primary 
+                    (<literal>linear='yes'</literal>) <code>item</code> in the <code>spine</code> as 
+                    the beginning of the main reading order of the publication;
+                    and, b) rendering successive primary items in the order given in the <code>spine</code>.</para>
                 
                 <para><remark role="todo">TODO @Matt</remark>The vocabulary defined for the
                     <literal>property</literal> attribute of the <literal>itemref</literal>
@@ -1368,15 +1365,15 @@
             <section xml:id="sec-guide-elem" xreflabel="guide">
                 <title>The <code>guide</code> Element [DEPRECATED]</title>
                 
-                <para>The <code>guide</code> element as defined in <xref linkend="refOPF2"/> is
+                <para>The <code>guide</code> element defined in <xref linkend="refOPF2"/> is
                     deprecated in EPUB3 in favor of the <literal>landmarks</literal> feature in the
-                    <xref linkend="gloss-content-document-nav"/> (refer to <olink
+                    <xref linkend="gloss-content-document-nav"/>. Refer to <olink
                         type="epub-spec" targetdoc="contentdocs"
-                        targetptr="sec-contentdocs-xhtml-nav-def-types-landmarks"/> for further
-                    information).</para>
+                        targetptr="sec-contentdocs-xhtml-nav-def-types-landmarks"/> for more
+                    information.</para>
                 
                 <para>Authors may include the <code>guide</code> element in the Package Document for
-                    EPUB 2 Reading System forward compatibility purposes. EPUB3 Reading Systems must
+                    backwards compatibility with EPUB 2 Reading Systems, but EPUB3 Reading Systems must
                     ignore the <code>guide</code> element when provided in EPUB3 Publications whose
                     EPUB Navigation Document includes the <code>landmarks</code> feature.</para>
                 
@@ -1501,9 +1498,9 @@
                     <varlistentry>
                         <term>Usage</term>
                         <listitem>
-                            <para>Fourth or fifth child of <xref linkend="elemdef-opf-package"
-                            />, following <xref linkend="elemdef-opf-spine"/> or <link
-                                linkend="sec-guide-elem">guide</link>.</para>
+                            <para>Fourth or fifth child of <code><xref linkend="elemdef-opf-package"
+                            /></code>, following <code><xref linkend="elemdef-opf-spine"/></code> or <code><link
+                                linkend="sec-guide-elem">guide</link></code>.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
