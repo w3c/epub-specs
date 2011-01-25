@@ -10,11 +10,42 @@
     <xsl:output method="xhtml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"
         exclude-result-prefixes="saxon db exsl"/>
 
+    <!-- ==================================================================== -->
+    <!-- toc settings                                                         -->
     <xsl:param name="generate.toc"> 
         book toc,title
         part nop
         chapter nop        
     </xsl:param>
+
+    <!-- ==================================================================== -->
+    <!-- override gentext to get "Chapter" etc out of link labels             -->
+    
+    <xsl:param name="local.l10n.xml" select="document('')"/>
+    <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
+        <l:l10n language="en">
+            <l:context name="xref-number-and-title">
+                <l:template name="chapter" text="%t"/>
+                <l:template name="section" text="%t"/>
+                <l:template name="table" text="%t"/>
+                <l:template name="bridgehead" text="%t"/>
+            </l:context>
+            <l:context name="title">
+                <l:template name="note" text="%t:&#160;"/>
+                <l:template name="caution" text="%t:&#160;"/>
+                <l:template name="chapter" text="%t"/>
+                <l:template name="table" text="%t"/>
+            </l:context>
+            <l:context name="title-unnumbered">
+                <l:template name="chapter" text="%t"/>
+                <l:template name="section" text="%t"/>
+            </l:context>
+            <l:context name="title-numbered">
+                <l:template name="chapter" text="%n %t"/>
+                <l:template name="section" text="%n %t"/>
+            </l:context>
+        </l:l10n>
+    </l:i18n>
 
     <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
@@ -136,6 +167,11 @@
 
     </xsl:template>
 
+    <xsl:template match="*" mode="locale.html.attributes">
+        <xsl:apply-imports/>
+        <xsl:apply-templates select="." mode="common.html.attributes"/>
+    </xsl:template>
+
     <xsl:template name="anchor">
         <xsl:param name="node" select="."/>
         <xsl:param name="conditional" select="1"/>
@@ -145,8 +181,13 @@
             </xsl:call-template>
         </xsl:variable>
         
-        <xsl:variable name="parentName" select="local-name(..)"/>
-        
+        <!-- for cals tables, there's no way to reasonably override table.xsl#d:entry|d:entrytbl -->
+        <xsl:if test="(local-name($node) = 'entry' or local-name($node) = 'tgroup') and $node/@xml:id">            
+            <xsl:attribute name="id" select="$id"/>
+        </xsl:if>
+                
+        <!-- link here anchor -->        
+        <xsl:variable name="parentName" select="local-name(..)"/>        
         <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
             <xsl:if
                 test="($node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix'))
@@ -170,7 +211,8 @@
         </xsl:element>
         <xsl:text disable-output-escaping="no">&#160;</xsl:text>
     </xsl:template>
-
+    
+    <!-- override to add @id to element instead of child anchor -->
     <xsl:template match="d:glossentry">
         <xsl:element name="dt" namespace="http://www.w3.org/1999/xhtml">
             <xsl:apply-templates select="." mode="common.html.attributes"/>
@@ -228,6 +270,8 @@
         <xsl:apply-templates select="d:indexterm|d:revhistory|d:glosssee|d:glossdef"/>
     </xsl:template>
 
+    <!-- ==================================================================== -->
+    <!-- override to add @id to element instead of child anchor -->
     <xsl:template match="d:varlistentry">
         <xsl:element name="dt" namespace="http://www.w3.org/1999/xhtml">
             <xsl:apply-templates select="." mode="common.html.attributes"/>
@@ -238,6 +282,42 @@
             <xsl:apply-templates select="d:listitem"/>
         </xsl:element>
     </xsl:template>
+
+    <!-- ==================================================================== -->
+    <!-- override to add @id to element instead of child anchor -->
+    
+    <xsl:template name="informal.object">
+        <xsl:param name="class" select="local-name(.)"/>        
+        <xsl:variable name="content">
+            <xsl:element name="div">
+                <xsl:apply-templates select="." mode="common.html.attributes"/>
+                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
+                <xsl:call-template name="anchor"/>
+                <xsl:apply-templates/>
+                <xsl:if test="local-name(.) = 'informaltable'">
+                    <xsl:call-template name="table.longdesc"/>
+                </xsl:if>                
+                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
+            </xsl:element>
+        </xsl:variable>        
+        <xsl:variable name="floatstyle">
+            <xsl:call-template name="floatstyle"/>
+        </xsl:variable>        
+        <xsl:choose>
+            <xsl:when test="$floatstyle != ''">
+                <xsl:call-template name="floater">
+                    <xsl:with-param name="class"><xsl:value-of 
+                        select="$class"/>-float</xsl:with-param>
+                    <xsl:with-param name="floatstyle" select="$floatstyle"/>
+                    <xsl:with-param name="content" select="$content"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$content"/>
+            </xsl:otherwise>
+        </xsl:choose>        
+    </xsl:template>
+    
 
     <!-- ============================================================================= -->
     <!-- override in html.xsl to set preference order for creating a class value -->
@@ -571,85 +651,9 @@
     <!-- copied and modified from xhtml1_1/sections.xsl, make bridgehead a p -->
     <xsl:template match="d:bridgehead">
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-            <xsl:attribute name="class">bridgehead</xsl:attribute>
+            <xsl:apply-templates select="." mode="common.html.attributes"/>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-
-    <!-- ==================================================================== -->
-    <!-- override gentext to get "Chapter" etc out of link labels -->
-
-    <xsl:param name="local.l10n.xml" select="document('')"/>
-    <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
-        <l:l10n language="en">
-            <l:context name="xref-number-and-title">
-                <l:template name="chapter" text="%t"/>
-                <l:template name="section" text="%t"/>
-                <l:template name="table" text="%t"/>
-            </l:context>
-            <l:context name="title">
-                <l:template name="note" text="%t:&#160;"/>
-                <l:template name="caution" text="%t:&#160;"/>
-                <l:template name="chapter" text="%t"/>
-                <l:template name="table" text="%t"/>
-            </l:context>
-            <l:context name="title-unnumbered">
-                <l:template name="chapter" text="%t"/>
-                <l:template name="section" text="%t"/>
-            </l:context>
-            <l:context name="title-numbered">
-                <l:template name="chapter" text="%t"/>
-                <l:template name="section" text="%t"/>
-            </l:context>
-        </l:l10n>
-    </l:i18n>
-    
-    
-    <!-- ==================================================================== -->
-    <!-- override informal.object to @add id to informalexample divs for linking -->
-    
-    <xsl:template name="informal.object">
-        <xsl:param name="class" select="local-name(.)"/>
-        
-        <xsl:variable name="content">
-            <xsl:element name="div">
-                <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
-                <xsl:if test="@xml:id">
-                    <xsl:attribute name="id" select="@xml:id"/>
-                </xsl:if>
-                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
-                <xsl:call-template name="anchor"/>
-                <xsl:apply-templates/>
-                
-                <!-- HACK: This doesn't belong inside formal.object; it 
-                    should be done by the table template, but I want 
-                    the link to be inside the DIV, so... -->
-                <xsl:if test="local-name(.) = 'informaltable'">
-                    <xsl:call-template name="table.longdesc"/>
-                </xsl:if>
-                
-                <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
-            </xsl:element>
-        </xsl:variable>
-        
-        <xsl:variable name="floatstyle">
-            <xsl:call-template name="floatstyle"/>
-        </xsl:variable>
-        
-        <xsl:choose>
-            <xsl:when test="$floatstyle != ''">
-                <xsl:call-template name="floater">
-                    <xsl:with-param name="class"><xsl:value-of 
-                        select="$class"/>-float</xsl:with-param>
-                    <xsl:with-param name="floatstyle" select="$floatstyle"/>
-                    <xsl:with-param name="content" select="$content"/>
-                </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:copy-of select="$content"/>
-            </xsl:otherwise>
-        </xsl:choose>
-        
-    </xsl:template>
-    
+               
 </xsl:stylesheet>
