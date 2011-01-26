@@ -24,7 +24,7 @@
 	<xsl:variable name="xhv-uri">http://www.w3.org/1999/xhtml/vocab/#</xsl:variable>
 	
 	<!-- spec metadata for this vocab -->
-	<xsl:variable name="vocab-meta" select="//db:annotation[@xml:id=concat('rdfa-vocab-',$vocab-name,'-meta')]"/>
+	<xsl:variable name="vocab-meta" select="//db:annotation[@xml:id=concat('rdfa-',$vocab-name,'-vocab-meta')]"/>
 
 	<xsl:template match="/">
 		<html lang="en-US" xml:lang="en-US"
@@ -83,10 +83,10 @@
 
 				<div id="vocab" class="vocabulary">
 					<xsl:for-each select="tokenize($vocab-meta/z:bag-order, ',[^-a-zA-Z0-9]*')">
-						<xsl:variable name="bag-name" select="concat('rdfa-vocab-',$vocab-name,'-bag-',.)"/>
-						<xsl:variable name="bag" select="$vocab-meta/ancestor::db:book//db:informaltable[@xml:id=$bag-name]|$vocab-meta/ancestor::db:book//db:variablelist[@xml:id=$bag-name]"/>
+						<xsl:variable name="bag-name" select="concat('rdfa-',$vocab-name,'-vocab-',.)"/>
+						<xsl:variable name="bag" select="$vocab-meta/ancestor::db:book//db:informaltable[@xml:id=$bag-name]"/>
 						<xsl:call-template name="create-bag">
-							<xsl:with-param name="id" select="."/>
+							<xsl:with-param name="id" select="concat(.,'-props')"/>
 							<xsl:with-param name="bag" select="$bag"/>
 						</xsl:call-template>
 					</xsl:for-each>
@@ -121,9 +121,9 @@
 	
 	<xsl:template match="db:info" mode="vocab-builder"/>
 	
-	<xsl:template match="db:tgroup|db:varlistentry" mode="vocab-builder">
+	<xsl:template match="db:tgroup" mode="vocab-builder">
 		<xsl:variable name="about">
-			<xsl:value-of select="normalize-space(.//db:*[@role='rdfa-property'])"/>
+			<xsl:value-of select="normalize-space(.//db:entry[@role='rdfa-property'])"/>
 		</xsl:variable>
 		<dt id="{$about}" about="#{$about}" typeof="rdf:Property">
 			<xsl:value-of select="$about"/>
@@ -144,7 +144,7 @@
 
 		<dd about="#{$about}" property="rdfs:comment" datatype="{$datatype}">
 			<p>
-				<xsl:apply-templates select=".//db:*[@role='rdfa-property-desc']/node()" mode="vocab-builder"/>
+				<xsl:apply-templates select=".//db:entry[@role='rdfa-property-desc']/node()" mode="vocab-builder"/>
 			</p>
 			<xsl:if test="not(matches($datatype, 'xsd:string'))">
 				<p>Datatype: <code><xsl:value-of select="$datatype"/></code>.</p>
