@@ -10,10 +10,10 @@
     
     <xsl:template match="*[@linkend]">
         <xsl:variable name="ref"><xsl:value-of select="@linkend"/></xsl:variable>
-        <xsl:variable name="target" select="//*[@xml:id eq $ref]" as="element()" />
+        <xsl:variable name="target" select="//*[@xml:id eq $ref]" />
         
         <xsl:if test="not($target)">
-            <xsl:message terminate="yes">No target found for <xsl:value-of select="$target"/> </xsl:message>
+            <xsl:message terminate="yes">No target found for '<xsl:value-of select="$ref"/>' </xsl:message>
         </xsl:if>
         
         <xsl:element name="{local-name(.)}" namespace="http://docbook.org/ns/docbook">
