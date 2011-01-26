@@ -146,33 +146,16 @@
     <!-- ============================================================================= -->
     <!-- overrides in html.xsl to get @id on elements instead of in child anchor -->
 
-    <xsl:template match="*" mode="common.html.attributes">
-        <xsl:param name="class" select="local-name(.)"/>
-        <xsl:param name="inherit" select="0"/>
-
-        <xsl:apply-imports>
-            <xsl:with-param name="class" select="$class"/>
-            <xsl:with-param name="inherit" select="$inherit"/>
-        </xsl:apply-imports>
-
-        <xsl:variable name="id">
-            <xsl:call-template name="object.id">
-                <xsl:with-param name="object" select="."/>
-            </xsl:call-template>
-        </xsl:variable>
-
-        <xsl:if test="./@id or ./@xml:id">
-            <xsl:attribute name="id" select="$id"/>
-        </xsl:if>
-
-    </xsl:template>
-
-    <xsl:template match="*" mode="locale.html.attributes">
-        <xsl:apply-imports/>
-        <xsl:apply-templates select="." mode="common.html.attributes"/>
-    </xsl:template>
-
     <xsl:template name="anchor">
+        
+        <!-- This is the template that we typically override and dont execute in order
+            to get IDs directly on elements instead of child anchors. There's a couple 
+            of exceptions due to exceedingly messy underlying xslt, and we also use this
+            template to conditionally add the "Link Here" feature. 
+        
+            The templates used for id-on-element follow immediately after this one.
+        -->
+        
         <xsl:param name="node" select="."/>
         <xsl:param name="conditional" select="1"/>
         <xsl:variable name="id">
@@ -186,13 +169,19 @@
             <xsl:attribute name="id" select="$id"/>
         </xsl:if>
                 
-        <!-- link here anchor -->        
-        <xsl:variable name="parentName" select="local-name(..)"/>        
+        <!-- link here anchor -->          
+                
+        <xsl:variable name="is-conformance-list-para" select="ancestor::db:variablelist[@role='conformance-list'] and local-name(.) eq 'para' and string-length($id) > 0"/>
+                                          
+        <xsl:variable name="parentName" select="local-name(..)"/>   
+        
+        <xsl:variable name="is-section" select="$node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix') and string-length($id) > 0"/>
+        
+        <!-- or($node[d:term] and $parentName='variablelist') -->
+                   
         <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
             <xsl:if
-                test="($node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix'))
-                or($node[d:term] and $parentName='variablelist')">
-                
+                test="$is-section or $is-conformance-list-para">                
                 <xsl:call-template name="render-link-here-anchor">
                     <xsl:with-param name="id" select="$id"/>
                 </xsl:call-template>
@@ -210,6 +199,32 @@
             <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
         </xsl:element>
         <xsl:text disable-output-escaping="no">&#160;</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="*" mode="common.html.attributes">
+        <xsl:param name="class" select="local-name(.)"/>
+        <xsl:param name="inherit" select="0"/>
+        
+        <xsl:apply-imports>
+            <xsl:with-param name="class" select="$class"/>
+            <xsl:with-param name="inherit" select="$inherit"/>
+        </xsl:apply-imports>
+        
+        <xsl:variable name="id">
+            <xsl:call-template name="object.id">
+                <xsl:with-param name="object" select="."/>
+            </xsl:call-template>
+        </xsl:variable>
+        
+        <xsl:if test="./@id or ./@xml:id">
+            <xsl:attribute name="id" select="$id"/>
+        </xsl:if>
+        
+    </xsl:template>
+    
+    <xsl:template match="*" mode="locale.html.attributes">
+        <xsl:apply-imports/>
+        <xsl:apply-templates select="." mode="common.html.attributes"/>
     </xsl:template>
     
     <!-- override to add @id to element instead of child anchor -->
@@ -317,6 +332,10 @@
             </xsl:otherwise>
         </xsl:choose>        
     </xsl:template>
+    
+    <!-- ============================================================================= -->
+    <!-- end of id and template related templates (see also htmlTableAtt below though -->
+    <!-- ============================================================================= -->
     
 
     <!-- ============================================================================= -->
