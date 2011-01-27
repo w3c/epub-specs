@@ -4,19 +4,22 @@
 
 Fragment Identifier is a part of URI that defines a location in a resource. Syntactically it is a part of URI that starts with # and is appended at the end of the URI of the file itself. For HTML documents, ids and named anchors are used as fragment identifiers.
 
-This proposal defines syntax for precisely identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as the root document and referencing semantics is defined). Note that only one particular scheme (CFI) of fragment identifiers is defined, more schemes could be added in parallel or in future.
+This proposal defines syntax for identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as the root document and referencing semantics is defined). Note that only one particular fragment identifier scheme ("canonical fragment identifier" or "CFI") o is defined, more schemes for EPUB could be added in parallel or in the future.
 
 These considerations has been used in the design:
  * each location in the file can be identified 
  * no two different fragment identifiers point to the same location in the file
- * it is possible to do as much manipulation of fragment identifiers as possible without access to the file
+ * it is possible to do as much manipulation of fragment identifiers as possible without access to the file (in particular compare, to determine which location comes first)
  * identifier resolution is reasonably efficient (e.g. processing of the first chapter is not required to resolve a fragment identifier that points to the last chapter)
-
- I call these identifiers "canonical fragment identifiers" or "CFIs" because for each location in the file there is a unique identifier. Also, it is possible to compare the resulting identifiers to determine which one is coming first, even without access to the target document.
 
 Example:
 
 {{{#cfi(/2/6/4!/2/4/10/3:10)}}}
+
+Syntax:
+
+fragment : "#cfi(" [ step ]+ ")"
+step : "/" integer | "!" ["/"]? integer | ":" integer | "@" integer "," integer | "~" integer
 
 Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Apply the following rules on each step:
 
