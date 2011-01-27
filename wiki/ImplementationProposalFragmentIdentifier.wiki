@@ -18,8 +18,14 @@ Example:
 
 Syntax:
 
-fragment : "#cfi(" [ step ]+ ")"
-step : "/" integer | "!" ["/"]? integer | ":" integer | "@" integer "," integer | "~" integer
+{{{
+fragment : "#cfi(" [step]+ ")"
+step : "/" integer | ":" integer | "!" ["/"]? integer | "@" number "," number | "~" number
+number : ["-"]? digit+ ["." digit+]?
+integer: digit+
+}}}
+
+Leading zeros are not allowed for numbers and integers except to represent zero, trailing zeros are not allowed in number fractional part (this ensures uniqueness).
 
 Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Apply the following rules on each step:
 
@@ -36,6 +42,25 @@ Exclamation sign step means following a reference. Next step should be applied s
   * for HTML object element, reference is defined by data attribute
   * for SVG image and use elements references are defined by by xlink:href attribute
 Note that this schema does not take into account hyperlinks, only "embedding" references; thus it is illegal to follow links from XHTML (or SVG) a element.
+
+At-number step means 2D spacial position (e.g. on an image) using x and y in image's natural coordinate system: 1 bitmap pixel for bitmap images with origin in top left corner, x going right, y going down; 1 logical unit for vector images; in particular for SVG, coordinate system inside svg element is used (not viewport coordinate system which is too layout-dependent).
+
+Tilde-number step means temporal position for audio/video, measured in seconds. 
+
+Spacial and temporal positions can be combined together, but not other types. Temporal step must always precede spacial syntactically.
+
+No other steps can follow character offset and spacial/temporal position steps.
+
+Note that some elements can allow more than one of the steps defined above.
+
+Sorting rules:
+* steps that come earlier in the sequence are more important
+* XML children nodes, character offsets and temporal positions are sorted in natural order
+* y position is more important than x
+* omitted spacial position precedes all other spacial positions
+* omitted temporal position precedes all other temporal positions
+* temporal position is more important than spacial
+* different step types come in the following order from least important to more important: character offset, child, temporal/spacial, link.
 
 In the example above, if the opf file looks like this:
 {{{
