@@ -1285,6 +1285,18 @@
                                         <xi:include href="share/id-prose-para.xml"/>
                                     </listitem>
                                 </varlistentry>
+                                <varlistentry xml:id="attrdef-link-about">
+                                    <term>
+                                        <literal>about</literal>
+                                        <option>[optional]</option>
+                                    </term>
+                                    <listitem>
+                                        <xi:include href="./share/about-prose-para.xml"/>
+                                        <para>When the <code>about</code> attribute is omitted, 
+                                            the resource applies to the EPUB Publication as
+                                            a whole.</para>
+                                    </listitem>
+                                </varlistentry>
                             </variablelist>
                         </listitem>
                     </varlistentry>
@@ -1299,7 +1311,8 @@
                         <literal>link</literal> elements.</para>
                 <para> The <code>href</code> attribute of the <code>link</code> element identifies
                     the location of the resource and the <code>rel</code> attribute defines the
-                    nature of the resource (i.e., its relation to the publication). Refer to <xref
+                    nature of the resource (i.e., its relation to the Publication or property specified
+                    in the <code>about</code> attribute). Refer to <xref
                         linkend="sec-link-rel-values"/> for the list of resource types that are
                     recognized by this specification.</para>
                 <!-- There is no provision for specifying version information of the referenced
@@ -1308,12 +1321,16 @@
                 <para>Resources identified by the <code>link</code> element <code>href</code>
                     attribute are considered <xref linkend="gloss-supplementary-resource"/>s, and must
                     therefore not be represented as <code>items</code> in the <link
-                        linkend="sec-manifest-elem">manifest</link>.</para>
-                <para>If metadata provided in an external metadata record conflicts with metadata given
-                    inline in the Package Document <code>metadata</code> element, then the external
-                    metadata should be given precedence.</para>
-                <para>Reading Systems are not required to dereference the resources identified
+                        linkend="sec-manifest-elem">manifest</link>.
+                    Reading Systems are not required to dereference the resources identified
                     through the <literal>link</literal> element.</para>
+                <para>When the <code>link</code> element references a metadata record, precedence must
+                    be given to metadata defined inline in the Package Document <code>metadata</code> element 
+                    in the case of conflicts.</para>
+                <para>The optional <code>about</code> attribute can be attached when the referenced
+                    resource applies to another metadata item (e.g., to tie an XML Signature 
+                    <xref linkend="refXMLDSIGCORE"/> to a metadata authority). The resource applies 
+                    to the Publication as a whole when the attribute is not present.</para>
                 <bridgehead>Examples</bridgehead>
                 <informalexample>
                     <para>The following example shows the <code>link</code> element used to
@@ -1755,11 +1772,14 @@
                     publication; and, b) rendering successive primary items in the order given in
                     the <code>spine</code>.</para>
 
-                <para>When the associated content of an <code>itemref</code> represents one half of
-                    a two-page spread, the <code>properties</code> attribute should include either
-                    the value <literal>page-spread-left</literal> or
-                        <literal>page-spread-right</literal> depending on which side of the spread
-                    the rendered single-page content represents. Refer to <xref
+                <para>The optional <code>properties</code> attribute allows either the value 
+                    <literal>page-spread-left</literal> or <literal>page-spread-right</literal> for
+                    finer-grained control over the rendering of <xref linkend="gloss-content-document-epub-svg"/>
+                    in Reading Systems capable of two-page spreads. When used, the property indicates which
+                    side of the two-page spread the SVG document must be rendered on. An <code>itemref</code>
+                    must not have both properties specified for its rendering, but it is permitted that
+                    consecutive <code>itemref</code>s have the same property (in which case a blank
+                    page should be rendered in the opposing frame). Refer to <xref
                         linkend="sec-itemref-property-values"/> for more information.</para>
 
                 <bridgehead>Examples</bridgehead>
@@ -2993,6 +3013,23 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                     property indicates the referenced resource is an ONIX record
                                         <xref linkend="refONIX"/>. </entry>
                             </row>
+                            <row>
+                                <entry role="rdfa-property-header">Cardinality:</entry>
+                                <entry role="rdfa-cardinality"><code>Zero or one</code></entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Extends:</entry>
+                                <entry>Only applies to the Publication. Must not be used when the 
+                                    <code><link linkend="attrdef-link-about">about</link></code> 
+                                    attribute is present.</entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Example:</entry>
+                                <entry>
+                                    <code role="prop-example"
+                                        ><![CDATA[<link rel="onix-record" href="pub/meta/nor-wood-onix.xml"/>]]></code>
+                                </entry>
+                            </row>
                         </tbody>
                     </tgroup>
 
@@ -3012,6 +3049,23 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                 <entry role="rdfa-property-desc">The <literal>mods-record</literal>
                                     property indicates the referenced resource is a MODS record
                                         <xref linkend="refMODS"/>. </entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Cardinality:</entry>
+                                <entry role="rdfa-cardinality"><code>Zero or one</code></entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Extends:</entry>
+                                <entry>Only applies to the Publication. Must not be used when the 
+                                    <code><link linkend="attrdef-link-about">about</link></code> 
+                                    attribute is present.</entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Example:</entry>
+                                <entry>
+                                    <code role="prop-example"
+                                        ><![CDATA[<link rel="mods-record" href="pub/meta/nor-wood-mods.xml"/>]]></code>
+                                </entry>
                             </row>
                         </tbody>
                     </tgroup>
@@ -3033,6 +3087,23 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                     property indicates the referenced resource is an XMP record
                                         <xref linkend="refXMP"/>. </entry>
                             </row>
+                            <row>
+                                <entry role="rdfa-property-header">Cardinality:</entry>
+                                <entry role="rdfa-cardinality"><code>Zero or one</code></entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Extends:</entry>
+                                <entry>Only applies to the Publication. Must not be used when the 
+                                    <code><link linkend="attrdef-link-about">about</link></code> 
+                                    attribute is present.</entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Example:</entry>
+                                <entry>
+                                    <code role="prop-example"
+                                        ><![CDATA[<link rel="xmp-record" href="pub/meta/nor-wood-xmp.xml"/>]]></code>
+                                </entry>
+                            </row>
                         </tbody>
                     </tgroup>
 
@@ -3053,6 +3124,23 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                         <literal>marc21xml-record</literal> property indicates the
                                     referenced resource is a MARC21 record <xref
                                         linkend="refMARC21XML"/>. </entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Cardinality:</entry>
+                                <entry role="rdfa-cardinality"><code>Zero or one</code></entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Extends:</entry>
+                                <entry>Only applies to the Publication. Must not be used when the 
+                                    <code><link linkend="attrdef-link-about">about</link></code> 
+                                    attribute is present.</entry>
+                            </row>
+                            <row>
+                                <entry role="rdfa-property-header">Example:</entry>
+                                <entry>
+                                    <code role="prop-example"
+                                        ><![CDATA[<link rel="marc21xml-record" href="pub/meta/nor-wood-marc21.xml"/>]]></code>
+                                </entry>
                             </row>
                         </tbody>
                     </tgroup>
@@ -3081,18 +3169,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                 </entry>
                             </row>
                             <row>
-                                <entry role="rdfa-property-header">Allowed value(s):</entry>
-                                <entry>
-                                    <literal>xsd:anyURI</literal>
-                                </entry>
-                            </row>
-                            <row>
                                 <entry role="rdfa-property-header">Cardinality:</entry>
-                                <entry role="rdfa-cardinality">
-                                    <para>In the metadata section: <code>zero or more</code></para>
-                                    <para>Attached to other metadata: <code>zero or
-                                        one</code></para>
-                                </entry>
+                                <entry role="rdfa-cardinality"><code>Zero or more</code></entry>
                             </row>
                             <row>
                                 <entry role="rdfa-property-header">Extends:</entry>
@@ -3102,7 +3180,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                 <entry role="rdfa-property-header">Example:</entry>
                                 <entry>
                                     <code role="prop-example"
-                                        ><![CDATA[<link about="#meta-authority-01" rel="xml-signature" href="META-INF/signatures.xml"/>]]></code>
+                                        ><![CDATA[<link about="#meta-authority-01" rel="xml-signature" href="META-INF/signatures.xml#MAI-Signature"/>]]></code>
                                 </entry>
                             </row>
                         </tbody>
@@ -3362,7 +3440,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                         <literal>page-spread-left</literal> property indicates that
                                     the associated <code>item</code>'s <xref
                                         linkend="gloss-content-document-epub"/> represents the
-                                    left-hand side of a two-column display.</entry>
+                                    left-hand side of a two-page spread.</entry>
                             </row>
                             <row>
                                 <entry role="rdfa-property-header">Usage:</entry>
@@ -3388,7 +3466,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                         <literal>page-spread-right</literal> property indicates that
                                     the associated <code>item</code>'s <xref
                                         linkend="gloss-content-document-epub"/> represents the
-                                    right-hand side of a two-column display.</entry>
+                                    right-hand side of a two-page spread.</entry>
                             </row>
                             <row>
                                 <entry role="rdfa-property-header">Usage:</entry>
