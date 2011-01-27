@@ -31,8 +31,8 @@
                 <l:template name="bridgehead" text="%t"/>
             </l:context>
             <l:context name="title">
-                <l:template name="note" text="%t:&#160;"/>
-                <l:template name="caution" text="%t:&#160;"/>
+                <l:template name="note" text="note"/>
+                <l:template name="caution" text="caution"/>
                 <l:template name="chapter" text="%t"/>
                 <l:template name="table" text="%t"/>
             </l:context>
@@ -171,7 +171,7 @@
                 
         <!-- link here anchor -->          
                 
-        <xsl:variable name="is-conformance-list-para" select="ancestor::db:variablelist[@role='conformance-list'] and local-name(.) eq 'para' and string-length($id) > 0"/>
+        <xsl:variable name="is-conformance-list-para" select="ancestor::db:*[@role='conformance-list'] and local-name(.) eq 'para' and string-length($id) > 0"/>
                                           
         <xsl:variable name="parentName" select="local-name(..)"/>   
         
