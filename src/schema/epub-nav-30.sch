@@ -14,14 +14,14 @@
     <pattern id="page-list">
         <rule context="html:body">
             <assert test="count(./html:nav[@epub:type='page-list']) &lt; 2"
-                >Multiple occurences of the 'page-list' nav element</assert>
+                >Multiple occurrences of the 'page-list' nav element</assert>
         </rule>
     </pattern>
     
     <pattern id="landmarks">
         <rule context="html:body">
             <assert test="count(./html:nav[@epub:type='landmarks']) &lt; 2"
-                >Multiple occurences of the 'landmarks' nav element</assert>
+                >Multiple occurrences of the 'landmarks' nav element</assert>
         </rule>
         <rule context="html:nav[@epub:type='landmarks']//html:ol//html:a">
             <assert test="@epub:type"

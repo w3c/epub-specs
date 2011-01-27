@@ -7,7 +7,7 @@
     <pattern id="landmarks">
         <rule context="ncx:ncx">
             <assert test="count(./ncx:navList[@epub:type='landmarks']) &lt; 2"
-                >Multiple occurences of the 'landmarks' navList</assert>
+                >Multiple occurrences of the 'landmarks' navList</assert>
         </rule>
         <rule context="ncx:navList[@epub:type='landmarks']/ncx:navTarget">
             <assert test="@epub:type"
