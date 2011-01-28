@@ -1032,35 +1032,14 @@
                   <div class="informalexample">
                      <p class="para">The following example represents the minimal set of metadata that all
                         Publications should contain.
-                     </p><pre class="synopsis">&lt;package version="3.0" unique-identifier="pub-id"
-    profile="http://www.idpf.org/epub/30/profile/package/"
-    xmlns:epub="http://www.idpf.org/2007/opf"
-    xmlns="http://www.idpf.org/2007/opf"&gt;
+                     </p><pre class="synopsis">&lt;package version="3.0" unique-identifier="pub-id"&gt;
     …
     &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
         
-        &lt;!-- required DCMES elements --&gt;
-        
         &lt;dc:identifier id="pub-id" epub:prefer="pub-id2"&gt;9780375704024&lt;/dc:identifier&gt;
-        
         &lt;dc:title id="title" epub:prefer="title2"&gt;Norwegian Wood&lt;/dc:title&gt;
-        &lt;meta about="#title" property="title-type"&gt;primary&lt;/meta&gt;
-        
         &lt;dc:language epub:prefer="lang"&gt;en&lt;/dc:language&gt;
-        
-        &lt;!-- required package metadata --&gt;
-        
-        &lt;meta property="page-progression-direction"&gt;ltr&lt;/meta&gt;
-        &lt;meta property="source-identifier"&gt;9780375704024&lt;/meta&gt;
-        
-        &lt;!-- recommended meta properties --&gt;
-        
-        &lt;meta property="dcterms:identifier" id="pub-id2"&gt;9780375704024&lt;/meta&gt;
-        
-        &lt;meta property="dcterms:title" id="title2"&gt;Norwegian Wood&lt;/meta&gt;
-        &lt;meta about="#title2" property="title-type"&gt;primary&lt;/meta&gt;
-        
-        &lt;meta property="dcterms:language" id="lang"&gt;en&lt;/meta&gt;
+        &lt;meta property="dcterms:modified"&gt;20110101T120000Z&lt;/meta&gt;
         
     &lt;/metadata&gt;
     …
@@ -1130,7 +1109,7 @@
                   </div>
                   <p class="para">Every <code class="code">metadata</code> section must include at least one
                      <code class="literal">identifier</code> element containing an unambiguous identifier
-                     for the EPUB Publication. Multiple <code class="literal">identifier</code> elements are
+                     for the publication. Multiple <code class="literal">identifier</code> elements are
                      permitted, but only one can be marked as the primary identifier via the
                      <code class="code">package</code> element <code class="code"><a class="link" href="#attrdef-package-unique-identifier">unique-identifier</a></code> attribute. 
                   </p>
@@ -1143,6 +1122,16 @@
     &lt;/metadata&gt;
 &lt;/package&gt;
 </pre></div>
+                  <p class="para">This specification makes a distinction between the unique identifier for
+                     the publication contained in an instance of an EPUB Publication and the identifier that
+                     uniquely identifies that instance (i.e, to be able to identify EPUB Publications containing
+                     different versions of the same publication). To identify an instance of a packaged Publication, 
+                     a Package Identifier can be constructed by combining the unique identifier with
+                     the last modified date of the Publication. For more information on the 
+                     semantics and requirements of the Package Identifier, refer to
+                     <a class="xref" href="#sec-opf-metadata-identifiers-pid"
+                        title="5.1.2 Package Identifier">Package Identifier</a>.
+                  </p>
                   <p class="para">The <code class="literal">identifier</code> property <a class="biblioref" href="#refDCTERMS" title="DCMI Metadata Terms">[<abbr class="abbrev">DCTERMS</abbr>]</a> will
                      supersede the <code class="literal">identifier</code> element in a future version of the
                      specification, but its inclusion is currently optional. Authors should include
@@ -2405,7 +2394,9 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                   <h4 class="title"><a class="hidden-reveal" title="Link here"
                         href="#sec-opf-metadata-identifiers-pid">›</a> 5.1.2 Package Identifier
                   </h4>
-                  <p class="para">The uniqueness of a publication typically does not change in concert with each
+                  <p class="para">The uniqueness of an <a class="glossterm" href="#gloss-epub-publication"
+                        title="EPUB Publication (or Publication)">EPUB Publication</a> typically does 
+                     not change in concert with each
                      revision to the package or its contents, as unique identifiers are intended to
                      have maximal persistence both for referencing and distribution purposes. Each
                      release of a publication normally requires that the new version be uniquely
@@ -2416,28 +2407,55 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                      unique identifier, this specification defines the semantics for a Package
                      Identifier, or means of distinguishing and sequentially ordering Publications
                      with the same unique identifier. The Package Identifier is not an actual
-                     property in the Package <code class="literal">metadata</code> section, but is a value that
+                     property in the package <code class="literal">metadata</code> section, but is a value that
                      can be obtained from two required pieces of metadata: the unique identifier and
-                     creation or last modification date of the Publication.
+                     the last modification date of the Publication.
                   </p>
-                  <p class="para">When the creation or modification date is taken together with the
-                     Publication's unique identifier, the combined value represents a unique identity
-                     that can be used to distinguish any particular EPUB instance from another. When
-                     a Publication includes both a creation and modification date, the modification
-                     date must be used to construct the Identifier.
-                  </p>
-                  <p class="para">To ensure that a Package Identifier can be constructed, the the Publication
+                  <p class="para">When the taken together, the combined value represents a unique identity
+                     that can be used to distinguish any particular EPUB instance from another. To ensure 
+                     that a Package Identifier can be constructed, the Publication
                      must include exactly one <code class="literal">dcterms:modified</code> property containing
-                     the last modification date of the Publication. The value of this property must
-                     be an ISO 8601 [ISO8601] conformant date of the form <span class="todo">TODO:
-                        format</span>.
+                     the last modification date. The value of this property must
+                     be an ISO 8601 <a class="biblioref" href="#refISO8601"
+                        title="Data elements and interchange formats -- Information interchange -- Representation of dates and times">[<abbr class="abbrev">ISO 8601</abbr>]</a> conformant date of the form 
+                     <span class="todo">TODO: format</span>.
                   </p>
+                  <p class="para">The modification date must be expressed in Coordinated Univeral Time (UTC), and
+                     the datestamp must indicate this fact by including the <code class="literal">Z</code> indicator 
+                     at the end (i.e., it is not permitted to define a time zone offset).
+                  </p>
+                  <p class="para">Although not a part of the package metadata, for referencing and other purposes 
+                     this specification requires that all string representations of the identifier be constructed using the
+                     <code class="literal">@</code> character as the separator (i.e., of the form "id<code class="literal">@</code>date").
+                     Whitespace must not be included when concatenating the strings.
+                  </p>
+                  <div class="note" title="note">
+                     <h3 class="title">note</h3>
+                     <p class="para">It is possible that the separator character may occur in the unique identifier, 
+                        as unique identifiers allow any URI <a class="biblioref" href="#refXML"
+                           title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> as their value. For 
+                        parsing a Package Identifier into its component parts, it is consequently recommended 
+                        to always ensure that the string is split on the last instance of the <code class="literal">@</code> character.
+                     </p>
+                  </div><span class="todo">TODO: verify example after standardizing date format</span><div class="informalexample">
+                     <p class="para">The following example shows how a unique identifier and modification
+                        date are combined to form the Package Identifier.
+                     </p><pre class="synopsis">&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+    &lt;dc:identifier id="pub-id"&gt;9780375704024&lt;/dc:identifier&gt;
+    &lt;meta property="dcterms:modified"&gt;20110101T120000Z&lt;/meta&gt;
+    …
+&lt;/metadata&gt;
+
+results in the Package ID:
+
+9780375704024@20110101T120000Z
+</pre></div>
                   <p class="para">The Package Identifier does not supersede the unique identifier, but
                      represents the means by which different versions of the same publication can be
-                     identified in distribution channels and by Reading Systems. The chronological
-                     order inherent in the required format of the datestamp also places Publications
-                     in order without requiring knowledge of the exact identifier that came
-                     before.
+                     identified in distribution channels and by Reading Systems. The sequential 
+                     (i.e., chronological) order inherent in the required format of the datestamp 
+                     also places Publications in order without requiring knowledge of the exact 
+                     identifier that came before.
                   </p>
                   <p class="para">The Package Identifier consequently allows a set of Publications to be
                      inspected to determine if they represent the same the same version of the same
@@ -2452,6 +2470,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                         as these are outside the scope of this specification.
                      </p>
                   </div>
+                  <p class="para"></p>
                </div>
             </div>
             <div class="section" title="5.2 Dublin Core Metadata Vocabulary Transition"
@@ -4310,8 +4329,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                <div class="biblioentry"
                     title="Codes for the representation of names of countries and their subdivisions -- Part 2: Country subdivision code"
                     id="refISO3166">
-                  <p>[<abbr class="abbrev">ISO 3166</abbr>] <span class="title"><em><a class="link"
-                              href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=39718">Codes for the representation of names of countries and their subdivisions --
+                  <p>[<abbr class="abbrev">ISO 3166</abbr>] <span class="title"><em><a class="link" href="http://www.iso.org/iso/catalogue_detail?csnumber=39718">Codes for the representation of names of countries and their subdivisions --
                               Part 2: Country subdivision code</a></em>. </span><span class="date">2007-12-13. </span></p>
                </div>
                <div class="biblioentry"
@@ -4323,9 +4341,14 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                <div class="biblioentry"
                     title="Codes for the representation of names of languages -- Part 2: Alpha-3 code"
                     id="refISO6392T">
-                  <p>[<abbr class="abbrev">ISO 639-2/T</abbr>] <span class="title"><em><a class="link"
-                              href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=4767">Codes for the representation of names of languages -- Part 2: Alpha-3
+                  <p>[<abbr class="abbrev">ISO 639-2/T</abbr>] <span class="title"><em><a class="link" href="http://www.iso.org/iso/catalogue_detail?csnumber=4767">Codes for the representation of names of languages -- Part 2: Alpha-3
                               code</a></em>. </span><span class="date">1998-10-22. </span></p>
+               </div>
+               <div class="biblioentry"
+                    title="Data elements and interchange formats -- Information interchange -- Representation of dates and times"
+                    id="refISO8601">
+                  <p>[<abbr class="abbrev">ISO 8601</abbr>] <span class="title"><em><a class="link" href="http://www.iso.org/iso/catalogue_detail?csnumber=40874">Data elements and interchange formats 
+                              -- Information interchange -- Representation of dates and times</a></em>. </span><span class="date">2004-12-03. </span></p>
                </div>
                <div class="biblioentry" title="ISO/IEC 19757-3: Rule-based validation — Schematron"
                     id="refISOSchematron">

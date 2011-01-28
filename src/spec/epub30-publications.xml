@@ -857,7 +857,7 @@
 
                 <para>Every <code>metadata</code> section must include at least one
                         <literal>identifier</literal> element containing an unambiguous identifier
-                    for the EPUB Publication. Multiple <literal>identifier</literal> elements are
+                    for the publication. Multiple <literal>identifier</literal> elements are
                     permitted, but only one can be marked as the primary identifier via the
                         <code>package</code> element <code><link
                             linkend="attrdef-package-unique-identifier"
@@ -868,6 +868,15 @@
                         element for a Publication.</para>
                     <synopsis><xi:include parse="text" href="examples/publications/identifier.xml"/></synopsis>
                 </informalexample>
+                
+                <para>This specification makes a distinction between the unique identifier for
+                    the publication contained in an instance of an EPUB Publication and the identifier that
+                    uniquely identifies that instance (i.e, to be able to identify EPUB Publications containing
+                    different versions of the same publication). To identify an instance of a packaged Publication, 
+                    a Package Identifier can be constructed by combining the unique identifier with
+                    the last modified date of the Publication. For more information on the 
+                    semantics and requirements of the Package Identifier, refer to
+                    <xref linkend="sec-opf-metadata-identifiers-pid"/>.</para>
 
                 <para>The <literal>identifier</literal> property <xref linkend="refDCTERMS"/> will
                     supersede the <literal>identifier</literal> element in a future version of the
@@ -2189,7 +2198,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
             <section xml:id="sec-opf-metadata-identifiers-pid">
                 <title>Package Identifier</title>
 
-                <para>The uniqueness of a publication typically does not change in concert with each
+                <para>The uniqueness of an <xref linkend="gloss-epub-publication"/> typically does 
+                    not change in concert with each
                     revision to the package or its contents, as unique identifiers are intended to
                     have maximal persistence both for referencing and distribution purposes. Each
                     release of a publication normally requires that the new version be uniquely
@@ -2200,28 +2210,47 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                     unique identifier, this specification defines the semantics for a Package
                     Identifier, or means of distinguishing and sequentially ordering Publications
                     with the same unique identifier. The Package Identifier is not an actual
-                    property in the Package <literal>metadata</literal> section, but is a value that
+                    property in the package <literal>metadata</literal> section, but is a value that
                     can be obtained from two required pieces of metadata: the unique identifier and
-                    creation or last modification date of the Publication.</para>
+                    the last modification date of the Publication.</para>
 
-                <para>When the creation or modification date is taken together with the
-                    Publication's unique identifier, the combined value represents a unique identity
-                    that can be used to distinguish any particular EPUB instance from another. When
-                    a Publication includes both a creation and modification date, the modification
-                    date must be used to construct the Identifier.</para>
-
-                <para>To ensure that a Package Identifier can be constructed, the the Publication
+                <para>When the taken together, the combined value represents a unique identity
+                    that can be used to distinguish any particular EPUB instance from another. To ensure 
+                    that a Package Identifier can be constructed, the Publication
                     must include exactly one <literal>dcterms:modified</literal> property containing
-                    the last modification date of the Publication. The value of this property must
-                    be an ISO 8601 [ISO8601] conformant date of the form <remark role="todo">TODO:
-                        format</remark>.</para>
+                    the last modification date. The value of this property must
+                    be an ISO 8601 <xref linkend="refISO8601"/> conformant date of the form 
+                    <remark role="todo">TODO: format</remark>.</para>
+                
+                <para>The modification date must be expressed in Coordinated Univeral Time (UTC), and
+                    the datestamp must indicate this fact by including the <literal>Z</literal> indicator 
+                    at the end (i.e., it is not permitted to define a time zone offset).</para>
+                
+                <para>Although not a part of the package metadata, for referencing and other purposes 
+                    this specification requires that all string representations of the identifier be constructed using the
+                    <literal>@</literal> character as the separator (i.e., of the form "id<literal>@</literal>date").
+                    Whitespace must not be included when concatenating the strings.</para>
+                
+                <note>
+                    <para>It is possible that the separator character may occur in the unique identifier, 
+                        as unique identifiers allow any URI <xref linkend="refXML"/> as their value. For 
+                        parsing a Package Identifier into its component parts, it is consequently recommended 
+                        to always ensure that the string is split on the last instance of the <literal>@</literal> character.</para>
+                </note>
+                
+                <remark role="todo">TODO: verify example after standardizing date format</remark>
+                <informalexample>
+                    <para>The following example shows how a unique identifier and modification
+                    date are combined to form the Package Identifier.</para>
+                    <synopsis><xi:include href="examples/publications/package-identifier.xml" parse="text"/></synopsis>
+                </informalexample>
 
                 <para>The Package Identifier does not supersede the unique identifier, but
                     represents the means by which different versions of the same publication can be
-                    identified in distribution channels and by Reading Systems. The chronological
-                    order inherent in the required format of the datestamp also places Publications
-                    in order without requiring knowledge of the exact identifier that came
-                    before.</para>
+                    identified in distribution channels and by Reading Systems. The sequential 
+                    (i.e., chronological) order inherent in the required format of the datestamp 
+                    also places Publications in order without requiring knowledge of the exact 
+                    identifier that came before.</para>
 
                 <para>The Package Identifier consequently allows a set of Publications to be
                     inspected to determine if they represent the same the same version of the same
@@ -2234,6 +2263,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                         branches of the same Publication may exist, production control problems such
                         as these are outside the scope of this specification.</para>
                 </note>
+                
+                <para></para>
 
             </section>
         </section>
