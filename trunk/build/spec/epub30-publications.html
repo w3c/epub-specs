@@ -378,6 +378,17 @@
                            . 
                         </p>
                      </dd>
+                     <dt class="glossentry" title="Package Identifier" id="gloss-package-identifier">Package Identifier</dt>
+                     <dd>
+                        <p class="para">The Package Identifier allows any instance of an <a class="glossterm" href="#gloss-epub-publication"
+                              title="EPUB Publication (or Publication)">EPUB Publication</a>
+                           to be compared against another to determine if they are identical, different
+                           versions of the same publication or unrelated.
+                        </p>
+                        <p class="para">Refer to <span class="phrase"><a class="link" href="epub30-publications.html#sec-opf-metadata-identifiers-pid">Package Identifier</a> <a class="biblioref" href="#refPublications3" title="EPUB Publications 3.0">[<abbr class="abbrev">Publications30</abbr>]</a></span>
+                           for more information.
+                        </p>
+                     </dd>
                      <dt class="glossentry" title="Publication Resource"
                          id="gloss-publication-resource-cmt-or-foreign">Publication Resource</dt>
                      <dd>
@@ -978,7 +989,9 @@
                         title="Dublin Core Metadata Element Set, Version 1.1">[<abbr class="abbrev">DCMES</abbr>]</a> properties — title,
                      identifier and language — together with optional properties from DCMI
                      Metadata Terms <a class="biblioref" href="#refDCTERMS" title="DCMI Metadata Terms">[<abbr class="abbrev">DCTERMS</abbr>]</a> and a set of package and ancillary
-                     properties defined in this specification.
+                     properties defined in this specification. (Refer to the 
+                     <a class="link" href="#sec-metadata-elem-examples" title="4.4.2. Example">example</a> at the end of this
+                     section for an instance of a complete minimal metadata set.)
                   </p>
                   <p class="para"> Properties from other vocabularies may be added to the
                      <code class="literal">metadata</code> section to enhance package and content metadata
@@ -1009,7 +1022,7 @@
                      prefixes are defined by including whitespace-separated prefix/URI pairings. 
                   </p>
                   <div class="informalexample">
-                     <p class="para">The following example shows how to defines a new prefix for a
+                     <p class="para">The following example shows how to define a new prefix for a
                         vocabulary.
                      </p><pre class="synopsis">&lt;package … prefix="foaf: http://xmlns.com/foaf/spec/"&gt;
     &lt;metadata&gt;
@@ -1026,6 +1039,23 @@
                      using the <code class="code">xmlns</code> pseudo-attribute must similarly not be used to
                      define vocabulary prefixes. 
                   </p>
+                  <p class="bridgehead" title="4.4.2. Example" id="sec-metadata-elem-examples">Example</p>
+                  <div class="informalexample">
+                     <p class="para">The following example represents the minimal set of metadata that all
+                        Publications should contain.
+                     </p><pre class="synopsis">&lt;package version="3.0" unique-identifier="pub-id"&gt;
+    …
+    &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        
+        &lt;dc:identifier id="pub-id" epub:prefer="pub-id2"&gt;9780375704024&lt;/dc:identifier&gt;
+        &lt;dc:title id="title" epub:prefer="title2"&gt;Norwegian Wood&lt;/dc:title&gt;
+        &lt;dc:language epub:prefer="lang"&gt;en&lt;/dc:language&gt;
+        &lt;meta property="dcterms:modified"&gt;2011-01-01T12:00:00Z&lt;/meta&gt;
+        
+    &lt;/metadata&gt;
+    …
+&lt;/package&gt;
+</pre></div>
                </div>
                <div class="section" title="4.4.3 The DCMES identifier Element"
                     id="sec-opf-dcidentifier">
@@ -1090,7 +1120,7 @@
                   </div>
                   <p class="para">Every <code class="code">metadata</code> section must include at least one
                      <code class="literal">identifier</code> element containing an unambiguous identifier
-                     for the EPUB Publication. Multiple <code class="literal">identifier</code> elements are
+                     for the publication. Multiple <code class="literal">identifier</code> elements are
                      permitted, but only one can be marked as the primary identifier via the
                      <code class="code">package</code> element <code class="code"><a class="link" href="#attrdef-package-unique-identifier">unique-identifier</a></code> attribute. 
                   </p>
@@ -1103,6 +1133,16 @@
     &lt;/metadata&gt;
 &lt;/package&gt;
 </pre></div>
+                  <p class="para">This specification makes a distinction between the unique identifier for
+                     the publication contained in an instance of an EPUB Publication and the identifier that
+                     uniquely identifies that instance (i.e, to be able to identify EPUB Publications containing
+                     different versions of the same publication). To identify an instance of a packaged Publication, 
+                     a <a class="glossterm" href="#gloss-package-identifier" title="Package Identifier">Package Identifier</a> can be constructed by combining the unique identifier with
+                     the last modified date of the Publication. For more information on the 
+                     semantics and requirements of the Package Identifier, refer to
+                     <a class="xref" href="#sec-opf-metadata-identifiers-pid"
+                        title="5.1.2 Package Identifier">Package Identifier</a>.
+                  </p>
                   <p class="para">The <code class="literal">identifier</code> property <a class="biblioref" href="#refDCTERMS" title="DCMI Metadata Terms">[<abbr class="abbrev">DCTERMS</abbr>]</a> will
                      supersede the <code class="literal">identifier</code> element in a future version of the
                      specification, but its inclusion is currently optional. Authors should include
@@ -1392,6 +1432,15 @@
                                        a whole.
                                     </p>
                                  </dd>
+                                 <dt class="varlistentry" id="attrdef-meta-id"><span class="term">
+                                       <code class="literal">id</code>
+                                       <code class="option">[optional]</code>
+                                       </span></dt>
+                                 <dd>
+                                    <p class="para">The ID <a class="biblioref" href="#refXML"
+                                          title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> of this element, which must be unique within the document scope.
+                                    </p>
+                                 </dd>
                               </dl>
                            </div>
                         </dd>
@@ -1401,40 +1450,50 @@
                         </dd>
                      </dl>
                   </div>
-                  <p class="para">All <code class="literal">meta</code> elements must attach an RDFa
+                  <p class="para">All <code class="literal">meta</code> elements must attach a
                      <code class="literal">property</code> attribute <a class="biblioref" href="#refRDFa11Core" title="RDFa Core 1.1">[<abbr class="abbrev">RDFa11 Core</abbr>]</a>
-                     containing a CURIE that resolves to a property from an RDF vocabulary (it is not
+                     containing a CURIE that resolves to a property from a metadata vocabulary (it is not
                      required that Reading System be able to resolve the CURIES, however).
-                  </p>
-                  <p class="para"> If a <code class="literal">meta</code> element only includes a
-                     <code class="literal">property</code> attribute, the metadata is assumed to apply to
-                     the package or content as a whole. 
+                     The value of this attribute represents the subject of this metadata
+                     expression (i.e., it inflects a specific meaning on the value of the 
+                     <code class="code">meta</code> element, such as it represents an identifier or title).
                   </p>
                   <div class="informalexample">
-                     <p class="para">The following example shows an instance of package metadata.</p><pre class="synopsis">&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+                     <p class="para">The following example shows an identifier being defined.</p><pre class="synopsis">&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
     &lt;meta property="dcterms:identifier" id="isbn-id"&gt;9780101010101&lt;/meta&gt;
 &lt;/metadata&gt;
 </pre></div>
-                  <p class="para"> To enhance metadata properties defined in the <a class="biblioref" href="#refDCMES"
-                        title="Dublin Core Metadata Element Set, Version 1.1">DCMES</a> elements or in other <code class="literal">meta</code> elements, the
-                     RDFa <code class="literal">about</code> attribute must be attached. The value of this
-                     attribute must be an IDREF <a class="biblioref" href="#refXML"
-                        title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> to the
-                     <code class="literal">xml:id</code> of the element being refined. 
+                  <p class="para">To layer additional semantics on an instance of metadata defined in a 
+                     <a class="biblioref" href="#refDCMES"
+                        title="Dublin Core Metadata Element Set, Version 1.1">DCMES</a> or <code class="literal">meta</code> element,
+                     the <code class="literal">about</code> attribute must be attached to the <code class="code">meta</code>
+                     element defining the new semantic. The value of this
+                     attribute must be a URI <a class="biblioref" href="#refXML"
+                        title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> referencing the
+                     <code class="literal">id</code> of the element being refined.
                   </p>
                   <div class="informalexample">
-                     <p class="para">The following example shows an instance of ancillary metadata.</p><pre class="synopsis">&lt;metadata&gt;
+                     <p class="para">The following example shows how a scheme can be defined for an identifier.</p><pre class="synopsis">&lt;metadata&gt;
     &lt;meta property="dcterms:identifier" id="isbn-id"&gt;9780101010101&lt;/meta&gt;
     &lt;meta about="#isbn-id" property="scheme"&gt;isbn13&lt;/meta&gt;
 &lt;/metadata&gt;
 </pre></div>
+                  <p class="para">All metadata expressions
+                     made in <code class="code">meta</code> elements without <code class="code">about</code> attributes
+                     implicitly define metadata about the Publication (i.e., lacking an object to attach to,
+                     they default to the container). The addition of an 
+                     <code class="code">about</code> attribute does not alter the basic metadata expression, 
+                     it merely changes the relationship so that metadata can refine
+                     metadata, allowing for more semantically-rich and deep 
+                     Publication metadata.
+                  </p>
                   <p class="para">Unless an individual property explicitly specifies a different whitespace
                      normalization algorithm, Reading Systems must trim all leading and trailing
                      whitespace from the <code class="literal">meta</code> element values as defined by the XML
                      specification <a class="biblioref" href="#refXML"
                         title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> before further processing them.
                   </p>
-                  <p class="bridgehead" title="4.4.6. Example" id="sec-meta-elem-examples">Example</p>
+                  <p class="bridgehead" title="4.4.6. Examples" id="sec-meta-elem-examples">Examples</p>
                   <div class="informalexample">
                      <p class="para">The following example shows an example of a <code class="code">metadata</code> section
                         consisting entirely of <code class="code">meta</code> elements. 
@@ -1450,6 +1509,7 @@
     &lt;meta about="#title" property="alternate-script" xml:lang="ja"&gt;ノルウェイの森&lt;/meta&gt;
     &lt;meta about="#title" property="title-type"&gt;primary&lt;/meta&gt;
     
+    &lt;meta property="dcterms:modified"&gt;2011-01-01T12:00:00Z&lt;/meta&gt;
     &lt;meta property="dcterms:language"&gt;en&lt;/meta&gt;
     &lt;meta property="page-progression-direction"&gt;ltr&lt;/meta&gt;
     
@@ -1567,6 +1627,22 @@
                                           title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> of this element, which must be unique within the document scope.
                                     </p>
                                  </dd>
+                                 <dt class="varlistentry" id="attrdef-link-about"><span class="term">
+                                       <code class="literal">about</code>
+                                       <code class="option">[optional]</code>
+                                       </span></dt>
+                                 <dd>
+                                    <p class="para">Identifies the subject of the
+                                       	property being expressed. The value of the 
+                                       	attribute must be a URI <a class="biblioref" href="#refXML"
+                                          title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> pointing to the resource
+                                       	or element it describes.
+                                    </p>
+                                    <p class="para">When the <code class="code">about</code> attribute is omitted, 
+                                       the resource applies to the EPUB Publication as
+                                       a whole.
+                                    </p>
+                                 </dd>
                               </dl>
                            </div>
                         </dd>
@@ -1581,20 +1657,26 @@
                   </p>
                   <p class="para"> The <code class="code">href</code> attribute of the <code class="code">link</code> element identifies
                      the location of the resource and the <code class="code">rel</code> attribute defines the
-                     nature of the resource (i.e., its relation to the publication). Refer to <a class="xref" href="#sec-link-rel-values" title="5.3.3 Metadata link properties">Metadata <code class="code">link</code> properties</a> for the list of resource types that are
+                     nature of the resource (i.e., its relation to the Publication or property specified
+                     in the <code class="code">about</code> attribute). Refer to <a class="xref" href="#sec-link-rel-values" title="5.3.3 Metadata link properties">Metadata <code class="code">link</code> properties</a> for the list of resource types that are
                      recognized by this specification.
                   </p>
                   <p class="para">Resources identified by the <code class="code">link</code> element <code class="code">href</code>
                      attribute are considered <a class="glossterm" href="#gloss-supplementary-resource"
                         title="Supplementary Resource">Supplementary Resource</a>s, and must
                      therefore not be represented as <code class="code">items</code> in the <a class="link" href="#sec-manifest-elem" title="4.4.8 The manifest Element">manifest</a>.
-                  </p>
-                  <p class="para">If metadata provided in an external metadata record conflicts with metadata given
-                     inline in the Package Document <code class="code">metadata</code> element, then the external
-                     metadata should be given precedence.
-                  </p>
-                  <p class="para">Reading Systems are not required to dereference the resources identified
+                     Reading Systems are not required to dereference the resources identified
                      through the <code class="literal">link</code> element.
+                  </p>
+                  <p class="para">When the <code class="code">link</code> element references a metadata record, precedence must
+                     be given to metadata defined inline in the Package Document <code class="code">metadata</code> element 
+                     in the case of conflicts.
+                  </p>
+                  <p class="para">The optional <code class="code">about</code> attribute can be attached when the referenced
+                     resource applies to another metadata item (e.g., to tie an XML Signature 
+                     <a class="biblioref" href="#refXMLDSIGCORE"
+                        title="JP: 1.1 going to CR in Q1 2011. Update reference as necessary XML-Signature Syntax and Processing (Second Edition)">[<abbr class="abbrev">XML DSIG Core</abbr>]</a> to a metadata authority). The resource applies 
+                     to the Publication as a whole when the attribute is not present.
                   </p>
                   <p class="bridgehead" title="4.4.7. Examples">Examples</p>
                   <div class="informalexample">
@@ -2048,11 +2130,15 @@
                      publication; and, b) rendering successive primary items in the order given in
                      the <code class="code">spine</code>.
                   </p>
-                  <p class="para">When the associated content of an <code class="code">itemref</code> represents one half of
-                     a two-page spread, the <code class="code">properties</code> attribute should include either
-                     the value <code class="literal">page-spread-left</code> or
-                     <code class="literal">page-spread-right</code> depending on which side of the spread
-                     the rendered single-page content represents. Refer to <a class="xref" href="#sec-itemref-property-values"
+                  <p class="para">The optional <code class="code">properties</code> attribute allows either the value 
+                     <code class="literal">page-spread-left</code> or <code class="literal">page-spread-right</code> for
+                     finer-grained control over the rendering of <a class="glossterm" href="#gloss-content-document-epub-svg"
+                        title="SVG Content Document">SVG Content Document</a>
+                     in Reading Systems capable of two-page spreads. When used, the property indicates which
+                     side of the two-page spread the SVG document must be rendered on. An <code class="code">itemref</code>
+                     must not have both properties specified for its rendering, but it is permitted that
+                     consecutive <code class="code">itemref</code>s have the same property (in which case a blank
+                     page should be rendered in the opposing frame). Refer to <a class="xref" href="#sec-itemref-property-values"
                         title="5.3.5 Spine itemref properties">Spine <code class="code">itemref</code> properties</a> for more information.
                   </p>
                   <p class="bridgehead" title="4.4.11. Examples">Examples</p>
@@ -2320,7 +2406,9 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                   <h4 class="title"><a class="hidden-reveal" title="Link here"
                         href="#sec-opf-metadata-identifiers-pid">›</a> 5.1.2 Package Identifier
                   </h4>
-                  <p class="para">The uniqueness of a publication typically does not change in concert with each
+                  <p class="para">The uniqueness of an <a class="glossterm" href="#gloss-epub-publication"
+                        title="EPUB Publication (or Publication)">EPUB Publication</a> typically does 
+                     not change in concert with each
                      revision to the package or its contents, as unique identifiers are intended to
                      have maximal persistence both for referencing and distribution purposes. Each
                      release of a publication normally requires that the new version be uniquely
@@ -2331,28 +2419,57 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                      unique identifier, this specification defines the semantics for a Package
                      Identifier, or means of distinguishing and sequentially ordering Publications
                      with the same unique identifier. The Package Identifier is not an actual
-                     property in the Package <code class="literal">metadata</code> section, but is a value that
+                     property in the package <code class="literal">metadata</code> section, but is a value that
                      can be obtained from two required pieces of metadata: the unique identifier and
-                     creation or last modification date of the Publication.
+                     the last modification date of the Publication.
                   </p>
-                  <p class="para">When the creation or modification date is taken together with the
-                     Publication's unique identifier, the combined value represents a unique identity
-                     that can be used to distinguish any particular EPUB instance from another. When
-                     a Publication includes both a creation and modification date, the modification
-                     date must be used to construct the Identifier.
-                  </p>
-                  <p class="para">To ensure that a Package Identifier can be constructed, the the Publication
+                  <p class="para">When the taken together, the combined value represents a unique identity
+                     that can be used to distinguish any particular EPUB instance from another. To ensure 
+                     that a Package Identifier can be constructed, the Publication
                      must include exactly one <code class="literal">dcterms:modified</code> property containing
-                     the last modification date of the Publication. The value of this property must
-                     be an ISO 8601 [ISO8601] conformant date of the form <span class="todo">TODO:
-                        format</span>.
+                     the last modification date. The value of this property must
+                     be an XML Schema <a class="biblioref" href="#refXSDDatatypes"
+                        title="XML Schema Part 2: Datatypes Second Edition">[<abbr class="abbrev">XSD-DATATYPES</abbr>]</a> dateTime conformant date 
+                     of the form:
                   </p>
+                  <div class="informalexample"><pre class="synopsis">
+                     CCYY-MM-DDThh:mm:ssZ</pre></div>
+                  <p class="para">The modification date must be expressed in Coordinated Univeral Time (UTC), and must
+                     be terminated by the <code class="literal">Z</code> time zone indicator.
+                  </p>
+                  <p class="para">Although not a part of the package metadata, for referencing and other purposes 
+                     this specification requires that all string representations of the identifier be constructed using the
+                     <code class="literal">@</code> character as the separator (i.e., of the form "id<code class="literal">@</code>date").
+                     Whitespace must not be included when concatenating the strings.
+                  </p>
+                  <div class="note" title="note">
+                     <h3 class="title">note</h3>
+                     <p class="para">It is possible that the separator character may occur in the unique identifier, 
+                        as unique identifiers allow any URI <a class="biblioref" href="#refXML"
+                           title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a> as their value. For 
+                        parsing a Package Identifier into its component parts, it is consequently recommended 
+                        to always ensure that the string is split on the last instance of the <code class="literal">@</code> character.
+                     </p>
+                  </div>
+                  <div class="informalexample">
+                     <p class="para">The following example shows how a unique identifier and modification
+                        date are combined to form the Package Identifier.
+                     </p><pre class="synopsis">&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+    &lt;dc:identifier id="pub-id"&gt;9780375704024&lt;/dc:identifier&gt;
+    &lt;meta property="dcterms:modified"&gt;2011-01-01T12:00:00Z&lt;/meta&gt;
+    …
+&lt;/metadata&gt;
+
+results in the Package ID:
+
+9780375704024@2011-01-01T12:00:00Z
+</pre></div>
                   <p class="para">The Package Identifier does not supersede the unique identifier, but
                      represents the means by which different versions of the same publication can be
-                     identified in distribution channels and by Reading Systems. The chronological
-                     order inherent in the required format of the datestamp also places Publications
-                     in order without requiring knowledge of the exact identifier that came
-                     before.
+                     identified in distribution channels and by Reading Systems. The sequential 
+                     (i.e., chronological) order inherent in the required format of the datestamp 
+                     also places Publications in order without requiring knowledge of the exact 
+                     identifier that came before.
                   </p>
                   <p class="para">The Package Identifier consequently allows a set of Publications to be
                      inspected to determine if they represent the same the same version of the same
@@ -2367,6 +2484,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                         as these are outside the scope of this specification.
                      </p>
                   </div>
+                  <p class="para"></p>
                </div>
             </div>
             <div class="section" title="5.2 Dublin Core Metadata Vocabulary Transition"
@@ -2374,23 +2492,26 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                <h3 class="title"><a class="hidden-reveal" title="Link here"
                      href="#sec-package-metadata-dcmi-transition">›</a> 5.2 Dublin Core Metadata Vocabulary Transition
                </h3>
-               <p class="para">This specification represents a shift from traditional XML-based grammars to RDFa
-                  vocabularies for expressing metadata. Unlike XML grammars, which intrude into host
-                  grammars and require specific accommodations to work, RDFa represents a more fluid
-                  means of expressing metadata, working within document attributes to add a greater
-                  degree of semantic richness.
+               <p class="para">This specification represents a shift from using traditional XML-based grammars
+                  to express Publication metadata to an approach based on a standardized syntax 
+                  that incorporates well-defined terms from external vocabularies. Unlike XML grammars, 
+                  which intrude into host grammars, often require special extensions and require
+                  learning the new grammar to implement, the new approach represents a more fluid
+                  means of expressing metadata: a few container elements are now capable of expressing
+                  the full range of Publication metadata and provide a predictable way to add and extend
+                  using industry-standard vocabularies.
                </p>
-               <p class="para">Although RDFa support for the expression of metadata allows properties from a wide
+               <p class="para">Although support for the expression of metadata allows properties from a wide
                   variety of vocabularies to be easily incorporated to express and refine information
                   about an <a class="glossterm" href="#gloss-epub-publication"
                      title="EPUB Publication (or Publication)">EPUB Publication</a>, it is not expected that all
                   Reading Systems will be able to handle this transition initially. To ensure that
                   older Reading Systems that require the presence of the required <a class="biblioref" href="#refDCMES"
                      title="Dublin Core Metadata Element Set, Version 1.1">DCMES</a> elements do not fail to open new EPUB
-                  Publications, this specification represents a transitionary stage to full RDFa
-                  support, incorporating both methods of metadata expression.
+                  Publications, this specification represents a transitionary stage, incorporating 
+                  both methods of metadata expression.
                </p>
-               <p class="para">Although this specification requires the use of the DCMES <code class="code">title</code>,
+               <p class="para">While this specification requires the use of the DCMES <code class="code">title</code>,
                   <code class="code">identifier</code> and <code class="code">language</code> elements, their deprecation is
                   expected in a future version. Content authors are consequently encouraged to begin
                   using the new properties from the <a class="biblioref" href="#refDCTERMS" title="DCMI Metadata Terms">DCTERMS</a>
@@ -2418,7 +2539,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                      that can be used to add or annotate package metadata. 
                   </p>
                   <p class="para">Property usage examples in the following sections have been drawn from the
-                     <a class="link" href="#sec-meta-elem-examples" title="4.4.6. Example"><code class="code">metadata</code> examples</a>
+                     <a class="link" href="#sec-meta-elem-examples" title="4.4.6. Examples"><code class="code">metadata</code> examples</a>
                      whenever possible. Refer to those examples for fuller context.
                   </p>
                </div>
@@ -2511,9 +2632,13 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  <td class="rdfa-property-header">Description:</td>
                                  <td class="rdfa-property-desc">The
                                     <code class="literal">source-identifier</code> property references
-                                    the <code class="literal">identifier</code> (element or property) that
-                                    is the source of the NCX pageList (i.e., the publication
-                                    from which the pagination was derived).
+                                    the <code class="literal">identifier</code> of the source publication 
+                                    this <a class="glossterm" href="#gloss-epub-publication"
+                                       title="EPUB Publication (or Publication)">EPUB Publication</a> represents.
+                                    <span class="todo">TODO: need to determine a if there is a
+                                       better way to express this,
+                                       preferably tying as a subproperty of the actual identifier.</span>
+                                    
                                  </td>
                               </tr>
                               <tr>
@@ -3071,6 +3196,24 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  <a class="biblioref" href="#refONIX" title="ONIX for Books">[<abbr class="abbrev">ONIX</abbr>]</a>. 
                               </td>
                            </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Cardinality:</td>
+                              <td class="rdfa-cardinality"><code class="code">Zero or one</code></td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Extends:</td>
+                              <td class="entry">Only applies to the Publication. Must not be used when the 
+                                 <code class="code"><a class="link" href="#attrdef-link-about">about</a></code> 
+                                 attribute is present.
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Example:</td>
+                              <td class="entry">
+                                 <code class="prop-example">&lt;link rel="onix-record" href="pub/meta/nor-wood-onix.xml"/&gt;</code>
+                                 
+                              </td>
+                           </tr>
                         </tbody>
                      </table>
                      <table border="1">
@@ -3091,6 +3234,24 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  property indicates the referenced resource is a MODS record
                                  <a class="biblioref" href="#refMODS"
                                     title="Metadata Object Description Schema (MODS)">[<abbr class="abbrev">MODS</abbr>]</a>. 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Cardinality:</td>
+                              <td class="rdfa-cardinality"><code class="code">Zero or one</code></td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Extends:</td>
+                              <td class="entry">Only applies to the Publication. Must not be used when the 
+                                 <code class="code"><a class="link" href="#attrdef-link-about">about</a></code> 
+                                 attribute is present.
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Example:</td>
+                              <td class="entry">
+                                 <code class="prop-example">&lt;link rel="mods-record" href="pub/meta/nor-wood-mods.xml"/&gt;</code>
+                                 
                               </td>
                            </tr>
                         </tbody>
@@ -3114,6 +3275,24 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  <a class="biblioref" href="#refXMP" title="TODO spec ref">[<abbr class="abbrev">XMP</abbr>]</a>. 
                               </td>
                            </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Cardinality:</td>
+                              <td class="rdfa-cardinality"><code class="code">Zero or one</code></td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Extends:</td>
+                              <td class="entry">Only applies to the Publication. Must not be used when the 
+                                 <code class="code"><a class="link" href="#attrdef-link-about">about</a></code> 
+                                 attribute is present.
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Example:</td>
+                              <td class="entry">
+                                 <code class="prop-example">&lt;link rel="xmp-record" href="pub/meta/nor-wood-xmp.xml"/&gt;</code>
+                                 
+                              </td>
+                           </tr>
                         </tbody>
                      </table>
                      <table border="1">
@@ -3133,6 +3312,24 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                               <td class="rdfa-property-desc">The
                                  <code class="literal">marc21xml-record</code> property indicates the
                                  referenced resource is a MARC21 record <a class="biblioref" href="#refMARC21XML" title="MARC 21 XML Schema">[<abbr class="abbrev">MARC21XML</abbr>]</a>. 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Cardinality:</td>
+                              <td class="rdfa-cardinality"><code class="code">Zero or one</code></td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Extends:</td>
+                              <td class="entry">Only applies to the Publication. Must not be used when the 
+                                 <code class="code"><a class="link" href="#attrdef-link-about">about</a></code> 
+                                 attribute is present.
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Example:</td>
+                              <td class="entry">
+                                 <code class="prop-example">&lt;link rel="marc21xml-record" href="pub/meta/nor-wood-marc21.xml"/&gt;</code>
+                                 
                               </td>
                            </tr>
                         </tbody>
@@ -3169,22 +3366,8 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                               </td>
                            </tr>
                            <tr>
-                              <td class="rdfa-property-header">Allowed value(s):</td>
-                              <td class="entry">
-                                 <code class="literal">xsd:anyURI</code>
-                                 
-                              </td>
-                           </tr>
-                           <tr>
                               <td class="rdfa-property-header">Cardinality:</td>
-                              <td class="rdfa-cardinality">
-                                 
-                                 <p class="para">In the metadata section: <code class="code">zero or more</code></p>
-                                 
-                                 <p class="para">Attached to other metadata: <code class="code">zero or
-                                       one</code></p>
-                                 
-                              </td>
+                              <td class="rdfa-cardinality"><code class="code">Zero or more</code></td>
                            </tr>
                            <tr>
                               <td class="rdfa-property-header">Extends:</td>
@@ -3193,7 +3376,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                            <tr>
                               <td class="rdfa-property-header">Example:</td>
                               <td class="entry">
-                                 <code class="prop-example">&lt;link about="#meta-authority-01" rel="xml-signature" href="META-INF/signatures.xml"/&gt;</code>
+                                 <code class="prop-example">&lt;link about="#meta-authority-01" rel="xml-signature" href="META-INF/signatures.xml#MAI-Signature"/&gt;</code>
                                  
                               </td>
                            </tr>
@@ -3467,7 +3650,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  <code class="literal">page-spread-left</code> property indicates that
                                  the associated <code class="code">item</code>'s <a class="glossterm" href="#gloss-content-document-epub"
                                     title="EPUB Content Document">EPUB Content Document</a> represents the
-                                 left-hand side of a two-column display.
+                                 left-hand side of a two-page spread.
                               </td>
                            </tr>
                            <tr>
@@ -3496,7 +3679,7 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                                  <code class="literal">page-spread-right</code> property indicates that
                                  the associated <code class="code">item</code>'s <a class="glossterm" href="#gloss-content-document-epub"
                                     title="EPUB Content Document">EPUB Content Document</a> represents the
-                                 right-hand side of a two-column display.
+                                 right-hand side of a two-page spread.
                               </td>
                            </tr>
                            <tr>
@@ -4375,6 +4558,13 @@ src=horse.ogg&amp;amp;type=audio/ogg&amp;amp;autoplay=false
                   <p>[<abbr class="abbrev">XMP</abbr>] <span class="title"><em>
                            <a class="link" href="http://www.TODO.com/">TODO spec ref</a>
                            </em>. </span></p>
+               </div>
+               <div class="biblioentry" title="XML Schema Part 2: Datatypes Second Edition"
+                    id="refXSDDatatypes">
+                  <p>[<abbr class="abbrev">XSD-DATATYPES</abbr>] <span class="title"><em>
+                           <a class="link" href="http://www.w3.org/TR/xmlschema-2/">XML Schema Part 2:
+                              Datatypes Second Edition</a>
+                           </em>. </span><span class="author">Paul V. Biron et al. </span><span class="date">28 October 2004. </span></p>
                </div>
             </div>
             <div class="bibliodiv" title="Informative References">
