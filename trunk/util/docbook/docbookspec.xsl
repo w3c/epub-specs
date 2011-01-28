@@ -17,7 +17,7 @@
         part nop
         chapter nop        
     </xsl:param>
-
+    
     <!-- ==================================================================== -->
     <!-- override gentext to get "Chapter" etc out of link labels             -->
     
@@ -49,7 +49,8 @@
 
     <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
-
+    <xsl:param name="table.borders.with.css">0</xsl:param>
+    
     <!-- ============================================================================= -->
     <!-- crude rearrange of the leading info element to structure as an IDPF spec document  -->
     <xsl:template name="book.titlepage">
@@ -176,9 +177,7 @@
         <xsl:variable name="parentName" select="local-name(..)"/>   
         
         <xsl:variable name="is-section" select="$node[d:title] and ($parentName='section' or $parentName='book' or $parentName='chapter' or $parentName='appendix') and string-length($id) > 0"/>
-        
-        <!-- or($node[d:term] and $parentName='variablelist') -->
-                   
+                                     
         <xsl:if test="$conditional = 0 or $node/@id or $node/@xml:id">
             <xsl:if
                 test="$is-section or $is-conformance-list-para">                
@@ -186,6 +185,13 @@
                     <xsl:with-param name="id" select="$id"/>
                 </xsl:call-template>
             </xsl:if>
+        </xsl:if>
+        
+        <!-- match the headers in the property cals tables -->        
+        <xsl:if test="local-name($node) = 'literal' and parent::db:entry[@role='rdfa-property']">
+            <xsl:call-template name="render-link-here-anchor">
+                <xsl:with-param name="id" select="../@xml:id"/>
+            </xsl:call-template>
         </xsl:if>
         
     </xsl:template>
