@@ -37,6 +37,7 @@
 	<property name="schema.epub.xhtml.sch" value="${dir.src.schema}/epub-xhtml-30.sch"/>
 	<property name="schema.epub.svg.rng" value="${dir.src.schema}/epub-svg-30.rng"/>
 	<property name="schema.epub.nav.rnc" value="${dir.src.schema}/epub-nav-30.rnc"/>
+	<property name="schema.epub.nav.sch" value="${dir.src.schema}/epub-nav-30.sch"/>
 	<property name="schema.epub.mediaoverlay.rnc" value="${dir.src.schema}/media-overlay-30.rnc"/>
 	<property name="schema.epub.mediaoverlay.sch" value="${dir.src.schema}/media-overlay-30.sch"/>
 	<property name="schema.epub.package.rnc" value="${dir.src.schema}/package-30.rnc"/>
@@ -71,6 +72,7 @@
 		build-profiles,
 		build-specs,
 		build-schemas,		
+		build-index,
 		build-archives, 
 		copy-css" />
 
@@ -84,7 +86,7 @@
 			
 		<!-- TODO inject overlays vocab defs -->
 		
-		<!-- run the olink preprocess xslt -->		
+		<!-- run the olink preprocess xslt -->				
 		<mkdir dir="${dir.temp.spec}/10" />
 		<saxon-xslt description="process epub-specific olinks"
 			classpathref="build.classpath"
@@ -144,12 +146,12 @@
 
 		<!-- validate docbook sources -->
 		<validate-fileset-rng 
-					fileset-dir="${dir.temp.spec}/50" 
-					fileset-includes="*.xml"
-					fileset-excludes=""
-					schema="${schema.docbook}"
-					failonerror="true"
-					compaxtsyntax="false" />
+			fileset-dir="${dir.temp.spec}/50" 
+			fileset-includes="*.xml"
+			fileset-excludes=""
+			schema="${schema.docbook}"
+			failonerror="true"
+			compaxtsyntax="false" />
 		
 		<!-- run docbook-xhtml -->
 		<saxon-xslt 
@@ -175,8 +177,6 @@
 			<xmlcatalog refid="xhtml-catalog"/>
 			<fileset dir="${dir.build.spec}" includes="*.html"/>			
 		</xmlvalidate>
-				
-		
 				
 	</target>
 
@@ -346,7 +346,7 @@
 	
 	<target name="validate-tests" 
 		depends="validate-tests-package, validate-tests-overlays, 
-				 validate-tests-xhtml" />
+				 validate-tests-xhtml, validate-tests-nav" />
 		
 	<target name="validate-tests-package">
 		<validate-tests-impl
@@ -371,6 +371,15 @@
  			dir="xhtml" 
 			schema-rng="${schema.epub.xhtml.rnc}"
 			schema-sch="${schema.epub.xhtml.sch}"
+			includes="*.xhtml"
+			excludes="" />			
+	</target>
+	
+	<target name="validate-tests-nav">
+		<validate-tests-impl
+			dir="nav" 
+			schema-rng="${schema.epub.nav.rnc}"
+			schema-sch="${schema.epub.nav.sch}"
 			includes="*.xhtml"
 			excludes="" />			
 	</target>
@@ -446,9 +455,11 @@
 	
 	<target name="validate-spec-examples" 
 		description="validate spec examples against corresponding schemas where available">
-		<property name="example-exclude-pattern" value="**/*invalid* **/*partial*"/>
 		
-		<!-- ocf container -->		
+		<property name="example-invalid-pattern" value="**/*invalid*"/>
+		<property name="example-full-pattern" value="**/*full*"/>
+		
+		<!-- ocf container 		
 		<validate-fileset-rng
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*container*.xml"
@@ -457,8 +468,9 @@
 			failonerror="false"
 			compaxtsyntax="true"
 		/>
+		-->
 		
-		<!-- ocf signatures -->
+		<!-- ocf signatures 
 		<validate-fileset-rng
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*signatures*.xml"
@@ -467,8 +479,9 @@
 			failonerror="false"
 			compaxtsyntax="true"
 		/>
+		-->
 		
-		<!-- ocf encryption -->
+		<!-- ocf encryption 
 		<validate-fileset-rng
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*encryption*.xml"
@@ -477,14 +490,18 @@
 			failonerror="false"
 			compaxtsyntax="true"
 		/>
+		-->
 		
-		<!-- ops TODO -->
+		<!-- xhtml TODO -->
 		
-		<!-- opf TODO -->
+		<!-- svg TODO -->
 		
-		<!-- ncx TODO -->
+		<!-- package TODO -->
+		
+		<!-- nav TODO -->
 		
 		<!-- media overlays -->
+		
 		<validate-fileset-rng
 			fileset-dir="${dir.src.spec.examples}"
 			fileset-includes="**/*overlay*.xml"
@@ -493,6 +510,8 @@
 			failonerror="false"
 			compaxtsyntax="true"
 		/>
+		
+		
 		
 		
 	</target>
@@ -513,6 +532,30 @@
 			</jing>
 		</sequential>					
 	</macrodef>
+	
+	<target name="build-index">
+		<fileset id="build.contents" dir="${dir.build}" includes="**/*.*"/>
+		<property name="prop.build.contents" refid="build.contents"/>
+		
+		<!--
+		<saxon-xslt in="${schema.epub.package.sch}" out="${dir.build}/index.html" 
+			style="${dir.util.xhtml}/build-index.xsl">
+			<param name="file-list" expression="${prop.build.contents}"/>
+			<param name="base" expression="${dir.build}/"/>		
+			<xmlcatalog refid="xhtml-catalog"/>
+			<factory name="net.sf.saxon.TransformerFactoryImpl">
+				
+			</factory>
+		</saxon-xslt>-->
+		
+		<xslt in="${schema.epub.package.sch}" out="${dir.build}/index.html"
+			style="${dir.util.xhtml}/build-index.xsl">			
+			<param name="file-list" expression="${prop.build.contents}"/>
+			<param name="base" expression="${dir.build}/"/>
+			<xmlcatalog refid="xhtml-catalog"/>
+		</xslt>
+		
+	</target>
 	
 	<xmlcatalog id="xhtml-catalog">
 		<dtd publicId="-//W3C//DTD XHTML 1.0 Strict//EN" location="${dir.util.xhtml.dtd.catalog}/xhtml1-strict.dtd" />
