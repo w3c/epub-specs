@@ -180,10 +180,14 @@
                 <para>The term “Conforming OCF Abstract Container” indicates an OCF Abstract
                     Container (see <xref linkend="sec-ocf-overview-abstract-vs-physical"/>) that
                     conforms to all of the relevant conformance criteria defined in this
-                    specification. The term “Conforming OCF ZIP Container” indicates a ZIP archive
+                    specification.</para>
+                
+                <para>The term “Conforming OCF ZIP Container” indicates a ZIP archive
                     that conforms to the relevant ZIP container conformance criteria (see <xref
                         linkend="physical-container-zip"/>) and whose contents is a Conforming OCF
-                    Abstract Container.</para>
+                        Abstract Container.</para>
+                
+                <!-- TODO: verify these are unnecessary, but no clear reason why OCF imposes XML constraints
                 <para>
                     <remark role="todo">JP:  This appears to duplicate the document requirements of the OPF and OPS specs.  Can this be removed?</remark>In addition to other conformance criteria defined in this specification, all
                     XML files in a Conforming OCF Abstract Container must meet the following
@@ -208,6 +212,7 @@
                             MIME type specified for the file</para>
                     </listitem>
                 </itemizedlist>
+                -->
             </section>
             <section xml:id="sec-overview-conforming-reading-systems">
                 <title>Conforming Processors</title>
@@ -834,7 +839,7 @@
                 <informalexample><synopsis><literal>application/epub+zip</literal></synopsis></informalexample>
                 
                 <para>The contents of the <filename>mimetype</filename> file must not contain any
-                    leading padding or whitespace abd the case of the MIME type string must be exactly
+                    leading padding or whitespace and the case of the MIME type string must be exactly
                     as presented above. The <filename>mimetype</filename> file additionally must
                     be neither compressed nor encrypted, and there must not be an extra field in its
                     ZIP header.</para>
@@ -868,7 +873,7 @@
                 tools can be used to extract any unencrypted content stream from the package. On
                 some systems, the contents of the ZIP file may appear like any other native
                 container (e.g., a folder). While the ability to do this is quite useful, it can pose
-                a problem for an author of the publication who wishes to include a third-party font.
+                a problem for an <xref linkend="gloss-author"/> who wishes to include a third-party font.
                 Many commercial fonts allow embedding, but embedding a font implies making it an
                 integral part of the publication, not providing the original font file along with
                 the content. Since integrated ZIP support is so ubiquitous in modern operating
@@ -910,26 +915,26 @@
                 reached), any remaining data in the source is directly copied to the destination. In
                 pseudo-code, this is the algorithm: </para>
             <programlisting>
-                set source to font file
-                set destination to obfuscated file
-                set keyData to key for font
-                set outer to 0
-                while outer &lt; 52 and not (source at EOF)
-                    set inner to 0
-                    while inner &lt; 20 and not (source at EOF)
-                        read 1 byte from source     //Assumes read advances file position
-                        set sourceByte to result of read
-                        set keyByte to byte inner of keyData
-                        set obfuscatedByte to (sourceByte XOR keyByte)
-                        write obfuscatedByte to destination
-                        increment inner
-                    end while
-                    increment outer
-                end while
-                if not (source at EOF) then
-                    read source to EOF
-                    write result of read to destination
-                end if 
+set source to font file
+set destination to obfuscated file
+set keyData to key for font
+set outer to 0
+while outer &lt; 52 and not (source at EOF)
+    set inner to 0
+    while inner &lt; 20 and not (source at EOF)
+        read 1 byte from source     //Assumes read advances file position
+        set sourceByte to result of read
+        set keyByte to byte inner of keyData
+        set obfuscatedByte to (sourceByte XOR keyByte)
+        write obfuscatedByte to destination
+        increment inner
+    end while
+    increment outer
+end while
+if not (source at EOF) then
+    read source to EOF
+    write result of read to destination
+end if 
             </programlisting>
             <para>To get the original font data back, the process is simply reversed. That is, the
                 source file becomes the obfuscated data and the destination file will contain the
@@ -939,18 +944,20 @@
             <title>Generating the Obfuscation Key</title>
             <para>To tie a font to a particular EPUB publication, it is necessary to bind to a unique
                 property of that publication. Such a value is required by the EPUB Publications 3.0 specification,
-                as detailed in its section 4.3.2.5 "Publication Identifiers". Every compliant OPF file has a
+                as detailed in <olink targetdoc="publications" targetptr="sec-opf-metadata-identifiers-uid" type="epub-spec"/>. 
+                Every compliant OPF file has a
                     <code>dc:identifier</code> element which uniquely identifies the
                 publication. The OPF 3.0 specification details finding this element by examining the
                     <code>unique-identifier</code> attribute of the package file's
                     <code>package</code> element. This element provides the required
                 characteristic of being unique to a publication; it is not suitable for use
                 directly as the obfuscation key, however (for instance, its length is not defined).</para>
-            <para>In order to create a suitable key that is tied to the publication, an <xref linkend="refSHA1"/> digest
+            <para>In order to create a suitable key that is tied to the publication, an SHA-1 digest
                 of the unique identifier should be generated as specified by the Secure Hash
-                Standard. Before generating the digest, all whitespace characters as defined by
+                Standard <xref linkend="refSHA1"/>. Before generating the digest, all whitespace characters as defined by
                 the XML 1.0 specification <xref linkend="refXML"/>, section 2.3 are removed. Specifically the Unicode code
-                points <code>0x20</code>, <code>0x09</code>, <code>0x0D</code> and <code>0x0A</code> will be stripped from the string before the digest
+                points <code>0x20</code>, <code>0x09</code>, <code>0x0D</code> and <code>0x0A</code> 
+                must be stripped from the string before the digest
                 is computed. This digest is then directly used as the key for the algorithm
                 described in <xref linkend="fobfus-algorithm"/>.</para>
         </section>
@@ -958,10 +965,10 @@
             <title>Specifying Obfuscated Resources</title>
             <para>All encrypted data in an OCF Abstract Container must have an entry in the <filename>encryption.xml</filename> file
                 accompanying the publication (see <xref
-                    linkend="sec-container-metainf-encryption.xml"/>. This includes fonts obfuscated
+                    linkend="sec-container-metainf-encryption.xml"/>), which includes fonts obfuscated
                 using the method described here. For such obfuscated fonts, in the <filename>encryption.xml</filename>
                 file, the <code>EncryptionMethod</code> element child of the <code>EncryptedData</code> must have an <code>Algorithm</code>
-                attribute with the value <code>"http://www.idpf.org/2008/embedding"</code>. The presence of this
+                attribute with the value <code>http://www.idpf.org/2008/embedding</code>. The presence of this
                 attribute signals the use of the algorithm described in this specification. All
                 resources that have been obfuscated using this approach must be listed in the
                 <code>CipherData</code> element.</para>
