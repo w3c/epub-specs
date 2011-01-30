@@ -16,7 +16,7 @@
                 <xsl:copy-of select="@*"/>
                 <xsl:apply-templates/>                                                
                 <xsl:for-each select="$glossentries">
-                    <xsl:sort select="db:glossterm"/>
+                    <!--<xsl:sort select="db:glossterm"/>-->
                     <xsl:copy-of select="current()"/>
                 </xsl:for-each>
             </xsl:copy>
