@@ -387,15 +387,238 @@
                 <para>This section defines EPUB3 <xref linkend="gloss-content-document-epub-xhtml"/>
                     extensions to the underlying XHTML5 document model.</para>
 
-                <!-- TODO make sure this is not needed
-                <para>All elements defined in this section are in the
-                        <literal>http://www.idpf.org/2011/epub</literal> namespace unless otherwise
-                    specified. For convenience, the prefix <literal>epub</literal> is used within
-                    this section to identify this namespace URI. </para>
-                -->
-
-                <xi:include href="./sections/epub30-contentdocs-inflection.xml"/>
-
+                <section xml:id="sec-xhtml-semantic-inflection">
+                    
+                    <title>Semantic Inflection</title>
+                    
+                    <section xml:id="sec-xhtml-semantic-inflection-intro">
+                        <title>Introduction</title>
+                        <para>Semantic inflection is the process of attaching additional meaning
+                            about the specific purpose and/or nature that an element plays in an
+                            <xref linkend="gloss-content-document-epub-xhtml"/>. Semantic
+                            metadata is not intended for human consumption, however. It instead
+                            provides a controlled but discoverable way for Reading Systems and other
+                            User Agents to learn more about the structure and content of a document,
+                            providing them the opportunity to enhance the reading experience for
+                            users. </para>
+                        
+                        <para>A typical case for semantic inflection is on sectioning elements.
+                            Although these elements effectively partition a document into its
+                            logical structure on their own, they provide no indication of the role
+                            any given section plays in a document. To discover if a document is
+                            composed of chapters or sections, only the title would be available,
+                            which often contains no hint. Using semantic inflection, each
+                            <code>section</code> could be identifier as a part, section,
+                            chapter, etc. enabling, for example, an accessible Reading System to
+                            announce the current navigation level without resorting to nesting. </para>
+                        
+                        <para>This specification defines two methods for attaching semantic
+                            information to content:</para>
+                        
+                        <itemizedlist>
+                            <listitem>
+                                <para>the <code>epub:type</code> attribute (defined in <xref
+                                    linkend="attrdef-epub-type"/>); and</para>
+                            </listitem>
+                            <listitem>
+                                <para>the W3C HTML5 <code>rel</code> attribute <xref
+                                    linkend="refHTML5"/>.</para>
+                            </listitem>
+                        </itemizedlist>
+                        
+                        <para>Each of these attributes serves a different purpose annotating
+                            content. The <code>epub:type</code> attribute is the more traditional
+                            attribute, annotating the element it is attached to. The
+                            <code>rel</code> attribute identifies the relationship another
+                            element or resource has to the attached element or to the <xref
+                                linkend="gloss-content-document-epub"/> (for example, it could
+                            indicate that a resource identified in the element's <code>href</code>
+                            attribute contains the licensing information).</para>
+                        
+                        <para>Unlike the W3C HTML5 <code>class</code> attribute, for example, which
+                            provides only loose associations, these semantic attributes use terms
+                            and properties from RDFa vocabularies as their values. RDFa vocabularies
+                            define the meaning of each property and may provide other useful
+                            metadata to Reading Systems. More importantly, they provide a measure of
+                            control and predictability over the semantic inflections that can be
+                            made, so even Reading Systems that aren't fully RDFa aware can predict
+                            the values they will encounter when a vocabulary they recognize is
+                            used.</para>
+                        
+                        <para>This specification uses a subset of the vocabulary association
+                            mechanism defined in RDFa 1.1 Core <xref linkend="refRDFa11Core"/>. For
+                            more information, refer to <remark role="todo">TODO: where is this
+                                defined specific to content docs?</remark>.</para>
+                    </section>
+                    
+                    <section xml:id="sec-xhtml-content-type-attribute">
+                        <title>The <code>epub:type</code> Attribute</title>
+                        
+                        <para>The <code>epub:type</code> attribute is intended to be functionally
+                            equivalent to the W3C Role Attribute <xref linkend="refPFRoleAttribute"
+                            />, but with restrictions as specified in <xref
+                                linkend="sec-contentdocs-vocab-association"/>. </para>
+                        
+                        <para>
+                            <remark role="todo">NOTE: pending finalization of discussions with the
+                                W3C, the epub:type attribute may be replaced by a reference to the
+                                <link xlink:href="http://www.w3.org/WAI/PF/role-attribute/">PF
+                                    Role Attribute</link>, although the restrictions below would be
+                                retained.</remark>
+                        </para>
+                        
+                        <variablelist xreflabel="epub:type" role="elem-synopsis"
+                            xml:id="attrdef-epub-type">
+                            <varlistentry>
+                                <term>Attribute Name</term>
+                                <listitem>
+                                    <para><literal>type</literal></para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Attribute Namespace</term>
+                                <listitem>
+                                    <para><literal>http://www.idpf.org/2011/epub</literal></para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Usage</term>
+                                <listitem>
+                                    <para>Common, may be specified on all elements.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term>Value</term>
+                                <listitem>
+                                    <para>CURIEs <xref linkend="refRDFa11Core"/> with restrictions
+                                        given below</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </section>
+                    
+                    <section xml:id="sec-xhtml-rel-attribute">
+                        <title>The <code>rel</code> Attribute</title>
+                        <para/>
+                    </section>
+                    
+                    <section xml:id="sec-contentdocs-vocab-association">
+                        <title>Vocabulary Association</title>
+                        <para>The following restrictions apply to the prefix mapping mechanisms of
+                            <code>epub:type</code> and <code>rel</code> as compared to their
+                            definitions in <xref linkend="refPFRoleAttribute"/> and <xref
+                                linkend="refRDFa11Core"/> respectively:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>The use of <code>xmlns</code> to establish prefix mappings is
+                                    not allowed; the <code>profile</code> and <code>prefix</code>
+                                    attributes <xref linkend="refRDFa11Core"/> must be used
+                                    instead</para>
+                            </listitem>
+                            <listitem>
+                                <para>The <code>profile</code> and <code>prefix</code> attributes
+                                    are only allowed on the document root element</para>
+                            </listitem>
+                            <listitem>
+                                <para>The <code>profile</code> attribute has the fixed value of
+                                    <literal>http://www.idpf.org/epub/30/profile/content/</literal></para>
+                            </listitem>
+                            <listitem>
+                                <para>Prefix mappings established in the profile defined above must
+                                    not be overriden locally in document instances</para>
+                            </listitem>
+                            <listitem>
+                                <para>The <code>epub:type</code> attribute value must conform to the
+                                    <code>CURIEs</code> datatype. <xref linkend="refRDFa11Core"
+                                    /></para>
+                            </listitem>
+                        </itemizedlist>
+                        <para>Given the restrictions above, all EPUB3 Publications will have the
+                            following properties in common:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>All EPUB3 Publications (via the fixed URI in the
+                                    <code>profile</code> attribute on the document root element)
+                                    refer to the same profile document</para>
+                            </listitem>
+                            <listitem>
+                                <para>The profile document defines a default vocabulary (i.e. the
+                                    vocabulary whose properties are referred to without a prefix),
+                                    which is the vocabulary located at
+                                    <literal>http://www.idpf.org/TODO/vocab/structure/</literal>.
+                                    The default vocabulary is fixed, and must not be overridden in
+                                    instances. </para>
+                            </listitem>
+                            <listitem>
+                                <para>The profile document associates the prefix <code>xhv</code> to
+                                    the XHTML Vocabulary <xref linkend="refXHTMLVocab"/>. This
+                                    prefix mapping is fixed, and must not be overridden in instances
+                                    <remark role="todo">TODO revisit if we add pim
+                                        etc</remark></para>
+                            </listitem>
+                            <listitem>
+                                <para>The establishment of prefix mappings additional to those in
+                                    the profile document is done exclusively using the root element
+                                    <code>prefix</code> attribute</para>
+                            </listitem>
+                        </itemizedlist>
+                    </section>
+                    
+                    <section xml:id="sec-contentdocs-semantic-inflection-processing-reqs">
+                        <title>The <code>epub:type</code> and <code>rel</code> Attributes:
+                            Processing Requirements</title>
+                        <para>Reading Systems must process the <code>epub:type</code> and
+                            <code>rel</code> attributes as follows:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>A Reading System may associate specialized behaviors with
+                                    none, some or all of the properties given in the default
+                                    vocabulary.</para>
+                            </listitem>
+                            <listitem>
+                                <para>A Reading System may associate specialized behaviors with
+                                    properties given in vocabularies other than the default
+                                    one.</para>
+                            </listitem>
+                            <listitem>
+                                <para>A Reading System may support the dereferencing of unrecognized
+                                    CURIEs occurring in the <code>epub:type</code> and
+                                    <code>rel</code> attributes. If a Reading System
+                                    successfully dereferences an unrecognized CURIE, it may
+                                    (depending on the information available in the referenced
+                                    vocabulary property) employ adaptive behaviors in response to
+                                    the change to the document structural semantics that results
+                                    from the CURIE dereferencing.</para>
+                            </listitem>
+                            <listitem>
+                                <para>If the attempt to dereference an unrecognized CURIE fails, or
+                                    if the dereferencing of unrecognized CURIEs is not supported,
+                                    then the Reading System must ignore the given unrecognized CURIE
+                                    and continue processing the <code>epub:type</code> or
+                                    <code>rel</code> attribute.</para>
+                            </listitem>
+                            <listitem>
+                                <para>When Reading System behavior associated with a given CURIE
+                                    conflicts with behavior associated with the carrying XHTML
+                                    element, then the behavior associated with the element must take
+                                    precedence.</para>
+                            </listitem>
+                        </itemizedlist>
+                    </section>
+                    
+                    <section xml:id="examples-semantic-inflection">
+                        <title>Semantic Inflection: Examples</title>
+                        <informalexample>
+                            <para>The following example shows the <code>rel</code> and
+                                <code>epub:type</code> attributes used to inflect footnote and
+                                note reference semantics. The property used is defined in the
+                                default vocabulary. </para>
+                            <synopsis>
+<xi:include href="./examples/contentdocs/epub-type-1.xml" parse="text"/></synopsis>
+                        </informalexample>
+                    </section>
+                    
+                </section>                
                 <section xml:id="sec-xhtml-ssml-attrib">
                     <title>SSML Attributes</title>
                     <!-- TODO reading system reqs -->
@@ -675,7 +898,178 @@
                         linkend="gloss-content-document-epub-xhtml"/>s to the underlying XHTML5
                     document model.</para>
 
-                <xi:include href="./sections/epub30-contentdocs-sec-xhtml-mathml.xml"/>
+                <section xml:id="sec-xhtml-mathml">
+                    <title>Embedded MathML</title>
+
+                    <section xml:id="sec-xhtml-mathml-intro">
+                        <title>Introduction</title>
+
+                        <para>XHTML Content Documents support embedded MathML <xref
+                                linkend="refMathML"/>, but limit its usage to a restricted subset of
+                            the full MathML markup language.</para>
+
+                        <para>This subset is designed to ease the implementation burden on Reading
+                            Systems and to promote accessibility, while retaining compatibility with
+                            HTML5 User Agents <xref linkend="refHTML5"/>. </para>
+
+                        <note>
+                            <para>The <property><olink type="epub-spec" targetdoc="publications"
+                                        targetptr="propdef-mathml"/></property> property of the
+                                    <xref linkend="gloss-manifest"/>
+                                <code>item</code> element indicates that an XHTML Content Document
+                                contains embedded MathML.</para>
+                        </note>
+
+                    </section>
+
+                    <section xml:id="sec-xhtml-mathml-conf-content">
+                        <title>Embedded MathML Content Conformance</title>
+
+                        <para>Any occurrence of MathML markup in XHTML Content Documents must
+                            conform to the constraints expressed in the MathML specification <xref
+                                linkend="refMathML"/>, with the following additional
+                            restrictions:</para>
+
+                        <variablelist role="conformance-list">
+                            <varlistentry xml:id="math-pres">
+                                <term>Presentation MathML</term>
+                                <listitem>
+                                    <para xml:id="confreq-mathml-pres">The <code>m:math</code>
+                                        element must only contain <link
+                                            xlink:href="http://www.w3.org/TR/MathML/chapter3.html"
+                                            >Presentation MathML</link>, with the exception of the
+                                            <code>m:annotation-xml</code> element as defined
+                                        below.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="math-cont">
+                                <term>Content MathML</term>
+                                <listitem>
+                                    <para xml:id="confreq-mathml-annot-cont"><link
+                                            xlink:href="http://www.w3.org/TR/MathML/chapter4.html"
+                                            >Content MathML</link> may be included within MathML
+                                        markup in XHTML Content Documents, and, when present, must
+                                        occur within an <code>m:annotation-xml</code> element with
+                                        its <code>encoding</code> attribute set to either of the
+                                        functionally-equivalent values
+                                            <literal>MathML-Content</literal> or
+                                            <code>application/mathml-content+xml</code> and its
+                                            <code>name</code> attribute valued
+                                            <literal>contentequiv</literal>. </para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="math-xhtml">
+                                <term>XHTML Content Document fragments</term>
+                                <listitem>
+                                    <para xml:id="confreq-mathml-annot-xht">XHTML Content Document
+                                        fragments may be included within MathML markup in XHTML
+                                        Content Documents, and, when present, must occur within an
+                                            <code>m:annotation-xml</code> element with its
+                                            <code>encoding</code> attribute valued
+                                            <literal>application/xhtml+xml</literal> and its
+                                            <code>name</code> attribute valued
+                                            <literal>alternate-representation</literal>. </para>
+                                    <para xml:id="confreq-mathml-annot-xht-math">When an XHTML
+                                        Content Document fragment is included as per the preceding
+                                        paragraph, that fragment must not itself contain MathML
+                                        markup.</para>
+                                    <para xml:id="confreq-mathml-annot-xht-model">Any included XHTML
+                                        Content Document fragments must conform to the content model
+                                        in which the ancestor <code>m:math</code> element occurs,
+                                        such that if the <code>m:math</code> element is replaced by
+                                        the given XHTML Content Document fragment the document
+                                        remains valid.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="math-alt">
+                                <term>Alternative Content</term>
+                                <listitem>
+                                    <para xml:id="confreq-mathml-alt">Alternative content should be
+                                        included, and must when present be represented as defined n
+                                            <xref linkend="sec-xhtml-mathml-alt"/>.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+
+                    </section>
+
+
+                    <section xml:id="sec-xhtml-mathml-rs-conf">
+                        <title>Embedded MathML Reading System Conformance</title>
+
+                        <para>A conformant <xref linkend="gloss-epub-reading-system"/> must meet all
+                            of the following criteria for processing MathML embedded in XHTML
+                            Content Documents:</para>
+
+                        <itemizedlist role="conformance-list" xml:id="mathml-rs-confreqs">
+                            <listitem>
+                                <para xml:id="confreq-mathml-rs-behavior">It must support processing
+                                    of <link xlink:href="http://www.w3.org/TR/MathML/chapter3.html"
+                                        >Presentation MathML</link> and may support processing of
+                                        <link xlink:href="http://www.w3.org/TR/MathML/chapter4.html"
+                                        >Content MathML</link> using semantics defined by the MathML
+                                    3.0 specification <xref linkend="refMathML"/>.</para>
+                            </listitem>
+                            <listitem>
+                                <para xml:id="confreq-mathml-rs-render">If it has a <xref
+                                        linkend="gloss-viewport"/>, it must support visual rendering
+                                    of Presentation MathML.</para>
+                            </listitem>
+                            <listitem>
+                                <para xml:id="confreq-mathml-rs-alt-text">When attaining <link
+                                        linkend="sec-xhtml-mathml-alt">alternative textual
+                                        content</link> for MathML markup, it must give preference to
+                                        <link linkend="math-xhtml">XHTML Content Document
+                                        fragments</link> followed by the <code>alttext</code>
+                                    attribute on the <code>m:math</code> element.</para>
+                            </listitem>
+                            <listitem>
+                                <para xml:id="confreq-rs-mathml-prop">It must regard the <olink
+                                        type="epub-spec" targetdoc="publications"
+                                        targetptr="propdef-mathml"/> property of the <xref
+                                        linkend="gloss-package-document"/>
+                                    <xref linkend="gloss-manifest"/>
+                                    <code>item</code> element as the authoritative definition of
+                                    whether an XHTML Content Document includes embedded
+                                    MathML.</para>
+                            </listitem>
+
+                        </itemizedlist>
+                    </section>
+
+                    <section xml:id="sec-xhtml-mathml-alt">
+                        <title>Alternative Content</title>
+
+                        <para>To support assistive technologies, alternative textual content should
+                            be included with each occurrence of the <code>m:math</code> element in
+                            XHTML Content Documents.</para>
+
+                        <para>The <code>alttext</code> attribute on the <code>m:math</code> element
+                            should be used for this purpose primarily when shorter alternative text
+                            runs are sufficient. When more extensive alternative text is required,
+                                <link linkend="math-xhtml">XHTML Content Document fragments</link>
+                            should be used. (Note that Reading Systems query these two alternative
+                            text locations using a defined <link
+                                linkend="confreq-mathml-rs-alt-text">preference order</link>.) </para>
+
+                        <para>For Reading System forward compatibility purposes, fallback images may
+                            be provided using the <code>altimg</code> attribute on the
+                                <code>m:math</code> element. It is recommended that the dimension
+                            and alignment attributes (<code>altimg-width</code>,
+                                <code>altimg-height</code> and <code>altimg-valign</code>) be used
+                            in conjunction with the <code>altimg</code> attribute.</para>
+
+                        <note xml:id="note-mathml-altimg-refprops-pkg">
+                            <!-- note similar statement for xhtml, svg and css and mathml alternative content -->
+                            <para>Any images referenced from <code>altimg</code> attributes must
+                                conform to the constraints for Publication Resources defined in
+                                    <olink type="epub-spec" targetdoc="publications"
+                                    targetptr="sec-epub-content-conf"/>.</para>
+                        </note>
+                    </section>
+
+                </section>
+
 
                 <section xml:id="sec-xhtml-svg">
                     <title>Embedded SVG</title>
@@ -824,9 +1218,370 @@
                 </section>
 
             </section>
+        
         </section>
 
-        <xi:include href="./sections/epub30-contentdocs-nav.xml"/>
+        <section xml:id="sec-xhtml-nav">
+
+            <title>EPUB Navigation Documents</title>
+
+            <!-- TODOs 
+        make sure Publications say 
+         * that a Publication must include exactly one of these 
+         * that it may be included in spine, 
+         * how to identify it with meta
+         * what mime type to use        
+         * how to include a 2.0 NCX as well          
+         * that it may have a media overlay associated with it regardless of whether it is in the spine or not (this may go to media overlays instead)    
+        note in the schema appendix that the given schema replaces the generic one, no need to validate against both
+    -->
+
+            <section xml:id="sec-xhtml-nav-intro">
+                <title>Introduction</title>
+
+                <para>The EPUB Navigation Document is a <olink type="epub-spec"
+                        targetdoc="publications" targetptr="sec-epub-content-conformance-nav"
+                        >required component</olink> of <xref linkend="gloss-epub-publication"/>s. It
+                    provides the Author with a mechanism to include a human- and machine-readable
+                    global navigation layer in the Publication, thereby ensuring increased usability
+                    and accessibility for the User. </para>
+
+                <para>The EPUB Navigation Document is an adaptation of <xref
+                        linkend="gloss-content-document-epub-xhtml"/>, and is <link
+                        linkend="confreq-cd-nav-docprops-parent">by definition</link> a valid XHTML
+                    Content Document instance. All Content and Reading System conformance
+                    requirements that apply to XHTML Content Documents also apply to the EPUB
+                    Navigation Document.</para>
+
+                <para>The navigation features of this adaptation are expressed through
+                    specializations of the HTML5 <code>nav</code> element. Each <code>nav</code>
+                    element in an EPUB Navigation Document represents a data island &#8212; an
+                    embedded source of specialized information within the general markup &#8212;
+                    from which Reading Systems can retrieve navigational information. Unlike typical
+                    XML data islands, however, the information within the <code>nav</code> element
+                    remains human readable as an HTML document.</para>
+
+                <para>To facilitate machine readability, the content model of <code>nav</code>
+                    elements in EPUB Navigation Documents is restricted relative to what is allowed
+                    in general XHTML Content Documents.</para>
+
+                <para>As defined in <olink type="epub-spec" targetdoc="publications"
+                        targetptr="sec-spine-elem"/>, the EPUB Navigation Document may be included
+                    in the Publication <xref linkend="gloss-spine"/>, but may also be provided
+                    independently of the Publication content. </para>
+
+                <note>
+                    <para>The EPUB Navigation Document is identified in the <xref
+                            linkend="gloss-package-document"/>
+                        <xref linkend="gloss-manifest"/> through the <property><olink
+                                type="epub-spec" targetdoc="publications" targetptr="propdef-nav"
+                            /></property> property.</para>
+                </note>
+
+                <note>
+                    <para>The EPUB Navigation Document supersedes the NCX document type as defined
+                        in <xref linkend="refOPF2"/>.</para>
+                    <para>Information on how EPUB 3 Publications may include an NCX document for
+                        Reading System forwards compatibility purposes is available in <olink
+                            type="epub-spec" targetdoc="publications" targetptr="sec-spine-elem"
+                        />.</para>
+                </note>
+
+            </section>
+
+            <section xml:id="sec-xhtml-nav-content-conf">
+                <title>EPUB Navigation Documents Content Conformance</title>
+
+                <para>A conformant <xref linkend="gloss-content-document-epub-nav"/> must meet all
+                    of the following criteria:</para>
+
+                <variablelist role="conformance-list" xml:id="confreq-cd-nav">
+                    <varlistentry xml:id="confreq-cd-nav-docprops">
+                        <term>Document Properties</term>
+                        <listitem>
+                            <para xml:id="confreq-cd-nav-docprops-parent">It must conform to all
+                                content conformance constraints for <xref
+                                    linkend="gloss-content-document-epub-xhtml"/>s as defined in
+                                    <xref linkend="sec-xhtml-conf-content"/>.</para>
+                            <para xml:id="confreq-cd-nav-docprops-schema">It must be valid to the
+                                EPUB Navigation Document schema as defined in <xref
+                                    linkend="app-xhtml-nav-schema"/> and conform to all content
+                                conformance constraints specific for EPUB Navigation Documents
+                                expressed in <xref linkend="sec-xhtml-nav-def"/>.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Reference properties</term>
+                        <listitem>
+                            <!-- TODO may move this downward -->
+                            <para xml:id="nav-content-conf-uri">The URI provided in the
+                                    <code>href</code> attribute of the <code>a</code> element
+                                descendants of any <code>nav</code> element must resolve to <xref
+                                    linkend="gloss-content-document-epub"/>s or fragments
+                                therein.</para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </section>
+
+            <section xml:id="sec-xhtml-nav-rs-conf">
+                <title>EPUB Navigation Documents Reading System Conformance</title>
+
+                <para>A conformant <xref linkend="gloss-epub-reading-system"/> must meet all of the
+                    following criteria for processing <xref
+                        linkend="gloss-content-document-epub-nav"/>:</para>
+
+                <itemizedlist role="conformance-list" xml:id="xhtml-nav-rs-confreqs">
+                    <listitem>
+                        <para xml:id="confreq-nav-access">When requested by a User, Reading Systems
+                            must provide access to the links and link labels in <link
+                                linkend="sec-xhtml-nav-def-types">the <code>nav</code>
+                                elements</link> of the EPUB Navigation Document in a fashion that
+                            allows the User to activate the links provided. When a link is
+                            activated, the Reading System must relocate the application's current
+                            reading position to the destination described by that link.</para>
+                    </listitem>
+                    <listitem>
+                        <para xml:id="confreq-nav-spine">Reading Systems must honor the above
+                            requirement irrespective of whether the EPUB Navigation Document
+                            provided in a Publication is part of the <xref linkend="gloss-spine"
+                            />.</para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+
+            <section xml:id="sec-xhtml-nav-def">
+                <title>EPUB Navigation Document Definition</title>
+
+
+                <section xml:id="sec-xhtml-nav-def-model">
+                    <title>The <code>nav</code> Element: Restrictions</title>
+                    <para>This specification restricts the content model of the <code>nav</code>
+                        element and its descendants in <xref
+                            linkend="gloss-content-document-epub-nav"/>s as follows:</para>
+
+                    <itemizedlist>
+                        <listitem>
+                            <para>Each <code>nav</code> element may contain an optional heading
+                                indicating the title of the navigation list. The heading must be one
+                                of the HTML5 <code>h1</code> through <code>h6</code> elements or an
+                                    <code>hgroup</code>.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The optional heading must be followed by a single <code>ol</code>
+                                ordered list; no other elements are permitted as direct children of
+                                the <code>nav</code> element. This ordered list represents the
+                                primary level of content navigation.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Each <code>li</code> list item of the ordered list represents a
+                                primary heading, structure or other point of interest within the
+                                Publication and must contain a child <code>a</code> element
+                                representing the link description and defining the navigation synch
+                                point. The <code>li</code> elements must be ordered as the content
+                                they represent appears in the content. </para>
+                        </listitem>
+                        <listitem>
+                            <para>Each child <code>a</code> element may contain any valid <link
+                                    xlink:href="http://www.w3.org/TR/html5/content-models.html#phrasing-content-0"
+                                    >HTML5 phrasing content</link>, but must not result in a
+                                zero-length text string after concatenation of all child content and
+                                application of whitespace normalization rules.</para>
+                        </listitem>
+                        <listitem>
+                            <para>If the child <code>a</code> element contains instances of MathML
+                                or SVG markup or any of the HTML5 <code>img</code>,
+                                    <code>object</code> or <code>canvas</code> elements, it must
+                                also include a <code>title</code> attribute with an alternate text
+                                rendition of the link label.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The URI provided in the <code>href</code> attribute of the
+                                    <code>a</code> element must resolve to EPUB Content Documents or
+                                fragments therein.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The child <code>a</code> element may optionally be followed by an
+                                    <code>ol</code> ordered list representing a subsidiary content
+                                level below that heading (e.g., all the subsection headings of a
+                                section). This list must adhere to all the content requirements
+                                defined in this section for constructing the primary navigation
+                                list, and so on for each additional level of the Publication's
+                                hierarchy represented in this manner.</para>
+                        </listitem>
+                        <listitem>
+                            <para><remark role="todo">TODO finalize</remark></para>
+                            <!-- (see also Issue64)
+                        
+                        * a full example at the end of this chapter should contain both content surrounding 
+                            the nav islands, as well as markup inside <a>'s
+                    -->
+                        </listitem>
+                    </itemizedlist>
+                </section>
+
+
+                <section xml:id="sec-xhtml-nav-def-types">
+                    <title>The <code>nav</code> Element: Types</title>
+
+                    <para>The <code>nav</code> elements within the EPUB Navigation Document are
+                        distinguished semantically through the value of their <code>epub:type</code>
+                        attribute. By default (and as inferred from the value of the
+                            <code>html</code> element <code>profile</code> attribute), values of
+                            <code>epub:type</code> are drawn from the EPUB3 Structural Semantics
+                        Vocabulary <xref linkend="refEPUBStructureVocab"/>. Refer to <xref
+                            linkend="sec-xhtml-content-type-attribute"/> for more information. </para>
+
+                    <section xml:id="sec-xhtml-nav-def-types-toc">
+                        <title>The <property>toc</property>
+                            <code>nav</code> Element</title>
+
+                        <para>The <literal>toc</literal>
+                            <code>nav</code> element is a container for primary structural
+                            navigational information. It conceptually corresponds to a table of
+                            contents in a printed work (i.e., it provides navigation to the
+                            structural sections of the Publication).</para>
+
+                        <para>For usability and accessibility reasons, Authors should provide an
+                            exhaustive <property>toc</property>
+                            <code>nav</code> element; it should not exclude references below a
+                            certain section depth, as the reduced table of contents often appearing
+                            in printed works do.</para>
+
+                        <note>
+                            <para>Authors who desire to mimic the reduced table of contents of a
+                                printed source should utilize CSS Style Sheets to hide sections
+                                below a certain depth visually, while still providing an exhaustive
+                                section hierarchy for machine consumption.</para>
+                        </note>
+
+                        <informalexample>
+                            <para>The following example shows a partial <literal>toc</literal>
+                                <code>nav</code> element. Note how the author has elected to use CSS
+                                style information to hide sections below a certain depth
+                                visually.</para>
+                            <synopsis>
+<xi:include href="./examples/contentdocs-nav/toc.xml" parse="text"/></synopsis>
+                        </informalexample>
+
+                        <para>The <property>toc</property>
+                            <code>nav</code> element must occur exactly once in XHTML Navigation
+                            Documents.</para>
+
+                        <note>
+                            <para>The <property>toc</property>
+                                <code>nav</code> element corresponds to the <code>navMap</code>
+                                element in the superseded NCX <xref linkend="refOPF2"/>.</para>
+                        </note>
+
+                    </section>
+
+                    <section xml:id="sec-xhtml-nav-def-types-pagelist">
+                        <title>The <property>page-list</property>
+                            <code>nav</code> Element</title>
+
+                        <para>The <literal>page-list</literal>
+                            <code>nav</code> element is a container for pagination information. It
+                            provides navigation to positions in the Publication content that
+                            correspond to the locations of page boundaries present in a print source
+                            being represented by this EPUB Publication.</para>
+
+                        <note>
+                            <para>The <remark role="todo">TODO olink</remark> property provides a
+                                means of identifying the print work to which the given pagination
+                                information applies.</para>
+                        </note>
+
+                        <informalexample>
+                            <para>The following example shows a partial <literal>page-list</literal>
+                                <code>nav</code> element.</para>
+                            <synopsis>
+<xi:include href="./examples/contentdocs-nav/page-list.xml" parse="text"/></synopsis>
+                        </informalexample>
+
+                        <para>The <property>page-list</property>
+                            <code>nav</code> element is optional in EPUB Navigation Documents, and
+                            must not occur more than once. </para>
+
+                        <note>
+                            <para>The <property>page-list</property>
+                                <code>nav</code> element corresponds to the <code>pageList</code>
+                                element in the superseded NCX. <xref linkend="refOPF2"/></para>
+                        </note>
+                    </section>
+
+                    <section xml:id="sec-xhtml-nav-def-types-landmarks">
+                        <title>The <property>landmarks</property>
+                            <code>nav</code> Element</title>
+
+                        <para>The <literal>landmarks</literal>
+                            <code>nav</code> element identifies fundamental structural components of
+                            the publication in order to enable Reading Systems to provide the User
+                            access to them.</para>
+
+                        <para>The structural semantics of each link target within the
+                                <literal>landmarks</literal>
+                            <code>nav</code> element is determined through the value of the <link
+                                linkend="sec-xhtml-content-type-attribute">epub:type</link>
+                            attribute on the <code>a</code> element descendants. The
+                                <code>epub:type</code> attribute is required on <code>a</code>
+                            descendants of the <literal>landmarks</literal>
+                            <code>nav</code> element.</para>
+
+                        <informalexample>
+                            <para>The following example shows a <literal>landmarks</literal>
+                                <code>nav</code> element with structural semantics drawn from the
+                                    <link linkend="refEPUBStructureVocab">EPUB Structural Semantics
+                                    Vocabulary</link>.</para>
+                            <synopsis>
+<xi:include href="./examples/contentdocs-nav/landmarks.xml" parse="text"/></synopsis>
+                        </informalexample>
+
+                        <para>The <property>landmarks</property>
+                            <code>nav</code> element is optional in XHTML Navigation Documents and
+                            must not occur more than once. </para>
+
+                        <note>
+                            <para>The <property>landmarks</property>
+                                <code>nav</code> element corresponds to the deprecated OPF
+                                    <code>guide</code> element. Refer to <olink type="epub-spec"
+                                    targetdoc="publications" targetptr="sec-guide-elem"/> for more
+                                information. </para>
+                        </note>
+                    </section>
+
+                    <section xml:id="sec-xhtml-nav-def-types-other">
+                        <title>Other <code>nav</code> Elements</title>
+
+                        <para>XHTML Navigation Documents may include zero or many <code>nav</code>
+                            elements in addition to the <literal>toc</literal>,
+                                <literal>page-list</literal> and <literal>landmarks</literal>
+                            <code>nav</code> elements defined above. Such additional
+                                <code>nav</code> elements should have an <code>epub:type</code>
+                            attribute to provide a machine-readable semantic, and must have a
+                            human-readable heading as their first child.</para>
+
+                        <para>This specification imposes no restrictions on the usage of such
+                            additional <code>nav</code> elements; they may be used to represent
+                            constructs with homogeneous semantics (such as list of illustrations, or
+                            all quotes of a certain author in an anthology) or with heterogeneous
+                            semantics (such as the <link linkend="sec-xhtml-nav-def-types-landmarks"
+                                >landmarks</link>
+                            <code>nav</code>) element.</para>
+
+                    </section>
+
+                </section>
+
+            </section>
+
+            <section xml:id="sec-xhtml-nav-ex">
+                <title>EPUB Navigation Documents Examples</title>
+                <para><remark role="todo">TODO</remark></para>
+
+            </section>
+
+        </section>
 
         <section xml:id="sec-svg">
             <title>SVG Content Documents</title>
@@ -1802,6 +2557,7 @@
         <para xml:id="sec-manifest-elem"/>
         <para xml:id="sec-fallback-processing-flow"/>
         <para xml:id="sec-xml-constraints"/>
+        <para xml:id="sec-opf-metadata-identifiers-pid"/>
     </appendix>
 
 </book>
