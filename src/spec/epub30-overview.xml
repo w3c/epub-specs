@@ -83,169 +83,207 @@
             <para>This document, the EPUB3 Overview, describes the third major revision of EPUB, a
                 digital publication interchange and delivery format based on XML and Web
                 Standards.</para>
-            <para>This document is intended to provide a starting point for content authors and
+            <para xml:id="sibling-specs">This document is intended to provide a starting point for content authors and
                 software developers wishing to understand EPUB3. It consists of non-normative
-                overview material including a roadmap for the four building-block specification
-                documents that comprise EPUB3:</para>
-            <itemizedlist>
-                <listitem>
-                    <para>EPUB Publications 3.0 (Publications3)</para>
-                </listitem>
-                <listitem>
-                    <para>EPUB Content Documents 3.0 (ContentDocs3)</para>
-                </listitem>
-                <listitem>
-                    <para>Open Content Format 3.0 (OCF3)</para>
-                </listitem>
-                <listitem>
-                    <para>EPUB Media Overlays 3.0 ("Overlays3")</para>
-                </listitem>
+                overview material, including a roadmap for the four building-block specification
+                documents that compose EPUB3:</para>
+            
+            <itemizedlist xml:id="epub-specs-listing">
+                <xi:include href="./share/specdesc-publications.xml"/>
+                <xi:include href="./share/specdesc-contentdocs.xml"/>
+                <xi:include href="./share/specdesc-ocf.xml"/>
+                <xi:include href="./share/specdesc-overlays.xml"/>
             </itemizedlist>
+            
             <para>This document also provides non-normative information about cross-cutting concerns
-                applicable to EPUB usage. These include sections on accessibility, scripting,
+                applicable to EPUB usage, including sections on accessibility, scripting,
                 metadata, fonts, text-to-speech features, and global language support.</para>
-            <para>Another non-normative document "EPUB3 Differences from EPUB 2.0.1" describes
-                changes in EPUB3 from the previous verison, EPUB 2.0.1. It is likely to be of
-                interest primarily to content authors and Reading System vendors migrating from EPUB
-                2.0.1 to EPUB3, or who anticipate supporting both versions.</para>
+            <para>Another non-normative document, EPUB3 Changes from EPUB 2.0.1
+                <xref linkend="refEPUB3Changes"/>, describes changes in EPUB3 from the 
+                previous verison. This document is intended
+                primarily for <xref linkend="gloss-author"/>s and <xref linkend="gloss-epub-reading-system"/>
+                vendors migrating from EPUB 2.0.1 to EPUB3, or who anticipate supporting both versions.</para>
         </section>
-
+        
+        <xi:include href="./share/terminology.xml"/>
+        
     </chapter>
 
-    <chapter xml:id="sec-opf-introduction">
-        <title>Introduction to EPUB3</title>
-        <para>EPUB is structured and semantically enhanced web content (HTML5, CSS, SVG, images, and
-            other resources) in a single-file package. EPUB publications have well-defined reading
-            order, navigation, and metadata, and the content meets reliability constraints
-            (including use of XML serialization and separation of scripting from other content) that
-            are intended to enable dynamic rendering (including paginated formatting and
-            text-to-speech) based on device characteristics and user preferences.</para>
-        <para>EPUB is an interchange and distribution and interchange format standard for long-form
-            text-based digital publications and documents. EPUB has been widely adopted for digital
-            books (eBooks), and EPUB3 significantly increases the format's capabilities in order to
-            better support a wider range of publication requirements, including complex layouts,
-            rich media and interactivity, and global typography features. The expectation is that
-            EPUB3 will be utilized for a broad range of content including books, magazines, and
-            educational, professional and scientific publications, </para>
-        <para>An EPUB file is a ZIP-based archive that has the file extension ".epub".  EPUB files
-            are also conformant ZIP archives that can be "unzipped" by many software programs. A
-            minimal "Hello World" EPUB file that has been unzipped into a directory comprises three
-            files and might look like the following example:</para>
-        <para><informalexample>
+    <chapter xml:id="sec-publications">
+        <title>EPUB3 Publications</title>
+        
+        <section xml:id="sec-opf-intro">
+            <title>Introduction</title>
+            
+            <para>The EPUB specification is a distribution and interchange format standard for long-form 
+                text-based digital publications and documents. EPUB defines a means of creating structured 
+                and semantically enhanced Web content — such as HTML5, CSS, SVG, images, and
+                other resources — for distribution in a single-file package.</para>
+            
+            <para>The EPUB specification has been widely adopted as the format for
+                digital books (eBooks), and EPUB3 significantly increases the format's capabilities in order to
+                better support a wider range of publication requirements, including complex layouts,
+                rich media and interactivity, and global typography features. The expectation is that
+                EPUB3 will be utilized for a broad range of content, including books, magazines and
+                educational, professional and scientific publications, </para>
+            
+            <para>Each instance of an <xref linkend="gloss-epub-publication"/> has a well-defined reading order 
+                and includes a declarative means of navigating its content. In addition to including semantically rich
+                metadata, their contents also meet reliability constraints — including the use of XML serialization 
+                and separation of scripting from other content — intended to enable dynamic rendering based on 
+                device characteristics and user preferences, such as paginated formatting and text-to-speech.</para>
+            
+            <para>An EPUB Publication is typically bundled as a ZIP-based archive with the file extension 
+                <literal>.epub</literal> for distribution. As conformant ZIP archives, Publications can be unzipped 
+                by many software programs, simplifying their production and consumption. A
+                minimal "Hello World" EPUB file that has been unzipped into a directory comprises three
+                files, and might look like the following example:</para>
+            
+            <informalexample>
                 <synopsis>
 META-INF/container.xml
 Content/HelloWorld.opf
 Content/HelloWorld.xhtml
  </synopsis>
-            </informalexample></para>
-        <para>While conceptually simple, an EPUB file is more than just a collection of HTML pages
-            and dependent assets in a ZIP package. A key concept in EPUB is that a publication
-            consists of multiple resources that may be completely navigated and consumed by a person
-            (or program) <emphasis role="italic">in</emphasis>
-            <emphasis role="italic">some specific order</emphasis> that can be reliably determined.
-            That is not true in general of a collection of HTML pages. A novel has a beginning,
-            middle and end - it is highly sequential. Not all publications are as sequential as a
-            novel; a cookbook or collection of photographic images might be considered to be more
-            like a database. But even a cookbook has at least one logical ordering of all its
-            top-level content items (most likely, recipes), whether that be by date, by topic, by
-            location or some other ordering. In every EPUB publication there is at least one logical
-            ordering of all top-level content that can be consumed in that "reading order", as well
-            as a declarative "table of contents" and potentially additional ways to navigate into
-            that content. And in EPUB these data structures exist in a machine-readable way
-                <emphasis role="italic">external</emphasis> to the content items themselves. This
-            does not limit content to a linear ordering of information or preclude content items
-            directly linking in arbitrary ways - after all the Web is built on hypertext - but it
-            means that basic consumption and navigation can be reliably accomplished in a way that
-            is not true for a set of HTML pages.</para>
-        <para>Another key concept in EPUB is that content presentation should adapt to the user,
-            rather than the user having to adapt to a particular presentation of content. HTML was
-            originally designed to support dynamic rendering of structured content, but over time
-            HTML as supported in web browsers has become focused on the needs of Web applications,
-            and most popular websites now have fixed-format layouts. EPUB publications are designed
-            to maximize accessibility to the visually impaired, and systems that display EPUB
-            (called "Reading Systems") typically perform text line layout and pagination "on the
-            fly", adapting to the size of the display area, the user's preferred font size, and
-            other environmental factor. This behavior is not guaranteed in EPUB - images, vector
-            graphics, video, and other content can be included, and such content may not be
-            "reflowable", and some Reading Systems may not do pagination "on the fly" or at all -
-            but supporting dynamic adaptive layout and accessibility has been a primary design
-            consideration throughout the evolution of the EPUB standard. One corollary of this
-            concept is that EPUB strives to treat content <emphasis role="italic"
-                >declaratively</emphasis> - as data that can be manipulated, not programs that must
-            be executed. So for example use of JavaScript scripting in EPUB content documents is
-            disabled by default, must be explicitly requested as part of specifying a content
-            document within a larger publication, and may not be supported by all Reading
-            Systems.</para>
-        <para>The followings sections introduce the four major components of EPUB publications
-            (content documents, package file, media overlays, and container), which correspond to
-            the four building-block specifications that collectively define the EPUB3 format.</para>
-        <section xml:id="sec-ocf-overview-intro">
-            <title>Content Documents</title>
-            <para>Every EPUB publication contains one or more Content Documents, as specified in
-                [Content Docs]. These are XHTML or SVG files that describe the readable content of a
-                publication, and reference associated media assets (images, audio, video, etc.).
-                EPUB3 XHTML Content Documents are defined by an extension profile of HTML5: use of
-                the XML serialization (XHTML5) is required in order to ensure that content can be
-                reliably manipulated and rendered, and two additional language constructs specific
-                to EPUB are added (a type atttribute for element-level metadata, and a means of
-                declaratively associateing controls with multimedia elements). But any EPUB XHTML
-                Content Document can be rendered by a HTML5 Web browser (although it might not look
-                the same - in particular, Web Browsers usually provide an infinitely scrolling
-                viewport, and EPUB Reading Systems usually paginate content).</para>
-            <para>EPUB Content Documents can optionally reference CSS Style Sheets. EPUB3 defines a
-                profile of CSS based on CSS 2.1 together with capabilities defined by various CSS3
-                Modules (most of which are already supported by Web browsers), as well as several
-                additional properties specific to EPUB (that will be ignored by browsers that don't
-                understand them).</para>
-            <para>Every EPUB3 publication contains a special  XHTML Content Document called the EPUB
-                Navigation Document, which uses the HTML5 nav element to define human- and
-                machine-readable navigation information, as further specified in [EPUB Navigation
-                Documents].</para>
+            </informalexample>
+            
+            <para>While conceptually simple, an EPUB file is more than just a collection of HTML pages
+                and dependent assets in a ZIP package. A key concept of EPUB is that a Publication
+                consists of multiple resources that may be completely navigated and consumed by a person
+                or program <emphasis role="italic">in some specific order</emphasis>. This order can be reliably 
+                determined, which is typically not true of a collection of HTML pages.</para>
+            
+            <para>It is also not true that all publications have an obvious reading order, or logical progression
+                through their content. A novel is an example of a highly sequential document, as it typically has 
+                a beginning, middle and end, but not all publications are so ordered: a cookbook or collection of 
+                photographic images might be considered to be more like a database. All documents do, however,
+                have at least one logical ordering of all their top-level content items, whether by date, topic, 
+                location or some other ordering (e.g., a cookbook is typically ordered by recipe types).</para>
+            
+            <para>Every EPUB Publication defines at least one such logical ordering of all its top-level content,
+                as well as a declarative table of contents. Publications make these data structures available 
+                in a machine-readable way <emphasis role="italic">external</emphasis> to the content items 
+                themselves, simplifying their discovery and use.</para>
+            
+            <para>EPUB Publications are not limited to the linear ordering of their contents, nor do they 
+                preclude linking in arbitrary ways — the Web is built on hypertext, after all — but the
+                basic consumption and navigation can be reliably accomplished in a way that 
+                is not true for a set of HTML pages.</para>
+            
+            <para>Another key concept in EPUB is that content presentation should adapt to the 
+                <xref linkend="gloss-user"/>, rather than the User having to adapt to a particular 
+                presentation of content. HTML was originally designed to support dynamic rendering of 
+                structured content, but over time HTML as supported in Web browsers has become focused 
+                on the needs of Web applications, and most popular Web sites now have fixed-format layouts. 
+                EPUB Publications are designed to maximize accessibility to the visually impaired, and 
+                <xref linkend="gloss-epub-reading-system"/>s typically perform text line layout 
+                and pagination on the fly, adapting to the size of the display area, the user's preferred font size, and
+                other environmental factor. This behavior is not guaranteed in EPUB — images, vector
+                graphics, video, and other content can be included, and such content may not be
+                reflowable, and some Reading Systems may not do pagination on the fly, or at all —
+                but supporting dynamic adaptive layout and accessibility has been a primary design
+                consideration throughout the evolution of the EPUB standard.</para>
+            
+            <para>One corollary of this concept is that EPUB strives to treat content <emphasis role="italic"
+                >declaratively</emphasis> — as data that can be manipulated, not programs that must
+                be executed. So, for example, use of JavaScript scripting in EPUB content documents is
+                disabled by default, must be explicitly requested as part of specifying a content
+                document within a larger publication, and may not be supported by all Reading
+                Systems.</para>
+            
+            <para>The followings sections introduce the four major components of EPUB Publications
+                (content documents, package file, media overlays, and container), which correspond to
+                the four building-block specifications that collectively define the EPUB3 format.</para>
             
         </section>
+        
+        <section xml:id="sec-ocf-overview-intro">
+            <title>Content Documents</title>
+            
+            <para>Every EPUB Publication contains one or more <xref linkend="gloss-content-document-epub"/>, as defined in
+                <xref linkend="refContentDocs3"/>. These are XHTML or SVG documents that describe the readable content of a
+                Publication, and reference associated media resources (e.g., images, audio and video clips).</para>
+            
+            <para><xref linkend="gloss-content-document-epub-xhtml"/>s are defined by an extension profile of HTML5
+                that requires the use of XML serialization <xref linkend="refHTML5"/> in order to ensure that content can be
+                reliably manipulated and rendered. This profile also adds two additional EPUB-specific language constructs: 
+                the <olink targetdoc="contentdocs" targetptr="attrdef-epub-type" type="epub-spec"/>
+                atttribute for element-level metadata and the 
+                <olink targetdoc="contentdocs" targetptr="sec-xhtml-epub-trigger" type="epub-spec">epub:trigger</olink>
+                element for declaratively associating controls with multimedia elements. These additions do not
+                affect the ability of an HTML5 User Agent <xref linkend="refHTML5"/> to render EPUB XHTML Content Documents,
+                but Publications may not render identically in all User Agents (notably, Web browsers typically provide an infinitely 
+                scrolling <xref linkend="gloss-viewport"/> while EPUB Reading Systems typically paginate content).</para>
+            
+            <para>EPUB Content Documents can optionally reference <xref linkend="gloss-stylesheet"/>s to define
+                the desired rendering properties. EPUB3 defines a profile of CSS based on CSS 2.1 <xref linkend="refCSS21"/>,
+                for this purpose, together with capabilities defined by various CSS3 Modules as well as several additional properties 
+                specific to EPUB. The CSS3 properties that have been selected were done so based on their current level of support 
+                by Web browsers, but some properties may be ignored by Reading Systems and User Agents (support for the
+                EPUB-defined properties may similarly be ignored).</para>
+            
+            <para>Every EPUB3 Publication contains a special XHTML Content Document called the 
+                <xref linkend="gloss-content-document-epub-nav"/>, which uses the HTML5 nav element to define 
+                human- and machine-readable navigation information, as defined in 
+                <olink targetdoc="contentdocs" targetptr="sec-xhtml-nav" type="epub-spec"/>.</para>
+            
+        </section>
+        
         <section xml:id="sec-overview-media-overlays">
-            <title> Media Overlays </title>
-            <para>An EPUB publication may optionally contain one or more Media Overlay documents,
+            <title>Media Overlays </title>
+            
+            <para>An EPUB Publication may optionally contain one or more 
+                <xref linkend="gloss-media-overlay-document"/>s,
                 which provide a means to associate prerecorded audio with textual/visual content to
                 facilitate synchronized playback. Media Overlay Documents are specified via a subset
-                of [SMIL], as defined in [Overlays3]. </para>
+                of <link linkend="refSMIL">SMIL</link>, as defined in <xref linkend="refOverlays3"/>. </para>
    
         </section>
+       
         <section xml:id="sec-overview-package-file">
-            <title> Package File </title>
-            <para>Every EPUB publication includes a single Package file, an XML document that
+            <title>Package Document</title>
+            
+            <para>Every EPUB Publication includes a single 
+                <xref linkend="gloss-package-document"/>, an XML document that
                 specifies all its constituent content documents and their required resources,
                 defines a reading order for linear consumption, and associates publication-level
-                metadata and  navigation information.</para>
-            <para>On websites, references to resources are embedded within content. This is simple
-                and flexible, but. makes it difficult to enumerate all the resources required by a
-                given web page. As well, there is no standard way for websites to define a sequence
-                of pages that make up a larger publication , i..e. there's no external declarative
-                means to explicitly specify navigation through a collection of HTML documents.
-                There's no standard way to represent metadata applicable globally to such a
-                collection.</para>
-            <para>An EPUB publication's Package file addresses all of these issues, declaratively
-                defining the "root" of the publication. The Package file and other publication-level
-                constructs are specified in [Publications3].</para>
+                metadata and navigation information.</para>
+            
+            <para>A typical Web site, on the other hand, embeds references to its resources 
+                within its content, which, while a simple and flexible means of identifying them, 
+                makes it difficult to enumerate all the resources required by a given Web page. 
+                As well, there is no standard way for a Web site to define that a sequence of 
+                pages make up a larger publication (i.e., there is no external declarative
+                means to explicitly specify navigation through a collection of HTML documents).
+                Likewise, there is no standard way to represent metadata applicable globally to 
+                such a collection.</para>
+            
+            <para>An EPUB Publication's Package Document addresses all of these issues, declaratively
+                defining the root of the publication. The Package file and other publication-level
+                constructs are specified in <xref linkend="refPublications3"/>.</para>
         </section>
+        
         <section xml:id="sec-overview-container">
-            <title> Container </title>
-            <para>An EPUB publication is transported and interchanged as a single file, a "portable
-                document" that contains the package file, all content documents, and all other
-                required resources for processing the publication. The single-file container format
+            <title>Container</title>
+            
+            <para>An EPUB Publication is transported and interchanged as a single file (a "portable
+                document") that contains the Package Document, all Content Documents, and all other
+                required resources for processing the Publication. The single-file container format
                 for EPUB is based on the widely adopted ZIP format, together with an XML manifest
                 that specifies the location of the ZIP archive of the package file and ancillary
                 content.</para>
-            <para>This approach provides a clear "contract" between any creator of an EPUB
+            
+            <para>This approach provides a clear contract between any creator of an EPUB
                 publication and any system which consumes such publications, as well as a reliable
                 representation that is independent of network transport or file system
-                specifics</para>
+                specifics.</para>
+            
             <para>An EPUB publication's representation as a container file is specified in
-                [OCF3].</para>
+                <xref linkend="refOCF30"/>.</para>
         </section>
     </chapter>
 
-    <chapter xml:id="issues-in-content-creation">
+    <chapter xml:id="sec-considerations">
         <title>Content Authoring Considerations</title>
         <para>This section covers a number of important topics that are cross-cutting in nature,
             relating to more than one of the individual format specifications. Content authors are
@@ -406,21 +444,23 @@ Content/HelloWorld.xhtml
             <title>Embedded Fonts</title>
             <para>EPUB3 supports two closely-related font formats: OpenType and WOFF. Reading
                 System support for both formats is required to accommodate both traditional
-                publishing workflows centered around OpenType and emerging web-based workflows
+                publishing workflows centered around OpenType and emerging Web-based workflows
                 which utilize WOFF. EPUB3 also supports both obfuscated and regular font
                 resources (for either OpenType or WOFF font formats). Support for obfuscated
                 font resources is required to accommodate font licensing restrictions for many
                 commercially-available fonts. </para>
             <para> For example, a word processing program is likely to have access only to a
                 collection of the installed OpenType fonts and not WOFF equivalents (if the font is
-                even licensed as WOFF). Similarly, a web-archival EPUB generator will likely only
+                even licensed as WOFF). Similarly, a Web-archival EPUB generator will likely only
                 have access to WOFF resources which cannot be converted to OpenType without
                 undesirable (and potentially unlicensed) stripping of WOFF metadata.  </para>
         </section>
         <section>
             <title>Scripting</title>
-            <para>EPUB3 supports scripting via JavaScript, as defined in [HTML5] and [SVG] - see
-                [CONTENT DOCS - SCRIPTING] for more details. However, it is important to note that
+            <para>EPUB3 supports scripting via JavaScript, as defined in <xref linkend="refHTML5"/> 
+                and <xref linkend="refSVG"/> - see
+                <olink targetdoc="contentdocs" targetptr="sec-scripted-content" type="epub-spec"/> 
+                for more details. However, it is important to note that
                 scripting support is optional for Reading Systems, and may be disabled for security
                 reasons, so content authors should not create content that requires scripts to be
                 run. As well, content authors should be aware that scripting in an EPUB publication
@@ -428,7 +468,9 @@ Content/HelloWorld.xhtml
                 browser: for example typical "same domain" restrictions are not applicable to
                 content that has been downloaded to a user's local system. Therefore it is strongly
                 encouraged that scripting be limited to "container constrained" contexts, as further
-                described [CONTENT DOCS - CONTAINER CONSTRAINED SEC]. Script-containing content must
+                described in 
+                <olink targetdoc="contentdocs" targetptr="sec-scripted-content-content-reqs" type="epub-spec"/>. 
+                Script-containing content must
                 also be marked accordingly in the package manifest. Generally speaking, scripting
                 should be used only when essential to the user experience with content, as it
                 greatly increases the likelihood that content will not be portable across all
@@ -473,7 +515,6 @@ Content/HelloWorld.xhtml
         </section>
     </chapter>
     
-
     <appendix xml:id="acknowledgements" role="acknowledgements" conformance="informative">
         <title>Contributors</title>
         <xi:include href="./share/contributors_long.xml"/>
