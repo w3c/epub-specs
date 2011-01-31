@@ -4,7 +4,7 @@
 
 Fragment Identifier is a part of URI that defines a location in a resource. Syntactically it is a part of URI that starts with # and is appended at the end of the URI of the file itself. For HTML documents, ids and named anchors are used as fragment identifiers.
 
-This proposal defines syntax for identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as the root document and referencing semantics is defined). Note that only one particular fragment identifier scheme ("canonical fragment identifier" or "CFI") o is defined, more schemes for EPUB could be added in parallel or in the future.
+This proposal defines syntax for identifying a location inside EPUB file (or any ZIP-packaged cross-referenced XML for that matter, as long as the root document and referencing semantics is defined). Note that only one particular fragment identifier scheme ("canonical fragment identifier" or "CFI") is defined, more schemes for EPUB could be added in parallel or in the future.
 
 These considerations has been used in the design:
  * each location in the file can be identified 
@@ -14,20 +14,26 @@ These considerations has been used in the design:
 
 Example:
 
-{{{#cfi(/2/6/4!/2/4/10/3:10)}}}
+{{{#epubcfi(/2/6/4!/2/4/10/3:10)}}}
 
 Syntax:
 
 {{{
-fragment : "#cfi(" [step]+ ")"
-step : "/" integer | ":" integer | "!" ["/"]? integer | "@" number "," number | "~" number
+fragment : "#epubcfi(" [navstep]+ [termstep]? [side] ")"
+navstep : "/" integer | "!" ["/"]? integer
+termstep :  ":" integer | "@" number "," number | "~" number
+side : "b" | "a"
 number : ["-"]? digit+ ["." digit+]?
 integer: digit+
 }}}
 
+CFI fragment identifier consists of the hash symbol ("#") which identifies it as a fragment identifier, initial sequence "epubcfi" that identifies a particular scheme,  and a sequence of steps in parentheses. Steps can either be navigational, which can be repeated or terminating, which must come last in the sequence. In addition, an optional side designator can come after the step sequence. This is needed to identify a location which sticks to the content which comes before ("b") or content that comes after ("a") a location. This is needed, for instance, in cases when a location falls right on the page boundary and it is impossible to determine the correct page without knowing what is the "sticky" side.
+
+Note that "epub" is added to the name of the scheme, so that more generic CFI-like scheme could be potentially defined in future for all XML+ZIP-based file formats.
+
 Leading zeros are not allowed for numbers and integers except to represent zero, trailing zeros are not allowed in number fractional part (this ensures uniqueness).
 
-Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Apply the following rules on each step:
+Canonical Fragment Identifier is processed in the following manner. Assume that all documents are parsed in W3C DOM (this is not needed for actual implementation). Start with the root (document) XML node of OPF file (NB: perhaps we should start with META-INF/container.xml instead?). Process each step one by one, applying the following rules.
 
 Slash-number step refers to a child node(s) in the following manner:
  * each element or PI (except <?xml ...> PI) is assigned an _even_ positive index; first element/PI is given index 2, second element/PI - 4, etc.
@@ -117,8 +123,17 @@ Then the given fragment identifier refers to the position right after the digit 
 
 When producing CFIs for text locations, unless the text is defined by img element's alt tag, one should always start with the text node or text node collection (even if it empty) that corresponds to the location and then trace the ancestor and reference chain to the OPF file root. Here are some examples: 
 
-|| {{{#cfi(/2/6/4!/2/4/16)}}} || img element ||
-|| {{{#cfi(/2/6/4!/2/4/16!/2/2)}}} || first child element of the root svg element in foo.svg ||
-|| {{{#cfi(/2/6/4!/2/4/10/1:0)}}} || location just before aaa ||
-|| {{{#cfi(/2/6/4!/2/4/10/2/1:0)}}} || location just before bbb ||
-|| {{{#cfi(/2/6/4!/2/4/10/2/1:3)}}} || location just after bbb ||
+|| {{{#epubcfi(/2/6/4!/2/4/16)}}} || img element ||
+|| {{{#epubcfi(/2/6/4!/2/4/16!/2/2)}}} || first child element of the root svg element in foo.svg ||
+|| {{{#epubcfi(/2/6/4!/2/4/10/1:0)}}} || location just before aaa ||
+|| {{{#epubcfi(/2/6/4!/2/4/10/2/1:0)}}} || location just before bbb ||
+|| {{{#epubcfi(/2/6/4!/2/4/10/2/1:3b)}}} || location just after bbb, sticking "before" ||
+
+CFI can be also used to cross-reference XML content inside the EPUB package. In that case, a relative reference to a particular resource in the spine should be given (as usual), followed by CFI which should be resolved starting from the document root. For instance, chapter02.xhtml might give a reference to the last location in the previous example like this:
+
+{{{
+...
+<a href="chapter01.xhtml#epubcfi(/2/4/10/2/1:3b)">location</a>
+...
+}}}
+ 
