@@ -192,7 +192,7 @@
                 <xsl:with-param name="id" select="../@xml:id"/>
             </xsl:call-template>
         </xsl:if>
-        
+               
     </xsl:template>
 
     <xsl:template name="render-link-here-anchor">
