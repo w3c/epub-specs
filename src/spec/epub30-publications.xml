@@ -51,14 +51,6 @@
                     </org>
                 </affiliation>
             </editor>
-            <editor>
-                <personname>Daniel Hughes</personname>
-                <affiliation>
-                    <org>
-                        <orgname>Liguori Publications</orgname>
-                    </org>
-                </affiliation>
-            </editor>
         </authorgroup>
         <authorgroup role="previous">
             <editor>
@@ -189,10 +181,11 @@
                                 linkend="gloss-content-document-epub"/>, conformant to the content
                             requirements defined in <olink type="epub-spec" targetdoc="contentdocs"
                                 targetptr="sec-contentdocs"/>.</para>
+                        <!--
                         <para xml:id="confreq-cdf">It may contain one or more <xref
                                 linkend="gloss-content-document-foreign"/>s, and must in this case
                             conform to the requirements for fallback provision defined in <xref
-                                linkend="sec-fallback-processing-flow"/>.</para>
+                                linkend="sec-fallback-processing-flow"/>.</para> -->
                     </listitem>
                 </varlistentry>
                 <varlistentry xml:id="sec-epub-content-conformance-nav">
@@ -664,6 +657,11 @@
                     </varlistentry>
 
                 </variablelist>
+
+                <para><remark role="todo">NOTE The spec (<xref linkend="refRDFa11Core"/>) underlying
+                        the <code>profile</code> and <code>prefix</code> attributes is still
+                        evolving. The exact mechanism for vocabulary association in EPUB3 is
+                        therefore subject to change.</remark></para>
 
             </section>
 
@@ -1208,6 +1206,11 @@
                     /> that resolves to a property from a metadata vocabulary (it is not required
                     that Reading System be able to resolve the CURIES, however).</para>
 
+                <para><remark role="todo">NOTE The spec (<xref linkend="refRDFa11Core"/>) underlying
+                        the <code>profile</code> and <code>prefix</code> attributes is still
+                        evolving. The exact mechanism for vocabulary association in EPUB3 is
+                        therefore subject to change.</remark></para>
+
                 <informalexample>
                     <para>The following example shows an identifier being declared for the
                         Publication in the first <code>meta</code> element and a scheme being
@@ -1532,11 +1535,8 @@
                         Types</link> must use the MIME Type string designated in <xref
                         linkend="tbl-core-media-types"/>.--></para>
 
-                <para>All <xref linkend="gloss-publication-resource-foreign"
-                    />s<!-- Publication Resources that are not <link linkend="sec-core-media-types"
-                        >Core Media Types</link> -->
-                    must provide a fallback as defined in <xref
-                        linkend="sec-fallback-processing-flow"/>.</para>
+                <para>All <xref linkend="gloss-publication-resource-foreign"/>s must provide a
+                    fallback as defined in <xref linkend="sec-fallback-processing-flow"/>.</para>
 
                 <para>All Publication Resources must declare any applicable descriptive metadata
                     properties as defined in <xref linkend="sec-item-property-values"/> via the
@@ -1554,7 +1554,6 @@
                         significant. The presentation sequence of content documents is provided in
                         the <code><link linkend="sec-spine-elem">spine</link></code>.</para>
                 </note>
-
 
                 <para xml:id="def-supplementary-resource">This specification and its <link
                         linkend="sibling-specs">sibling specifications</link> may explicitly define
@@ -1621,7 +1620,7 @@
                                         <xi:include href="./share/id-prose-para.xml"/>
                                     </listitem>
                                 </varlistentry>
-                                <varlistentry xml:id="attrdef-spine-toc">
+                                <varlistentry xml:id="attrdef-spine-toc" xreflabel="toc">
                                     <term><literal>toc</literal>
                                         <option>[optional]</option></term>
                                     <listitem>
@@ -1629,7 +1628,7 @@
                                             manifest <code><xref linkend="elemdef-package-item"
                                                 /></code> that represents the superseded
                                                 <code>NCX</code>.</para>
-                                        <para>Refer to <xref linkend="note-ncx"/> for more
+                                        <para>Refer to <xref linkend="ncx-superseded"/> for more
                                             information.</para>
                                     </listitem>
                                 </varlistentry>
@@ -1646,13 +1645,21 @@
                     </varlistentry>
                 </variablelist>
 
+                <bridgehead xml:id="ncx-superseded">NCX Superseded</bridgehead>
+
+                <para>The NCX feature defined in <xref linkend="refOPF2"/> is superseded by the
+                        <xref linkend="gloss-content-document-epub-nav"/>. EPUB3 Publications may
+                    include an NCX (as defined in OPF 2.0.1) for EPUB 2 Reading System forwards
+                    compatibility purposes. EPUB3 Reading Systems must ignore the NCX in favor of
+                    the EPUB Navigation Document.</para>
+
                 <note xml:id="note-ncx">
-                    <!-- TODO the info on ncx depr needs to move somewhere else, and RS reqs stop being a note -->
-                    <para>The NCX feature defined in <xref linkend="refOPF2"/> is superseded by the
-                        EPUB3 <xref linkend="gloss-content-document-epub-nav"/> feature. EPUB3
-                        Publications may include an NCX for EPUB 2 Reading System forwards
-                        compatibility purposes. EPUB3 Reading Systems must ignore the NCX in favor
-                        of the EPUB Navigation Document.</para>
+                    <para>As the EPUB 2 NCX and the EPUB3 Navigation Document use different
+                        mechanisms for identification in the Package Document (the spine <code><xref
+                                linkend="attrdef-spine-toc"/></code> attribute and the <code><xref
+                                linkend="propdef-nav"/></code> property on the manifest
+                            <code>item</code> element, respectively) they can co-exist without
+                        conflict in an EPUB3 Publication.</para>
                 </note>
 
             </section>
@@ -1660,9 +1667,16 @@
             <section xml:id="sec-itemref-elem" xreflabel="itemref">
                 <title>The <code>itemref</code> Element</title>
 
-                <para>The child <code>itemref</code>s of the <code>spine</code> represents a
-                    sequential list of <xref linkend="gloss-content-document-epub"/>s, and their
-                    order defines the default reading order of the Publication.</para>
+                <para>The child <code>itemref</code> elements of the <code>spine</code> represent a
+                    sequential list of <xref linkend="gloss-publication-resource-cmt-or-foreign"/>s
+                    (typically <xref linkend="gloss-content-document-epub"/>s). The order of the
+                        <code>itemref</code> elements defines the default reading order of the
+                    Publication.</para>
+
+                <para>An EPUB Content Document referenced from the <code>spine</code> is referred to
+                    in this specification and its <link linkend="sibling-specs">sibling
+                        specifications</link> as a <xref linkend="gloss-content-document-top-level"
+                    />.</para>
 
                 <variablelist xreflabel="itemref" role="elem-synopsis"
                     xml:id="elemdef-spine-itemref">
@@ -1688,12 +1702,7 @@
                                         <option>[required]</option></term>
                                     <listitem>
                                         <para>An IDREF <xref linkend="refXML"/> that identifies a
-                                            manifest <xref linkend="elemdef-package-item"/> that
-                                            represents an <xref
-                                                linkend="gloss-content-document-epub"/>, <xref
-                                                linkend="gloss-content-document-epub-nav"/> or a
-                                                <xref linkend="gloss-content-document-foreign"
-                                            />.</para>
+                                            manifest <xref linkend="elemdef-package-item"/>.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry xreflabel="linear" xml:id="attrdef-itemref-linear">
@@ -1743,22 +1752,21 @@
                 <para>Each <code>itemref</code> element must reference, via its <code><xref
                             linkend="attrdef-itemref-idref"/></code> attribute, an <code><xref
                             linkend="elemdef-package-item"/></code> in the <xref
-                        linkend="gloss-manifest"/> that represents either an <xref
-                        linkend="gloss-content-document-epub"/>, <xref
-                        linkend="gloss-content-document-epub-nav"/> or a <xref
-                        linkend="gloss-content-document-foreign"/>. The <code>spine</code>
-                    consequently represents an ordered subset of the Publication Resources listed in
-                    the manifest, with content items not being referenced being ancillary to those
-                    that do appear there. </para>
+                        linkend="gloss-manifest"/>.The <code>spine</code> consequently represents an
+                    ordered subset of the Publication Resources listed in the manifest, with content
+                    items not being referenced being ancillary to those that do appear there. </para>
 
-                <note>
-                    <para>Although the <xref linkend="gloss-content-document-epub-nav"/> is <link
-                            linkend="confreq-nav-occur">required in EPUB Publications</link>, it is
-                        optional to include it in the <code>spine</code>.</para>
-                </note>
+                <para xml:id="confreq-spine-itemtypes">Each manifest <code>item</code> referenced
+                    from the <code>spine</code> must either be a) an <xref
+                        linkend="gloss-content-document-epub"/> or b) another type of <xref
+                        linkend="gloss-publication-resource-cmt-or-foreign"/> which,
+                        <emphasis>regardless of whether it is a <xref
+                            linkend="gloss-publication-resource-cmt"/> or a <xref
+                            linkend="gloss-publication-resource-foreign"/></emphasis>, must include
+                    an EPUB Content Document in its fallback chain.</para>
 
-                <para> The references provided in the spine should typically resolve to <xref
-                        linkend="gloss-content-document-epub-xhtml"/>s, not <xref
+                <para xml:id="spine-xhtsvg"> The references provided in the spine should resolve to
+                        <xref linkend="gloss-content-document-epub-xhtml"/>s, not <xref
                         linkend="gloss-content-document-epub-svg"/>s. Exceptions include: 1) when
                     such use is within a Publication that is packaged together with &#8212; and as
                     an alternative non-default representation of &#8212; another Publication that
@@ -1767,14 +1775,9 @@
                     to representation in XHTML.</para>
 
                 <note>
-                    <para><link linkend="sec-fallback-processing-flow">Fallback requirements</link>
-                        necessitate that the <code>itemref</code> reference either: a) directly
-                        refer to an <xref linkend="gloss-content-document-epub"/> or an <xref
-                            linkend="gloss-content-document-epub-nav"/>; or, b) refer to a <xref
-                            linkend="gloss-content-document-foreign"/> that includes an <xref
-                            linkend="gloss-content-document-epub"/> or an <xref
-                            linkend="gloss-content-document-epub-nav"/> in its fallback
-                        chain.</para>
+                    <para>Although the <xref linkend="gloss-content-document-epub-nav"/> is <link
+                            linkend="confreq-nav-occur">required in EPUB Publications</link>, it is
+                        optional to include it in the <code>spine</code>.</para>
                 </note>
 
                 <para>The <code>itemref</code> element <code>linear</code> attribute indicates
@@ -1791,6 +1794,7 @@
                     publication; and, b) rendering successive primary items in the order given in
                     the <code>spine</code>.</para>
 
+                <!-- TODO this seems redundant (see sec-itemref-property-values)
                 <para>The optional <code>properties</code> attribute allows either the value
                         <literal>page-spread-left</literal> or <literal>page-spread-right</literal>
                     for finer-grained control over the rendering of <xref
@@ -1800,7 +1804,7 @@
                     have both properties specified for its rendering, but it is permitted that
                     consecutive <code>itemref</code>s have the same property (in which case a blank
                     page should be rendered in the opposing frame). Refer to <xref
-                        linkend="sec-itemref-property-values"/> for more information.</para>
+                        linkend="sec-itemref-property-values"/> for more information.</para> -->
 
                 <bridgehead>Examples</bridgehead>
                 <informalexample>
@@ -1822,115 +1826,11 @@
                         targetptr="sec-xhtml-nav-def-types-landmarks"/> for more information.</para>
 
                 <para>Authors may include the <code>guide</code> element in the Package Document for
-                    EPUB 2 Reading System forwards compatibility, but EPUB3 Reading Systems must
-                    ignore the <code>guide</code> element when provided in EPUB3 Publications whose
-                    EPUB Navigation Document includes the <code>landmarks</code> feature.</para>
+                    EPUB 2 Reading System forwards compatibility purposes. EPUB3 Reading Systems
+                    must ignore the <code>guide</code> element when provided in EPUB3 Publications
+                    whose <xref linkend="gloss-content-document-epub-nav"/> includes the
+                        <code>landmarks</code> feature.</para>
 
-                <!--
-                    <variablelist xreflabel="guide" role="elem-synopsis" xml:id="elemdef-opf-guide">
-                    <varlistentry>
-                    <term>Element name</term>
-                    <listitem>
-                    <para><literal>guide</literal></para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                    <para>Fourth child of <xref linkend="elemdef-opf-package"/>, following
-                    <xref linkend="elemdef-opf-spine"/>.</para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                    <para>None.</para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                    <para>One or more <literal><xref linkend="elemdef-reference"/></literal>
-                    <option>[required]</option></para>
-                    </listitem>
-                    </varlistentry>
-                    </variablelist>
-                    
-                    <para>The package element may contain one <literal>guide</literal> element, which if
-                    present must contain one or more <literal>reference</literal> elements. Each
-                    reference must have an <literal>href</literal> attribute, which may include a
-                    fragment identifier as defined in section 4.1 of <xref linkend="refRFC3986"/>.
-                    Each reference must further have <literal>type</literal> and
-                    <literal>title</literal> attributes whose values must be strings. </para>
-                    
-                    <para>In the context of EPUB, the href attribute of each reference element must
-                    resolve to or within a resource that is represented by an Extended Content
-                    Document Reference, with each type attribute value taken from <link
-                    xlink:href="TODO"><remark role="todo">TODO table in
-                    2.0.1</remark>TODO</link> .</para>
-                    
-                    <para>Reading Systems may provide a means to navigate a Publication based on the
-                    information in the <code>guide</code>.</para>
-                    
-                    <section xml:id="sec-guide-reference" xreflabel="reference">
-                    <title>The <literal>reference</literal> element</title>
-                    <variablelist xreflabel="item" role="elem-synopsis" xml:id="elemdef-reference">
-                    <varlistentry>
-                    <term>Element Name</term>
-                    <listitem>
-                    <para><literal>reference</literal></para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Usage</term>
-                    <listitem>
-                    <para>As a child of <xref linkend="elemdef-opf-guide"/>.
-                    Repeatable.</para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Attributes</term>
-                    <listitem>
-                    <variablelist role="elem-synopsis-attlist">
-                    <varlistentry xml:id="attrdef-reference-href" xreflabel="href">
-                    <term><literal>href</literal>
-                    <option>[required]</option></term>
-                    <listitem>
-                    <para>Specifies the URI of the destination of the
-                    reference. May contain a fragment identifier.</para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry xml:id="attrdef-reference-type" xreflabel="type">
-                    <term><literal>type</literal>
-                    <option>[required]</option></term>
-                    <listitem>
-                    <para>Text string describing the type of the reference,
-                    as further detailed in <link xlink:href="TODO"
-                    ><remark role="todo">TODO table in
-                    2.0.1</remark>TODO</link>. </para>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term><literal>title</literal>
-                    <option>[required]</option></term>
-                    <listitem>
-                    <para> Text string title for the reference. </para>
-                    </listitem>
-                    </varlistentry>
-                    </variablelist>
-                    </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                    <term>Content Model</term>
-                    <listitem>
-                    <para>Empty.</para>
-                    </listitem>
-                    </varlistentry>
-                    
-                    </variablelist>
-                    
-                    </section>
-                -->
             </section>
 
             <section xml:id="sec-bindings-elem" xreflabel="bindings">
@@ -2153,7 +2053,8 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
 
                 <para>Although not static, changes to the unique identifier for a publication should
                     be made as infrequently as possible. New identifiers should not be issued when
-                    updating metadata, fixing errata or making other minor changes to the package.</para>
+                    updating metadata, fixing errata or making other minor changes to the
+                    package.</para>
 
                 <remark role="todo">TODO: fit this conf. req. somewhere else?</remark>
                 <para role="rsconferr">Reading Systems must not fail catastrophically if they
@@ -3533,10 +3434,6 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
 
     </chapter>
 
-    <!--
-        <xi:include href="./sections/epub30-publications-ncx.xml"/>
-    -->
-
     <chapter xml:id="sec-publication-resources">
         <title>Publication Resources</title>
 
@@ -3798,18 +3695,18 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
 
                 <para>It is legal to provide fallbacks for Publication Resources that are Core Media
                     Types; a Reading System may choose to utilize such fallbacks in order to find
-                    the optimal version of a resource to render in a given context. <remark
-                        role="todo">TODO Fallbacks for xhtml-nav, and possibly other core media
-                        types, are not legal. Determine which they are and add here.</remark>
-                </para>
-                <!--
-                    <para>However, Reading Systems process fallbacks differently depending on the context
-                    where a reference to a resource occurs in Content Documents, in conjunction with
-                    the intrinstic fallback mechanisms defined in <xref linkend="refHTML5"/>, <xref
-                    linkend="refCSS21"/> and <xref linkend="refSVG"/> . Refer to <xref
-                    linkend="sec-fallback-processing-flow"/> for a definition of the overall
-                    processing flow for handling fallbacks.</para>
-                -->
+                    the optimal version of a resource to render in a given context. </para>
+
+                <note>
+                    <para>Manifest fallback is required for <link linkend="confreq-spine-itemtypes"
+                            >any Publication Resource referenced from the spine</link> that is not
+                        an EPUB Content Document.</para>
+                </note>
+
+                <para><remark role="todo">TODO Fallbacks for xhtml-nav, and possibly other core
+                        media types, are not legal. Determine which they are and add
+                    here.</remark></para>
+
             </section>
 
             <section xml:id="sec-fallback-processing-flow-intrinsic">
@@ -3971,6 +3868,25 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
 
     </chapter>
 
+    <chapter xml:id="sec-publication-linking">
+        <title>Publication Linking</title>
+        <section xml:id="sec-publication-linking-xref">
+            <title>Inter-Publication Linking</title>
+            <caution>
+                <para><remark role="todo"> This feature is <emphasis>at risk</emphasis> in EPUB3.
+                    </remark></para>
+            </caution>
+        </section>
+        <section xml:id="sec-publication-linking-frag">
+            <title>EPUB Fragment Identifier Scheme</title>
+            <note>
+                <para><remark role="todo"> The EPUB3 WG is working on a scheme for Fragment
+                        Identification for EPUB3, which may be included in this section if endorsed,
+                        else published as a separate document.</remark></para>
+            </note>
+        </section>
+    </chapter>
+
     <appendix xml:id="app-package-schema">
         <title>Package Document Schema</title>
         <para>The schema for Package Documents is available at <link
@@ -3982,25 +3898,6 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
 
     </appendix>
 
-    <!--
-        <appendix xml:id="app-ncx-schema">
-        <title>NCX Document Schema</title>
-        <para>The schema for NCX Documents is available at <link xlink:href="../schema/ncx-30.nvdl"
-        >./schema/ncx30.nvdl</link>.</para>
-        <para>This schema is normative. In case of conflicts between the specification prose and
-        this schema, the schema shall be considered definitive.</para>
-        
-        <section conformance="informative">
-        <title>Using the NCX Document Schema</title>
-        <para>Validation of NCX Documents using this schema will require a processor that
-        supports <xref linkend="refNVDL"/>, <xref linkend="refRelaxNG"/> and <xref
-        linkend="refISOSchematron"/>.</para>
-        <para>Note however that the NVDL schema layer can be substituted by a two-pass
-        validation using the embedded RELAX NG and ISO Schematron schemas alone.</para>
-        </section>
-        
-        </appendix>
-    -->
     <appendix xml:id="acknowledgements" role="acknowledgements" conformance="informative">
         <title>Contributors</title>
         <xi:include href="./share/contributors.xml"/>

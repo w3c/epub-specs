@@ -45,6 +45,7 @@
                         </xsl:choose>                    
                     </xsl:for-each>
                 </dl>
+                <!--
                 <dl>
                     <dt>Metadata Vocabularies</dt>                
                     <xsl:for-each select="tokenize($file-list,';')">                        
@@ -58,6 +59,7 @@
                         </xsl:choose>                    
                     </xsl:for-each>
                 </dl>
+                -->
             </body>
         </html>        
     </xsl:template>

@@ -108,6 +108,9 @@
             <xsl:when test="$curelem/db:glossterm">
                 <xsl:value-of select="$curelem/db:glossterm"/>
             </xsl:when>
+            <xsl:when test="local-name($curelem) eq 'bridgehead' ">
+                <xsl:value-of select="$curelem"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">Failed retrieving a label in
                     olink.xsl#fn:getLinkLabel for id '<xsl:value-of
