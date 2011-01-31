@@ -1,0 +1,60 @@
+default namespace = "http://www.w3.org/2000/svg"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace svg = "http://www.w3.org/2005/02/svg-annotations"
+namespace xlink = "http://www.w3.org/1999/xlink"
+
+# ==============================================================
+#  SVG12-RNG | SVG 1.2 Tiny Flowable Text
+# ==============================================================
+[ xml:lang = "en" ]
+grammar {
+  svg.Properties.attr &=
+    [ svg:animatable = "true" svg:inheritable = "true" ]
+    attribute display-align {
+      "auto" | "before" | "center" | "after" | "inherit"
+    }?,
+    [ svg:animatable = "true" svg:inheritable = "true" ]
+    attribute line-increment { "auto" | "inherit" | Number.datatype }?
+  svg.GCommon.group |= textArea
+  # <define name='svg.TextCommon-noA.group' combine='choice'>
+  #   <choice>
+  #     <ref name='tbreak'/>
+  #   </choice>
+  # </define>
+  # 
+  # <define name='svg.TextCommon.group' combine='choice'>
+  #   <choice>
+  #     <ref name='tbreak'/>
+  #   </choice>
+  # </define>
+  
+  # ... textArea ...............................................
+  [ xml:id = "textArea" ]
+  div {
+    textArea =
+      element textArea {
+        textArea.AT,
+        (element tspan { tspan.AT, (tbreak | svg.TextCommon.group)* }
+         | svg.TextCommon.group)*
+      }
+    textArea.AT &=
+      svg.Properties.attr,
+      svg.FocusHighlight.attr,
+      svg.Core.attr,
+      svg.Conditional.attr,
+      svg.Focus.attr,
+      svg.Transform.attr,
+      svg.XY.attr,
+      svg.Editable.attr,
+      [ svg:animatable = "true" svg:inheritable = "false" ]
+      attribute width { Length.datatype | "auto" }?,
+      [ svg:animatable = "true" svg:inheritable = "false" ]
+      attribute height { Length.datatype | "auto" }?
+  }
+  # ... tbreak .................................................
+  [ xml:id = "tbreak" ]
+  div {
+    tbreak = element tbreak { tbreak.AT, empty }
+    tbreak.AT &= svg.Core.attr, svg.Conditional.attr
+  }
+}
