@@ -10,7 +10,9 @@
     <xsl:param name="file-list"/>
     <xsl:param name="base"/>
     
-    <xsl:template match="/">        
+    <xsl:param name="file-list-fixed"><xsl:value-of select="translate($file-list,'\','/')"/></xsl:param>
+    
+    <xsl:template match="/">
         <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -21,7 +23,7 @@
                 <h1>EPUB3 Drafts - Index</h1>
                 <dl>
                 <dt>Specifications</dt>                
-                <xsl:for-each select="tokenize($file-list,';')">
+                <xsl:for-each select="tokenize($file-list-fixed,';')">
                     <xsl:variable name="path" select="current()"/>
                     <xsl:choose>
                         <xsl:when test="starts-with($path, 'spec/')">
@@ -34,7 +36,7 @@
                 </dl>
                 <dl>
                     <dt>Schemas</dt>                
-                    <xsl:for-each select="tokenize($file-list,';')">                        
+                    <xsl:for-each select="tokenize($file-list-fixed,';')">                        
                         <xsl:variable name="path" select="current()"/>
                         <xsl:choose>
                             <xsl:when test="starts-with($path, 'schema/') and not(starts-with($path, 'schema/mod')) and not(contains($path, 'ncx'))">
@@ -66,9 +68,8 @@
         
     <xsl:function name="fn:get-title" as="xs:string">
         <xsl:param name="path" as="xs:string"/>        
-        <xsl:variable name="file" select="resolve-uri($path, $base)"></xsl:variable>                
+        <xsl:variable name="file" select="resolve-uri($path, translate($base,'\','/'))"></xsl:variable>
         <xsl:value-of select="doc($file)//html:head/html:title"/>
-        
     </xsl:function>
     
 </xsl:stylesheet>
