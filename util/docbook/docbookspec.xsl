@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
     xmlns:saxon="http://icl.com/saxon" xmlns:exsl="http://exslt.org/common"
     xmlns:db="http://docbook.org/ns/docbook" xmlns:d="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns="http://www.w3.org/1999/xhtml">
 
     <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl" />
@@ -679,5 +680,12 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-               
+    
+    <!-- ==================================================================== -->
+    <!-- remove code wrapping xrefs and links to fix whitespace problems -->
+    
+    <xsl:template match="d:code[@role='linkwrap']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
 </xsl:stylesheet>
