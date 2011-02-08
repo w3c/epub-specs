@@ -198,13 +198,16 @@
 
     <xsl:template name="render-link-here-anchor">
         <xsl:param name="id" required="yes"/>
-        <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
-            <xsl:attribute name="class">hidden-reveal</xsl:attribute>
-            <xsl:attribute name="title">Link here</xsl:attribute>
-            <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
-            <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
+        <xsl:element name="span">
+            <xsl:attribute name="class">link-marker</xsl:attribute>
+            <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class">hidden-reveal</xsl:attribute>
+                <xsl:attribute name="title">Link here</xsl:attribute>
+                <xsl:attribute name="href">#<xsl:value-of select="$id"/></xsl:attribute>
+                <xsl:text disable-output-escaping="no">&#8250;</xsl:text>
+            </xsl:element>
+            <xsl:text disable-output-escaping="no">&#160;</xsl:text>
         </xsl:element>
-        <xsl:text disable-output-escaping="no">&#160;</xsl:text>
     </xsl:template>
     
     <xsl:template match="*" mode="common.html.attributes">
