@@ -9,7 +9,7 @@
        * to activate behavior, must provide @type="epub-spec" 
        * targetdoc must be one of the enum given in rng customization
        * targetpointer must be an xml:id in targetdoc
-       * olinks must be empty (for now)
+       * if @epub:specref-exclude is specified on the olink, the trailing [SPEC-BIBLIOREF] link is excluded
 
         TODO link labels don't get the XHTML style prefixes a la "Section 1.2.3" - this would
         probably benefit from being in the db2html xsl customization layer instead
@@ -61,25 +61,26 @@
             <!-- copy the epub:spec-include attribute if existing, in case this olink
                 is part of a switch -->
             <xsl:copy-of select="@*[namespace-uri() eq 'http://www.idpf.org/2011/epub']"/>
-            
+
             <xsl:element name="link" namespace="http://docbook.org/ns/docbook">
                 <xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
                     <xsl:value-of select="$dest-doc-uri"/>#<xsl:value-of select="$targetptr"/>
                 </xsl:attribute>
                 <xsl:value-of select="$link-label"/>
             </xsl:element>
+                        
+            <xsl:if test="not(@epub:specref-exclude)">
+                <xsl:text> </xsl:text>
+                <xsl:element name="xref" namespace="http://docbook.org/ns/docbook">
+                    <xsl:attribute name="linkend">
+                        <xsl:value-of select="$biblioref"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:if>
 
-            <xsl:text> </xsl:text>
-
-            <xsl:element name="xref" namespace="http://docbook.org/ns/docbook">
-                <xsl:attribute name="linkend">
-                    <xsl:value-of select="$biblioref"/>
-                </xsl:attribute>
-            </xsl:element>
-            
         </xsl:element>
     </xsl:template>
-
+    
     <xsl:function name="fn:getLinkLabel" as="text()">
         <xsl:param name="olink" as="element()"/>
         <xsl:param name="targetdoc" as="attribute()"/>
@@ -112,10 +113,9 @@
                 <xsl:value-of select="$curelem"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:message terminate="yes">Failed retrieving a label in
-                    olink.xsl#fn:getLinkLabel for id '<xsl:value-of
-                        select="$targetptr"/>' in <xsl:value-of select="$targetdoc"/> in
-                    olink.xsl#fn:getLinkLabel</xsl:message>
+                <xsl:message terminate="yes">Failed retrieving a label in olink.xsl#fn:getLinkLabel
+                    for id '<xsl:value-of select="$targetptr"/>' in <xsl:value-of
+                        select="$targetdoc"/> in olink.xsl#fn:getLinkLabel</xsl:message>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
@@ -184,7 +184,7 @@
 
     <!-- remove dummies -->
     <xsl:template match="db:appendix[@xml:id='DUMMY_REMOVE']"/>
-        
+
     <xsl:template match="*|comment()">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
