@@ -3845,250 +3845,291 @@ John Daggett. -->
             </caution>
         </section>
         <section xml:id="sec-publication-linking-frag">
-            <title>EPUB Fragment Identifier</title>
-            <para>EPUB fragment Identifier identifies a location inside EPUB file. Only one
-                particular Fragment Identifier scheme ("EPUB Canonical Fragment Identifier" or
-                "epubcfi") is defined, more schemes for EPUB could be added in the future.</para>
-            <para>EPUB Canonical Fragment Identifiers satisfy the following requirements:</para>
-            <itemizedlist>
-                <listitem>
-                    <para>It is possible to identify every location in the file.</para>
-                </listitem>
-                <listitem>
-                    <para>It is possible to compare two identifiers to determine which location
-                        comes first without knowing the content or structure of EPUB file.</para>
-                </listitem>
-                <listitem>
-                    <para>It is possible to process fragment identifiers reasonably efficiently,
-                        i.e. locations in one spine element do not require processing of the other
-                        spine elements.</para>
-                </listitem>
-            </itemizedlist>
-            <para>EPUB Canonical Fragment Identifiers are not designed to be particularly human
-                readable. Also, they are only designed to represent a single location in the file;
-                if ranges of content are required, several fragment identifiers are needed.</para>
-            <para>Example:</para>
-            <para><code><![CDATA[#epubcfi=/2/6/4!/2/4/10/3:10]]></code></para>
-            <para>Syntax (CSS conventions are used):</para>
-            <para><synopsis><![CDATA[
+            <title>EPUB Canonical Fragment Identifiers</title>
+            
+            <section xml:id="sec-pub-linking-intro">
+                <title>Introduction</title>
+                
+                <para>An <xref linkend="gloss-cfi"/> (CFI) identifies a location inside an 
+                    <xref linkend="gloss-content-document-epub"/>. This specification defines only a single
+                    Fragment Identifier scheme — the EPUB Canonical Fragment Identifier (or
+                    <literal>epubcfi</literal>) — but does not restrict the development of future schemes
+                    for EPUB.</para>
+                
+                <para>EPUB Canonical Fragment Identifiers are useful for linking into a Publication as they:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>allow every location in a document to be identified;</para>
+                    </listitem>
+                    <listitem>
+                        <para>allow two identifiers to be compared to determine which location
+                            comes first, without knowing the content or structure of EPUB file; and</para>
+                    </listitem>
+                    <listitem>
+                        <para>can be processed in reasonably efficiently manner (i.e., locations in one 
+                            <link linkend="sec-spine-elem"><code>spine</code> element</link> do not require 
+                            processing of the other <code>spine</code> elements).</para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+            
+            <section xml:id="sec-pub-linking-def">
+                <title>Definition</title>
+                
+                <para>Each CFI represents a single location in a Content Document. A single Identifier 
+                    cannot represent a range of locations; multiple Identifiers
+                    are required to express ranges. Identifiers are also not intended to be human readable,
+                    but are optimized for machine processing.</para>
+                
+                <para>The following syntax is provided for CFIs (using CSS conventions):</para>
+                
+                <programlisting>
 fragment : "#epubcfi=" [navstep]+ [termstep]? [side]?
 navstep : "/" integer | "!" ["/"]? integer
 termstep :  ":" integer | "@" number "," number | "~" number
 side : "b" | "a"
 number : ["-"]? digit+ ["." digit+]?
 integer: digit+
-			]]></synopsis></para>
-            <para>CFI fragment identifier consists of the hash symbol ("#") which identifies it as a
-                fragment identifier, initial sequence "epubcfi=" that identifies a particular
-                scheme, and a sequence of steps. Steps can either be navigational, which can be
-                repeated, or terminating, which must come last in the sequence. In addition, an
-                optional side designator can come after the step sequence. This is needed to
-                identify a location which "sticks" to the content which comes before ("b") or
-                content that comes after ("a") a location. This is needed, for instance, in cases
-                when a location falls right on the page boundary and it is impossible to determine
-                the correct page without knowing what is the "sticky" side.</para>
-            <para>Leading zeros are not allowed for numbers and integers except to represent zero,
-                trailing zeros are not allowed in number fractional part (this ensures
-                uniqueness).</para>
-            <para>EPUB Canonical Fragment Identifier is processed in the following manner. Assume
-                that all documents are parsed in W3C DOM (many other XML representations can be
-                used, XML DOM is used here only to define the processing model). Start with the root
-                (document) XML node of OPF file. Process each step one by one, applying the
-                following rules.</para>
-            <itemizedlist>
-                <listitem>
-                    <para>Slash-number step refers to a child node(s) in the following
-                        manner:</para>
-                    <itemizedlist>
-                        <listitem>
-                            <para>each element (or PI, except for <![CDATA[<?xml ...>]]>) is
-                                assigned an even positive index; first element/PI is given index 2,
-                                second element/PI - 4, etc. (Note: PIs in EPUB files are not
-                                encouraged and xml-stylesheet is the only PI that is used in EPUB,
-                                PIs are only mentioned here for processing model completeness, as
-                                they are not prohibited in EPUB either).</para>
-                        </listitem>
-                        <listitem>
-                            <para>each (possibly empty) collection of nodes before the first
-                                element/PI, between elements/PIs, and after last element/PI are
-                                given odd indices according to their position.</para>
-                        </listitem>
-                    </itemizedlist>
-                    <para>This indexing scheme insures that nodes are not sensitive to XML parser
-                        handling of whitespace, entity references, and CDATA sections.</para>
-                </listitem>
-                <listitem>
-                    <para>Column-number step refers to a character offset. If we are dealing with an
-                        element, we have a UTF-16 code unit index in the element's intrinsic textual
-                        value. It is empty for most elements, except for XHTML img tag where alt
-                        attribute value is used. If we are dealing with a text node or a collection
-                        of nodes, UTF-16 code unit index is calculated after concatenating text data
-                        from all the nodes. Position is zero-based and always refers to a place
-                        between characters, so 0 means before the first character, and number equal
-                        to the total UTF-16 length means position after the last character. (Note:
-                        UTF-16 is used to be consistent with other XML specifications that are
-                        likely to be used to implement fragment identifiers, namely W3C DOM,
-                        ECMAScript, and XPath).</para>
-                </listitem>
-                <listitem>
-                    <para>Exclamation sign step means following a reference. Next step should be
-                        applied starting from the target node (root node when complete XML document
-                        is referenced). These specific references are honored:</para>
-                    <itemizedlist>
-                        <listitem>
-                            <para>opf:itemref refers to the file referenced by href attribute of the
-                                item element with the given id,</para>
-                        </listitem>
-                        <listitem>
-                            <para>for HTML img, iframe, embed elements references are defined by src
-                                attribute,</para>
-                        </listitem>
-                        <listitem>
-                            <para>for HTML object element, reference is defined by data
-                                attribute,</para>
-                        </listitem>
-                        <listitem>
-                            <para>for SVG image and use elements references are defined by by
-                                xlink:href attribute.</para>
-                        </listitem>
-                    </itemizedlist>
-                    <para>Note that this schema does not take into account hyperlinks, only
-                        "embedding" references; thus it is illegal to follow links from XHTML (or
-                        SVG) a element.</para>
-                </listitem>
-                <listitem>
-                    <para>At-number step means 2D spacial position (e.g. on an image) using x and y
-                        in image's natural coordinate system: 1 bitmap pixel for bitmap images with
-                        origin in top left corner, x going right, y going down; 1 logical unit for
-                        vector images; in particular for SVG, coordinate system inside svg element
-                        is used (not viewport coordinate system which is too
-                        layout-dependent).</para>
-                </listitem>
-                <listitem>
-                    <para>Tilde-number step means temporal position for audio/video, measured in
-                        seconds.</para>
-                </listitem>
-                <listitem>
+                </programlisting>
+                
+                <para>Each CFI begins with a hash symbol (<literal>#</literal>) identifying it as a fragment
+                    identifier. The hash symbol is followed by the initial sequence <code>epubcfi=</code>, which 
+                    identifies that the fragment conforms to this scheme.</para>
+                
+                <para>After establishing the scheme, a CFI consists of a sequence of steps, each of which
+                    is either navigational (can be repeated) or terminating (must come last in the sequence). 
+                    An optional side designator can also occur after the step sequence to identify a location 
+                    that "sticks" to the content that comes <emphasis>before</emphasis> (<literal>b</literal>) or
+                    <emphasis>after</emphasis> (<literal>a</literal>) it. This designator is 
+                    needed, for example, to determine which page a location falls on when it occurs
+                    at the page boundary.</para>
+                
+                <informalexample xml:id="ex-fragid">
+                    <para>An example of a Fragment Identifier.</para>
+                    <synopsis><code><![CDATA[
+#epubcfi=/2/6/4!/2/4/10/3:10]]></code></synopsis>
+                </informalexample>
+                
+                
+                <para>Leading zeros are not allowed for numbers and integers, except to represent zero.
+                    Trailing zeros are not allowed in number fractional part to ensure uniqueness.</para>
+            </section>
+            
+            <section xml:id="sec-pub-linking-proc">
+                <title>Processing</title>
+                
+                <note>
+                    <para>The processing model presented in this section assumes that all documents are parsed 
+                        in W3C DOM for convenience, but other XML representations can be used.</para>
+                </note>
+                
+                <para>An EPUB Canonical Fragment Identifier is processed by applying the
+                    following rules, in order, starting from the root (document) XML node of an EPUB Content 
+                    Document:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>Slash-number steps refer to child node(s) as follows:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>Each element or processing instruction (PI) is assigned an even 
+                                    positive index (e.g., the first element/PI is given index 2, the second 
+                                    element/PI 4, etc.). Note that the XML declaration is not considered a 
+                                    PI in this processing model.</para>
+                            </listitem>
+                            <listitem>
+                                <para>Each (possibly empty) collection of nodes before the first
+                                    element/PI, between elements/PIs, and after last element/PI are
+                                    given odd indices according to their position.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <note>
+                            <para>This indexing scheme ensures that nodes are not sensitive to XML parser
+                                handling of whitespace, entity references, and CDATA sections.</para>
+                        </note>
+                    </listitem>
+                    <listitem>
+                        <para>Column-number steps refer to a character offset as follows:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>When dealing with an element, the result is a UTF-16 code unit index 
+                                    in the element's intrinsic textual value. This value is empty for most elements, 
+                                    except for the HTML5 <code>img</code> tag when the <code>alt</code> 
+                                    attribute value is used. </para>
+                            </listitem>
+                            <listitem>
+                                <para>When dealing with a text node or a collection of nodes, the UTF-16 code 
+                                    unit index is calculated after concatenating text data from all the nodes. The
+                                    position is zero-based and always refers to a place between characters, so 0 
+                                    means before the first character, and a number equal to the total UTF-16 length 
+                                    means position after the last character.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <note>
+                            <para>UTF-16 is used to be consistent with other XML specifications that are
+                                likely to be used to implement fragment identifiers, namely W3C DOM, ECMAScript,
+                                and XPath.</para>
+                        </note>
+                    </listitem>
+                    <listitem>
+                        <para>An exclamation point step indicates the next step should be
+                            applied starting from the target node (or root node, when the complete 
+                            XML document is referenced). The following specific references are honored:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para><code>opf:itemref</code> refers to the Content Document referenced by 
+                                    the <code>href</code> attribute of the <code>item</code> element with the given ID;</para>
+                            </listitem>
+                            <listitem>
+                                <para>for the HTML5 <code>img</code>, <code>iframe</code> and <code>embed</code>
+                                    elements, references are defined by <code>src</code> attribute;</para>
+                            </listitem>
+                            <listitem>
+                                <para>for the HTML5 <code>object</code> element, the reference is defined by 
+                                    the <code>data</code> attribute;</para>
+                            </listitem>
+                            <listitem>
+                                <para>for SVG <code>image</code> and <code>use</code> elements, references 
+                                    are defined by the <code>xlink:href</code> attribute.</para>
+                            </listitem>
+                        </itemizedlist>
+                        <note>
+                            <para>This schema does not take into account hyperlinks, only
+                                "embedding" references; it is consequently illegal to follow links from 
+                                HTML5 (or SVG) <code>a</code> elements.</para>
+                        </note>
+                    </listitem>
+                    <listitem>
+                        <para>An at-number step indicates 2D spacial position (e.g., on an image) using x and y
+                            in the image's natural coordinate system:</para>
+                        
+                        <itemizedlist>
+                            <listitem>
+                                <para>1 bitmap pixel for bitmap images with origin in top left corner, 
+                                    and with x going right and y going down;</para>
+                            </listitem>
+                            <listitem>
+                                <para>1 logical unit for vector images.</para>
+                            </listitem>
+                        </itemizedlist>
+                        
+                        <note>
+                            <para>For SVG images, the coordinate system inside the <code>svg</code> element
+                                is typically used (not the viewport coordinate system, which is too layout-dependent).</para>
+                        </note>
+                    </listitem>
+                    <listitem>
+                        <para>A tilde-number step indicates a temporal position for audio/video, measured in
+                            seconds.</para>
+                    </listitem>
+                </itemizedlist>
+                <note>
                     <para>Spacial and temporal positions can be combined together, but not other
                         types. Temporal step must always precede spacial syntactically.</para>
-                </listitem>
-            </itemizedlist>
-            <para>Note that some elements (e.g. HTML img) can allow more than one of the steps
-                defined above.</para>
-
-            <para>Sorting rules:</para>
-            <itemizedlist>
-                <listitem>
-                    <para>steps that come earlier in the sequence are more important</para>
-                </listitem>
-                <listitem>
-                    <para>XML children nodes, character offsets and temporal positions are sorted in
-                        natural order</para>
-                </listitem>
-                <listitem>
-                    <para>y position is more important than x</para>
-                </listitem>
-                <listitem>
-                    <para>omitted spacial position precedes all other spacial positions</para>
-                </listitem>
-                <listitem>
-                    <para>omitted temporal position precedes all other temporal positions</para>
-                </listitem>
-                <listitem>
-                    <para>temporal position is more important than spacial</para>
-                </listitem>
-                <listitem>
-                    <para>different step types come in the following order from least important to
-                        more important: character offset, child, temporal/spacial, reference.</para>
-                </listitem>
-            </itemizedlist>
-            <para>In the example above, if the opf file looks like this:</para>
-            <para><synopsis><![CDATA[
-<?xml version="1.0"?>
-<package version="2.0" unique-identifier="bookid" xmlns:dc="http://purl.org/dc/elements/1.1/"
-        xmlns="http://www.idpf.org/2007/opf" xmlns:opf="http://www.idpf.org/2007/opf">
-  <metadata>
-   <dc:title>...</dc:title> 
-   <dc:identifier id="bookid">...</dc:identifier>
-   <dc:creator>...</dc:creator> 
-   <dc:language>en</dc:language> 
- </metadata>
- <manifest>
-  <item id="ncxtoc" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
-  <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
-  <item id="chapter01" href="chapter01.xhtml" media-type="application/xhtml+xml"/>
-  <item id="chapter02" href="chapter02.xhtml" media-type="application/xhtml+xml"/>
-  <item id="chapter03" href="chapter03.xhtml" media-type="application/xhtml+xml"/>
-  <item id="chapter04" href="chapter04.xhtml" media-type="application/xhtml+xml"/>
- </manifest>
- <spine toc="ncxtoc">
-  <itemref idref="titlepage"/>
-  <itemref idref="chapter01"/>
-  <itemref idref="chapter02"/>
-  <itemref idref="chapter03"/>
-  <itemref idref="chapter04"/>
- </spine>
-</package>
-			]]></synopsis></para>
-            <para>and chapter01.xhtml like this:</para>
-            <para><synopsis><![CDATA[
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>...</title>
-</head>
-<body>
-<p>...</p>
-<p>...</p>
-<p>...</p>
-<p>...</p>
-<p>aaa <em>bbb</em>0123456789</p>
-<p>...</p>
-<p>...</p>
-<img src="foo.svg"/>
-<p>...</p>
-<p>...</p>
-</body>
-</html>
-			]]></synopsis></para>
-            <para>Then the fragment identifier in the sample above refers to the position right
-                after the digit 9.</para>
-            <para>When producing CFIs for text locations, unless the text is defined by img
-                element's alt tag, one should always start with the text node or text node
-                collection (even if it empty) that corresponds to the location and then trace the
-                ancestor and reference chain to the OPF file root.</para>
-            <table>
-                <caption>Examples</caption>
-                <tr>
-                    <td><code>#epubcfi=/2/6/4!/2/4/16</code></td>
-                    <td>img element</td>
-                </tr>
-                <tr>
-                    <td><code>#epubcfi=/2/6/4!/2/4/16!/2/2</code></td>
-                    <td>first child element of the root svg element in foo.svg</td>
-                </tr>
-                <tr>
-                    <td><code>#epubcfi=/2/6/4!/2/4/10/1:0</code></td>
-                    <td>location just before aaa</td>
-                </tr>
-                <tr>
-                    <td><code>#epubcfi=/2/6/4!/2/4/10/2/1:0</code></td>
-                    <td>location just before bbb</td>
-                </tr>
-                <tr>
-                    <td><code>#epubcfi=/2/6/4!/2/4/10/2/1:3b</code></td>
-                    <td>location just after bbb, sticking "before"</td>
-                </tr>
-            </table>
-            <para>CFI can be also used to cross-reference XML content inside the EPUB package. In
-                that case, a relative reference to a particular resource in the spine should be
-                given (as usual), followed by CFI which should be resolved starting from the
-                document root. For instance, chapter02.xhtml might give a reference to the last
-                location in the previous example like this:</para>
-            <para><code><![CDATA[
+                </note>
+                <note>
+                    <para>Some elements (e.g., HTML5 <code>img</code>) can allow more than one of the steps
+                        defined above.</para>
+                </note>
+                
+                <para>When producing CFIs for text locations, unless the text is defined by the <code>img</code>
+                    element's <code>alt</code> tag, processing should always start with the text node or text node
+                    collection (even if it empty) that corresponds to the location, and then trace the
+                    ancestor and reference chain to the OPF file root.</para>
+                
+            </section>
+            
+            <section xml:id="sec-pub-linking-sort">
+                <title>Sorting</title>
+                
+                <para>The following conditions apply when sorting CFIs:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>steps that come earlier in the sequence are more important than 
+                            those that come later;</para>
+                    </listitem>
+                    <listitem>
+                        <para>XML children nodes, character offsets and temporal positions are sorted in
+                            natural order;</para>
+                    </listitem>
+                    <listitem>
+                        <para>y position is more important than x;</para>
+                    </listitem>
+                    <listitem>
+                        <para>omitted spacial position precedes all other spacial positions;</para>
+                    </listitem>
+                    <listitem>
+                        <para>omitted temporal position precedes all other temporal positions;</para>
+                    </listitem>
+                    <listitem>
+                        <para>temporal position is more important than spacial; and</para>
+                    </listitem>
+                    <listitem>
+                        <para>different step types come in the following order from least important to
+                            more important: character offset, child, temporal/spacial, reference.</para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+            
+            <section xml:id="sec-linking-ex">
+                <title>Examples</title>
+                
+                <para>The <link linkend="ex-fragid">fragment identifier in the example above</link> refers 
+                    to the position right after the digit 9 in the following sample documents:</para>
+                
+                <informalexample>
+                    <para>A Package Document</para>
+                    <synopsis><xi:include href="examples/publications/fragid-1.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <informalexample>
+                    <para>chapter01.xhtml</para>
+                    <synopsis><xi:include href="examples/publications/fragid-2.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>The following table shows additional examples of CFIs and what they select from
+                    the preceding example documents:</para>
+                
+                <table>
+                    <caption>CFI Examples</caption>
+                    <tr>
+                        <td><code>#epubcfi=/2/6/4!/2/4/16</code></td>
+                        <td>img element</td>
+                    </tr>
+                    <tr>
+                        <td><code>#epubcfi=/2/6/4!/2/4/16!/2/2</code></td>
+                        <td>first child element of the root svg element in foo.svg</td>
+                    </tr>
+                    <tr>
+                        <td><code>#epubcfi=/2/6/4!/2/4/10/1:0</code></td>
+                        <td>location just before aaa</td>
+                    </tr>
+                    <tr>
+                        <td><code>#epubcfi=/2/6/4!/2/4/10/2/1:0</code></td>
+                        <td>location just before bbb</td>
+                    </tr>
+                    <tr>
+                        <td><code>#epubcfi=/2/6/4!/2/4/10/2/1:3b</code></td>
+                        <td>location just after bbb, sticking "before"</td>
+                    </tr>
+                </table>
+                
+                <para>CFIs can also be used to cross-reference XML content inside the Publication. A relative 
+                    reference to a particular resource in the spine should be given (as usual), followed by CFI 
+                    which should be resolved starting from the
+                    document root. For instance, <filename>chapter02.xhtml</filename> might give a 
+                    reference to the last location in the previous example like this:</para>
+                
+                <informalexample>
+                    <synopsis><code><![CDATA[
 ...
 <a href="chapter01.xhtml#epubcfi(/2/4/10/2/1:3b)">location</a>
 ...
-			]]></code></para>
+			]]></code></synopsis>
+                </informalexample>
+            </section>
         </section>
     </chapter>
 
