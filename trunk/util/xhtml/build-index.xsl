@@ -16,11 +16,11 @@
         <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                <title>EPUB3 Drafts - Index</title>
+                <title>EPUB 3 Drafts - Index</title>
                 <link rel="stylesheet" type="text/css" href="epub-spec.css" />
             </head>    
             <body>
-                <h1>EPUB3 Drafts - Index</h1>
+                <h1>EPUB 3 Drafts - Index</h1>
                 <dl>
                 <dt>Specifications</dt>                
                 <xsl:for-each select="tokenize($file-list-fixed,';')">
