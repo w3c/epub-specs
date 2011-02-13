@@ -7,6 +7,8 @@
     
     <!-- TODO ssml attrs nesting etc -->
     <!-- TODO xh5 tests -->
+    <!-- meter nesting meter -->
+    <!-- TODO if sem infl attr is used, html/@profile must be set -->
     
 </schema>
 
