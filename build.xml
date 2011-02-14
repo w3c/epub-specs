@@ -52,6 +52,7 @@
 	<property name="xslt.switch"  value="${dir.util.docbook}/switch.xsl" />
 	<property name="xslt.olink"  value="${dir.util.docbook}/olink.xsl" />
 	<property name="xslt.link-decorator"  value="${dir.util.docbook}/link-decorator.xsl"/>
+	<property name="xslt.catalog"  value="${dir.util}/catalog.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 		
 	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
@@ -60,8 +61,7 @@
 		<fileset dir="${dir.lib}" includes="**/*.jar" />	
 	    <pathelement path="${java.class.path}"/>  
 	</path>
-
-
+	
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!--   b u i l d - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -71,7 +71,8 @@
 		build-vocabs,
 		build-profiles,
 		build-specs,
-		build-schemas,		
+		build-schemas,	
+		build-schema-catalog,
 		build-index,
 		build-archives, 
 		copy-css" />
@@ -332,6 +333,20 @@
 		
 		<copy file="${dir.temp}/epub30-${TODAY}.zip" todir="${dir.build}" />
 		
+	</target>
+	
+	<target name="build-schema-catalog">		
+		<fileset id="build.contents" dir="${dir.build.schema}" includes="**/*.*"/>
+		<property name="prop.schemadir.contents" refid="build.contents"/>
+		<!-- in is a dummy -->
+		<saxon-xslt 
+			classpathref="build.classpath"
+			in="${schema.epub.package.sch}" 
+			out="${dir.build.schema}/catalog.xml"		
+			style="${xslt.catalog}">			
+			<param name="list" expression="${prop.schemadir.contents}"/>
+			<param name="www-base" expression="http://www.idpf.org/epub/30/schema/"/>			
+		</saxon-xslt>		
 	</target>
 	
 	
