@@ -21,6 +21,7 @@
 	<property name="dir.util.xhtml" value="${dir.util}/xhtml" />
 	<property name="dir.util.xhtml.dtd.catalog" value="${dir.util.xhtml}/dtd" />
 	<property name="dir.util.rdf" value="${dir.util}/rdf" />
+	<property name="dir.util.java" value="${dir.util}/java" />
 	
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.lib" value="${basedir}/lib" />	
@@ -60,6 +61,7 @@
 	<path id="build.classpath">
 		<fileset dir="${dir.lib}" includes="**/*.jar" />	
 	    <pathelement path="${java.class.path}"/>  
+		<pathelement path="${dir.util.java}" />
 	</path>
 	
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -77,7 +79,7 @@
 		build-archives, 
 		copy-css" />
 
-	<target name="build-specs" depends="clean, copy-css"> <!-- , validate-src-specs, validate-spec-examples" -->
+	<target name="build-specs" depends="clean, copy-css, compile"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
 		<!-- make a separate copy for the vocab injects to work on -->
 		<mkdir dir="${dir.temp.spec}/00" />
@@ -112,7 +114,14 @@
 					style="${xslt.biblio-cleaner}">
 		</saxon-xslt>
 		
-		<!-- run the terminology preprocess xslt -->
+		<!-- run the terminology preprocess class -->
+		<java classname="org.idpf.docbook.GlosslistHandler" fork="true" failonerror="true" maxmemory="512m">			
+			<arg value="${dir.temp.spec}/20/"/>
+			<arg value="${dir.temp.spec}/30/"/>								
+			<classpath refid="build.classpath" />
+		</java>
+		
+		<!-- run the terminology preprocess xslt 
 		<mkdir dir="${dir.temp.spec}/30" />
 		<saxon-xslt description="filters out unreferenced glossentries"
 					classpathref="build.classpath"
@@ -121,7 +130,7 @@
 					destdir="${dir.temp.spec}/30/"
 					extension=".xml" 			
 					style="${xslt.terminology-cleaner}">
-		</saxon-xslt>
+					</saxon-xslt> -->
 		
 		<!-- run the switch preprocess xslt -->		
 		<mkdir dir="${dir.temp.spec}/40" />
@@ -179,6 +188,12 @@
 			<fileset dir="${dir.build.spec}" includes="*.html"/>			
 		</xmlvalidate>
 				
+	</target>
+
+	<target name="compile">
+		<javac srcdir="${dir.util.java}" destdir="${dir.util.java}" debug="on" source="1.5">
+			<classpath refid="build.classpath" />
+		</javac>
 	</target>
 
 	<target name="build-schemas" depends="clean"> <!-- , validate-src-rng-schemas" -->
