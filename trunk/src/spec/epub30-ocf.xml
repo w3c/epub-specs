@@ -71,9 +71,9 @@
         <section xml:id="sec-overview-purpose-and-scope">
             <title>Purpose and Scope</title>
             <para>This specification, EPUB Open Container Format (OCF) 3.0, defines a file format
-                and processing model for encapsulating the set of related resources that comprises
-                an <link linkend="gloss-epub-publication">EPUB® Publication</link>, and optionally
-                also alternate renditions thereof, into a single-file container. It also defines a
+                and processing model for encapsulating the set of related resources that comprise
+                an <link linkend="gloss-epub-publication">EPUB® Publication</link> — including
+                any alternate renditions — into a single-file container. It also defines a
                 standard method for obfuscating embedded fonts for those EPUB publications that
                 require this functionality. </para>
 
@@ -133,7 +133,7 @@
     <chapter xml:id="sec-intro">
         <title>Introduction</title>
 
-        <para>OCF collects a related collection of publication resources into a predictable,
+        <para>OCF collects a related set of publication resources into a predictable,
             machine-readable structure, encapsulated in a single file. The standardized container
             structure enables easy transport of, management of, and random access to, the
             collection.</para>
@@ -160,8 +160,8 @@
 
         <para>OCF defines the rules for structuring the file collection in the abstract: the
             “abstract container”. It also defines the rules for the representation of this abstract
-            container within a ZIP archive (the "physical container"). The rules for ZIP physical
-            containers build upon and are backward compatible with the ZIP technologies used by
+            container within a ZIP archive: the "physical container". The rules for ZIP physical
+            containers build upon, and are backward compatible with, the ZIP technologies used by
                 <xref linkend="refODF"/>. OCF also defines a standard method for obfuscating
             embedded fonts for those EPUB publications that require this functionality.</para>
 
@@ -170,7 +170,7 @@
         <title>OCF Abstract Container</title>
         <section xml:id="sec-container-abstract-overview">
             <title>Overview</title>
-            <para>An “OCF Abstract Container” defines a file system model for the contents of the
+            <para>An OCF Abstract Container defines a file system model for the contents of the
                 container. The file system model uses a single common root directory for all of the
                 contents of the container. All (non-remote) resources for embedded publications are
                 located within the directory tree headed by the container’s root directory, although
@@ -285,7 +285,7 @@
         </section>
         <section xml:id="sec-container-filenames">
             <title>File Names</title>
-            <para>The term <literal>File Name</literal> represents the name of any type of file,
+            <para>The term File Name represents the name of any type of file,
                 either a directory or an ordinary file within a directory within an OCF Abstract
                 Container. For a given directory within the OCF Abstract Container, the Path Name is
                 a string holding all directory names in the full path concatenated together with a
@@ -300,15 +300,14 @@
             <para>The following statements apply to Conforming OCF Abstract Containers:</para>
             <itemizedlist>
                 <listitem>
-                    <para>File Names must be UTF-8 <xref linkend="refUnicode5"/> encoded with the
-                        restrictions below</para>
+                    <para>File Names must be UTF-8 <xref linkend="refUnicode5"/> encoded.</para>
                 </listitem>
                 <listitem>
-                    <para>When represented as UTF-8, File Names must not exceed 255 bytes</para>
+                    <para>File Names must not exceed 255 bytes.</para>
                 </listitem>
                 <listitem>
-                    <para>When represented as UTF-8, the Path Name for any directory or file within
-                        the Abstract Container must not exceed 65535 bytes</para>
+                    <para>The Path Name for any directory or file within
+                        the Abstract Container must not exceed 65535 bytes.</para>
                 </listitem>
                 <listitem>
                     <para>File Names must not use the following characters, as these characters may
@@ -362,7 +361,7 @@
                 <para>Some commercial ZIP tools do not support the full Unicode range and may only
                     support the ASCII range for File Names. Content creators who want to use ZIP
                     tools that have these restrictions may find it is best to restrict their File
-                    Names to the ASCII range. If the names of files can not be preserved during the
+                    Names to the ASCII range. If the names of files cannot be preserved during the
                     unzipping process, it will be necessary to compensate for any name translation
                     which took place when the files are referenced by URI from within the
                     content.</para>
@@ -380,8 +379,8 @@
                 defined in <olink type="epub-spec" targetdoc="publications"
                     targetptr="sec-xml-constraints"/>.</para>
 
-            <para>Including other files than the ones defined below in the
-                    <filename>META-INF</filename> directory is allowed; OCF Processors must not fail
+            <para>Files other than the ones defined below may be included in the
+                    <filename>META-INF</filename> directory; OCF Processors must not fail
                 when encountering such files.</para>
 
             <section xml:id="sec-container-metainf-container.xml">
@@ -399,12 +398,12 @@
                 <para>The schema for <filename>container.xml</filename> files is available in <xref
                         linkend="app-schema-container"/>. Conforming
                         <filename>container.xml</filename> files must be valid according to this
-                    schema after removing all elements (and child nodes of these elements) and
-                    attributes from other namespaces.</para>
+                    schema after removing all elements and
+                    attributes from other namespaces (including all child nodes of such elements).</para>
                 <!-- TODO either remove this anyname allowance, or make the schema support it natively. -->
 
-                <para>The <code>rootfiles</code> element must contain at least one
-                        <code>rootfile</code> element, each of which must uniquely reference a
+                <para>The <code>rootfiles</code> element must contain one or more
+                        <code>rootfile</code> elements, each of which must uniquely reference a
                     single rendition of the contained publication.</para>
 
                 <remark role="todo">TODO: consider supporting human-readable label and/or
@@ -442,16 +441,16 @@
                         linkend="gloss-package-document"/> specifies the one and only manifest used
                     for EPUB processing. Ancillary manifest information contained in the ZIP archive
                     or in the optional <filename>manifest.xml</filename> file must not be used for
-                    EPUB processing purposes. Any extra files in the ZIP archive (i.e., files within
-                    the ZIP archive that are not listed within the package files’
-                        <code>manifest</code> element, such as META-INF files or alternate derived
-                    renditions of the publication) must not be used in the processing of the EPUB
-                    publication.</para>
+                    EPUB processing purposes. Any extra files in the ZIP archive must not be used 
+                    in the processing of the EPUB publication (i.e., files within the ZIP archive that are 
+                    not listed within the package files’ <code>manifest</code> element, such as 
+                    <filename>META-INF</filename> files or alternate derived
+                    renditions of the publication).</para>
 
                 <para>The value of the <code>full-path</code> attribute must contain a <literal>path
                         component</literal> (as defined by <link linkend="refRFC3986"
                     >RFC3986</link>) which must only take the form of a
-                        <literal>path-rootless</literal> (as defined by RFC3986). The path
+                        <literal>path-rootless</literal> (also defined by RFC 3986). The path
                     components are relative to the root of the container in which they are
                     used.</para>
 
@@ -484,8 +483,8 @@
                 <para>The schema for <filename>encryption.xml</filename> files is available in <xref
                         linkend="app-schema-encryption"/>. Conforming
                         <filename>signatures.xml</filename> files must be valid according to this
-                    schema after removing all elements (and child nodes of these elements) and
-                    attributes from other namespaces.</para>
+                    schema after removing all elements and
+                    attributes from other namespaces (including all child nodes of such elements).</para>
 
                 <para>When the <filename>encryption.xml</filename> file is not present, the OCF
                     Abstract Container provides no information indicating any part of the container
@@ -493,7 +492,7 @@
 
                 <para>OCF encrypts individual files independently, trading off some security for
                     improved performance, allowing the container contents to be incrementally
-                    decrypted. Encryption in this way still exposes the directory structure and file
+                    decrypted. Encryption in this way exposes the directory structure and file
                     naming of the whole package.</para>
 
                 <para>OCF uses XML Encryption <xref linkend="refXMLENCCORE"/> to provide a framework
@@ -509,18 +508,18 @@
                     example, if an image named <filename>photo.jpeg</filename> is encrypted, the
                     contents of the <filename>photo.jpeg</filename> resource should be replaced by
                     its encrypted contents. When stored in a ZIP container, streams of data must be
-                    compressed before they are encrypted; Deflate compression must be used. Within
+                    compressed before they are encrypted and Deflate compression must be used. Within
                     the ZIP directory, encrypted files should be stored rather than
                     Deflate-compressed.</para>
 
-                <para> It may be desired to obfuscate the storage of embedded fonts referenced by an
-                    EPUB Publication to tie them to the “parent” publication and make them more
+                <para> Some situations require obfuscating the storage of embedded fonts 
+                    referenced by an EPUB Publication to tie them to the “parent” publication and make them more
                     difficult to extract for unrestricted use. In these cases,
                         <filename>encryption.xml</filename> should be used to provide requisite font
                     decoding information according to <xref linkend="font-obfuscation"/>.</para>
 
-                <para>The following files must never be encrypted (regardless of whether default or
-                    specific encryption is requested):</para>
+                <para>The following files must never be encrypted, regardless of whether default or
+                    specific encryption is requested:</para>
                 <simplelist>
                     <member><filename>mimetype</filename></member>
                     <member><filename>META-INF/container.xml</filename></member>
@@ -533,8 +532,9 @@
                             />)</filename></member>
                 </simplelist>
 
-                <para>Signed resources may subsequently be encrypted by using the Decryption
-                    Transform for XML Signature. This feature enables an application such as an OCF
+                <para>Signed resources may subsequently be encrypted using the Decryption
+                    Transform for XML Signature <xref linkend="refXMLSIGDecrypt"/>. This feature enables 
+                    an application such as an OCF
                     agent to distinguish data that was encrypted before signing from data that was
                     encrypted after signing. Only data that was encrypted after signing must be
                     decrypted before computing the digest used to validate the signature.</para>
@@ -554,8 +554,8 @@
             <section xml:id="sec-container-metainf-manifest.xml">
                 <title>Manifest – META-INF/manifest.xml (Optional)</title>
                 <para>An optional file with the reserved name <filename>manifest.xml</filename>
-                    within the <filename>META-INF</filename> directory at the root level of the
-                    container may appear in a valid OCF Abstract Container. If present, the content
+                    may be included within the <filename>META-INF</filename> 
+                    directory at the root level of the container file system. If present, the content
                     of this file must be as defined in the <link linkend="refODFManifestSchema">ODF
                         1.0 manifest schema</link>.</para>
                 <para>The <filename>manifest.xml</filename> file, if present, must not be
@@ -563,32 +563,33 @@
             </section>
             <section xml:id="sec-container-metainf-metadata.xml">
                 <title>Metadata – META-INF/metadata.xml</title>
-                <para>A file with the reserved name <filename>metadata.xml</filename> within the
+                <para>An optional file with the reserved name <filename>metadata.xml</filename> 
+                    may be included within the
                         <filename>META-INF</filename> directory at the root level of the container
-                    file system may appear in a valid OCF Abstract Container. This file, if present,
-                    must be used for container-level metadata. In version 3.0 of OCF, no such
-                    container-level metadata is specified.</para>
+                    file system. This file, if present,
+                    must be used for container-level metadata. This version of the OCF specification does
+                    not specify any container-level metadata.</para>
                 <para>If the <filename>META-INF/metadata.xml</filename> file is present, its
                     contents should be only namespace-qualified elements <xref
                         linkend="refXMLNamespaces"/> to avoid collision with future versions of OCF
-                    that may specify a particular format this file.</para>
+                    that may specify a particular format for this file.</para>
                 <para>The <filename>metadata.xml</filename> file, if present, must not be
                     encrypted.</para>
             </section>
             <section xml:id="sec-container-metainf-rights.xml">
                 <title>Rights Management – META-INF/rights.xml</title>
-                <para>An optional file with the name <filename>rights.xml</filename> within the
-                        <filename>META-INF</filename> directory at the root level of the container
-                    file system is a reserved name in a valid OCF Abstract Container. This location
+                <para>An optional file with the reserved name <filename>rights.xml</filename> may
+                    be included within the <filename>META-INF</filename> 
+                    directory at the root level of the container file system. This file
                     is reserved for digital rights management (DRM) information for trusted exchange
-                    of Publications among rights holders, intermediaries, and users. In version 3.0
-                    of OCF, there is not a required format for DRM information, but a future version
-                    of this specification may specify a particular format for DRM
+                    of Publications among rights holders, intermediaries, and users. This version of the
+                    OCF specification does not specify a required format for DRM information, but a future version
+                    may specify a particular format for DRM
                     information.</para>
                 <para>If the <filename>META-INF/rights.xml</filename> file is present, its contents
                     should be only namespace-qualified elements <xref linkend="refXMLNamespaces"/>
                     to avoid collision with future versions of OCF that may specify a particular
-                    format this file.</para>
+                    format for this file.</para>
                 <para>The <filename>rights.xml</filename> file must not be encrypted.</para>
                 <para>When the <filename>rights.xml</filename> file is not present, the OCF
                     container provides no information indicating any part of the container is rights
@@ -597,7 +598,7 @@
             <section xml:id="sec-container-metainf-signatures.xml">
                 <title>Digital Signatures – META-INF/signatures.xml</title>
 
-                <para>An optional <filename>signatures.xml</filename> file within the
+                <para>An optional <filename>signatures.xml</filename> within the
                         <filename>META-INF</filename> directory at the root level of the container
                     file system holds digital signatures of the container and its contents. This
                     file is an XML document whose root element is <code>signatures</code>. The
@@ -617,8 +618,8 @@
                 <para>The schema for <filename>signatures.xml</filename> files is available in <xref
                         linkend="app-schema-signatures"/>. Conforming
                         <filename>signatures.xml</filename> files must be valid according to this
-                    schema after removing all elements (and child nodes of these elements) and
-                    attributes from other namespaces.</para>
+                    schema after removing all elements and
+                    attributes from other namespaces (including all child nodes of such elements).</para>
 
                 <para>When an OCF agent creates a signature of data in a container, it should add
                     the new signature as the last child <code>Signature</code> element of the
@@ -687,7 +688,7 @@
         <title>OCF Physical Container: The ZIP Container</title>
         <section conformance="informative" xml:id="sec-container-zip-overview">
             <title>Overview</title>
-            <para>An “OCF ZIP Container” is a physical single-file manifestation of an <link
+            <para>An OCF ZIP Container is a physical single-file manifestation of an <link
                     linkend="sec-container-abstract">abstract container</link>.</para>
         </section>
         <section xml:id="sec-zip-container-zipreqs">
@@ -833,8 +834,8 @@
                 OPF/OPS provides. </para>
             <para>In order to discourage reuse of the font, some font vendors may allow use of their
                 fonts in EPUB publications if those fonts are bound in some way to the publication.
-                That is, if the font file can not be installed directly for use on an operating
-                system with the built-in tools of that computing device, and it can not be directly
+                That is, if the font file cannot be installed directly for use on an operating
+                system with the built-in tools of that computing device, and it cannot be directly
                 used by other EPUB publications. It is beyond the scope of this document to provide
                 a digital rights management or enforcement system for font files. It will instead
                 propose a method of obfuscation that will require additional work on the part of the
@@ -1068,7 +1069,7 @@ application/epub+zip
             <varlistentry>
                 <term>Security considerations:</term>
                 <listitem>
-                    <para>All processors that read OCF files should rigourously check the size and
+                    <para>All processors that read OCF files should rigorously check the size and
                         validity of data retrieved.</para>
                     <para>In addition, because of the various content types that can be embedded in
                         OCF files, it is possible that “application/epub+zip” may describe content
