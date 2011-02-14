@@ -35,11 +35,11 @@
                 </xsl:for-each>
                 </dl>
                 <dl>
-                    <dt>Schemas</dt>                
+                    <dt>Schemas (<a href="schema/catalog.xml">catalog</a>)</dt>                
                     <xsl:for-each select="tokenize($file-list-fixed,';')">                        
                         <xsl:variable name="path" select="current()"/>
                         <xsl:choose>
-                            <xsl:when test="starts-with($path, 'schema/') and not(starts-with($path, 'schema/mod')) and not(contains($path, 'ncx'))">
+                            <xsl:when test="starts-with($path, 'schema/') and not(starts-with($path, 'schema/mod')) and not(contains($path, 'catalog'))">
                                 <dd>
                                     <a href="{$path}"><xsl:value-of select="substring-after($path,'/')"/></a>
                                 </dd>
