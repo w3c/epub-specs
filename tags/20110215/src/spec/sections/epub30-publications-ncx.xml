@@ -1,0 +1,989 @@
+<chapter xml:id="sec-ncx" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>NCX Documents</title>
+
+    <section xml:id="sec-ncx-introduction" conformance="informative">
+        <title>Introduction</title>
+        <para> In order to increase efficacy and richness of navigation, EPUB Publications include a
+            "Navigation Center eXtended," the NCX. The NCX provides a means for the author to
+            provide a multi-purpose declarative global navigation layer that is independent of the
+            content it references.</para>
+        <para>The NCX was originally standardized by the DAISY Consortium, as defined in Section 8
+            of <!-- olink type="epub-spec" targetdoc="publications" targetptr="refZ39862005"/ -->
+            <xref linkend="refZ39862005"/> . The EPUB specification defines its own schema (XML
+            grammar) for the NCX content type, as some multimedia and metadata components from the
+            DAISY specification are not included.</para>
+        <section xreflabel="Key NCX Components" xml:id="sec-ncx-introduction-key-components">
+            <title>Key NCX Components</title>
+            <para>The following are the key components of the NCX document:</para>
+            <variablelist>
+                <varlistentry xml:id="ncx-intro-navmap">
+                    <term><code>navMap</code></term>
+                    <listitem>
+                        <para>The <code><xref linkend="elemdef-ncx-navMap"/></code> exposes the
+                            hierarchical structure of the EPUB Publication. The provided structure
+                            is global, (i.e., it transcends the boundaries of each individual <!-- xref
+                            linkend="gloss-content-document-epub"/ -->
+                            <olink type="epub-spec" targetdoc="contentdocs"
+                                targetptr="gloss-content-document-epub"/> in the <!-- olink type="epub-spec"
+                                targetdoc="publications" targetptr="sec-spine-elem"/ -->
+                            <!-- xref linkend="sec-spine-elem" / -->
+                            <link linkend="sec-spine-elem">spine</link>).</para>
+                        <para>In terms of the number of links provided, the <code>navMap</code> is
+                            often more extensive than a traditional print table of contents.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry xml:id="ncx-intro-navlists">
+                    <term><code>navList</code></term>
+                    <listitem>
+                        <para>A <code><xref linkend="elemdef-ncx-navList"/></code> is a container
+                            for non-hierarchical navigational information that is secondary to the
+                                <code>navMap</code>.</para>
+                        <para>Multiple <code>navList</code>s can be provided, either representing
+                            constructs with homogenous semantics (such as list of illustrations, or
+                            all quotes of a certain author in an anthology) or with heterogenous
+                            semantics (such as the <xref linkend="sec-ncx-navList-landmarks"
+                            />).</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry xml:id="ncx-intro-pagelist">
+                    <term><code>pageList</code></term>
+                    <listitem>
+                        <para>The <code><xref linkend="elemdef-ncx-pageList"/></code> is a
+                            special-purpose <code>navList</code> that allows representing the
+                            location of page boundaries present in a print source. Metadata for
+                            bibliographical identification of the print source can be defined via
+                            the <xref linkend="elemdef-ncx-navMeta"/> element (and its <xref
+                                linkend="elemdef-ncx-meta"/> children).</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
+        <section xml:id="sec-ncx-introduction-metadata">
+            <title>NCX Metadata</title>
+            <para>The NCX provides two mechanisms for expressing metadata:</para>
+            <variablelist>
+                <varlistentry>
+                    <term>Document metadata</term>
+                    <listitem>
+                        <para>The NCX <code><xref linkend="elemdef-ncx-head"/></code> element allows
+                            the expression of metadata concerning the NCX Document as a whole. This
+                            version of this specification does not require head metadata to be
+                            provided.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Link target metadata</term>
+                    <listitem>
+                        <para>The <code>epub:type</code> attribute, as occurring on the <xref
+                                linkend="elemdef-ncx-navList"/>, <xref
+                                linkend="elemdef-ncx-navPoint"/> and <xref
+                                linkend="elemdef-ncx-navTarget"/> elements, provides
+                            machine-readable metadata about the structural semantics of link
+                            target(s). Converserly, the <xref linkend="elemdef-ncx-navLabel"/>
+                            element provides human-readable information.</para>
+
+                        <para>Additionally, the <xref linkend="elemdef-ncx-navMeta"/> element can be
+                            used to define metadata information (using the <xref
+                                linkend="elemdef-ncx-meta"/> element) for the <xref
+                                linkend="elemdef-ncx-navList"/>, <xref linkend="elemdef-ncx-navMap"
+                            /> and <xref linkend="elemdef-ncx-pageList"/> containers, as well as for
+                            the <xref linkend="elemdef-ncx-navPoint"/>, <xref
+                                linkend="elemdef-ncx-navTarget"/> and <xref
+                                linkend="elemdef-ncx-pageTarget"/> elements.</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+            <para>Mappings to metadata vocabularies used when expressing document and link target
+                metadata are created using the <xref linkend="attrdef-ncx-profile"/> and <xref
+                    linkend="attrdef-ncx-prefix"/> attributes on the <xref linkend="elemdef-ncx-ncx"
+                /> root element
+                <!-- link linkend="elemdef-ncx-ncx"
+                    >NCX root element</link -->.
+                The <!-- olink type="epub-spec" targetdoc="publications"
+                    targetptr="refEPUBStructureVocab"/ -->
+                <link linkend="refEPUBStructureVocab">EPUB Structural Semantics Vocabulary</link> is
+                the default metadata vocabulary of the NCX. </para>
+        </section>
+    </section>
+    <section xml:id="sec-ncx-content-conf">
+        <title>NCX Document Content Conformance</title>
+
+        <simplelist role="conformance-list">
+            <member role="conformance-item">An NCX Document must be a well-formed XML Document <xref
+                    linkend="refXML"/>.</member>
+            <member role="conformance-item">An NCX Document must be encoded in UTF-8 or UTF-16 <xref
+                    linkend="refUnicode5"/>.</member>
+            <member role="conformance-item">An NCX Document must be valid to the NCX Document schema
+                as defined in <!-- olink type="epub-spec" targetdoc="publications"
+                    targetptr="app-ncx-schema"/ -->
+                <xref linkend="app-ncx-schema"/>, and in addition must conform to all content
+                conformance constraints expressed in <xref linkend="sec-ncx-def"/>.</member>
+            <!-- not needed since we forbid external markup declarations
+            <member role="conformance-item">The NCX Document filename should use the file extension
+                <filename>.ncx</filename>. Any document fragments (included via
+                external general entities <xref linkend="refXML"/> should not use the
+                <filename>.ncx</filename> extension. </member> -->
+        </simplelist>
+    </section>
+    <section xml:id="sec-ncx-reading-system-conformance">
+        <title>NCX Reading System Conformance</title>
+
+        <simplelist role="conformance-list">
+            <member role="conformance-item">EPUB Reading Systems must provide means to reach parts
+                of a publication based on the information available within the NCX, by exposing the
+                hierarchical navigation structure and the navigation lists specified by
+                    <code>navMap</code>, <code>navList</code> and <code>pageList</code>. </member>
+            <member role="conformance-item">EPUB Reading Systems must use human-readable
+                descriptions encoded within the <code>navLabel</code> element as authoritative
+                information for rendering the hierarchical navigation structure and the navigation
+                lists.</member>
+        </simplelist>
+        <!--  ? -->
+    </section>
+    <section xml:id="sec-ncx-def">
+        <title>NCX Document Definition</title>
+
+        <para>In the following section and its subsections, all elements defined are in the
+                <literal>http://www.daisy.org/z3986/2005/ncx/</literal> namespace unless otherwise
+            specified.</para>
+
+        <section xml:id="sec-ncx-ncx-elem">
+            <title>The <literal>ncx</literal> Element</title>
+
+            <variablelist xreflabel="ncx" role="elem-synopsis" xml:id="elemdef-ncx-ncx">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>ncx</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>ncx</literal> element is the root of the NCX
+                            Document.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry xml:id="attrdef-version-ncx">
+                                <term><literal>version</literal>
+                                    <option>[required]</option></term>
+                                <listitem>
+                                    <para>Specifies the EPUB specification version to which the
+                                        publication adheres. In this version of this specification,
+                                        this attribute must have the value
+                                        <literal>3.0</literal>.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="attrdef-ncx-profile" xreflabel="profile">
+                                <term><literal>profile</literal>
+                                    <option>[required]</option></term>
+                                <listitem>
+                                    <para>Specifies the URI of the metadata profile <xref
+                                            linkend="refRDFa11Core"/> for the NCX Document.</para>
+                                    <para>In this version of this specification, the value of this
+                                        attribute must have the value
+                                            <literal>http://www.idpf.org/TODO</literal><remark
+                                            role="todo">TODO</remark>.</para>
+                                    <para>Refer to <xref linkend="sec-ncx-introduction-metadata"/>
+                                        for more information.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="attrdef-ncx-prefix" xreflabel="prefix">
+                                <term><literal>prefix</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <para>Specifies metadata prefix values additional to those
+                                        defined via the <code>ncx</code> element <xref
+                                            linkend="attrdef-ncx-profile"/> attribute <xref
+                                            linkend="refRDFa11Core"/>.</para>
+                                    <para>Refer to <xref linkend="sec-ncx-introduction-metadata"/>
+                                        for more information.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>xml:lang</literal>
+                                    <option>[required]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/xmllang-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>dir</literal>
+                                    <option>[optional]</option></term>
+                                <xi:include href="../share/dir-prose-listitem.xml"/>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>In this order: <literal><xref linkend="elemdef-ncx-head"/></literal>
+                            <option>[optional]</option>, <literal><xref linkend="elemdef-ncx-navMap"
+                                /></literal>
+                            <option>[required]</option>, <literal><xref
+                                    linkend="elemdef-ncx-pageList"/></literal>
+                            <option>[optional]</option>, <literal><xref
+                                    linkend="elemdef-ncx-navList"/></literal>
+                            <option>[optional] (one or many)</option>, </para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
+        <section xml:id="sec-ncx-head-elem">
+            <title>The <code>head</code> Element</title>
+
+            <para>The NCX <code>head</code> element contains document-wide metadata.</para>
+
+            <variablelist xreflabel="head" role="elem-synopsis" xml:id="elemdef-ncx-head">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>head</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>head</literal> element is the optional first child of the
+                                <xref linkend="elemdef-ncx-ncx"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <para>None.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para><xref linkend="elemdef-ncx-meta"/> (0 or more)</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
+        <section xml:id="sec-ncx-meta-elem">
+            <title>The <code>meta</code> Element</title>
+
+            <para>The NCX <code>meta</code> element specifies metadata information.</para>
+
+            <variablelist xreflabel="meta" role="elem-synopsis" xml:id="elemdef-ncx-meta">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>meta</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>As a child of the <xref linkend="elemdef-ncx-head"/> and the <xref
+                                linkend="elemdef-ncx-navMeta"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry xml:id="attrdef-ncx-property" xreflabel="property">
+                                <term><literal>property</literal>
+                                    <option>[required]</option></term>
+                                <listitem>
+                                    <para>A space separated list of CURIEs as defined by <xref
+                                            linkend="refRDFa11Core"/>, using metadata vocabulary
+                                        mappings defined via the <code>ncx</code>
+                                        <xref linkend="attrdef-ncx-profile"/> or <xref
+                                            linkend="attrdef-ncx-prefix"/> attributes.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>Text, representing the value of this metadata item</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
+
+        <section xml:id="sec-ncx-navMap-elem">
+            <title>The <literal>navMap</literal> Element</title>
+
+            <para>The NCX <code>navMap</code> element is a container for primary navigational
+                information. See the <xref linkend="sec-ncx-introduction-key-components"/> section
+                for a comparison of the main NCX navigation features.</para>
+
+            <variablelist xreflabel="navMap" role="elem-synopsis" xml:id="elemdef-ncx-navMap">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>navMap</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>navMap</literal> element is the required second child of
+                            the <xref linkend="elemdef-ncx-ncx"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                /></literal>
+                            <option>[optional]</option>, <literal><xref
+                                    linkend="elemdef-ncx-navLabel"/></literal>
+                            <option>[optional] (zero or more)</option>, <literal><xref
+                                    linkend="elemdef-ncx-navPoint"/></literal>
+                            <option>[required] (one or many)</option>, </para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+            <section xml:id="sec-ncx-navPoint-elem">
+                <title>The <literal>navPoint</literal> Element</title>
+
+                <para>The NCX <code>navPoint</code> element specifies a pointer to content and
+                    briefly describes the target.</para>
+
+                <para>The order (in the XML sense: depth-first traversal) of the
+                        <code>navPoint</code> elements must follow the order of the elements pointed
+                    to in the target <olink type="epub-spec" targetdoc="contentdocs"
+                        targetptr="gloss-content-document-epub"/>
+                    <!-- xref linkend="gloss-content-document-epub"/ -->. </para>
+
+                <variablelist xreflabel="navPoint" role="elem-synopsis"
+                    xml:id="elemdef-ncx-navPoint">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>navPoint</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Usage</term>
+                        <listitem>
+                            <para>There are one or many <literal>navPoint</literal> elements as last
+                                children of the <xref linkend="elemdef-ncx-navMap"/> element.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <xi:include href="../share/id-prose-para.xml"/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry>
+                                    <term><literal>epub:type</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>An expression of the structural semantics of the link
+                                            target described by this <code>navPoint</code>.</para>
+                                        <para>The value is a whitespace separated list of CURIEs
+                                                <xref linkend="refRDFa11Core"/>. Refer to <xref
+                                                linkend="sec-ncx-introduction-metadata"/> for more
+                                            information.</para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                    /></literal>
+                                <option>[optional]</option>, <literal><xref
+                                        linkend="elemdef-ncx-navLabel"/></literal>
+                                <option>[required] (one or many)</option>, <literal><xref
+                                        linkend="elemdef-ncx-content"/></literal>
+                                <option>[required]</option>, <literal><xref
+                                        linkend="elemdef-ncx-navPoint"/></literal>
+                                <option>[optional] (zero or more)</option>, </para>
+                        </listitem>
+                    </varlistentry>
+
+                </variablelist>
+
+            </section>
+        </section>
+
+        <section xml:id="sec-ncx-pageList-elem">
+            <title>The <literal>pageList</literal> Element</title>
+
+            <para>The NCX <code>pageList</code> element is a container for pagination information.
+                See the <xref linkend="sec-ncx-introduction-key-components"/> section for a
+                comparison of the main NCX navigation features.</para>
+
+            <variablelist xreflabel="pageList" role="elem-synopsis" xml:id="elemdef-ncx-pageList">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>pageList</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>pageList</literal> element is the optional third child of
+                            the <xref linkend="elemdef-ncx-ncx"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                /></literal>
+                            <option>[optional]</option>, <literal><xref
+                                    linkend="elemdef-ncx-navLabel"/></literal>
+                            <option>[optional] (zero or more)</option>, <literal><xref
+                                    linkend="elemdef-ncx-pageTarget"/></literal>
+                            <option>[required] (one or many)</option>, </para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+
+
+            <section xml:id="sec-pageTarget-elem">
+                <title>The <literal>pageTarget</literal> Element</title>
+
+                <para>The NCX <code>pageTarget</code> element specifies a pointer to content and
+                    briefly describes the target.</para>
+
+                <para> When a page break is present in the targeted <olink type="epub-spec"
+                        targetdoc="contentdocs" targetptr="gloss-content-document-epub"/>
+                    <!-- xref
+                        linkend="gloss-content-document-epub"/ --> (for
+                    example, an element with the epub:type="pagebreak" attribute), and when a page
+                    number is associated with this page break, then the <code>text</code> element in
+                    the <code>navLabel</code> of a <code>pageTarget</code> must contain the textual
+                    representation of the page number specified in the EPUB Content Document.
+                    Reading systems must use the <code>text</code> content of the
+                        <code>navLabel</code> as the authoritative rendering of the page number, and
+                    must enable direct navigation to the page break in the EPUB Content Document by
+                    using the <code>text</code> content of the <code>navLabel</code>. Note that
+                    there is no requirement for page numbers to be represented by numerical values,
+                    although of course this is a common authoring practice. </para>
+
+                <para>The order of the sequence of <code>pageTarget</code> elements must follow the
+                    order of the elements pointed to in the target EPUB Content Document, in the XML
+                    sense (depth-first traversal).</para>
+
+                <variablelist xreflabel="pageTarget" role="elem-synopsis"
+                    xml:id="elemdef-ncx-pageTarget">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>pageTarget</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Usage</term>
+                        <listitem>
+                            <para>There are one or many <literal>pageTarget</literal> elements as
+                                last children of the <xref linkend="elemdef-ncx-pageList"/>
+                                element.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <xi:include href="../share/id-prose-para.xml"/>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                    /></literal>
+                                <option>[optional]</option>, <literal><xref
+                                        linkend="elemdef-ncx-navLabel"/></literal>
+                                <option>[required] (one or many)</option>, <literal><xref
+                                        linkend="elemdef-ncx-content"/></literal>
+                                <option>[required]</option>
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </section>
+        </section>
+
+        <section xml:id="sec-ncx-navList-elem">
+            <title>The <literal>navList</literal> Element</title>
+
+            <para>The NCX <code>navList</code> element is a container for secondary navigational
+                information. See the <xref linkend="sec-ncx-introduction-key-components"/> section
+                for a comparison of the main NCX navigation features.</para>
+
+            <variablelist xreflabel="navList" role="elem-synopsis" xml:id="elemdef-ncx-navList">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>navList</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>There can be zero or more <literal>navList</literal> elements as the
+                            last children of the <xref linkend="elemdef-ncx-ncx"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry xml:id="attrdef-ncx-navList-epub-type"
+                                xreflabel="epub:type">
+                                <term><literal>epub:type</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <para>An expression of the structural semantics of the link
+                                        targets contained within this <code>navList</code>.</para>
+                                    <para>The value is a whitespace separated list of CURIEs <xref
+                                            linkend="refRDFa11Core"/>. Refer to <xref
+                                            linkend="sec-ncx-introduction-metadata"/> for more
+                                        information.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                /></literal>
+                            <option>[optional]</option>, <literal><xref
+                                    linkend="elemdef-ncx-navLabel"/></literal>
+                            <option>[required] (one or many)</option>, <literal><xref
+                                    linkend="elemdef-ncx-navTarget"/></literal>
+                            <option>[required] (one or many)</option>, </para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+            <section xml:id="sec-ncx-navList-landmarks" xreflabel="the landmarks navList">
+                <title>The <literal>landmarks</literal>
+                    <code>navList</code></title>
+
+                <para>The <literal>landmarks</literal>
+                    <code>navList</code> identifies fundamental structural components of the
+                    publication, in order to enable Reading Systems to provide the user effective
+                    access to them.</para>
+
+                <para>The <code>landmarks</code>
+                    <code>navList</code> is identified through the <literal>landmarks</literal>
+                    value of the <code>navList</code>
+                    <xref linkend="attrdef-ncx-navList-epub-type"/> attribute. The
+                        <literal>landmarks</literal>
+                    <code>navList</code> is optional, and must not occur more than once within an
+                    NCX Document instance.</para>
+
+                <para>The structural semantics of each link target within this <code>navList</code>
+                    is determined through the value of the <xref
+                        linkend="attrdef-ncx-navTarget-epub-type"/> attribute on the <code><xref
+                            linkend="elemdef-ncx-navTarget"/></code> descendants. The
+                        <code>epub:type</code> attribute is required on <code>navTarget</code>
+                    children of the <literal>landmarks</literal>
+                    <code>navList</code>.</para>
+
+                <informalexample>
+                    <para>The following example shows a <literal>landmarks</literal>
+                        <code>navList</code> with structural semantics drawn from the <!-- olink
+                            type="epub-spec" targetdoc="publications"
+                            targetptr="refEPUBStructureVocab"/ -->
+                        <link linkend="refEPUBStructureVocab">EPUB Structural Semantics
+                            Vocabulary</link>:</para>
+                    <synopsis>
+<xi:include href="../examples/publications/ncx-landmarks.xml" parse="text"/></synopsis>
+                </informalexample>
+
+            </section>
+            <section xml:id="sec-navTarget-elem">
+                <title>The <literal>navTarget</literal> Element</title>
+
+                <para>The NCX <code>navTarget</code> element specifies a pointer to content and
+                    briefly describes the target.</para>
+
+                <para>The order of the sequence of <code>navTarget</code> elements must follow the
+                    order of the elements pointed to in the target <olink type="epub-spec"
+                        targetdoc="contentdocs" targetptr="gloss-content-document-epub"/>
+                    <!-- xref
+                        linkend="gloss-content-document-epub"/ -->, in the
+                    XML sense (depth-first traversal).</para>
+
+                <variablelist xreflabel="navTarget" role="elem-synopsis"
+                    xml:id="elemdef-ncx-navTarget">
+                    <varlistentry>
+                        <term>Element Name</term>
+                        <listitem>
+                            <para><literal>navTarget</literal></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Usage</term>
+                        <listitem>
+                            <para>There are one or many <literal>navTarget</literal> elements as
+                                last children of the <xref linkend="elemdef-ncx-navList"/>
+                                element.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Attributes</term>
+                        <listitem>
+                            <variablelist role="elem-synopsis-attlist">
+                                <varlistentry>
+                                    <term><literal>id</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <xi:include href="../share/id-prose-para.xml"/>
+                                    </listitem>
+                                </varlistentry>
+                                <varlistentry xml:id="attrdef-ncx-navTarget-epub-type"
+                                    xreflabel="epub:type">
+                                    <term><literal>epub:type</literal>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>An expression of the structural semantics of the link
+                                            target described by this <code>navTarget</code>.</para>
+
+                                        <para>There is no strict requirement with regards to
+                                            semantic relationships between the value of the
+                                                <code>epub:type</code> attribute specified on the
+                                            corresponding <code>navList</code> container, and the
+                                            value of the <code>epub:type</code> attribute specified
+                                            on the <code>navTarget</code> child elements. A concrete
+                                            use-case for mixing heterogenous semantics within a
+                                            given <code>navList</code> is presented in <xref
+                                                linkend="sec-ncx-navList-landmarks"/>. </para>
+
+                                        <para>The value is a whitespace separated list of CURIEs
+                                                <xref linkend="refRDFa11Core"/>. Refer to <xref
+                                                linkend="sec-ncx-introduction-metadata"/> for more
+                                            information.</para>
+                                    </listitem>
+                                </varlistentry>
+                            </variablelist>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Content Model</term>
+                        <listitem>
+                            <para>In this order: <literal><xref linkend="elemdef-ncx-navMeta"
+                                    /></literal>
+                                <option>[optional]</option>, <literal><xref
+                                        linkend="elemdef-ncx-navLabel"/></literal>
+                                <option>[required] (one or many)</option>, <literal><xref
+                                        linkend="elemdef-ncx-content"/></literal>
+                                <option>[required]</option>
+                            </para>
+                        </listitem>
+                    </varlistentry>
+
+                </variablelist>
+
+            </section>
+        </section>
+
+        <section xml:id="sec-ncx-content-elem">
+            <title>The <literal>content</literal> Element</title>
+
+            <para>The NCX <code>content</code> element specifies a pointer to content.</para>
+
+            <variablelist xreflabel="content" role="elem-synopsis" xml:id="elemdef-ncx-content">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>content</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>content</literal> element is a required child of the
+                                <xref linkend="elemdef-ncx-navPoint"/>, <xref
+                                linkend="elemdef-ncx-navTarget"/>, <xref
+                                linkend="elemdef-ncx-pageTarget"/> elements. </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>src</literal>
+                                    <option>[required]</option></term>
+                                <listitem>
+                                    <para role="epubconf">A URI that must resolve to or within a
+                                        resource that is represented by an <xref
+                                            linkend="gloss-content-document-epub"/>.</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>Empty.</para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+
+        </section>
+
+        <section xml:id="sec-ncx-navMeta-elem">
+            <title>The <code>navMeta</code> Element</title>
+
+            <para>The NCX <code>navMeta</code> element groups metadata information.</para>
+
+            <variablelist xreflabel="navMeta" role="elem-synopsis" xml:id="elemdef-ncx-navMeta">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>navMeta</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>As an optional child of the <xref linkend="elemdef-ncx-navList"/>,
+                                <xref linkend="elemdef-ncx-navMap"/> and <xref
+                                linkend="elemdef-ncx-pageList"/> elements, as well as of the <xref
+                                linkend="elemdef-ncx-navPoint"/>, <xref
+                                linkend="elemdef-ncx-navTarget"/> and <xref
+                                linkend="elemdef-ncx-pageTarget"/> elements.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <para>None.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para><xref linkend="elemdef-ncx-meta"/> [required] (one or many)</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </section>
+
+        <section xml:id="sec-ncx-navLabel-elem">
+            <title>The <literal>navLabel</literal> Element</title>
+
+            <para>The NCX <code>navLabel</code> element briefly describes the target in the <olink
+                    type="epub-spec" targetdoc="contentdocs" targetptr="gloss-content-document-epub"/>
+                <!-- xref
+                    linkend="gloss-content-document-epub"/ -->. When applied to
+                    <code>navPoint</code>s, it generally contains the heading text of the referenced
+                section of the document.</para>
+
+            <para> There can be multiple <code>navLabel</code> elements, for example to provide
+                information in various languages. Several <code>navLabel</code> elements with the
+                same language (see <code>xml:lang</code> definition below) are forbidden. Since a
+                    <code>navLabel</code> element without the optional <code>xml:lang</code>
+                attribute inherits the language specified for the <xref linkend="elemdef-ncx-ncx"/>
+                top-level element, only one <code>navLabel</code> element without the
+                    <code>xml:lang</code> attribute is allowed. Reading systems should first attempt
+                to find a <code>navLabel</code> matching the language specified by user preferences,
+                secondly matching the language specified by the package's <!-- olink type="epub-spec" targetdoc="publications" targetptr="elemdef-opf-dclanguage"/ -->
+                <link linkend="elemdef-opf-dclanguage">dc:language</link> metadata element, thirdly
+                matching the language specified by the <code>xml:lang</code> attribute on the <xref
+                    linkend="elemdef-ncx-ncx"/> element, and lastly by defaulting to the first
+                available <code>navLabel</code> element (in XML document order).</para>
+
+            <variablelist xreflabel="navLabel" role="elem-synopsis" xml:id="elemdef-ncx-navLabel">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>navLabel</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>navLabel</literal> element is either optional or required
+                            depending on whether it describes the <xref linkend="elemdef-ncx-navMap"
+                            />, <xref linkend="elemdef-ncx-navList"/>, <xref
+                                linkend="elemdef-ncx-pageList"/>, <xref
+                                linkend="elemdef-ncx-navPoint"/>, <xref
+                                linkend="elemdef-ncx-navTarget"/>, <xref
+                                linkend="elemdef-ncx-pageTarget"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <variablelist role="elem-synopsis-attlist">
+                            <varlistentry>
+                                <term><literal>id</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/id-prose-para.xml"/>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>xml:lang</literal>
+                                    <option>[optional]</option></term>
+                                <listitem>
+                                    <xi:include href="../share/xmllang-prose-para.xml"/>
+                                    <para>When this attribute isn't provided, the language of the
+                                            <code>navLabel</code> element defaults to the
+                                            <code>xml:lang</code> value inherited from the <xref
+                                            linkend="elemdef-ncx-ncx"/> element.</para>
+                                </listitem>
+                            </varlistentry>
+                            <varlistentry>
+                                <term><literal>dir</literal>
+                                    <option>[optional]</option></term>
+                                <xi:include href="../share/dir-prose-listitem.xml"/>
+                            </varlistentry>
+                        </variablelist>
+
+                        <para>When the <code>dir</code> attribute isn't provided, the text direction
+                            defaults to the <code>dir</code> value inherited from the <xref
+                                linkend="elemdef-ncx-ncx"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>In this version of EPUB, the content model of the
+                                <literal>navLabel</literal> element is limited to text, as per the
+                                <xref linkend="elemdef-ncx-text"/> element. Future versions of EPUB
+                            may enable multimedia labels, using image and audio.</para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+
+        </section>
+
+        <section xml:id="sec-ncx-text-elem">
+            <title>The <literal>text</literal> Element</title>
+
+            <para>The NCX <code>text</code> element contains a unicode string of characters.</para>
+
+            <variablelist xreflabel="text" role="elem-synopsis" xml:id="elemdef-ncx-text">
+                <varlistentry>
+                    <term>Element Name</term>
+                    <listitem>
+                        <para><literal>text</literal></para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Usage</term>
+                    <listitem>
+                        <para>The <literal>text</literal> element is the required child of the <xref
+                                linkend="elemdef-ncx-navLabel"/> element.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Attributes</term>
+                    <listitem>
+                        <para>None.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>Content Model</term>
+                    <listitem>
+                        <para>The content model of the <literal>text</literal> element is unicode
+                            text.</para>
+                    </listitem>
+                </varlistentry>
+
+            </variablelist>
+
+        </section>
+
+    </section>
+
+    <section xml:id="sec-ncx-examples">
+        <title>NCX Examples</title>
+        <informalexample xml:id="sec-ncx-examples-1">
+            <para>The following example shows an NCX with a <literal>navMap</literal>, a
+                    <literal>pageList</literal>, and a <literal>navList</literal> containing a list
+                of illustrations</para>
+            <synopsis>
+<xi:include href="../examples/publications/ncx-1.xml" parse="text"/></synopsis>
+        </informalexample>
+    </section>
+
+
+</chapter>

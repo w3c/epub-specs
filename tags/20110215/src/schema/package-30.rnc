@@ -1,0 +1,89 @@
+      
+   #TODO guide/reference/@title required?
+   
+      
+   default namespace = "http://www.idpf.org/2007/opf"
+   namespace opf = "http://www.idpf.org/2007/opf"
+   namespace dc = "http://purl.org/dc/elements/1.1/"
+   
+   include "./mod/datatypes.rnc"
+   include "./mod/rdfa-attrs.rnc"
+   
+   start = opf.package
+   
+   
+   opf.package = element package { opf.package.attlist & opf.package.content }
+   opf.package.attlist &= opf.version.attr & opf.unique.identifier.attr & opf.id.attr? 
+      & opf.rdfa.profile.attr & rdfa.prefix.attr? & opf.i18n.attrs
+            
+   opf.version.attr = attribute version { '3.0' }
+   opf.rdfa.profile.attr = attribute profile { 'http://www.idpf.org/epub/30/profile/package/' }
+   opf.unique.identifier.attr = attribute unique-identifier { datatype.IDREF }
+   
+   opf.package.content = opf.metadata, opf.manifest, opf.spine, opf.guide?, opf.bindings?   
+
+
+   opf.metadata = element metadata { opf.metadata.attlist & opf.metadata.content }
+   opf.metadata.attlist &= opf.id.attr? & opf.i18n.attrs 
+   opf.metadata.content = opf.meta* & opf.link* & opf.meta.legacy 
+   
+   opf.meta = element meta { opf.meta.attlist & opf.meta.content }
+   opf.meta.attlist = opf.id.attr? & opf.property.attr & rdfa.about.attr? & opf.i18n.attrs 
+   opf.property.attr = attribute property { datatype.rdfa.CURIE }
+   opf.meta.content = datatype.text
+   
+   opf.link = element link { opf.link.attlist }
+   opf.link.attlist &= opf.href.attr & rdfa.rel.attr & rdfa.about.attr?
+      
+   opf.meta.legacy = opf.dc.identifier+ & opf.dc.title+ & opf.dc.language
+   opf.dc.identifier = element dc:identifier { opf.dc.attlist & opf.scheme.attr? & datatype.text }
+   opf.dc.title = element dc:title { opf.dc.attlist & opf.i18n.attrs & datatype.text }
+   opf.dc.language = element dc:language { opf.dc.attlist & datatype.languagecode }
+   
+   opf.dc.attlist = opf.id.attr? & attribute opf:prefer { datatype.IDREF }?
+   opf.scheme.attr = attribute opf:scheme { datatype.text }
+   
+   
+   opf.manifest = element manifest { opf.manifest.attlist & opf.manifest.content }
+   opf.manifest.attlist &= opf.id.attr?
+   opf.manifest.content = opf.item+
+   
+   
+   opf.item = element item { opf.item.attlist }
+   opf.item.attlist &= opf.id.attr & opf.href.attr & opf.media-type.attr & opf.fallback.attr? & opf.media-overlay.attr? & opf.properties.attr?  
+   
+   opf.fallback.attr = attribute fallback { datatype.IDREF }
+   opf.media-overlay.attr = attribute media-overlay { datatype.IDREF }
+   opf.properties.attr = attribute properties { datatype.rdfa.CURIEs }
+   
+   opf.spine = element spine { opf.spine.attlist & opf.spine.content }
+   opf.spine.attlist &= opf.id.attr? & opf.spine.toc.attr?
+   opf.spine.toc.attr = attribute toc { datatype.IDREF }
+   opf.spine.content = opf.itemref+
+   
+   
+   opf.itemref = element itemref { opf.itemref.attlist }
+   opf.itemref.attlist &= opf.itemref.idref.attr & opf.itemref.linear.attr? & opf.id.attr? & opf.properties.attr?
+   opf.itemref.idref.attr = attribute idref { datatype.IDREF }
+   opf.itemref.linear.attr = attribute linear { 'yes' | 'no' }
+   
+    
+   opf.guide = element guide { opf.reference+ }
+   opf.reference = element reference { opf.href.attr & attribute type { datatype.text } & attribute title { datatype.text }}
+   
+   opf.bindings = element bindings { opf.bindings.mediaType+ }
+   opf.bindings.mediaType = element mediaType { opf.bindings.mediaType.attlist }
+   opf.bindings.mediaType.attlist &= opf.media-type.attr & attribute handler { datatype.IDREF }
+   
+   opf.media-type.attr = attribute media-type { datatype.mimetype }
+   opf.href.attr = attribute href { datatype.URI }
+   opf.id.attr = attribute id { datatype.ID }
+   opf.i18n.attrs = opf.xml.lang.attr? & opf.dir.attr?
+   opf.xml.lang.attr = attribute xml:lang { datatype.languagecode }
+   opf.dir.attr = attribute dir { 'ltr' | 'rtl' }
+ 
+    
+
+      
+
+
