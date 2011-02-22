@@ -16,7 +16,7 @@
   <dd><a href="mailto:psorotok@adobe.com">Peter Sorotokin</a> (<a href="http://www.adobe.com">Adobe Systems, Inc.</a>)</dd>
 </dl>
 
-<p class="copyright">Copyright © 2010 Adobe Systems Inc.</p>
+<p class="copyright">Copyright © 2010 International Digital Publishing Forum (IDPF)</p>
 </div>
 
 <hr/>
@@ -31,8 +31,7 @@
   <h3 id="status">Status of this Document</h3>
   <p>This is an unapproved Working Draft and has no official status at this time. It may be updated,
       replaced or rendered obsolete by other documents at any time. Its publication does not imply
-      endorsement by the IDPF membership, IDPF EPUB Working Group, W3C membership or the CSS Working
-      Group.</p>
+      endorsement by the IDPF membership or IDPF EPUB Working Group.</p>
 <h3>Table of Contents</h3>
 <ul>
 	<li><a href="#intro">Introduction</a>
@@ -297,11 +296,10 @@ stylesheet, but they need to have well-defined names.</p>
 <p>"name" must be a valid CSS name; "value" must be a valid CSS value or a valid "expr" calculation.
       Names defined by @define rules can be used only inside expr() values (which includes other
       @define rules), and wherever used the indicated value is substituted. A given name can be
-      defined at most once at the document-level scope and once within a given page-master scope
-        <b>[WM: true?]</b>: these are definitions, not "variables". Named values may be defined in
-      terms of other named values. Order does not matter, and a value can be used before it is
-      defined, as long as there is no circular dependencies. Redefining predefined values is
-      strongly discouraged.</p>
+      defined at most once at the document-level scope and once within a given page-master scope:
+      these are definitions, not "variables". Named values may be defined in terms of other named
+      values. Order does not matter, and a value can be used before it is defined, as long as there
+      is no circular dependencies. Redefining predefined values is strongly discouraged.</p>
 
 <h3 id="when-rule-def">Conditional styling: ‘@when’ rule</h3>
 
@@ -323,7 +321,10 @@ when viewport size is small). This can be achieved by ‘@when’ rule:</p>
       in that order, for example an article in a magazine or other collection of content. Initially
       a document is considered to have a single flow named "body" that contains the document's root
       element. Elements can be placed in other flows by specifying the <a class="prop-ref"
-        href="#flow-name-def">flow-name</a> property.</p>
+        href="#flow-name-def">flow-name</a> property. During a rendering operation, elements within
+      a flow may become <i>eligible</i> or <i>ineligible</i> for consideration as they are utilized
+      by the formatting algorithm; an ineligible element behaves as if it was temporariliy removed
+      from its flow.</p>
 
 <p id="region-term-def">A <em>region</em> is an area of the page where content from a particular
       flow can be displayed. In many cases it takes several regions on a sequence of pages (or on
@@ -394,8 +395,7 @@ when viewport size is small). This can be achieved by ‘@when’ rule:</p>
         such an assignment occurs, but is always based on its order of occurance within the
         document's content; e.g. if elements A, B, and C occur in that order in the document, and
         are all assigned to the same flow, then they will always have the order A, B, and C in that
-        flow. <b>[WM: is this true? I could imagine it working the opposite way so this is just a
-          guess]</b></li>
+        flow.</li>
 <li>Cascaded and inherited CSS properties do not change as a result of the move. Elements are always
         considered to remain in its original place within the tree structure (DOM) of the document
         for the purposes of styling (except that additional styles can be assigned: see <a
@@ -447,35 +447,21 @@ when viewport size is small). This can be achieved by ‘@when’ rule:</p>
 </table>
 </dd>
 </dl>
-<p>The 'flow-options' property affects how an element is processed in its flow <b>[WM: note I
-        intentionally remove 'once an element is placed in a flow' since the spec indicates all
-        elements start in the flow 'body' so presumably 'flow-options' could still be set on them -
-        if not please advise and I can explicitly state that this is not the case]</b> Several
-      options can be specified at once.</p>
+<p>The 'flow-options' property affects how an element is processed when it is explicitly assigned to
+      a flow. Several options can be specified at once.</p>
 <dl>
 <dt id="exclusive-value-def">exclusive</dt>
 <dd>When content is selected for a region, elements marked as exclusive are considered first. Only
-        one element is used for a single region and one element is always "used up" (and removed
-        from the flow if it is not also marked as <a class="value-ref" href="#static-value-def"
+        one element is used for a single region and one element is always "used up" (and designated
+        ineligible if it is not also marked as <a class="value-ref" href="#static-value-def"
           >static</a>). If multiple elements are marked exclusive, the one that comes later is used,
         but also see <a class="prop-ref" href="#flow-priority-def">flow-priority</a>. If no element
-        is marked exclusive, elements flow into available space in the region one by one. Partially
-        used elements are flowed into the next available region. <b>[WM: ?? this statement seems
-          inconsistent with statement above that "one element is always 'used up' "  - I'm thinking
-          maybe the above statement is not exactly right]</b></dd>
+        is marked exclusive, elements flow into available space in the region one by one, and
+        partially used elements are flowed into the next available region.</dd>
 <dt id="static-value-def">static</dt>
-<dd>When an element is "used up" in a region, it is removed from the flow, unless it is marked as
-        static. <b>[WM: the spec seems to use "flow" and "removed from the flow" in 2 different ways
-          - as part of reassignment process, in which "remove from the flow" means it is not
-          visible, and in this case, which I think is talking about what happens after it is 'used
-          up' by formatting process which is different - it is still in the flow in the sense that
-          if conditions change and a redraw happens it will be considsered again. Perhaps I could
-          find another term to use for this latter situation,  "flow source content" or something
-          (unless I've got this wrong)]</b> Static elements are placed in the flow again when they
-        are used up. When determining which element to use when multiple elements are marked <a
-          class="value-ref" href="#exclusive-value-def">exclusive</a>, element's original placement
-        on the flow is considered, not the time when the element is placed back there by the static
-        option.</dd>
+<dd>When an element is "used up" in a region, it is designated ineligible, unless it is marked as
+        static. Static elements remain eligible when they are used up (and retain their original
+        order in the flow).</dd>
 </dl>
 
 <h3 id="flow-linger-def">Flow content lifetime: ‘flow-linger’ property</h3>
@@ -519,13 +505,10 @@ when viewport size is small). This can be achieved by ‘@when’ rule:</p>
 </dd>
 </dl>
 <p>The 'flow-linger' property determines for how many pages an element is kept in the flow. None
-      means it is kept forever (but removed if used if <a class="value-ref" href="#static-value-def"
-        >static</a> option is not specified). Integer must be positive and means number of pages. 1
-      means that it should be used on the same page it was placed in the flow. <b>[WM: I don't
-        understand this statement - I'm imagining something about the timing of when a 'flow-name'
-        property is encountered during the formatting process but that seems pretty complex. Or
-        maybe it just means something about it should be fully consumed on the first page in which
-        it is utilized, not sure]</b></p>
+      means it is kept forever (but designated ineligible if used if <a class="value-ref"
+        href="#static-value-def">static</a> option is not specified). Integer must be positive and
+      means number of pages. 1 means that it should be used on the same page where it became
+      eligible.</p>
 
 <h3 id="flow-priority-def">Flow content selection: ‘flow-priority’ property</h3>
 <dl>
@@ -585,7 +568,7 @@ Module:</p>
 </ul>
   <p>These properties may be used on flow content whether or not that content is within a
       multi-column region (if there are no containing columns the inside/before/after values are
-      applied to regions).<b>[WM: true?]</b></p>
+      applied to regions).</p>
 
 <h3 id="region-placement-def">Avoiding blank space: ‘region-placement’ property</h3>
 <dl>
@@ -632,11 +615,8 @@ Module:</p>
       column. In some cases it is desireable to overflow the large element, but to continue flowing
       content that follows it until the space in the column is exhausted. Setting region-placement
       to "flexible" achieves that effect. I.e. it indicates that the natural order of placement in
-      the column/region of elements having that property  may be overridden by the formatting
-      process in such cases. <b>[WM: does "flexible" mean that paragraphs coming after a table can
-        be moved to come before it? Or other types of content? It would seem desirable to be
-        explicit here, or if the intention is to NOT be explicit by give UA's arbitrary discretion
-        to reorder content if to say so]</b></p>
+      the column/region of elements having that property will be overridden by the formatting
+      process in such cases where subsequent content in the flow can stil fit in the region.</p>
 
 <h3 id="page-master-rule-def">Defining page layout: ‘@page-master’ rule</h3>
 <p>The 'page-master' rule defines a <a class="term-ref" href="#page-master-term-def">page
@@ -1414,11 +1394,13 @@ are not moved, only exclusion areas that they generate for this region are adjus
   </dd>
 </dl>
 <p>This property controls how this region overlaps with the regions that follow it in the page
-      master definition. The default value <code>float</code>  causes content in all subsequent
+      master definition. The default value <code>float</code> causes content in all subsequent
       regions to flow around this region (as it would for a regular CSS float). Setting the value to
         <code>clear</code> acts as a combination of CSS 'float' and 'clear' properties: content in
       overlapping regions is pushed down vertically to avoid overlap. Finally, the value
-        <code>overlap</code> allows following regions to simply overlap.</p>
+        <code>overlap</code> allows following regions to simply overlap. Content in a column cannot
+      flow on both sides of a floated region, i.e. each column will go either to the left or the
+      right.</p>
 
 <h3 id="outer-shape-def">Custom region shape: ‘outer-shape’ property</h3>
 <dl>
@@ -1495,13 +1477,7 @@ are not moved, only exclusion areas that they generate for this region are adjus
 <li>x axis goes right and scaled so that 100 corresponds to the width of the region</li>
 <li>y axis goes down and scaled so that 100 corresponds to the height of the region</li>
 </ul>
-<p>The polygon imputed by the set of vertices may be concave or convex, but must be simple<b> [WM:
-        true?]</b>, i.e. its line segments must not intersect. Outer shape does not affect how
-      content is layed out <em>inside</em> the region<b>.[WM: does this mean that if one wanted to
-        create a non-rectangular layout within a region, it is possible to do so by surrounding it
-        with other regions that have their outer-shape properties set? If so that seems a bit of a
-        hack, which makes me wonder whether directly supporting such non-rectangular layouts would
-        be preferable (inner-shape?)]</b></p>
+<p>Outer shape does not affect how content is layed out <em>inside</em> the region.</p>
 
 <h3 id="utilization-def">Lookup range: ‘utilization’ property</h3>
 <dl>
@@ -1622,13 +1598,13 @@ utilization and rounded. The result is the amount of content to look up forward 
       constraint is that when the height of the region is not specified or set to "auto", CSS rules
       prescribe to lay out the content to determine block height. Regions are always layed out in
       the order they appear in the page master, so region parameters can depend only on the height
-      of the regions that precede that region, or of regions that expliictly specify a height.
-        <b>[WM: is last part true?]</b></p>
+      of the regions that precede that region, or of regions that explicitly specify a height.</p>
 <h3 id="mode-rule-def">Styling content in a region: ‘@mode’ rule</h3>
 <p>The mode rule defines additional styling that may be applied to content flowed into one or more
       regions that specify its name via the mode property. Its block must contain one or more
-      styling rules using only class selectors; no id-based, pseudo-element, class-based, or
-      attribute-qualified selectors are allowed <b>[WM: last part true?]</b>:</p>
+      styling rules using only class selectors; no descendent/child/siblings, id-based,
+      pseudo-element or attribute-qualified selectors are allowed <b>[NOTE: it may be desirable to
+        allow everything but pseudo-class/element here]</b>:</p>
 <pre>@mode &lt;name&gt;
 {
   .&lt;class-name&gt; {
@@ -1739,7 +1715,7 @@ utilization and rounded. The result is the amount of content to look up forward 
         <td>
           <em>Initial:</em>
         </td>
-        <td>empty</td>
+        <td>letter-spacing || word-spacing</td>
       </tr>
       <tr>
         <td>
@@ -1775,8 +1751,6 @@ utilization and rounded. The result is the amount of content to look up forward 
   </dd>
 </dl>
 <p>'fitting-properties' defines a list of content properties that can be manipulated to make content
-  fit into the allocated space. The initial value of <code>empty</code> means that unless this value is
-      explicitly set, content fitting will be disabled even if the value of 'fitting-target' is set.
-        <b>[WM: true?]</b></p>
+      fit into the allocated space.</p>
 </body>
 </html>
