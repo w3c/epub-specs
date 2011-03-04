@@ -353,21 +353,15 @@
             <title>META-INF</title>
             <para>All valid OCF Abstract Containers must include a directory called
                     <filename>META-INF</filename> at the root level of the container file system.
-                This directory contains the files specified below that describe the contents,
-                metadata, signatures, encryption, rights and other information about the contained
-                publication.</para>
-            <para>All files specified below must meet the conformance constraints for XML documents
-                defined in <olink type="epub-spec" targetdoc="publications"
-                    targetptr="sec-xml-constraints"/>.</para>
-            <para>Files other than the ones defined below may be included in the
+                This directory contains the files specified below.  Files other than the ones defined below may be included in the
                     <filename>META-INF</filename> directory; OCF Processors must not fail when
                 encountering such files.</para>
             <section xml:id="sec-container-metainf-container.xml">
                 <title>Container – META-INF/container.xml</title>
                 <para>All valid OCF Containers must include a file called
                         <filename>container.xml</filename> within the <filename>META-INF</filename>
-                    directory at the root level of the container file system. The
-                        <filename>container.xml</filename> file must identify the MIME type of, and
+                    directory. The
+                        <filename>container.xml</filename> file must identify the media type of, and
                     path to, the rootfile for the EPUB rendition of the publication and any optional
                     alternate renditions included within the container.</para>
                 <para>The <filename>container.xml</filename> file must not be encrypted.</para>
@@ -375,7 +369,7 @@
                         linkend="app-schema-container"/>. Conforming
                         <filename>container.xml</filename> files must be valid according to this
                     schema after removing all elements and attributes from other namespaces
-                    (including all child nodes of such elements).</para>
+                    (including all attributes and contents of such elements).</para>
                 <!-- TODO either remove this anyname allowance, or make the schema support it natively. -->
                 <para>The <code>rootfiles</code> element must contain one or more
                         <code>rootfile</code> elements, each of which must uniquely reference a
@@ -421,10 +415,8 @@
                         <literal>path-rootless</literal> (also defined by RFC 3986). The path
                     components are relative to the root of the container in which they are
                     used.</para>
-                <para>Conforming OCF Processors must ignore unrecognized elements (and their
-                    contents) and unrecognized attributes within a
-                        <filename>container.xml</filename> file, including unrecognized elements and
-                    unrecognized attributes from other namespaces.</para>
+                <para>Conforming OCF Processors must ignore foreign elements and attributes within a
+                        <filename>container.xml</filename> file.</para>
             </section>
             <section xml:id="sec-container-metainf-encryption.xml">
                 <title>Encryption – META-INF/encryption.xml</title>
@@ -435,7 +427,7 @@
                         <code>encryption</code> element contains child elements of type
                         <code>EncryptedKey</code> and <code>EncryptedData</code> as defined by <xref
                         linkend="refXMLENCCORE"/>. Each <code>EncryptedData</code> element describes
-                    how one or more container files are encrypted. Consequently, if any resource
+                    how one or more files within the container are encrypted. Consequently, if any resource
                     within the container is encrypted, <filename>encryption.xml</filename> must be
                     present to indicate that the resource is encrypted and provide information on
                     how it is encrypted.</para>
@@ -446,21 +438,23 @@
                 <para>The schema for <filename>encryption.xml</filename> files is available in <xref
                         linkend="app-schema-encryption"/>. Conforming
                         <filename>signatures.xml</filename> files must be valid according to this
-                    schema after removing all elements and attributes from other namespaces
-                    (including all child nodes of such elements).</para>
+                    schema.</para>
+                <!-- This contradicts the first paragraph; is redundant in any event.
                 <para>When the <filename>encryption.xml</filename> file is not present, the OCF
                     Abstract Container provides no information indicating any part of the container
                     is encrypted.</para>
+                    -->
                 <para>OCF encrypts individual files independently, trading off some security for
                     improved performance, allowing the container contents to be incrementally
                     decrypted. Encryption in this way exposes the directory structure and file
                     naming of the whole package.</para>
                 <para>OCF uses XML Encryption <xref linkend="refXMLENCCORE"/> to provide a framework
-                    for encryption, allowing a variety of algo­rithms to be used. XML Encryption
+                    for encryption, allowing a variety of algorithms to be used. XML Encryption
                     specifies a process for encrypting arbitrary data and representing the result in
                     XML. Even though an OCF Abstract Container may contain non-XML data, XML
                     Encryption can be used to encrypt all data in an OCF Abstract Container. OCF
-                    encryption sup­ports only encryption of whole files. The
+                    encryption supports only the encryption of entire files within the container,
+                    not parts of files. The
                         <filename>encryption.xml</filename> file, if present, must not be
                     encrypted.</para>
                 <para>Encrypted data replaces unencrypted data in an OCF Abstract Container. For
@@ -507,7 +501,7 @@
                 </informalexample>
             </section>
             <section xml:id="sec-container-metainf-manifest.xml">
-                <title>Manifest – META-INF/manifest.xml (Optional)</title>
+                <title>Manifest – META-INF/manifest.xml</title>
                 <para>An optional file with the reserved name <filename>manifest.xml</filename> may
                     be included within the <filename>META-INF</filename> directory at the root level
                     of the container file system. If present, the content of this file must be as
@@ -668,7 +662,7 @@
                 <listitem>
                     <para xml:id="confreq-zip-preserve">It is not a requirement that Conforming OCF
                         Processors preserve information from an OCF ZIP Container through load and
-                        save operations that do not map to corresponding representation within the
+                        save operations that is not defined within the
                         OCF Abstract Container; in particular, a Conforming OCF Processor does not
                         have to preserve CRC values, comment fields or fields that hold file system
                         information corresponding to a particular operating system (e.g.,
@@ -726,7 +720,8 @@
                 contents of this file must be the MIME type string
                     <literal>application/epub+zip</literal>.</para>
             <para>The contents of the <filename>mimetype</filename> file must not contain any
-                leading padding or whitespace and the case of the MIME type string must be exactly
+                leading padding or whitespace, must not begin with the Unicode signature (or Byte
+                Order Mark), and the case of the MIME type string must be exactly
                 as presented above. The <filename>mimetype</filename> file additionally must be
                 neither compressed nor encrypted, and there must not be an extra field in its ZIP
                 header.</para>
@@ -787,9 +782,8 @@
             <title>Obfuscation Algorithm</title>
             <para>The algorithm employed to obfuscate the font file consists of modifying the first
                 1040 bytes (~1KB) of the font file. In the unlikely event that the file is less than
-                1040 bytes, then the entire file will be modified. The key for the algorithm must be
-                a 20 byte (160 bit) <xref linkend="refSHA1"/> digest of the publication's unique
-                identifier. Details on generating this key are given in the section <xref
+                1040 bytes, then the entire file will be modified. The key for the algorithm is
+                generated using the instructions as given in the section <xref
                     linkend="fobfus-keygen"/>. To obfuscate the original data, the result of
                 performing a logical exclusive or (XOR) on the first byte of the raw file and the
                 first byte of the key is stored as the first byte of the embedded font file. This
