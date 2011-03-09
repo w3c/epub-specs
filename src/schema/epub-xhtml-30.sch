@@ -10,6 +10,7 @@
     <ns uri="http://www.idpf.org/2011/epub" prefix="epub"/>
     <ns uri="http://www.w3.org/1998/Math/MathML" prefix="math"/>
     <ns uri="http://www.w3.org/2001/10/synthesis" prefix="ssml"/>
+    <ns uri="http://www.w3.org/2001/xml-events" prefix="ev"/>
         
     <let name="id-set" value="//*[@id]"/>
     
@@ -216,6 +217,16 @@
                 >The headers attribute must refer to th elements in the same table.</assert>            
         </rule>
     </pattern> 
+    
+    <pattern id="idref-trigger-observer" is-a="idref-any">
+        <param name="element" value="epub:trigger"/>
+        <param name="idref-attr-name" value="ev:observer"/>
+    </pattern>
+    
+    <pattern id="idref-trigger-ref" is-a="idref-any">
+        <param name="element" value="epub:trigger"/>
+        <param name="idref-attr-name" value="ref"/>
+    </pattern>
     
     <pattern id="map" >
         <rule context='h:map[@name]'>   
