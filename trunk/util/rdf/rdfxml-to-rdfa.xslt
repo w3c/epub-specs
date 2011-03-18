@@ -25,6 +25,10 @@
 	<!-- a relative link to this vocabs revision history document -->
 	<xsl:param name="vocab-revision-history" required="yes"/>
 
+
+	<!-- whether to output a leading blurb on the nature of htu:usage (for epub structure vocab only) -->
+	<xsl:param name="output-htu-expl" required="no" select="0"/>
+
 	<!-- URI of xhtml vocab -->
 	<xsl:variable name="xhv-uri">http://www.w3.org/1999/xhtml/vocab/#</xsl:variable>
 
@@ -77,6 +81,13 @@
 									</xsl:call-template>
 								</p>
 							</xsl:for-each>
+							<xsl:if test="$output-htu-expl eq '1'">
+								<p class="output-htu-expl">The <em>HTML usage context</em> fields
+									indicate contexts in HTML5 documents where the given property is
+									considered relevant. When processing HTML5 documents, Reading
+									Systems may ignore properties that occur outside the specified
+									document context.</p>
+							</xsl:if>
 						</div>
 					</xsl:if>
 					<!--  				  				
@@ -193,9 +204,9 @@
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:if test="htu:usage">
-			<xsl:call-template name="render-sub-dl">
+			<!-- output without rdfa properties kept -->
+			<xsl:call-template name="render-sub-dl-plain">
 				<xsl:with-param name="label">HTML usage context:</xsl:with-param>
-				<xsl:with-param name="about" select="$about"/>
 				<xsl:with-param name="members" select="htu:usage"/>
 			</xsl:call-template>
 		</xsl:if>
@@ -264,6 +275,43 @@
 	 			</xsl:choose>
  			</xsl:for-each>
  		</dl> -->
+		</dd>
+	</xsl:template>
+
+	<xsl:template name="render-sub-dl-plain">
+		<!-- output rdfxml data without rdfa markup -->
+		<xsl:param name="label" as="xsd:string"/>
+		<xsl:param name="members" as="element()*"/>
+		<dd>
+			<p>
+				<span class="subproplabel">
+					<xsl:value-of select="$label"/>
+				</span>
+				<xsl:for-each select="$members">
+					<xsl:choose>
+						<xsl:when test="@rdf:resource">
+							<a href="{@rdf:resource}">
+								<xsl:value-of
+									select="zf:get-link-label(@rdf:resource,ancestor::rdf:RDF)"/>
+							</a>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="wiki-links-to-xhtml">
+								<xsl:with-param name="text" select="./text()"/>
+							</xsl:call-template>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:choose>
+						<xsl:when test="position() eq last()"/>
+						<xsl:when test="position() eq last() - 1">
+							<xsl:text> and </xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>, </xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</p>
 		</dd>
 	</xsl:template>
 
