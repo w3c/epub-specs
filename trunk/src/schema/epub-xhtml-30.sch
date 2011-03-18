@@ -2,8 +2,7 @@
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
     
     <!-- TODO fix variable references not working in abstract assert/report strings -->
-    <!-- TODO check if anything need to be added from embedded SVG11 -->        
-    <!-- TODO epub:trigger@observer -->            
+    <!-- TODO check if anything need to be added from embedded SVG11 -->                    
     <!-- TODO h @max and @min -->
             
     <ns uri="http://www.w3.org/1999/xhtml" prefix="h"/>
