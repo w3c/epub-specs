@@ -4,25 +4,18 @@
     <ns uri="http://www.w3.org/1999/xhtml" prefix="html" />
     <ns uri="http://www.idpf.org/2011/epub" prefix="epub" />
     
-    <pattern id="toc">
+    <pattern id="nav-ocurrence">
         <rule context="html:body">            
             <assert test="count(.//html:nav[@epub:type='toc']) = 1"
                 >Exactly one 'toc' nav element must be present</assert>
+            <assert test="count(.//html:nav[@epub:type='page-list']) &lt; 2"
+                >Multiple occurrences of the 'page-list' nav element</assert>
+            <assert test="count(.//html:nav[@epub:type='landmarks']) &lt; 2"
+                >Multiple occurrences of the 'landmarks' nav element</assert>
         </rule>        
     </pattern>
-    
-    <pattern id="page-list">
-        <rule context="html:body">
-            <assert test="count(./html:nav[@epub:type='page-list']) &lt; 2"
-                >Multiple occurrences of the 'page-list' nav element</assert>
-        </rule>
-    </pattern>
-    
+            
     <pattern id="landmarks">
-        <rule context="html:body">
-            <assert test="count(./html:nav[@epub:type='landmarks']) &lt; 2"
-                >Multiple occurrences of the 'landmarks' nav element</assert>
-        </rule>
         <rule context="html:nav[@epub:type='landmarks']//html:ol//html:a">
             <assert test="@epub:type"
                 >Missing epub:type attribute on anchor inside 'landmarks' nav element</assert>
