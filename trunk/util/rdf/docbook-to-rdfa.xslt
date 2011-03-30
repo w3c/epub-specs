@@ -189,7 +189,7 @@
 		</xsl:if>
 		<xsl:if test="htu:usage">
 			<xsl:call-template name="render-sub-dl">
-				<xsl:with-param name="label">HTML usage context:</xsl:with-param>
+				<xsl:with-param name="label">HTML usage context: </xsl:with-param>
 				<xsl:with-param name="about" select="$about"/>
 				<xsl:with-param name="members" select="htu:usage"/>
 			</xsl:call-template>

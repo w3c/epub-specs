@@ -206,7 +206,7 @@
 		<xsl:if test="htu:usage">
 			<!-- output without rdfa properties kept -->
 			<xsl:call-template name="render-sub-dl-plain">
-				<xsl:with-param name="label">HTML usage context:</xsl:with-param>
+				<xsl:with-param name="label">HTML usage context: </xsl:with-param>
 				<xsl:with-param name="members" select="htu:usage"/>
 			</xsl:call-template>
 		</xsl:if>
