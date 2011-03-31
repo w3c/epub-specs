@@ -50,9 +50,15 @@ function encodeCFI(doc, node, offset, tail)
 		while(true)
 		{
 			var p = node.previousSibling;
-			if( !p || p.nodeType == 1 || node.nodeType == 7 )
+			if( !p || p.nodeType == 1 )
 				break;
-			offset += p.nodeValue.length;
+			switch( p.nodeType )
+			{
+			case 3:
+			case 4 :
+			case 5 :
+				offset += p.nodeValue.length;
+			}
 			node = p;
 		}
 		cfi = ":" + offset + cfi;
@@ -82,12 +88,14 @@ function encodeCFI(doc, node, offset, tail)
 		while(true)
 		{
 			index |= 1;
-			if( child.nodeType == 1 || child.nodeType == 7 )
+			if( child.nodeType == 1 )
 				index++
 			if( child === node )
 				break;
 			child = child.nextSibling;
 		}
+		if( node.id && node.id.match(/^[-a-zA-Z_0-9.\u007F-\uFFFF]+$/) )
+			index = index + "$" + node.id;
 		cfi = "/" + index + cfi;
 		node = parent;
 	}
@@ -102,9 +110,10 @@ function decodeCFI(doc, cfi)
 	
 	while(cfi.length > 0 || error)
 	{
-		if( (r = cfi.match(/^\/(\d+)/)) !== null )
+		if( (r = cfi.match(/^\/(\d+)(\$([-a-zA-Z_0-9.\u007F-\uFFFF]+))?/)) !== null )
 		{
 			var targetIndex = r[1] - 0;
+			var id = r[3];
 			var index = 0;
 			var child = node.firstChild;
 			while(true)
@@ -115,12 +124,19 @@ function decodeCFI(doc, cfi)
 					break;
 				}
 				index |= 1;
-				if( child.nodeType === 1 || child.nodeType === 7 )
+				if( child.nodeType === 1 )
 					index++
 				if( index === targetIndex )
 				{
 					cfi = cfi.substr(r[0].length);
 					node = child;
+					if( id ? node.id != id : node.id )
+					{
+						log("id mismatch: '" + id + "' and '" + node.id + "'");
+						// TODO: recover? try both possibilities: starting with id and start
+						// with the child with the given index and see if we get resolution
+						// without error
+					}
 					break;
 				}
 				child = child.nextSibling;
@@ -176,6 +192,18 @@ function decodeCFI(doc, cfi)
 			if( offset < len || (!point.forward && offset === len) )
 				break;
 			var next = node.nextSibling;
+			while(true)
+			{
+				var type = next.nodeType;
+				if( type === 3 || type === 4 || type === 5 )
+					break;
+				if( type == 1 )
+				{
+					next = null;
+					break;
+				}
+				next = next.nextSibling;
+			}
 			if( !next )
 			{
 				if( offset > len )
@@ -389,7 +417,10 @@ var hroot;
 
 function displayPosition(dontSeek)
 {
-	var pos = pointFromCFI(document, ID("pos").value);
+	var pos;
+	var cfi = ID("pos").value;
+	if( cfi )
+		pos = pointFromCFI(document, cfi);
 	var ms = ID("marker").style;
 	if( pos )
 	{
