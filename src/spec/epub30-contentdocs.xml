@@ -2221,31 +2221,36 @@
             <section xml:id="sec-scripted-content-rs-reqs"
                 xreflabel="Scripted Content Documents — Reading System Conformance">
                 <title>Reading System Conformance</title>
+                
+                <para><xref linkend="gloss-epub-reading-system"/> support for scripting is optional. 
+                    A Reading System that supports scripting must meet the following criteria:</para>
+                
                 <itemizedlist role="conformance-list">
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-support">Reading Systems may support
-                            scripting — the <xref
+                        <para xml:id="confreq-rs-scripted-support">It may support
+                            the <xref
                                 linkend="sec-scripted-content-type-container-constrained"/> model,
-                            the <xref linkend="sec-scripted-content-type-spine-level"/> model, or
+                            the <xref linkend="sec-scripted-content-type-spine-level"/> model or
                             both.</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-flbk">Reading Systems that do not support
-                            scripting must process fallbacks for scripted content as defined in
-                                <xref linkend="confreq-cd-scripted-flbk"/>.</para>
-                    </listitem>
-                    <listitem>
-                        <para xml:id="confreq-rs-scripted-ua">Reading Systems may render <xref
+                        <para xml:id="confreq-rs-scripted-ua">It may render <xref
                                 linkend="gloss-content-document-epub-scripted"/>s as an interactive,
                             scripted User Agent according to <xref linkend="refHTML5"/>.</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-limit">Reading Systems that support
-                            scripting may place limitations on the capabilities provided to scripts
+                        <para xml:id="confreq-rs-scripted-limit">It 
+                            may place limitations on the capabilities provided to scripts
                             during execution (e.g., limiting networking or DOM access).</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-prop">Reading Systems must regard the
+                        <para xml:id="confreq-rs-scripted-readingsystem-object">It must implement 
+                            the custom JavaScript <code>navigator</code> extension object 
+                            <code>epubReadingSystem</code> defined in 
+                            <xref linkend="app-epubReadingSystem"/>.</para>
+                    </listitem>
+                    <listitem>
+                        <para xml:id="confreq-rs-scripted-prop">It must regard the
                                 <olink type="epub-spec" targetdoc="publications"
                                 targetptr="propdef-scripted"><code>scripted</code></olink> property
                             of the <xref linkend="gloss-package-document"/>
@@ -2254,7 +2259,17 @@
                             EPUB Content Document includes scripting.</para>
                     </listitem>
                 </itemizedlist>
-
+                
+                <para>A Reading System that does not support scripting must meet the following criteria:</para>
+                
+                <itemizedlist role="conformance-list">
+                    <listitem>
+                        <para xml:id="confreq-rs-scripted-flbk">It must process fallbacks for scripted content 
+                            as defined in
+                            <xref linkend="confreq-cd-scripted-flbk"/>.</para>
+                    </listitem>
+                </itemizedlist>
+                
                 <note>
                     <para>Reading Systems may render Scripted Content Documents in a manner that
                         disables other EPUB capabilities and/or provides a different rendering and
@@ -2994,6 +3009,204 @@
 
     </appendix>
 -->
+    
+    <appendix xml:id="app-epubReadingSystem">
+        <title>JavaScript epubReadingSystem Object</title>
+        
+        <section xml:id="app-ers-syntax">
+            <title>Syntax</title>
+            
+            <informalexample><synopsis>ReadingSystem = navigator.epubReadingSystem;</synopsis></informalexample>
+            
+        </section>
+        
+        <section xml:id="app-ers-desc">
+            <title>Description</title>
+            
+            <para>The <code>epubReadingSystem</code> object provides an interface to query the 
+                Reading System for information about it and the features it supports.</para>
+            
+            <para>Creating a new instance of <code>epubReadingSystem</code> returns an object 
+                that represents the current Reading System. A list of <link linkend="app-ers-properties">properties</link>,
+                such as the Reading System's name and version, can be queried using this object.
+                The <link linkend="app-ers-hasFeature">hasFeature</link> method can also be called to determine
+                which features are supported.</para>
+            
+            <informalexample>
+                <para>Example JavaScript function that displays the name of the current Reading System.</para>
+                <synopsis>var rs = navigator.epubReadingSystem;
+
+alert("Reading System name: " + rs.name);</synopsis></informalexample>
+        </section>
+        
+        <section xml:id="app-ers-properties">
+            <title>Properties</title>
+            
+            <para>The following properties must be made available for querying
+                information about the Reading System.</para>
+            
+            <informaltable xml:id="epubReadingSystem-properties">
+                <info role="rdfa-vocab-info">
+                    <annotation>
+                        <para>Required epubReadingSystem properties</para>
+                    </annotation>
+                </info>
+                <tgroup cols="2">
+                    <colspec colname="c1"/>
+                    <colspec colname="c2"/>
+                    <spanspec spanname="s1" namest="c1" nameend="c2"/>
+                    <tbody>
+                        <row>
+                            <entry spanname="s1" role="js-property"><literal>name</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Description:</entry>
+                            <entry role="js-desc">The name of the Reading System.</entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Type:</entry>
+                            <entry role="js-desc"><literal>String</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Example value(s):</entry>
+                            <entry role="js-desc"><literal>iBooks</literal>, <literal>Kindle</literal></entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+                <tgroup cols="2">
+                    <colspec colname="c1"/>
+                    <colspec colname="c2"/>
+                    <spanspec spanname="s1" namest="c1" nameend="c2"/>
+                    <tbody>
+                        <row>
+                            <entry spanname="s1" role="js-property"><literal>version</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Description:</entry>
+                            <entry role="js-desc">The version of the Reading System.</entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Type:</entry>
+                            <entry role="js-desc"><literal>String</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Example value(s):</entry>
+                            <entry role="js-desc"><literal>1.0</literal>, <literal>2.1.1</literal></entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+                <tgroup cols="2">
+                    <colspec colname="c1"/>
+                    <colspec colname="c2"/>
+                    <spanspec spanname="s1" namest="c1" nameend="c2"/>
+                    <tbody>
+                        <row>
+                            <entry spanname="s1" role="js-property"><literal>layoutStyle</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Description:</entry>
+                            <entry role="js-desc">The style of layout for the content.</entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Type:</entry>
+                            <entry role="js-desc"><literal>String</literal></entry>
+                        </row>
+                        <row>
+                            <entry role="js-header">Allowed value(s):</entry>
+                            <entry role="js-desc">
+                                <para><literal>paginated</literal> and <literal>scrolling</literal></para> 
+                                <para>A Reading System may define values for any additional layout 
+                                    formats it supports.</para></entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </section>
+        
+        
+        <section xml:id="app-ers-methods">
+            <title>Methods</title>
+            
+            <section xml:id="app-ers-hasFeature">
+                <title>hasFeature</title>
+                
+                <section xml:id="app-ers-hasFeature-syntax">
+                    <title>Syntax</title>
+                    
+                    <informalexample><synopsis>hasFeature(feature[, version])</synopsis></informalexample>
+                </section>
+                
+                <section xml:id="app-ers-hasFeature-desc">
+                    <title>Description</title>
+                    <para>For recognized features, the <code>hasFeature</code> method returns a boolean value 
+                        indicating whether any version is supported.</para>
+                    <para>If the optional <code>version</code> parameter is included, the return value indicates 
+                        support only for the specified version.</para>
+                    <para>The method retuns <literal>undefined</literal> if the feature is not recognized by the
+                        Reading System.</para>
+                    
+                    <informalexample>
+                        <para>Example JavaScript function that displays whether the current Reading System supports
+                            scripted manipulation of the DOM.</para>
+                        <synopsis>var feature = "dom-manipulation";
+
+var conformTest = navigator.epubReadingSystem.hasFeature(feature);
+
+alert("Feature " + feature + " supported?: " + conformTest);</synopsis></informalexample>
+                </section>
+                
+                <section xml:id="app-ers-hasFeature-features">
+                    <title>Features</title>
+                    
+                    <para>The following tables details features that must be recognized by Reading Systems 
+                       that support scripting. Reading System support for the features is optional.</para>
+                    
+                    <para>Feature names are case-insensitive.</para>
+                    
+                    <table xml:id="tbl-epubReadingSystem-features">
+                        <caption>Required epubReadingSystem features</caption>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><literal>dom-manipulation</literal></td>
+                                <td>Scripts may make structural changes to the document’s DOM.</td>
+                            </tr>
+                            <tr>
+                                <td><literal>layout-changes</literal></td>
+                                <td>Scripts may modify attributes and CSS styles that affect content layout.</td>
+                            </tr>
+                            <tr>
+                                <td><literal>touch-events</literal></td>
+                                <td>The device supports touch events and the Reading System passes touch events to the content.</td>
+                            </tr>
+                            <tr>
+                                <td><literal>mouse-events</literal></td>
+                                <td>The device supports mouse events and the Reading System passes mouse events to the content.</td>
+                            </tr>
+                            <tr>
+                                <td><literal>keyboard-events</literal></td>
+                                <td>The device supports keyboard events and the Reading System passes keyboard events to the content.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <para>All features defined in this section should return a true value when queried with the version
+                        <literal>1.0</literal> for compliance with this version of this specification. Reading System developers 
+                        should not change the version number of these features independently of this specification.</para>
+                    
+                    <para>Additional features may be added by Reading System developers, but future versions of this
+                        specification may append to this list in ways that may conflict or be incompatible with any such
+                        custom additions.</para>
+                </section>
+            </section>
+        </section>
+    </appendix>
+    
     <appendix xml:id="acknowledgements" role="acknowledgements" conformance="informative">
         <title>Contributors</title>
         <xi:include href="./share/contributors.xml"/>
