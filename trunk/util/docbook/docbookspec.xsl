@@ -187,8 +187,8 @@
             </xsl:if>
         </xsl:if>
         
-        <!-- match the headers in the property cals tables -->        
-        <xsl:if test="local-name($node) = 'literal' and parent::db:entry[@role='rdfa-property']">
+        <!-- match the headers in the property cals tables -->
+        <xsl:if test="local-name($node) = 'literal' and parent::db:entry[@role='rdfa-property' or @role='js-property']">
             <xsl:call-template name="render-link-here-anchor">
                 <xsl:with-param name="id" select="../@xml:id"/>
             </xsl:call-template>
