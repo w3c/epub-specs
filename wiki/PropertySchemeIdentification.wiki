@@ -9,53 +9,28 @@ At best, this approach to metadata results in the order of metadata implying mea
 One of the goals of the EPUB specification, however, is to provide rich metadata, in part to provide for more intelligent processing by Reading Systems but also to improve access by Assistive Technologies. A means of opening this data up to proper interpretation is consequently needed, but also one that does not impose unnecessary restrictions and/or limit the usability of EPUBs.
 
 = Proposal =
-== 1. Broaden the scope of the `scheme` property ==
 
-The `scheme` property is currently designated for use identifying the formats that the `identifier` and `subject` properties conform to. Its scope will be broadened so that it can serve this function for any property (but excluding identifier, as per below).
+Mention of specific code lists will be removed from the `role`, `scheme` and `title-type` properties.
 
-The `scheme` property will now take a URI as its value, which will identify the code list or other enumerated value set the associated property is drawn from.
+The `scheme` property will instead have its scope be broadened so that it can serve to identify the scheme any property conforms to.
+
+The `scheme` property will now take either a URI or string as its value, which will identify the code list or other enumerated value set the associated property is drawn from (the `datatype` attribute will be added for indicating which the property represents).
 
 The URI is not required to resolve to a resource, but preferably should do so for consistency of identification. (Note: it is understood that this method of identification is itself imperfect, but the alternative would be IDPF becoming a registrar all of such identifiers.)
 
-Example of a `subject` with the BISAC value identified using ONIX code list 27:
+Example of a MARC-derived `creator`:
 
 {{{
-<meta property="dcterms:subject" content="FIC000000" id="subject"/>
-<meta about="#subject" property="subject-type" content="10" id="subj-type"/>
-<meta about="#subj-type" property="scheme"
-       content="http://www.editeur.org/files/ONIX%20for%20books%20-%20code%20lists/ONIX_BookProduct_Codelists_Current.html#codelist27"/>
+<meta property="dcterms:creator" id="author">Haruki Murakami</meta>
+<meta about="#author" property="role" id="role">aut</meta>
+<meta about="#role" property="scheme"
+   datatype="xsd:anyURI">http://www.loc.gov/marc/relators/</meta>
 }}}
 
 Example of a `subject` directly referencing the BISG web site to relate its conformance:
 
 {{{
-<meta property="dcterms:subject" content="FIC000000" id="subject"/>
+<meta property="dcterms:subject" id="subject">FIC000000</meta>
 <meta about="#subject" property="scheme"
-       content=" http://www.bisg.org/what-we-do-0-136-bisac-subject-headings-list-major-subjects.php"/>
+   datatype="xsd:anyURI">http://www.bisg.org/what-we-do-0-136-bisac-subject-headings-list-major-subjects.php</meta>
 }}}
-
-Example of a MARC-derived `creator`:
-
-{{{
-<meta property="dcterms:creator" content="Haruki Murakami" id="author"/>
-<meta about="#author" property="role" content="aut" id="role"/>
-<meta about="#role" property="scheme" content="http://www.loc.gov/marc/relators/"/>
-}}}
-
-== 2. Modify the `identifier` property ==
-
-The `identifier` property will no longer accept a `scheme` property. If the scheme the `identifier` conforms to cannot be determined by inspecting the value of the property, its scheme will be assumed to be proprietary.
-
-Example of an `identifier` with a defined scheme:
-
-{{{
-<dc:identifier>urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809</dc:identifier>
-}}}
-
-Example of an `identifier` with a proprietary scheme:
-
-{{{
-<dc:identifier>9760101010101</dc:identifier>
-}}}
-
-(Although this identifier appears to be an ISBN, it cannot be reliably determined to be such.)
