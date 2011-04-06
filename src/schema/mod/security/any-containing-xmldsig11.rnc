@@ -1,0 +1,27 @@
+# any-containing-xmldsig11.rnc
+#
+# This RELAX NG schema allows any document containing valid signatures.
+#
+# The first group of definitions specify what is allowed as a root elemnet 
+# and what is allowed as a foreign element.  A schema dedicated to 
+# enveloping signatures can be obtained by using "start = ds_Signature" 
+# instead of "start = anyForeignElementOrSignature".
+
+namespace ds = "http://www.w3.org/2000/09/xmldsig#"
+namespace ds11 = "http://www.w3.org/2009/xmldsig11#"
+
+start = anyForeignElementOrSignature
+anyForeignElementOrSignature = 
+  element * -  (ds:* | ds11:*) { 
+    mixed { anyAttribute*, anyForeignElementOrSignature* } }
+  | ds_Signature
+ds_anyForeignElement = element * - ds:* {
+  mixed { anyAttribute*, anyElement* } }
+dsig11_anyForeignElement = element * - ds11:* {
+  mixed { anyAttribute*, anyElement* } }
+
+include "any.rnc"
+include "xmldsig-core-schema.rnc"
+include "xmldsig11-schema.rnc"
+include "xmldsig-allowAnyForeign.rnc"
+include "xmldsig11-allowAnyForeign.rnc"
