@@ -12,7 +12,7 @@ Second, are resources (jpg, png, video, audio ,etc.) referenced from HTML5 or SV
 Third, consider foreign resources declared in the manifest and referenced from the spine.  Such foreign resources may reference some other resources.  Are there any reasons to enumerate all these resources in the manifest?
 </blockquote>
 
-|| GARTH: To my read "yes," the manifest must be complete.  I assume by "foreign resource" you mean a non-core media type that has a package level fallback?  If so, and it references an image (for example), that image must also be included in the manifest.  It must be possible to build a complete EPUB/OCF by including everything in the &lt;manifest>. ||
+|| GARTH: To my read "yes," the manifest must be complete.  I assume by "foreign resource" you mean a non-core media type that has a package level fallback?  If so, and it references an image (for example), that image must also be included in the manifest.  It must be possible to build a complete EPUB/OCF by including everything in the `<manifest>`. ||
 
 
 == 4.4.11 The itemref element ==
@@ -21,21 +21,36 @@ Third, consider foreign resources declared in the manifest and referenced from t
 Suppose that an itemref element references a JPEG file that is never referenced by the spine, HTML content documents, SVG content documents or any other publication resources.  It this itemref a syntax error?
 </blockquote>
 
-|| GARTH: I don't see why.  Some Reading Systems (e.g. iBooks) complain about un-manifested items being in the OCF, but I don't see any requirement that everything in the &lt;manifest> (and OCF) is really used. ||
+|| GARTH: I don't see why.  Some Reading Systems (e.g. iBooks) complain about un-manifested items being in the OCF, but I don't see any requirement that everything in the `<manifest>` (and OCF) is really used. ||
 
+|| KEITH: I don't think iBooks as a *Reading System* cares about this one bit. Additionally, I don't know of a single *Reading System* that has any known problems with this condition, but I may be mistaken. Does anyone have specific counter-examples? Note: Apple does pose some restrictions on content they think is unfit/too risky[1] to accept into their *iBookstore*, but I don't necessarily think those restrictions carry much weight for the EPUB *3* Working Group without being explicitly raised by Apple. ||
+
+|| GARTH: Clearly not a big deal, and not the target of Murata's remark. But, I think of iBooks as an RS -- from content ingest to device presentation (in the broadest sense).  Regardless, ePubcheck was updated recently to at least warn about un-manifested items in the OCF to aid folks submitting content to Apple. Murata's comment/question was about an itemref referencing an item that *is* in the manifest, but not used by the publication.  I don't see anything technically wrong with that. ||
+
+|| MARKUS: In addition, note that it is not possible (or at least very complicated) in a static context such as that of epubcheck to determine whether an itemreffed resource is not being used:  dom manipulation. ||
+
+|| LIZA: I'm confused by the original statement: Suppose that an itemref element references a JPEG file that is never referenced by the spine. Murata, did you mean `<item>` here?  An `<itemref>` element is a `<spine>` child. The EPUB 2.01 language implies that a content document that is in the manifest must also be in the spine: "All OPS Content Documents that are part of the publication (i.e. are listed in the manifest) which are potentially reachable by any reference mechanism allowed in this specification must be included in the spine." http://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm#Section2.4 But I agree that an `<item>` in the manifest that it is in the package but not referenced anywhere is not an error, though it might be a useful warning that the package has a potentially-useless resource (as the unmanifested warning is). ||
+
+|| MARKUS: FYI, The EPUB3 draft does not say this. It defines the term "top-level content document" [1] for documents that are listed in the spine, and uses the term XHTML Content Document [2] for any document that complies to the constraints of that document type, including child documents such as those referenced from an iframe (which do not appear in spine as they are not the "next" in the logical reading order). I must be misreading the quote you reference from 2.0.1 because it makes no sense to me at the moment (think: iframes and other parent-child relationships between XHTML documents). If we are missing something in the EPUB3 draft here however, do let me know. ||
+
+|| LIZA: Not at all, I don't think the OPF 2.01 constraint listed here provided any benefit.  It's also not recognized by epubcheck.  I just wanted to point out that this might be the source of confusion around how tightly-coupled the manifest and spine were in EPUB 2. (Iframes weren't allowed in OPS 2.01, so it probably made some sense at the time.) ||
+
+|| LEE: On this broader question, and completely off the top of my head, the OCF spec allows a metadata file which contains metadata specific to the container and not the encapsulated publication. Different TPM schemes may require additional files to implement them; these files are specific to the container and not the publication. It seems to me that it is expected that in some cases there may be files in the container that not only are not listed in the publication manifest but should /not/ be manifested, as they are only relevant to the container and not the publication. An epubcheck warning is appropriate to identify /possible/ extraneous files, but it is not definitive. ||
 
 <blockquote>
 Suppose that an itemref element references an external metadata file. Is this itemref a syntax error?
 </blockquote>
 
 
-|| GARTH: Unclear what is meant by "external" -- seems okay to have a "strange" metadata file included and referenced by the &lt;manifest> -- though, likely ignored by Reading Systems. ||
+|| GARTH: Unclear what is meant by "external" -- seems okay to have a "strange" metadata file included and referenced by the `<manifest>` -- though, likely ignored by Reading Systems. ||
 
 <blockquote>
 Drop @linear, since it may be in conflict with the navigation element.
 </blockquote>
 
 || GARTH: That would be an incompatibility with EPUB 2.0.1 -- this attribute is pretty widely used now.  Possibly could discuss deprecation, but seems late in the game. ||
+
+|| MARKUS:  for now re @linear. See also: http://code.google.com/p/epub-revision/issues/detail?id=78 ||
 
 
 == 6.2.3 Intrinsic fallback ==
@@ -84,7 +99,7 @@ object
 The intention of this sentence is not at all clear.  Which element or attribute specifies which resource as a core media type fallback?  Can object elements resource reference what is not declared in the manifest?
 </blockquote>
 
-|| GARTH: "No" to the last question.  The &lt;manifest> must be complete (with the documented exceptions of streamed video and audio). ||
+|| GARTH: "No" to the last question.  The `<manifest>` must be complete (with the documented exceptions of streamed video and audio). ||
 
 <blockquote>
 Furthermore, this constraint should be explicitly specified
