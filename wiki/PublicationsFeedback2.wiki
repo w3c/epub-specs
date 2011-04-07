@@ -1,0 +1,154 @@
+#summary Second set of feedback on the Publications spec
+
+== 4.4.8 The manifest Element, EPUB3 Publications ==
+
+<blockquote>
+The manifest element provides an exhaustive list of the Publication Resources that constitute the EPUB Publication, each represented by an item element.
+
+First, make clear that the package document is not included in the exhaustive list.
+
+Second, are resources (jpg, png, video, audio ,etc.) referenced from HTML5 or SVG required to be included?
+
+Third, consider foreign resources declared in the manifest and referenced from the spine.  Such foreign resources may reference some other resources.  Are there any reasons to enumerate all these resources in the manifest?
+</blockquote>
+
+|| GARTH: To my read "yes," the manifest must be complete.  I assume by "foreign resource" you mean a non-core media type that has a package level fallback?  If so, and it references an image (for example), that image must also be included in the manifest.  It must be possible to build a complete EPUB/OCF by including everything in the &lt;manifest>. ||
+
+
+== 4.4.11 The itemref element ==
+
+<blockquote>
+Suppose that an itemref element references a JPEG file that is never referenced by the spine, HTML content documents, SVG content documents or any other publication resources.  It this itemref a syntax error?
+</blockquote>
+
+|| GARTH: I don't see why.  Some Reading Systems (e.g. iBooks) complain about un-manifested items being in the OCF, but I don't see any requirement that everything in the &lt;manifest> (and OCF) is really used. ||
+
+
+<blockquote>
+Suppose that an itemref element references an external metadata file. Is this itemref a syntax error?
+</blockquote>
+
+
+|| GARTH: Unclear what is meant by "external" -- seems okay to have a "strange" metadata file included and referenced by the &lt;manifest> -- though, likely ignored by Reading Systems. ||
+
+<blockquote>
+Drop @linear, since it may be in conflict with the navigation element.
+</blockquote>
+
+|| GARTH: That would be an incompatibility with EPUB 2.0.1 -- this attribute is pretty widely used now.  Possibly could discuss deprecation, but seems late in the game. ||
+
+
+== 6.2.3 Intrinsic fallback ==
+
+<blockquote>
+The whole point of EPUB is the synergy between the web world and the e-book world.  We can use conformant HTML or SVG user agents as
+building blocks of EPUB reading systems.  We can use HTML or SVG
+editors for EPUB authoring.  We can repurpose HTML web pages and SVG
+images as EPUB publications.
+
+To ensure this synergy, we should not require that elements in an
+HTML document be handled differently when the HTML document appears
+as part of an EPUB publication.  In particular, we should not allow
+the use of manifest-level fallback for HTML elements.
+</blockquote>
+
+
+|| GARTH: See (just) below. ||
+
+<blockquote>
+This section defines a set of exceptions to the general requirements
+for manifest-level fallbacks for Foreign Resources. If none of these
+exceptions apply to a given Foreign Resource reference, then the
+manifest fallback mechanism must be used to supply a Core Media Type
+Resource fallback.
+
+Instead, I propose:
+
+ The manifest fallback mechanism must not be used for elements within
+ HTML or SVG content documents.  Fallbacks specified in HTML5 and SVG 1.1
+ are applicable to such elements.
+</blockquote>
+
+|| GARTH: I don't think I agree here.  If an <img> references a image of type "image/x-foozle" the fallback chain should be followed, the alt text being viable if there is no such Package fallback.  Changing this would be a substantive change from 2.0.1 and would need discussion and consensus. ||
+
+
+== 6.2.3.1 XHTML Content Documents ==
+
+<blockquote>
+object
+
+ For Foreign Resources referenced via HTML5 object elements, Core Media
+ Type fallback(s) must be provided via that element’s intrinsic
+ replacement capabilities.
+
+The intention of this sentence is not at all clear.  Which element or attribute specifies which resource as a core media type fallback?  Can object elements resource reference what is not declared in the manifest?
+</blockquote>
+
+|| GARTH: "No" to the last question.  The &lt;manifest> must be complete (with the documented exceptions of streamed video and audio). ||
+
+<blockquote>
+Furthermore, this constraint should be explicitly specified
+in the EPUB3 content document spec rather than in this spec.  Make
+this paragraph non-normative and add a reference to that part of the
+EPUB3 content document spec.
+
+ Reading Systems must ignore manifest-level fallbacks in resolving
+ such references. (Note that the bindings element provides a type of
+ fallback mechanism, but does not ensure that content can be rendered
+ on all Reading Systems regardless of scripting support).
+
+img
+
+First, I do not think that this bullet is needed.  Always disallow manifest-level fallback for elements within HTML and SVG and stop there.
+</blockquote>
+
+
+|| GARTH: See above. ||
+
+<blockquote>
+ For Foreign Resources referenced via HTML5 img elements, the text
+ value of the alt and title attributes provides a legitimate fallback
+ and should be included.
+
+Is this sentence really required here?  Isn't this advice already described in the HTML5 spec?
+
+ Additional manifest-level fallbacks may be provided.
+
+Delete "Additional manifest-level fallbacks may be provided."
+
+ Reading Systems should process manifest-level fallbacks in resolving
+ such references.
+
+Replace this para by
+
+"Reading Systems must ignore manifest-level fallbacks for resolving such references"
+</blockquote>
+
+|| GARTH: See above. ||
+
+== 6.2.3.2 CSS Style Sheets ==
+
+<blockquote>
+Embedded Fonts
+
+ For fonts embedded in Content Documents or EPUB Style Sheets using
+ the @font-face mechanism, the rules of CSS [CSS3Fonts] must be used
+ to provide a fallback in case a non-core media type font format is
+ used. Such fallback must be a Core Media Type embedded font or
+ generic font reference.
+
+The intention of the para is not clear.  Does this para try to
+change the behaviour of CSS font fallback?  If so, don't.
+</blockquote>
+
+
+|| GARTH: It does not.  It says that the standard CSS mechanism provides valid fallbacks for fonts. ||
+
+<blockquote>
+Or, does it
+impose an additional restriction on CSS stylesheets?  If so, clearly
+specify that restriction in the EPUB3 content document spec.
+Specifically, make clear what is required to be specified within CSS
+stylesheets.  In this spec, make this para non-normative, and
+introduce a reference to that part of the EPUB3 content document spec.
+</blockquote>
