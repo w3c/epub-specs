@@ -29,13 +29,6 @@
         </rule>
     </pattern>
 
-    <pattern id="navhide-unique-on-branch">
-        <rule context="html:body//html:*[@epub:navhide]">
-            <assert test="count(.//html:*[@epub:navhide]) = 0"> The epub:navhide attribute cannot be
-                carried by descendants of an element that already carries this attribute. </assert>
-        </rule>
-    </pattern>
-
     <pattern id="landmarks">
         <rule context="html:nav[@epub:type='landmarks']//html:ol//html:a">
             <assert test="@epub:type">Missing epub:type attribute on anchor inside 'landmarks' nav
