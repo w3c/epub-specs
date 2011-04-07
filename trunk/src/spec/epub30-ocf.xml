@@ -27,52 +27,45 @@
                 <title>Diffs to previous version</title>
                 <para>N/A</para>
             </formalpara>
-        </printhistory>
-        <xi:include href="./share/copyright.xml"/>
-        <xi:include href="./share/legalnotice.xml"/>
-        <authorgroup role="current">
+        </printhistory><xi:include href="./share/copyright.xml"/><xi:include
+            href="./share/legalnotice.xml"/><authorgroup role="current">
             <editor>
                 <personname>James Pritchett</personname>
                 <affiliation>
                     <org>
-                        <orgname>Recording for the Blind &amp; Dyslexic</orgname>
+                        <orgname>Learning Ally (formerly Recording for the Blind &amp;
+                            Dyslexic)</orgname>
                     </org>
-                </affiliation>
-            </editor>
+                </affiliation></editor>
             <editor>
                 <personname>Markus Gylling</personname>
                 <affiliation>
                     <org>
                         <orgname>DAISY Consortium</orgname>
                     </org>
-                </affiliation>
-            </editor>
-        </authorgroup>
-        <authorgroup role="previous">
+                </affiliation></editor>
+        </authorgroup><authorgroup role="previous">
             <editor>
                 <personname>Garth Conboy</personname>
                 <affiliation>
                     <org>
                         <orgname>eBook Technologies</orgname>
                     </org>
-                </affiliation>
-            </editor>
-        </authorgroup>
-        <abstract>
+                </affiliation></editor>
+        </authorgroup><abstract>
             <title>Abstract</title>
             <para> This specification, EPUB Open Container Format EPUB Open Container Format (OCF)
                 3.0, defines a file format and processing model for encapsulating a set of related
                 resources into a single-file container. </para>
-        </abstract>
-    </info>
+        </abstract></info>
     <chapter xml:id="sec-overview" conformance="informative">
         <title>Overview</title>
         <section xml:id="sec-overview-purpose-and-scope">
             <title>Purpose and Scope</title>
             <para>This specification, EPUB Open Container Format (OCF) 3.0, defines a file format
-                and processing model for encapsulating the set of related resources that comprise an
-                    <link linkend="gloss-epub-publication">EPUB® Publication</link> — including any
-                alternate renditions — into a single-file container.</para>
+                and processing model for encapsulating the sets of related resources that comprise
+                one or more <link linkend="gloss-epub-publication">EPUB® Publications</link> into a
+                single-file container.</para>
             <xi:include href="./share/specdesc-prepara.xml"/>
             <itemizedlist xml:id="epub-specs-listing">
                 <xi:include href="./share/specdesc-overview.xml"/>
@@ -210,9 +203,8 @@
                 descendant from the containter's root directory except for
                     <filename>mimetype</filename> at the container's root level or within the
                     <filename>META-INF</filename> directory.</para>
-            <para>It is recommended that the contents of individual publications be stored within
-                dedicated directories under the container's root to minimize potential file name
-                collisions in the event that multiple renditions are used.</para>
+            <para>It is recommended that the contents of each of the individual publications be
+                stored within its own dedicated directory under the container's root.</para>
         </section>
         <section xml:id="sec-container-iri">
             <title>Relative IRIs for Referencing Other Components</title>
@@ -348,8 +340,8 @@
                 <para>All valid OCF Containers must include a file called
                         <filename>container.xml</filename> within the <filename>META-INF</filename>
                     directory. The <filename>container.xml</filename> file must identify the media
-                    type of, and path to, the rootfile for the EPUB rendition of the publication and
-                    any optional alternate renditions included within the container.</para>
+                    type of, and paths to, the rootfiles for the EPUB Publications included within
+                    the container.</para>
                 <para>The <filename>container.xml</filename> file must not be encrypted.</para>
                 <para>The schema for <filename>container.xml</filename> files is available in <xref
                         linkend="app-schema-container"/>; <filename>container.xml</filename> files
@@ -359,15 +351,11 @@
                 <!-- TODO either remove this anyname allowance, or make the schema support it natively. -->
                 <para>The <code>rootfiles</code> element must contain one or more
                         <code>rootfile</code> elements, each of which must uniquely reference a
-                    single rendition of the contained publication.</para>
+                    single publication. The publications stored in an OCF SHOULD be different
+                    renditions of the same <xref linkend="gloss-manifestation"/>.</para>
                 <remark role="todo">TODO: consider supporting human-readable label and/or
                     machine-readable type metadata to facilitate choosing from multiple
                     alternatives</remark>
-                <para role="epubconf">For EPUB Publications, there must be at least one
-                        <code>rootfile</code> element with a <code>media-type</code> of
-                        <literal>application/oebps-package+xml</literal>. The target of such a
-                    reference (a <xref linkend="gloss-package-document"/>) must not be
-                    encrypted.</para>
                 <para>An OCF Processor should consider the first <code>rootfile</code> element
                     within the <code>rootfiles</code> element to be the default rendition for the
                     contained publication.</para>
@@ -815,17 +803,22 @@ end if
         </section>
         <section xml:id="fobfus-keygen">
             <title>Generating the Obfuscation Key</title>
-            <para>The key used in the obfuscation algorithm is derived from the publication's unique
-                identifer, required by the EPUB Publications 3.0 specification and detailed in
-                    <olink targetdoc="publications" targetptr="sec-opf-metadata-identifiers-uid"
-                    type="epub-spec"/>. In order to create the key, an SHA-1 digest of the unique
-                identifier should be generated as specified by the Secure Hash Standard <xref
-                    linkend="refSHA1"/>. Before generating the digest, all whitespace characters as
-                defined by the XML 1.0 specification <xref linkend="refXML"/>, section 2.3 are
-                removed. Specifically the Unicode code points <code>0x20</code>, <code>0x09</code>,
-                    <code>0x0D</code> and <code>0x0A</code> must be stripped from the string before
-                the digest is computed. This digest is then directly used as the key for the
-                algorithm described in <xref linkend="fobfus-algorithm"/>.</para>
+            <para>The key used in the obfuscation algorithm is derived from unique identifer(s) of
+                the publication(s) in the Container, as required by the EPUB Publications 3.0
+                specification and detailed in <olink targetdoc="publications"
+                    targetptr="sec-opf-metadata-identifiers-uid" type="epub-spec"/>. In order to
+                create the key, the unique identifiers of all publications contained in the
+                container MUST be concatenated in the order that the publications appear in
+                    <code>container.xml</code> and a space (Unicode code point <code>0x20</code>)
+                inserted between each identifier. Before generating this string, all whitespace
+                characters as defined by the XML 1.0 specification <xref linkend="refXML"/>, section
+                2.3 are removed from the individual identifiers. Specifically the Unicode code
+                points <code>0x20</code>, <code>0x09</code>, <code>0x0D</code> and <code>0x0A</code>
+                must be stripped from each identifier before it is added to the concanenated
+                space-delimited string. An SHA-1 digest of the UTF-8 representation of this string
+                should be generated as specified by the Secure Hash Standard <xref linkend="refSHA1"
+                />. This digest is then directly used as the key for the algorithm described in
+                    <xref linkend="fobfus-algorithm"/>.</para>
         </section>
         <section xml:id="fobfus-specifying">
             <title>Specifying Obfuscated Resources</title>
