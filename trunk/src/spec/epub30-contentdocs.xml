@@ -1476,22 +1476,6 @@
                         />.</para>
                 </note>
 
-                <note>
-                    <para> The EPUB Navigation Document, just like any other <xref
-                            linkend="gloss-content-document-epub-xhtml"/>s, is subject to the
-                        rendering context imposed by Reading Systems. For example, CSS Style Sheets
-                        may be used by authors to control the appearance of the table of contents
-                        within the actual paginated content. However, the primary display of the
-                        full navigation structure remains independent from the rendering of spine
-                        items: Reading Systems usually provide a dedicated user-interface for the
-                        display of the navigation data authored within the EPUB Navigation Document.
-                        As a result, content authors may decide to use CSS rules to hide parts (or
-                        all) of the navigation outlines from the rendered spine content, but this
-                        has no impact on the "out of page" display of the full, machine-readable
-                        navigation structure (unless the <code>epub:navhide</code> attribute is used
-                        on the <code>nav</code> or the <code>ol</code> elements, see below) </para>
-                </note>
-
             </section>
 
             <section xml:id="sec-xhtml-nav-content-conf"
@@ -1830,80 +1814,54 @@
                     </section>
                 </section>
 
-                <section xml:id="sec-xhtml-nav-def-navhide">
-                    <title>The <code>nav</code> and <code>ol</code> Elements, the
-                            <code>epub:navhide</code> attribute</title>
-                    
-                    
-                    <remark role="todo">TODO (feature at risk) <link
-                        xlink:href="http://code.google.com/p/epub-revision/issues/detail?id=84"
-                        >Issue 84</link></remark>
-                    
-                    <para>The <code>epub:navhide</code> attribute can be used by authors to specify
-                        when a whole <code>nav</code> structure, or a <code>ol</code> sub section,
-                        should not be shown to the reader.</para>
+                <section xml:id="sec-xhtml-nav-def-hidden">
+                    <title>The <code>hidden</code> attribute</title>
+                    <note>
+                        <para> The EPUB Navigation Document, just like any other <xref
+                                linkend="gloss-content-document-epub-xhtml"/>s, is subject to the
+                            rendering context imposed by Reading Systems. Authors may use CSS
+                            (Cascading Style Sheets) to control the appearance of the navigation
+                            data within the content flow, but only Reading Systems that support CSS
+                            are effectively able to process this styling information. </para>
+                    </note>
+                    <para> In some cases, authors may wish to hide parts of the navigation data
+                        within the content flow. In order for such content control to take place in
+                        both CSS and non-CSS environments, authors must use the HTML5 "hidden"
+                        attribute instead of a CSS-specific construct such as the "display:none"
+                        rule. </para>
 
-                    <itemizedlist role="conformance-list">
+                    <note>
+                        <para> A typical example is the list of page breaks (epub:type="page-list")
+                            which usually isn't rendered as part of the content flow, but instead
+                            gets displayed by the Reading System's dedicated navigation user
+                            interface. </para>
+                    </note>
+                    <informalexample>
+                        <para>The following example shows a partial <literal>page-list</literal>
+                            <code>nav</code> element:</para>
+                        <synopsis><xi:include href="./examples/contentdocs-nav/page-list.xml" parse="text"/></synopsis>
+                    </informalexample>
 
-                        <listitem>
-                            <para xml:id="confreq-nav-navhide-attr-elements"> The
-                                    <code>epub:navhide</code> attribute is optional, and can only be
-                                used on the <code>nav</code> element or any <code>ol</code>
-                                descendant element. Descendants of an element that carries the
-                                    <code>epub:navhide</code> attribute must not have the
-                                    <code>epub:navhide</code> attribute. </para>
-                        </listitem>
-                        <listitem>
-                            <para xml:id="confreq-nav-navhide-attr-values"> The
-                                    <code>epub:navhide</code> attribute accepts 3 values:
-                                    <code>doc</code>, <code>ui</code> or <code>doc-ui</code> The
-                                    <code>doc</code> value means that the associated element (and
-                                its descendants) must be hidden from the document rendering area.
-                                The <code>ui</code> value means that the associated element (and its
-                                descendants) must be hidden in the primary, dedicated navigation
-                                user-interface. The <code>doc-ui</code> value means that the
-                                associated element (and its descendants) must be hidden in both
-                                rendering contexts. The effect of "hidden" in the context of
-                                document rendering is identical to the effect of the
-                                    <code>display:none</code> CSS property. The definition of
-                                "hidden" in the context of the primary navigation user-interface
-                                depends on Reading Systems implementations, but it is recommended to
-                                provide the user with a way to manually expand initially-hidden
-                                content (for example with a tree widget and collapsible nodes that
-                                can be toggled). </para>
-                        </listitem>
-                        <listitem>
-                            <para xml:id="confreq-nav-navhide-attr-css-display"> There are 2
-                                distinct rendering contexts for the EPUB Navigation structure: one
-                                is the dedicated navigation user interface provided by reading
-                                systems, the other is the "in-page" publication content flow. In the
-                                former case (user interface display), CSS is not expected to be part
-                                of the rendering infrastructure, so authors and reading systems must
-                                use the <code>epub:navhide="ui"</code> (or
-                                    <code>epub:navhide="doc-ui"</code>) attribute to hide navigation
-                                elements. In the latter case (document rendering), CSS may or may
-                                not be supported, so <code>epub:navhide="doc"</code> (or
-                                    <code>epub:navhide="doc-ui"</code>) should be used by authors to
-                                specify content invisibility. CSS-capable reading systems must
-                                automatically map <code>epub:navhide="doc"</code> (and
-                                    <code>epub:navhide="doc-ui"</code>) to <code>display:none</code>
-                                in the user-agent stylesheet, unless the <code>display</code>
-                                property is explicitely authored (it is however recommended to
-                                maintain consistency between CSS-capable and non-CSS-aware reading
-                                systems, by not authoring different presentation rules). </para>
-                        </listitem>
-                    </itemizedlist>
+                    <para> The "hidden" attribute is a standard HTML5 feature that may be used
+                        within <xref linkend="gloss-content-document-epub-xhtml"/>s other than the
+                        EPUB Navigation Document. The reason why this section puts a particular
+                        emphasis on the importance of using a semantic, non-CSS mechanism to control
+                        the visibility of navigation structures within the content flow, is because
+                        of the EPUB Navigation Document's dual purpose: it is meant not only to take
+                        part in the content flow but also to act as a raw data source to be consumed
+                        by user-agents, such as production / conversion tools, or such as the
+                        dedicated navigation user-interface provided by Reading Systems. The
+                        "hidden" attribute has no effect on how the navigation data gets rendered
+                        outside of the content flow, because in such external context, XHTML5 is
+                        used as a microformat and not because of its presentational qualities.
+                        Conversely, the "hidden" attribute applies to all possible presentations of
+                        the content flow, such as the conventional paginated context, or such as a
+                        screen-reader aural rendition. </para>
 
                     <informalexample>
                         <para>The following example shows a partial <literal>toc</literal>
                             <code>nav</code> element:</para>
                         <synopsis><xi:include href="./examples/contentdocs-nav/toc.xml" parse="text"/></synopsis>
-                    </informalexample>
-
-                    <informalexample>
-                        <para>The following example shows a partial <literal>page-list</literal>
-                            <code>nav</code> element:</para>
-                        <synopsis><xi:include href="./examples/contentdocs-nav/page-list.xml" parse="text"/></synopsis>
                     </informalexample>
                 </section>
             </section>
@@ -2118,9 +2076,10 @@
                         <listitem>
                             <para>In this model of scripting, the script execution scope is a <xref
                                     linkend="gloss-content-document-top-level"/>. There are no
-                                restrictions on DOM access, but a Reading System may impose restrictions on
-                                modifications (see also the <link
-                                    linkend="feature-dom-manipulation">dom-manipulation feature</link>).</para>
+                                restrictions on DOM access, but a Reading System may impose
+                                restrictions on modifications (see also the <link
+                                    linkend="feature-dom-manipulation">dom-manipulation
+                                    feature</link>).</para>
                         </listitem>
                     </varlistentry>
                 </variablelist>
@@ -2221,15 +2180,17 @@
             <section xml:id="sec-scripted-content-rs-reqs"
                 xreflabel="Scripted Content Documents — Reading System Conformance">
                 <title>Reading System Conformance</title>
-                
-                <para><xref linkend="gloss-epub-reading-system"/> support for scripting is optional. 
-                    A Reading System that supports scripting must meet the following criteria:</para>
-                
+
+                <para><xref linkend="gloss-epub-reading-system"/> support for scripting is optional.
+                    A Reading System that supports scripting must meet the following
+                    criteria:</para>
+
                 <itemizedlist role="conformance-list">
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-support">It must support
-                            <xref linkend="sec-scripted-content-type-container-constrained"/> scripting,
-                            and may support <xref linkend="sec-scripted-content-type-spine-level"/> scripting.</para>
+                        <para xml:id="confreq-rs-scripted-support">It must support <xref
+                                linkend="sec-scripted-content-type-container-constrained"/>
+                            scripting, and may support <xref
+                                linkend="sec-scripted-content-type-spine-level"/> scripting.</para>
                     </listitem>
                     <listitem>
                         <para xml:id="confreq-rs-scripted-ua">It may render <xref
@@ -2237,22 +2198,22 @@
                             scripted User Agent according to <xref linkend="refHTML5"/>.</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-limit">It 
-                            may place limitations on the capabilities provided to scripts
-                            during execution (e.g., limiting networking or DOM access).</para>
+                        <para xml:id="confreq-rs-scripted-limit">It may place limitations on the
+                            capabilities provided to scripts during execution (e.g., limiting
+                            networking or DOM access).</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-readingsystem-object">It must implement 
-                            the JavaScript <code>navigator</code> extension object 
-                            <code>epubReadingSystem</code> defined in 
-                            <xref linkend="app-epubReadingSystem"/>. It also must support the
-                            <code>dom-manipulation</code> and <code>layout-change</code>
-                            features defined in <xref linkend="app-ers-hasFeature-features"/>
-                            in container-constrained scripting contexts.</para>
+                        <para xml:id="confreq-rs-scripted-readingsystem-object">It must implement
+                            the JavaScript <code>navigator</code> extension object
+                                <code>epubReadingSystem</code> defined in <xref
+                                linkend="app-epubReadingSystem"/>. It also must support the
+                                <code>dom-manipulation</code> and <code>layout-change</code>
+                            features defined in <xref linkend="app-ers-hasFeature-features"/> in
+                            container-constrained scripting contexts.</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-prop">It must regard the
-                                <olink type="epub-spec" targetdoc="publications"
+                        <para xml:id="confreq-rs-scripted-prop">It must regard the <olink
+                                type="epub-spec" targetdoc="publications"
                                 targetptr="propdef-scripted"><code>scripted</code></olink> property
                             of the <xref linkend="gloss-package-document"/>
                             <xref linkend="gloss-manifest"/>
@@ -2260,17 +2221,18 @@
                             EPUB Content Document includes scripting.</para>
                     </listitem>
                 </itemizedlist>
-                
-                <para>A Reading System that does not support scripting must meet the following criteria:</para>
-                
+
+                <para>A Reading System that does not support scripting must meet the following
+                    criteria:</para>
+
                 <itemizedlist role="conformance-list">
                     <listitem>
-                        <para xml:id="confreq-rs-scripted-flbk">It must process fallbacks for scripted content 
-                            as defined in
-                            <xref linkend="confreq-cd-scripted-flbk"/>.</para>
+                        <para xml:id="confreq-rs-scripted-flbk">It must process fallbacks for
+                            scripted content as defined in <xref linkend="confreq-cd-scripted-flbk"
+                            />.</para>
                     </listitem>
                 </itemizedlist>
-                
+
                 <note>
                     <para>Reading Systems may render Scripted Content Documents in a manner that
                         disables other EPUB capabilities and/or provides a different rendering and
@@ -3010,40 +2972,44 @@
 
     </appendix>
 -->
-    
+
     <appendix xml:id="app-epubReadingSystem">
         <title>JavaScript epubReadingSystem Object</title>
-        
+
         <section xml:id="app-ers-syntax">
             <title>Syntax</title>
-            
-            <para role="syntax"><emphasis>ReadingSystem</emphasis> = navigator.epubReadingSystem;</para>
-            
+
+            <para role="syntax"><emphasis>ReadingSystem</emphasis> =
+                navigator.epubReadingSystem;</para>
+
         </section>
-        
+
         <section xml:id="app-ers-desc">
             <title>Description</title>
-            
-            <para>The <code>epubReadingSystem</code> object provides an interface through which
-                a <xref linkend="gloss-content-document-epub-scripted"/> can query information about 
-                a <xref linkend="gloss-user"/>'s <link linkend="gloss-epub-reading-system">Reading System</link>.</para>
-            
-            <para>The object exposes a number of <link linkend="app-ers-properties">properties</link>,
-                about the Reading System, such as its name and version, and provides the 
-                <link linkend="app-ers-hasFeature">hasFeature</link> method which can be invoked to determine
-                the features it supports.</para>
-            
+
+            <para>The <code>epubReadingSystem</code> object provides an interface through which a
+                    <xref linkend="gloss-content-document-epub-scripted"/> can query information
+                about a <xref linkend="gloss-user"/>'s <link linkend="gloss-epub-reading-system"
+                    >Reading System</link>.</para>
+
+            <para>The object exposes a number of <link linkend="app-ers-properties"
+                    >properties</link>, about the Reading System, such as its name and version, and
+                provides the <link linkend="app-ers-hasFeature">hasFeature</link> method which can
+                be invoked to determine the features it supports.</para>
+
             <informalexample>
-                <para>Example JavaScript function that displays the name of the current Reading System.</para>
-                <synopsis>alert("Reading System name: " + navigator.epubReadingSystem.name);</synopsis></informalexample>
+                <para>Example JavaScript function that displays the name of the current Reading
+                    System.</para>
+                <synopsis>alert("Reading System name: " + navigator.epubReadingSystem.name);</synopsis>
+            </informalexample>
         </section>
-        
+
         <section xml:id="app-ers-properties">
             <title>Properties</title>
-            
-            <para>The following properties must be made available for retrieving
-                information about the Reading System.</para>
-            
+
+            <para>The following properties must be made available for retrieving information about
+                the Reading System.</para>
+
             <table xml:id="tbl-epubReadingSystem-properties">
                 <caption>Required epubReadingSystem properties</caption>
                 <thead>
@@ -3055,68 +3021,74 @@
                 <tbody>
                     <tr>
                         <td><literal>name</literal></td>
-                        <td>Returns a <literal>String</literal> value representing the name of the Reading System
-                            (e.g., <literal>iBooks</literal>, <literal>Kindle</literal>).</td>
+                        <td>Returns a <literal>String</literal> value representing the name of the
+                            Reading System (e.g., <literal>iBooks</literal>,
+                                <literal>Kindle</literal>).</td>
                     </tr>
                     <tr>
                         <td><literal>version</literal></td>
-                        <td>Returns a <literal>String</literal> value representing the version of the Reading System
-                            (e.g., <literal>1.0</literal>, <literal>2.1.1</literal>).</td>
+                        <td>Returns a <literal>String</literal> value representing the version of
+                            the Reading System (e.g., <literal>1.0</literal>,
+                                <literal>2.1.1</literal>).</td>
                     </tr>
                     <tr>
                         <td><literal>layoutStyle</literal></td>
-                        <td><para>Returns a <literal>String</literal> value representing the style of layout for the content.</para>
-                            <para>A Reading System will typically return one of the values <literal>paginated</literal> or 
-                            <literal>scrolling</literal>, but  may define values for any additional layout 
-                                formats it supports.</para></td>
+                        <td><para>Returns a <literal>String</literal> value representing the style
+                                of layout for the content.</para>
+                            <para>A Reading System will typically return one of the values
+                                    <literal>paginated</literal> or <literal>scrolling</literal>,
+                                but may define values for any additional layout formats it
+                                supports.</para></td>
                     </tr>
                 </tbody>
             </table>
         </section>
-        
-        
+
+
         <section xml:id="app-ers-methods">
             <title>Methods</title>
-            
+
             <section xml:id="app-ers-hasFeature">
                 <title>hasFeature</title>
-                
+
                 <section xml:id="app-ers-hasFeature-syntax">
                     <title>Syntax</title>
-                    
+
                     <para role="syntax">hasFeature(feature[, version])</para>
                 </section>
-                
+
                 <section xml:id="app-ers-hasFeature-desc">
                     <title>Description</title>
-                    <para>For recognized features, the <code>hasFeature</code> method returns a boolean value 
-                        indicating whether any version is supported.</para>
-                    <para>If the optional <code>version</code> parameter is included, the return value indicates 
-                        support only for the specified version.</para>
-                    <para>The method retuns <literal>undefined</literal> if the feature is not recognized by the
-                        Reading System.</para>
-                    
+                    <para>For recognized features, the <code>hasFeature</code> method returns a
+                        boolean value indicating whether any version is supported.</para>
+                    <para>If the optional <code>version</code> parameter is included, the return
+                        value indicates support only for the specified version.</para>
+                    <para>The method retuns <literal>undefined</literal> if the feature is not
+                        recognized by the Reading System.</para>
+
                     <informalexample>
-                        <para>Example JavaScript function that displays whether the current Reading System supports
-                            scripted manipulation of the DOM.</para>
+                        <para>Example JavaScript function that displays whether the current Reading
+                            System supports scripted manipulation of the DOM.</para>
                         <synopsis>var feature = "dom-manipulation";
 
 var conformTest = navigator.epubReadingSystem.hasFeature(feature);
 
-alert("Feature " + feature + " supported?: " + conformTest);</synopsis></informalexample>
+alert("Feature " + feature + " supported?: " + conformTest);</synopsis>
+                    </informalexample>
                 </section>
-                
+
                 <section xml:id="app-ers-hasFeature-features">
                     <title>Features</title>
-                    
-                    <para>The following table details the features that must be recognized by all Reading Systems 
-                        that support scripting (<link linkend="sec-scripted-content-intro">spine-level</link> or
-                        <link linkend="sec-scripted-content-intro">container-constrained</link>). 
-                        Reading Systems may support some or all of these features (refer to
-                       <xref linkend="sec-scripted-content-rs-reqs"/> for more information).</para>
-                    
+
+                    <para>The following table details the features that must be recognized by all
+                        Reading Systems that support scripting (<link
+                            linkend="sec-scripted-content-intro">spine-level</link> or <link
+                            linkend="sec-scripted-content-intro">container-constrained</link>).
+                        Reading Systems may support some or all of these features (refer to <xref
+                            linkend="sec-scripted-content-rs-reqs"/> for more information).</para>
+
                     <para>Feature names are case-insensitive.</para>
-                    
+
                     <table xml:id="tbl-epubReadingSystem-features">
                         <caption>Required epubReadingSystem features</caption>
                         <thead>
@@ -3127,50 +3099,58 @@ alert("Feature " + feature + " supported?: " + conformTest);</synopsis></informa
                         </thead>
                         <tbody>
                             <tr>
-                                <td xml:id="feature-dom-manipulation"><literal>dom-manipulation</literal></td>
+                                <td xml:id="feature-dom-manipulation"
+                                        ><literal>dom-manipulation</literal></td>
                                 <td>Scripts may make structural changes to the document’s DOM
                                     (applies to spine-level scripting only).</td>
                             </tr>
                             <tr>
-                                <td xml:id="feature-layout-changes"><literal>layout-changes</literal></td>
-                                <td>Scripts may modify attributes and CSS styles that affect content layout
-                                    (applies to spine-level scripting only).</td>
+                                <td xml:id="feature-layout-changes"
+                                        ><literal>layout-changes</literal></td>
+                                <td>Scripts may modify attributes and CSS styles that affect content
+                                    layout (applies to spine-level scripting only).</td>
                             </tr>
                             <tr>
-                                <td xml:id="feature-touch-events"><literal>touch-events</literal></td>
-                                <td>The device supports touch events and the Reading System passes touch events to 
-                                    the content.</td>
+                                <td xml:id="feature-touch-events"
+                                    ><literal>touch-events</literal></td>
+                                <td>The device supports touch events and the Reading System passes
+                                    touch events to the content.</td>
                             </tr>
                             <tr>
-                                <td xml:id="feature-mouse-events"><literal>mouse-events</literal></td>
-                                <td>The device supports mouse events and the Reading System passes mouse events to 
-                                    the content.</td>
+                                <td xml:id="feature-mouse-events"
+                                    ><literal>mouse-events</literal></td>
+                                <td>The device supports mouse events and the Reading System passes
+                                    mouse events to the content.</td>
                             </tr>
                             <tr>
-                                <td xml:id="feature-keyboard-events"><literal>keyboard-events</literal></td>
-                                <td>The device supports keyboard events and the Reading System passes keyboard events to 
-                                    the content.</td>
+                                <td xml:id="feature-keyboard-events"
+                                        ><literal>keyboard-events</literal></td>
+                                <td>The device supports keyboard events and the Reading System
+                                    passes keyboard events to the content.</td>
                             </tr>
                             <tr>
-                                <td xml:id="feature-spine-scripting"><literal>spine-scripting</literal></td>
+                                <td xml:id="feature-spine-scripting"
+                                        ><literal>spine-scripting</literal></td>
                                 <td>Spine-level scripting is supported.</td>
                             </tr>
                         </tbody>
                     </table>
-                    
-                    <para>If a Reading System supports a feature defined in this section, it must return a <literal>true</literal> 
-                        value both when queried without the version parameter set and when that parameter is set to the value 
-                        <literal>1.0</literal>. Otherwise, it must return false.  Reading System developers should not change 
-                        the version number of these features independently of this specification.</para>
-                    
-                    <para>Additional features may be added by Reading System developers, but future versions of this
-                        specification may append to this list in ways that may conflict or be incompatible with any such
-                        custom additions.</para>
+
+                    <para>If a Reading System supports a feature defined in this section, it must
+                        return a <literal>true</literal> value both when queried without the version
+                        parameter set and when that parameter is set to the value
+                            <literal>1.0</literal>. Otherwise, it must return false. Reading System
+                        developers should not change the version number of these features
+                        independently of this specification.</para>
+
+                    <para>Additional features may be added by Reading System developers, but future
+                        versions of this specification may append to this list in ways that may
+                        conflict or be incompatible with any such custom additions.</para>
                 </section>
             </section>
         </section>
     </appendix>
-    
+
     <appendix xml:id="acknowledgements" role="acknowledgements" conformance="informative">
         <title>Contributors</title>
         <xi:include href="./share/contributors.xml"/>

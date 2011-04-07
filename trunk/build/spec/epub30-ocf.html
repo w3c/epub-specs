@@ -34,7 +34,7 @@
          <div class="legal">
             <p class="copyright">Copyright © 2010, 2011 International Digital Publishing Forum™</p>
             <div class="legalnotice" title="Legal Notice">
-               <a id="d45073e37"/>
+               <a id="d44900e37"/>
                <p class="para">All rights reserved. This work is protected under Title 17 of the United States Code.
         Reproduction and dissemination of this work with changes is prohibited except with the
         written permission of the <a class="link" href="http://www.idpf.org">International Digital
@@ -45,7 +45,8 @@
          <div class="authorgroup">
             <p class="bridgehead">Editors (this version)</p>
             <p class="editor">James Pritchett, 
-                        Recording for the Blind &amp; Dyslexic
+                        Learning Ally (formerly Recording for the Blind &amp;
+                            Dyslexic)
                     </p>
             <p class="editor">Markus Gylling, 
                         DAISY Consortium
@@ -285,10 +286,10 @@
                   <span class="link-marker">
                      <a class="hidden-reveal" title="Link here" href="#sec-overview-purpose-and-scope">›</a> </span>1.1 Purpose and Scope</h3>
                <p class="para">This specification, EPUB Open Container Format (OCF) 3.0, defines a file format
-                and processing model for encapsulating the set of related resources that comprise an
-                    <a class="glossterm" href="#gloss-epub-publication"
-                     title="EPUB Publication (or Publication)">EPUB® Publication</a> — including any
-                alternate renditions — into a single-file container.</p>
+                and processing model for encapsulating the sets of related resources that comprise
+                one or more <a class="glossterm" href="#gloss-epub-publication"
+                     title="EPUB Publication (or Publication)">EPUB® Publications</a> into a
+                single-file container.</p>
                <p class="para" id="sibling-specs">This specification is one of a family of
     related specifications that compose EPUB 3, the third major revision of an
     interchange and delivery format for digital publications based on XML and Web
@@ -447,6 +448,18 @@
                               <a class="link" href="epub30-publications.html#sec-package-documents">Package Documents</a> 
                               <a class="biblioref" href="#refPublications3" title="EPUB Publications 3.0">[<abbr class="abbrev">Publications30</abbr>]</a>
                            </span>. </p>
+                     </dd>
+                     <dt class="glossentry" title="Manifestation" id="gloss-manifestation">Manifestation</dt>
+                     <dd>
+                        <p class="para">The digital (or physical) embodiment of a work of intellectual content. Changes to
+                the content such as significant revision, abridgement, translation, or the
+                realization of the content in a different digital or physical form result in a new
+                manifestation. There may be many individual but identical copies of a manifestation,
+                termed 'instances' or 'items'. The ISBN is an example of a manifestation identifier,
+                and is shared by all instances of that manifestation.</p>
+                        <p class="para">All instances of a manifestation need not be bit-for-bit identical, as minor
+                corrections or revisions are not judged to create a new manifestation or
+                work.</p>
                      </dd>
                      <dt class="glossentry" title="EPUB Style Sheet (or Style Sheet)"
                          id="gloss-stylesheet">EPUB Style Sheet (or Style Sheet)</dt>
@@ -618,9 +631,8 @@
                 descendant from the containter's root directory except for
                     <code class="filename">mimetype</code> at the container's root level or within the
                     <code class="filename">META-INF</code> directory.</p>
-               <p class="para">It is recommended that the contents of individual publications be stored within
-                dedicated directories under the container's root to minimize potential file name
-                collisions in the event that multiple renditions are used.</p>
+               <p class="para">It is recommended that the contents of each of the individual publications be
+                stored within its own dedicated directory under the container's root.</p>
             </div>
             <div class="section" title="2.3 Relative IRIs for Referencing Other Components"
                  id="sec-container-iri">
@@ -796,8 +808,8 @@
                   <p class="para">All valid OCF Containers must include a file called
                         <code class="filename">container.xml</code> within the <code class="filename">META-INF</code>
                     directory. The <code class="filename">container.xml</code> file must identify the media
-                    type of, and path to, the rootfile for the EPUB rendition of the publication and
-                    any optional alternate renditions included within the container.</p>
+                    type of, and paths to, the rootfiles for the EPUB Publications included within
+                    the container.</p>
                   <p class="para">The <code class="filename">container.xml</code> file must not be encrypted.</p>
                   <p class="para">The schema for <code class="filename">container.xml</code> files is available in <a class="xref" href="#app-schema-container" title="A.1 Schema for container.xml">Schema for <code class="filename">container.xml</code>
                      </a>; <code class="filename">container.xml</code> files
@@ -806,15 +818,11 @@
                     elements).</p>
                   <p class="para">The <code class="code">rootfiles</code> element must contain one or more
                         <code class="code">rootfile</code> elements, each of which must uniquely reference a
-                    single rendition of the contained publication.</p>
+                    single publication. The publications stored in an OCF SHOULD be different
+                    renditions of the same <a class="glossterm" href="#gloss-manifestation" title="Manifestation">Manifestation</a>.</p>
                   <span class="todo">TODO: consider supporting human-readable label and/or
                     machine-readable type metadata to facilitate choosing from multiple
                     alternatives</span>
-                  <p class="epubconf">For EPUB Publications, there must be at least one
-                        <code class="code">rootfile</code> element with a <code class="code">media-type</code> of
-                        <code class="literal">application/oebps-package+xml</code>. The target of such a
-                    reference (a <a class="glossterm" href="#gloss-package-document" title="Package Document">Package Document</a>) must not be
-                    encrypted.</p>
                   <p class="para">An OCF Processor should consider the first <code class="code">rootfile</code> element
                     within the <code class="code">rootfiles</code> element to be the default rendition for the
                     contained publication.</p>
@@ -1402,20 +1410,25 @@ end if
                <h3 class="title">
                   <span class="link-marker">
                      <a class="hidden-reveal" title="Link here" href="#fobfus-keygen">›</a> </span>4.3 Generating the Obfuscation Key</h3>
-               <p class="para">The key used in the obfuscation algorithm is derived from the publication's unique
-                identifer, required by the EPUB Publications 3.0 specification and detailed in
-                    <span class="phrase">
+               <p class="para">The key used in the obfuscation algorithm is derived from unique identifer(s) of
+                the publication(s) in the Container, as required by the EPUB Publications 3.0
+                specification and detailed in <span class="phrase">
                      <a class="link" href="epub30-publications.html#sec-opf-metadata-identifiers-uid">Unique Identifier</a> 
                      <a class="biblioref" href="#refPublications3" title="EPUB Publications 3.0">[<abbr class="abbrev">Publications30</abbr>]</a>
-                  </span>. In order to create the key, an SHA-1 digest of the unique
-                identifier should be generated as specified by the Secure Hash Standard <a class="biblioref" href="#refSHA1"
-                     title="Federal Information Processing Standards Publication 180-3: Secure Hash Standard (SHS)">[<abbr class="abbrev">SHA-1</abbr>]</a>. Before generating the digest, all whitespace characters as
-                defined by the XML 1.0 specification <a class="biblioref" href="#refXML"
-                     title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a>, section 2.3 are
-                removed. Specifically the Unicode code points <code class="code">0x20</code>, <code class="code">0x09</code>,
-                    <code class="code">0x0D</code> and <code class="code">0x0A</code> must be stripped from the string before
-                the digest is computed. This digest is then directly used as the key for the
-                algorithm described in <a class="xref" href="#fobfus-algorithm" title="4.2 Obfuscation Algorithm">Obfuscation Algorithm</a>.</p>
+                  </span>. In order to
+                create the key, the unique identifiers of all publications contained in the
+                container MUST be concatenated in the order that the publications appear in
+                    <code class="code">container.xml</code> and a space (Unicode code point <code class="code">0x20</code>)
+                inserted between each identifier. Before generating this string, all whitespace
+                characters as defined by the XML 1.0 specification <a class="biblioref" href="#refXML"
+                     title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a>, section
+                2.3 are removed from the individual identifiers. Specifically the Unicode code
+                points <code class="code">0x20</code>, <code class="code">0x09</code>, <code class="code">0x0D</code> and <code class="code">0x0A</code>
+                must be stripped from each identifier before it is added to the concanenated
+                space-delimited string. An SHA-1 digest of the UTF-8 representation of this string
+                should be generated as specified by the Secure Hash Standard <a class="biblioref" href="#refSHA1"
+                     title="Federal Information Processing Standards Publication 180-3: Secure Hash Standard (SHS)">[<abbr class="abbrev">SHA-1</abbr>]</a>. This digest is then directly used as the key for the algorithm described in
+                    <a class="xref" href="#fobfus-algorithm" title="4.2 Obfuscation Algorithm">Obfuscation Algorithm</a>.</p>
             </div>
             <div class="section" title="4.4 Specifying Obfuscated Resources"
                  id="fobfus-specifying">
