@@ -430,6 +430,11 @@
                                  <a href="#sec-scripted-content-rs-reqs">2.4.3. Reading System Conformance</a>
                               </span>
                            </dt>
+                           <dt>
+                              <span class="section">
+                                 <a href="#sec-scripted-content-security">2.4.4. Security Considerations</a>
+                              </span>
+                           </dt>
                         </dl>
                      </dd>
                   </dl>
@@ -1445,7 +1450,7 @@
                            <pre class="synopsis">
 &lt;html … profile="http://www.idpf.org/epub/30/profile/content/"&gt;&#xD;
    …&#xD;
-  &lt;p&gt; … &lt;br epub:type="pagebreak" title="234"/&gt; … &lt;/p&gt;    &#xD;
+  &lt;p&gt; … &lt;span epub:type="pagebreak" title="234"/&gt; … &lt;/p&gt;    &#xD;
    … &#xD;
 &lt;/html&gt;   </pre>
                         </div>
@@ -3172,6 +3177,75 @@
                         avoid the inclusion of scripting whenever practical.</p>
                   </div>
                </div>
+               <div class="section" title="2.4.4 Security Considerations"
+                    id="sec-scripted-content-security">
+                  <h4 class="title">
+                     <span class="link-marker">
+                        <a class="hidden-reveal" title="Link here" href="#sec-scripted-content-security">›</a> </span>2.4.4 Security Considerations</h4>
+                  <p class="para">All EPUB <a class="glossterm" href="#gloss-author" title="Author">Author</a>s and Reading System developers need to be aware of the 
+                    security issues that arise when scripted content is executed by a Reading System. 
+                    As the underlying scripting model employed by Reading Systems and browsers is the same, the same 
+                    kinds of issues encountered in Web contexts must be taken into consideration.</p>
+                  <p class="para">Each Reading System should establish if the scripts in a particular document are to be trusted or not. It is 
+                    recommended that all scripts be treated as untrusted (and potentially malicious), and that all vectors of attack be 
+                    examined and protected against. In particular, the following should be considered:</p>
+                  <div class="itemizedlist">
+                     <ul class="itemizedlist">
+                        <li class="listitem">
+                           <p class="para">an attack against the runtime environment (e.g., stealing files from a <a class="glossterm" href="#gloss-user" title="User">User</a>'s 
+                            hard drive);</p>
+                        </li>
+                        <li class="listitem">
+                           <p class="para">an attack against the Reading System itself (e.g., stealing a list of a User's books or causing 
+                            unexpected behavior);</p>
+                        </li>
+                        <li class="listitem">
+                           <p class="para">an attack of one Content Document against another (e.g., stealing data that originated in 
+                            a different document);</p>
+                        </li>
+                        <li class="listitem">
+                           <p class="para">an attack of an unencrypted script against an encrypted portion of a document (e.g., an injected 
+                            malicious script extracting protected content);</p>
+                        </li>
+                        <li class="listitem">
+                           <p class="para">an attack against the local network (e.g., stealing data from a server behind a firewall).</p>
+                        </li>
+                     </ul>
+                  </div>
+                  <p class="para">The following recommendations are provided as a guide to handling untrusted scripts; compliance
+                    with these recommendations does not guarantee protection from the possible attacks listed above, 
+                    however. Developers must examine each potential vulnerability within the context of their Reading System.</p>
+                  <div class="itemizedlist">
+                     <ul class="itemizedlist">
+                        <li class="listitem">
+                           <p class="para">Reading Systems should behave as if a unique domain were allocated to each Content Document,
+                            as browser-based security relies heavily on document URLs and domains. Adopting this 
+                            approach will isolate documents from each other and from other Internet domains, thereby
+                            limiting access to external URLs, cookies, DOM storage, etc.</p>
+                           <p class="para">Reading Systems that enable scripting and network access should also consider including methods to 
+                            notify the user that network activity is occurring and/or that allow them to disable it.</p>
+                           <div class="note" title="note">
+                              <h3 class="title">note</h3>
+                              <p class="para">In practice, Reading Systems may share domains across documents, but they still should 
+                                maintain isolation between documents.</p>
+                              <p class="para">If parts of a document are encrypted and parts are not, or if different encryption keys are used 
+                                for different parts of the document, a unique per-document domain may not provide sufficient protection.</p>
+                           </div>
+                        </li>
+                        <li class="listitem">
+                           <p class="para">If a Reading System allows persistent data to be stored, that data should be treated as sensitive. 
+                            Scripts may save persistent data through cookies and DOM storage, but Reading 
+                            Systems may block such attempts. Reading Systems that do allow data to be stored must ensure 
+                            that it is not made available to other unrelated documents (e.g., ones that could have been spoofed). 
+                            In particular, checking for a matching document identifier (or similar metadata) 
+                            is not a valid method to control access to persistent data.</p>
+                           <p class="para">Reading Systems that allow local storage should also provide methods for Users to inspect, 
+                            disable, or delete that data. The data should be destroyed if the corresponding EPUB Publication 
+                            is deleted.</p>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
             </div>
          </div>
          <div class="chapter" title="3 EPUB Style Sheets" id="sec-css">
@@ -3577,7 +3651,7 @@
                         <a class="hidden-reveal" title="Link here" href="#sec-css-ruby-position">›</a> </span>3.3.9 Ruby Positioning</h4>
                   <p class="para">The EPUB 3 CSS Profile includes the <span class="property">-epub3-ruby-position</span>
                     property as defined below:</p>
-                  <table id="d6410e3427">
+                  <table id="d6410e3472">
                      <thead>
                         <tr>
                             <td>Name:</td>

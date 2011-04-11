@@ -2248,6 +2248,74 @@
                         avoid the inclusion of scripting whenever practical.</para>
                 </note>
             </section>
+            
+            <section xml:id="sec-scripted-content-security">
+                <title>Security Considerations</title>
+                
+                <para>All EPUB <xref linkend="gloss-author"/>s and Reading System developers need to be aware of the 
+                    security issues that arise when scripted content is executed by a Reading System. 
+                    As the underlying scripting model employed by Reading Systems and browsers is the same, the same 
+                    kinds of issues encountered in Web contexts must be taken into consideration.</para>
+                
+                <para>Each Reading System should establish if the scripts in a particular document are to be trusted or not. It is 
+                    recommended that all scripts be treated as untrusted (and potentially malicious), and that all vectors of attack be 
+                    examined and protected against. In particular, the following should be considered:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>an attack against the runtime environment (e.g., stealing files from a <xref linkend="gloss-user"/>'s 
+                            hard drive);</para>
+                    </listitem>
+                    <listitem>
+                        <para>an attack against the Reading System itself (e.g., stealing a list of a User's books or causing 
+                            unexpected behavior);</para>
+                    </listitem>
+                    <listitem>
+                        <para>an attack of one Content Document against another (e.g., stealing data that originated in 
+                            a different document);</para>
+                    </listitem>
+                    <listitem>
+                        <para>an attack of an unencrypted script against an encrypted portion of a document (e.g., an injected 
+                            malicious script extracting protected content);</para>
+                    </listitem>
+                    <listitem>
+                        <para>an attack against the local network (e.g., stealing data from a server behind a firewall).</para>
+                    </listitem>
+                </itemizedlist>
+                
+                <para>The following recommendations are provided as a guide to handling untrusted scripts; compliance
+                    with these recommendations does not guarantee protection from the possible attacks listed above, 
+                    however. Developers must examine each potential vulnerability within the context of their Reading System.</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>Reading Systems should behave as if a unique domain were allocated to each Content Document,
+                            as browser-based security relies heavily on document URLs and domains. Adopting this 
+                            approach will isolate documents from each other and from other Internet domains, thereby
+                            limiting access to external URLs, cookies, DOM storage, etc.</para>
+                        <para>Reading Systems that enable scripting and network access should also consider including methods to 
+                            notify the user that network activity is occurring and/or that allow them to disable it.</para>
+                        <note>
+                            <para>In practice, Reading Systems may share domains across documents, but they still should 
+                                maintain isolation between documents.</para>
+                            <para>If parts of a document are encrypted and parts are not, or if different encryption keys are used 
+                                for different parts of the document, a unique per-document domain may not provide sufficient protection.</para>
+                        </note>
+                    </listitem>
+                    <listitem>
+                        <para>If a Reading System allows persistent data to be stored, that data should be treated as sensitive. 
+                            Scripts may save persistent data through cookies and DOM storage, but Reading 
+                            Systems may block such attempts. Reading Systems that do allow data to be stored must ensure 
+                            that it is not made available to other unrelated documents (e.g., ones that could have been spoofed). 
+                            In particular, checking for a matching document identifier (or similar metadata) 
+                            is not a valid method to control access to persistent data.</para>
+                        <para>Reading Systems that allow local storage should also provide methods for Users to inspect, 
+                            disable, or delete that data. The data should be destroyed if the corresponding EPUB Publication 
+                            is deleted.</para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+        
         </section>
 
     </chapter>
