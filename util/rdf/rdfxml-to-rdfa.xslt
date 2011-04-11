@@ -7,7 +7,8 @@
 	xmlns:zf="http://www.daisy.org/ns/xslt/functions"
 	xmlns:zt="http://www.daisy.org/ns/rdf/property#"
 	xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#"
-	exclude-result-prefixes="zf xsl rdfs rdf dcterms owl xsd role htu zt">
+	xmlns:mou="http://www.daisy.org/ns/rdf/usage/media-overlays/#"
+	exclude-result-prefixes="zf xsl rdfs rdf dcterms owl xsd role htu zt mou">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
 
@@ -44,7 +45,7 @@
   			rdfs: http://www.w3.org/2000/01/rdf-schema#
   			xsd: http://www.w3.org/2001/XMLSchema 
   			role: http://www.w3.org/1999/xhtml/vocab#
-  			htu: http://www.daisy.org/ns/rdf/usage/html">
+  			htu: http://www.daisy.org/ns/rdf/usage/html/#">
 			<head>
 				<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 				<xsl:for-each select="$vocab-rdf-description/*">
@@ -149,7 +150,7 @@
 
 		<!-- first a generic loop -->
 		<xsl:for-each
-			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
+			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|mou:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
 			<dd about="#{$about}" property="{name(.)}" datatype="{$datatype}">
 				<p>
 					<xsl:call-template name="wiki-links-to-xhtml">
@@ -208,6 +209,13 @@
 			<xsl:call-template name="render-sub-dl-plain">
 				<xsl:with-param name="label">HTML usage context: </xsl:with-param>
 				<xsl:with-param name="members" select="htu:usage"/>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="mou:usage">
+			<!-- output without rdfa properties kept -->
+			<xsl:call-template name="render-sub-dl-plain">
+				<xsl:with-param name="label">Media Overlays usage context: </xsl:with-param>
+				<xsl:with-param name="members" select="mou:usage"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
