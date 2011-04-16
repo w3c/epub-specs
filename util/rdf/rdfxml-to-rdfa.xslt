@@ -88,6 +88,13 @@
 									considered relevant. When processing HTML5 documents, Reading
 									Systems may ignore properties that occur outside the specified
 									document context.</p>
+
+								<p>All properties defined herein are considered relevant for use
+									within the context of the HTML5 <code>a</code> element unless
+									explicitly indicated to be inapplicable in this context. Such
+									occurences are to be interpreted as describing the semantics of
+									the link target.</p>
+
 							</xsl:if>
 						</div>
 					</xsl:if>
