@@ -26,7 +26,7 @@
 	
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.lib" value="${basedir}/lib" />	
-	<property name="dir.build" value="${basedir}/build" />
+	<property name="dir.build" value="${basedir}/build/30" />
 	<property name="dir.build.schema" value="${dir.build}/schema" />
 	<property name="dir.build.schemadoc" value="${dir.build}/schemadoc" />
 	<property name="dir.build.vocab" value="${dir.build}/vocab" />
@@ -34,8 +34,8 @@
 	<property name="dir.build.spec" value="${dir.build}/spec" />
 	<property name="dir.temp" value="${basedir}/temp" />
 	<property name="dir.temp.spec" value="${dir.temp}/spec" />
-	<property name="dir.build.linking" value="${dir.build}/linking" />
-	<property name="dir.temp.linking" value="${dir.temp}/linking" />
+	<property name="dir.build.linking" value="${basedir}/build/linking" />
+	<property name="dir.build.cfi" value="${dir.build.linking}/cfi" />
 	
 	<property name="schema.epub.xhtml.rnc" value="${dir.src.schema}/epub-xhtml-30.rnc"/>
 	<property name="schema.epub.xhtml.sch" value="${dir.src.schema}/epub-xhtml-30.sch"/>
@@ -76,13 +76,14 @@
 		build-vocabs,
 		build-profiles,
 		build-specs,
+		build-spec-vocabs,
 		build-schemas,
 		build-schema-catalog,
 		build-index,
 		build-archives, 
 		copy-css" />
 	
-	<target name="build-specs" depends="clean, copy-css, compile"> <!-- , validate-src-specs, validate-spec-examples" -->
+	<target name="build-specs"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
 		<mkdir dir="${dir.temp.spec}/00" />
 		
@@ -90,18 +91,37 @@
 			<fileset dir="${dir.src.spec}"/>
 		</copy>
 		
-		<!-- run the olink preprocess xslt -->				
+		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10" />
 		<saxon-xslt description="process epub-specific olinks"
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/00/"
-			includes="*.xml"
+			includes="epub30-*.xml"
 			destdir="${dir.temp.spec}/10/"
-			extension=".xml" 			
+			extension=".xml"
 			style="${xslt.olink}">
-			
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			
+			<param name="spec-group" expression="epub30"/>
+		</saxon-xslt>
+		<saxon-xslt description="process epub-specific olinks"
+			classpathref="build.classpath"
+			basedir="${dir.temp.spec}/00/"
+			includes="epub-linking.xml"
+			destdir="${dir.temp.spec}/10/"
+			extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="linking"/>
+		</saxon-xslt>
+		<saxon-xslt description="process epub-specific olinks"
+			classpathref="build.classpath"
+			basedir="${dir.temp.spec}/00/"
+			includes="epub-cfi.xml"
+			destdir="${dir.temp.spec}/10/"
+			extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="cfi"/>
 		</saxon-xslt>
 		
 		<!-- run the bibliocleaner preprocess xslt -->
@@ -109,16 +129,15 @@
 		<saxon-xslt description="filters out unreferenced bibliorefs"
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/10"
-			includes="*.xml"
 			destdir="${dir.temp.spec}/20/"
 			extension=".xml" 			
 			style="${xslt.biblio-cleaner}">
 		</saxon-xslt>
 		
 		<!-- run the terminology preprocess class -->
-		<java classname="org.idpf.docbook.GlosslistHandler" fork="true" failonerror="true" maxmemory="512m">			
+		<java classname="org.idpf.docbook.GlosslistHandler" fork="true" failonerror="true" maxmemory="512m">
 			<arg value="${dir.temp.spec}/20/"/>
-			<arg value="${dir.temp.spec}/30/"/>								
+			<arg value="${dir.temp.spec}/30/"/>
 			<classpath refid="build.classpath" />
 		</java>
 		
@@ -138,7 +157,6 @@
 		<saxon-xslt description="conditional exclude/include"
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/30/"
-			includes="*.xml"
 			destdir="${dir.temp.spec}/40/"
 			extension=".xml" 			
 			style="${xslt.switch}">
@@ -149,7 +167,6 @@
 		<saxon-xslt description="decorate links with @role"
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/40/"
-			includes="*.xml"
 			destdir="${dir.temp.spec}/50/"
 			extension=".xml" 		
 			style="${xslt.link-decorator}">
@@ -158,7 +175,7 @@
 		<!-- validate docbook sources -->
 		<validate-fileset-rng 
 			fileset-dir="${dir.temp.spec}/50" 
-			fileset-includes="*.xml"
+			fileset-includes="*.xml cfi/*.xml"
 			fileset-excludes=""
 			schema="${schema.docbook}"
 			failonerror="true"
@@ -168,8 +185,7 @@
 		<saxon-xslt 
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/50/"
-			includes="*.xml"
-			excludes="epub-linking.xml"
+			includes="epub30-*.xml"
 			destdir="${dir.build.spec}"
 			extension=".html" 			
 			style="${xslt.docbook2xhtml}">
@@ -184,20 +200,31 @@
 			
 		</saxon-xslt>
 		
-		<antcall target="build-spec-vocabs"/>
-		
-		<!-- validate output html (dtd) -->
-		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
-			<xmlcatalog refid="xhtml-catalog"/>
-			<fileset dir="${dir.build.spec}" includes="*.html"/>			
-		</xmlvalidate>
-		
-		<!-- build linking spec -->
+		<!-- convert linking -->
 		<saxon-xslt 
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/50/"
 			includes="epub-linking.xml"
 			destdir="${dir.build.linking}"
+			extension=".html"
+			style="${xslt.docbook2xhtml}">
+			
+			<param name="section.autolabel" expression="1"/>
+			<param name="part.autolabel" expression="1"/>
+			<param name="chapter.autolabel" expression="1"/>
+			<param name="toc.section.depth" expression="6"/>
+			<param name="section.label.includes.component.label" expression="1"/> 
+			<param name="section.autolabel.max.depth" expression="8"/>
+			<param name="html.stylesheet" expression="epub-spec.css"/>		
+			
+		</saxon-xslt>
+		
+		<!-- convert cfi -->
+		<saxon-xslt 
+			classpathref="build.classpath"
+			basedir="${dir.temp.spec}/50"
+			includes="epub-cfi.xml"
+			destdir="${dir.build.cfi}"
 			extension=".html" 			
 			style="${xslt.docbook2xhtml}">
 			
@@ -208,18 +235,21 @@
 			<param name="section.label.includes.component.label" expression="1"/> 
 			<param name="section.autolabel.max.depth" expression="8"/>
 			<param name="html.stylesheet" expression="../epub-spec.css"/>		
+			
 		</saxon-xslt>
 		
 		<!-- validate output html (dtd) -->
 		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
 			<xmlcatalog refid="xhtml-catalog"/>
-			<fileset dir="${dir.build.linking}" includes="*.html"/>			
+			<fileset dir="${dir.build.spec}" includes="*.html"/>
+			<fileset dir="${dir.build.linking}" includes="*.html"/>
+			<fileset dir="${dir.build.cfi}" includes="*.html"/>
 		</xmlvalidate>
-		
+	
 	</target>
 	
 	<target name="build-spec-vocabs">
-		
+	
 		<!-- convert publications properties to rdfa -->
 		<echo>building publications vocab...</echo>
 		<xslt in="${dir.build.spec}/epub30-publications.html" 
@@ -253,7 +283,6 @@
 		<move file="${dir.build.spec}/rdfa-epub30-mediaoverlays.html" 
 			tofile="${dir.build.spec}/epub30-mediaoverlays.html"
 			overwrite="yes"/>
-		
 	</target>
 
 	
@@ -296,6 +325,7 @@
 	
 	<target name="copy-css">		
 		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
+		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.linking}" />
 	</target>
 	
 	<macrodef name="build-xhtml-vocab" 
