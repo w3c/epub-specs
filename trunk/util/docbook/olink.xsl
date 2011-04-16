@@ -17,7 +17,10 @@
 
     <xsl:param name="db-spec-base-uri" required="yes"/>
     <!-- must end with slash -->
-
+    
+    
+    <xsl:param name="spec-group" required="yes"/>
+    
     <!-- translate for windows paths -->
     <xsl:param name="db-spec-base-uri-safe"
         select="concat('file:///',translate($db-spec-base-uri, '\\', '/'))"/>
@@ -36,7 +39,11 @@
         select="doc(concat($db-spec-base-uri-safe, 'epub30-overview.xml'))" as="document-node()"/>
     <xsl:variable name="doc-publications"
         select="doc(concat($db-spec-base-uri-safe, 'epub30-publications.xml'))" as="document-node()"/>
-
+    <xsl:variable name="doc-linking"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-linking.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-cfi"
+        select="doc(concat($db-spec-base-uri-safe, 'cfi/epub-cfi.xml'))" as="document-node()"/>
+    
     <xsl:template match="//db:olink[@type='epub-spec']">
         <!--
             Given the olink
@@ -150,20 +157,44 @@
 
     <xsl:function name="fn:getDestDocHTMLURI" as="text()">
         <xsl:param name="targetdoc" as="attribute()"/>
-        <xsl:choose>
-            <xsl:when test="matches($targetdoc, 'changes')">epub30-changes.html</xsl:when>
-            <xsl:when test="matches($targetdoc, 'contentdocs')">epub30-contentdocs.html</xsl:when>
-            <xsl:when test="matches($targetdoc, 'mediaoverlays')"
-                >epub30-mediaoverlays.html</xsl:when>
-            <xsl:when test="matches($targetdoc, 'ocf')">epub30-ocf.html</xsl:when>
-            <xsl:when test="matches($targetdoc, 'overview')">epub30-overview.html</xsl:when>
-            <xsl:when test="matches($targetdoc, 'publications')">epub30-publications.html</xsl:when>
-            <xsl:otherwise>
-                <xsl:message terminate="yes">no match for $targetdoc in
-                    olink.xsl#fn:getDestDocHTMLURI (<xsl:value-of select="$targetdoc"
-                    />)</xsl:message>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of>
+            <xsl:choose>
+                <xsl:when test="$spec-group='epub30'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'linking')">../../linking/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../../linking/cfi/</xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='linking'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'cfi')">cfi/</xsl:when>
+                        <xsl:otherwise>../30/spec/</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='cfi'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'linking')">../</xsl:when>
+                        <xsl:otherwise>../../30/spec/</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+            </xsl:choose>
+            <xsl:choose>
+                <xsl:when test="matches($targetdoc, 'changes')">epub30-changes.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'contentdocs')">epub30-contentdocs.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'mediaoverlays')"
+                    >epub30-mediaoverlays.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'ocf')">epub30-ocf.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'overview')">epub30-overview.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'publications')">epub30-publications.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'linking')">epub-linking.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'cfi')">epub-cfi.html</xsl:when>
+                <xsl:otherwise>
+                    <xsl:message terminate="yes">no match for $targetdoc in
+                        olink.xsl#fn:getDestDocHTMLURI (<xsl:value-of select="$targetdoc"
+                        />)</xsl:message>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:value-of>
     </xsl:function>
 
     <xsl:function name="fn:getBiblioRef" as="text()">
