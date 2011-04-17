@@ -26,15 +26,16 @@
 	
 	<property name="dir.test" value="${basedir}/test" />
 	<property name="dir.lib" value="${basedir}/lib" />	
-	<property name="dir.build" value="${basedir}/build/30" />
-	<property name="dir.build.schema" value="${dir.build}/schema" />
-	<property name="dir.build.schemadoc" value="${dir.build}/schemadoc" />
-	<property name="dir.build.vocab" value="${dir.build}/vocab" />
-	<property name="dir.build.profile" value="${dir.build}/profile" />
-	<property name="dir.build.spec" value="${dir.build}/spec" />
+	<property name="dir.build" value="${basedir}/build/" />
+	<property name="dir.build.epub" value="${dir.build}/30" />
+	<property name="dir.build.schema" value="${dir.build.epub}/schema" />
+	<property name="dir.build.schemadoc" value="${dir.build.epub}/schemadoc" />
+	<property name="dir.build.vocab" value="${dir.build.epub}/vocab" />
+	<property name="dir.build.profile" value="${dir.build.epub}/profile" />
+	<property name="dir.build.spec" value="${dir.build.epub}/spec" />
 	<property name="dir.temp" value="${basedir}/temp" />
 	<property name="dir.temp.spec" value="${dir.temp}/spec" />
-	<property name="dir.build.linking" value="${basedir}/build/linking" />
+	<property name="dir.build.linking" value="${dir.build}/linking" />
 	<property name="dir.build.cfi" value="${dir.build.linking}/cfi" />
 	
 	<property name="schema.epub.xhtml.rnc" value="${dir.src.schema}/epub-xhtml-30.rnc"/>
@@ -324,7 +325,7 @@
 	</target>
 	
 	<target name="copy-css">		
-		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build}" />
+		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.epub}" />
 		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.linking}" />
 	</target>
 	
@@ -389,12 +390,12 @@
 		<zip 
 			destfile="${dir.temp}/epub30-${TODAY}.zip" 
 			basedir="${dir.build}/" 
-			excludes="${file.exclude.list}" />
+			excludes="${file.exclude.list} spec/" />
 			
 		<tar 
 			destfile="${dir.temp}/epub30-${TODAY}.tar" 
 			basedir="${dir.build}/"
-			excludes="${file.exclude.list}" />
+			excludes="${file.exclude.list} spec/" />
 														
 		<gzip 
 			src="${dir.temp}/epub30-${TODAY}.tar" 
@@ -488,7 +489,7 @@
 				schema="@{schema-rng}"
 			/>
 			<schematron
-				OutputDir="${dir.build}"
+				OutputDir="${dir.build.epub}"
 				schema="@{schema-sch}"
 				failOnError="true">
 				<fileset dir="${dir.test}/@{dir}/valid" includes="@{includes}" excludes="@{excludes}"/>
@@ -506,7 +507,7 @@
 				schema="@{schema-rng}"
 			/>
 			<schematron
-				OutputDir="${dir.build}"
+				OutputDir="${dir.build.epub}"
 				schema="@{schema-sch}"
 				failOnError="false">
 				<fileset dir="${dir.test}/@{dir}/invalid" includes="@{includes}" excludes="@{excludes}"/>
@@ -618,7 +619,7 @@
 	</macrodef>
 	
 	<target name="build-index">
-		<fileset id="build.contents" dir="${dir.build}" includes="**/*.*"/>
+		<fileset id="build.contents" dir="${dir.build.epub}" includes="**/*.*"/>
 		<property name="prop.build.contents" refid="build.contents"/>
 		
 		<!--
@@ -632,10 +633,10 @@
 			</factory>
 		</saxon-xslt>-->
 		
-		<xslt in="${schema.epub.package.sch}" out="${dir.build}/index.html"
+		<xslt in="${schema.epub.package.sch}" out="${dir.build.epub}/index.html"
 			style="${dir.util.xhtml}/build-index.xsl">			
 			<param name="file-list" expression="${prop.build.contents}"/>
-			<param name="base" expression="${dir.build}/"/>
+			<param name="base" expression="${dir.build.epub}/"/>
 			<xmlcatalog refid="xhtml-catalog"/>
 		</xslt>
 		
