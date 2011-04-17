@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="epub-revision" basedir="." default="all">
+<project name="epub-revision" basedir="." default="all" xmlns:antcontrib="antlib:net.sf.antcontrib">
 	
 	<tstamp>
 		<format property="TODAY" pattern="yyyyMMdd" />
@@ -58,6 +58,7 @@
 	<property name="xslt.olink"  value="${dir.util.docbook}/olink.xsl" />
 	<property name="xslt.link-decorator"  value="${dir.util.docbook}/link-decorator.xsl"/>
 	<property name="xslt.catalog"  value="${dir.util}/catalog.xsl"/>
+	<property name="xslt.link-index"  value="${dir.util}/linking/link-index.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 		
 	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
@@ -107,22 +108,13 @@
 		<saxon-xslt description="process epub-specific olinks"
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/00/"
-			includes="epub-linking.xml"
+			includes="epub-*.xml"
+			excludes="epub-linking.xml"
 			destdir="${dir.temp.spec}/10/"
 			extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="linking"/>
-		</saxon-xslt>
-		<saxon-xslt description="process epub-specific olinks"
-			classpathref="build.classpath"
-			basedir="${dir.temp.spec}/00/"
-			includes="epub-cfi.xml"
-			destdir="${dir.temp.spec}/10/"
-			extension=".xml"
-			style="${xslt.olink}">
-			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="cfi"/>
 		</saxon-xslt>
 		
 		<!-- run the bibliocleaner preprocess xslt -->
@@ -201,53 +193,50 @@
 			
 		</saxon-xslt>
 		
-		<!-- convert linking -->
-		<saxon-xslt 
-			classpathref="build.classpath"
-			basedir="${dir.temp.spec}/50/"
-			includes="epub-linking.xml"
-			destdir="${dir.build.linking}"
-			extension=".html"
-			style="${xslt.docbook2xhtml}">
-			
-			<param name="section.autolabel" expression="1"/>
-			<param name="part.autolabel" expression="1"/>
-			<param name="chapter.autolabel" expression="1"/>
-			<param name="toc.section.depth" expression="6"/>
-			<param name="section.label.includes.component.label" expression="1"/> 
-			<param name="section.autolabel.max.depth" expression="8"/>
-			<param name="html.stylesheet" expression="epub-spec.css"/>		
-			
-		</saxon-xslt>
+		<!-- build the linking spec(s) -->
+		<for param="link-spec">
+			<path>
+				<fileset dir="${dir.temp.spec}/50/" includes="epub-*.xml" excludes="epub-linking.xml"/>
+			</path>
+			<sequential>
+				<propertyregex override="yes" property="spec.name" input="@{link-spec}" regexp=".*[\\/](.*)\.xml" select="\1" casesensitive="false" />
+				<propertyregex override="yes" property="spec.file" input="@{link-spec}" regexp=".*[\\/](.*\.xml)" select="\1" casesensitive="false" />
+				<propertyregex override="yes" property="spec.suffix" input="@{link-spec}" regexp=".*[\\/]epub-(.*)\.xml" select="\1" casesensitive="false" />
+				<saxon-xslt 
+					classpathref="build.classpath"
+					basedir="${dir.temp.spec}/50"
+					includes="${spec.file}"
+					destdir="${dir.build.linking}/${spec.suffix}"
+					extension=".html"
+					style="${xslt.docbook2xhtml}">
+					
+					<param name="section.autolabel" expression="1"/>
+					<param name="part.autolabel" expression="1"/>
+					<param name="chapter.autolabel" expression="1"/>
+					<param name="toc.section.depth" expression="6"/>
+					<param name="section.label.includes.component.label" expression="1"/> 
+					<param name="section.autolabel.max.depth" expression="8"/>
+					<param name="html.stylesheet" expression="../epub-spec.css"/>		
+					
+				</saxon-xslt>
+				<build-htaccess dest-dir="${dir.build.linking}/${spec.suffix}" index-name="${spec.name}.html"/>
+			</sequential>
+		</for>
 		
-		<!-- convert cfi -->
-		<saxon-xslt 
-			classpathref="build.classpath"
-			basedir="${dir.temp.spec}/50"
-			includes="epub-cfi.xml"
-			destdir="${dir.build.cfi}"
-			extension=".html" 			
-			style="${xslt.docbook2xhtml}">
+		<saxon-xslt destdir="${dir.build.linking}"
+			in="${dir.temp.spec}/50/epub-cfi.xml"
+			out="${dir.build.linking}/index.html"
+			style="${xslt.link-index}"/>
 			
-			<param name="section.autolabel" expression="1"/>
-			<param name="part.autolabel" expression="1"/>
-			<param name="chapter.autolabel" expression="1"/>
-			<param name="toc.section.depth" expression="6"/>
-			<param name="section.label.includes.component.label" expression="1"/> 
-			<param name="section.autolabel.max.depth" expression="8"/>
-			<param name="html.stylesheet" expression="../epub-spec.css"/>		
-			
-		</saxon-xslt>
-		
 		<!-- validate output html (dtd) -->
 		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
 			<xmlcatalog refid="xhtml-catalog"/>
 			<fileset dir="${dir.build.spec}" includes="*.html"/>
-			<fileset dir="${dir.build.linking}" includes="*.html"/>
 			<fileset dir="${dir.build.cfi}" includes="*.html"/>
 		</xmlvalidate>
 	
 	</target>
+	
 	
 	<target name="build-spec-vocabs">
 	
@@ -765,6 +754,12 @@
 		</classpath>		
 	</taskdef>	
 		
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib-10b3.jar"/>
+		</classpath>
+	</taskdef>
+	
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!--   x m l g e n - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -919,6 +914,18 @@
 		</sequential>
 		
 	</macrodef>
+	
+	<macrodef name="build-htaccess"
+		description="builds a htaccess with settable DirectoryIndex value">
+		<attribute name="dest-dir" />
+		<attribute name="index-name"/>
+		<sequential>
+			<echo file="@{dest-dir}/.htaccess"
+				># effects subdirectories unless overridden
+				DirectoryIndex @{index-name}	
+			</echo>
+		</sequential>
+	</macrodef> 
 	
 			
 </project>
