@@ -83,18 +83,13 @@
 								</p>
 							</xsl:for-each>
 							<xsl:if test="$output-htu-expl eq '1'">
-								<p class="output-htu-expl">The <em>HTML usage context</em> fields
-									indicate contexts in HTML5 documents where the given property is
-									considered relevant. When processing HTML5 documents, Reading
-									Systems may ignore properties that occur outside the specified
-									document context.</p>
-
-								<p>All properties defined herein are considered relevant for use
-									within the context of the HTML5 <code>a</code> element unless
-									explicitly indicated to be inapplicable in this context. Such
-									occurences are to be interpreted as describing the semantics of
-									the link target.</p>
-
+								<p class="output-htu-expl" id="htu-expl">The <em>HTML usage
+										context</em> fields indicate contexts in HTML5 documents
+									where the given property is considered relevant. When processing
+									HTML5 documents, Reading Systems may ignore properties that
+									occur outside the specified usage context, unless the usage
+									context is explicitly overridden or extended by the host
+									specification.</p>
 							</xsl:if>
 						</div>
 					</xsl:if>
