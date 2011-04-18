@@ -3,7 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:db="http://docbook.org/ns/docbook"
-    exclude-result-prefixes="xs"
+    exclude-result-prefixes="xs db"
     version="2.0">
     
     <xsl:param name="file-list" required="yes" as="xs:string"/>
@@ -13,18 +13,27 @@
     <xsl:variable name="os-safe-spec-dir" select="translate($build-dir, '\\', '/')"/>
     <xsl:variable name="files" select="tokenize(translate($file-list,'\','/'), ';')"/>
     
-    <xsl:output indent="yes" encoding="UTF-8" method="html" />
+    <xsl:output indent="yes" encoding="UTF-8" method="xml" omit-xml-declaration="no" />
     
     <xsl:template match="/">
         <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
                 <title>EPUB Linking Scheme Registry</title>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
                 <link type="text/css" rel="stylesheet" href="epub-spec.css"/>
             </head>
             <body>
                 <h1>EPUB Linking Scheme Registry</h1>
                 
-                <p>This document ... </p>
+                <p>This document lists the available schemes that can be used to provide linking functionality
+                    into and between EPUB&#174; 3 Publications.</p>
+                
+                <p>These schemes are not a normative part of the EPUB 3 collection of specifications, but are
+                    maintained separately by the IPDF. The available schemes are subject to change, and the 
+                    available list to grow, independently of the EPUB 3 specification revision cycle.</p>
+                
+                <p>For more information regarding normative support for these schemes in Reading Systems, 
+                    please refer to <a href="../30/spec/epub3-contentdocs.html">EPUB 3 Content Documents</a>.</p>
                 
                 <h2>Linking Schemes</h2>
                 
