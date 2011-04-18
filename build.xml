@@ -60,8 +60,10 @@
 	<property name="xslt.catalog"  value="${dir.util}/catalog.xsl"/>
 	<property name="xslt.link-index"  value="${dir.util}/linking/link-index.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
-		
-	<property name="file.exclude.list" value=".htaccess,.DS_Store,.localized"/>
+	
+	<property name="spec.filename.prefix" value="epub30"/>
+
+	<property name="file.exclude.list" value="**/.DS_Store,**/.localized,**/.svn"/>
 	
 	<path id="build.classpath">
 		<fileset dir="${dir.lib}" includes="**/*.jar" />	
@@ -80,10 +82,9 @@
 		build-specs,
 		build-spec-vocabs,
 		build-schemas,
-		build-schema-catalog,
-		build-index,
+		build-schema-catalog,		
 		build-archives, 
-		copy-css" />
+		copy-css" /> <!-- build-index, -->
 	
 	<target name="build-specs"> <!-- , validate-src-specs, validate-spec-examples" -->
 		
@@ -191,7 +192,9 @@
 			<param name="html.stylesheet" expression="../epub-spec.css"/>		
 			
 		</saxon-xslt>
-		
+
+		<build-htaccess dest-dir="${dir.build.spec}" index-name="${spec.filename.prefix}-overview.html"/>
+
 		<!-- build the linking spec(s) -->
 		<for param="link-spec">
 			<path>
@@ -287,7 +290,8 @@
 		<clean-dir dir="${dir.build.schema}"/>
 		<copy todir="${dir.build.schema}">
 			<fileset dir="${dir.src.schema}" /> <!--  includes="*.rng *.rnc *.sch" -->
-		</copy>				
+		</copy>		
+		<build-htaccess-dirlist dest-dir="${dir.build.schema}" />		
 	</target>
 
 	<target name="build-vocabs" depends="copy-css">
@@ -302,7 +306,7 @@
 			out-xhtml="${dir.build.vocab}/structure/epub30-vocab-structure.html" 
 			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/structure/"
 			output-htu-expl="1"/>
-				
+		<build-htaccess dest-dir="${dir.build.vocab}/structure/" index-name="${spec.filename.prefix}-vocab-structure.html"/>		
 	</target>	
 	
 	<target name="build-profiles" depends="copy-css">
@@ -310,6 +314,8 @@
 		<copy todir="${dir.build.profile}" overwrite="true">
 			<fileset dir="${dir.src.profile}" includes="**/*.html" />
 		</copy>
+		<build-htaccess dest-dir="${dir.build.profile}/content/" index-name="${spec.filename.prefix}-content-profile.html"/>
+		<build-htaccess dest-dir="${dir.build.profile}/package/" index-name="${spec.filename.prefix}-package-profile.html"/>		
 	</target>
 	
 	<target name="copy-css">		
@@ -582,11 +588,7 @@
 			schema="${dir.src.schema}/media-overlay.rnc"
 			failonerror="false"
 			compaxtsyntax="true"
-		/>
-		
-		
-		
-		
+		/>		
 	</target>
 	
 	<macrodef name="validate-fileset-rng" >
@@ -607,20 +609,9 @@
 	</macrodef>
 	
 	<target name="build-index">
-		<fileset id="build.contents" dir="${dir.build.epub}" includes="**/*.*"/>
+		<fileset id="build.contents" dir="${dir.build.epub}" includes="**/*.*" excludes="**/.DS_Store,**/.localized,**/.htaccess,**/.svn"/>
 		<property name="prop.build.contents" refid="build.contents"/>
-		
-		<!--
-		<saxon-xslt in="${schema.epub.package.sch}" out="${dir.build}/index.html" 
-			style="${dir.util.xhtml}/build-index.xsl">
-			<param name="file-list" expression="${prop.build.contents}"/>
-			<param name="base" expression="${dir.build}/"/>		
-			<xmlcatalog refid="xhtml-catalog"/>
-			<factory name="net.sf.saxon.TransformerFactoryImpl">
 				
-			</factory>
-		</saxon-xslt>-->
-		
 		<xslt in="${schema.epub.package.sch}" out="${dir.build.epub}/index.html"
 			style="${dir.util.xhtml}/build-index.xsl">			
 			<param name="file-list" expression="${prop.build.contents}"/>
@@ -923,11 +914,20 @@
 		<attribute name="index-name"/>
 		<sequential>
 			<echo file="@{dest-dir}/.htaccess"
-				># effects subdirectories unless overridden
-				DirectoryIndex @{index-name}	
+				>DirectoryIndex @{index-name}					
 			</echo>
 		</sequential>
-	</macrodef> 
+	</macrodef>
+	
+	<macrodef name="build-htaccess-dirlist"
+		description="builds a htaccess with dirlisting enabler">
+		<attribute name="dest-dir" />
+		<sequential>
+			<echo file="@{dest-dir}/.htaccess"
+				>Options +Indexes					
+			</echo>
+		</sequential>
+	</macrodef>
 	
 			
 </project>

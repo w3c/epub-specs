@@ -12,6 +12,7 @@
             <xsl:when test="ends-with(document-uri(/), 'ocf.xml')">ocf</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'overview.xml')">overview</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'publications.xml')">publications</xsl:when>
+            <xsl:when test="ends-with(document-uri(/), 'cfi.xml')">cfi</xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $current-spec-token in match.xsl</xsl:message>
             </xsl:otherwise>
