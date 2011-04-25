@@ -92,7 +92,14 @@
         <param name="prop" value="dcterms:language"/>
         <param name="dc" value="/opf:package/opf:metadata/dc:language[@opf:override]"/>           
     </pattern>
-         
+    
+    <pattern id="opf.scheme-datatype">
+        <rule context="opf:meta[@property='scheme']">
+            <assert test="@datatype">scheme property must include a datatype attribute.</assert>
+            <assert test="@datatype='xsd:anyURI' or @datatype='xsd:string'">scheme property datatype must of the type xsd:string or xsd:anyURI.</assert>
+        </rule>
+    </pattern>
+    
     <include href="./mod/id-unique.sch"/>     
              
 </schema>

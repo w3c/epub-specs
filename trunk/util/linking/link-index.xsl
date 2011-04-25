@@ -29,8 +29,8 @@
                     into and between EPUB&#174; 3 Publications.</p>
                 
                 <p>These schemes are not a normative part of the EPUB 3 collection of specifications, but are
-                    maintained separately by the IPDF. The available schemes are subject to change, and the 
-                    available list to grow, independently of the EPUB 3 specification revision cycle.</p>
+                    maintained separately by the IPDF. The available schemes are subject to change independent 
+                    of the EPUB 3 specification revision cycle.</p>
                 
                 <p>For more information regarding normative support for these schemes in Reading Systems, 
                     please refer to <a href="../30/spec/epub3-contentdocs.html">EPUB 3 Content Documents</a>.</p>
