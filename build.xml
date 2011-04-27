@@ -30,7 +30,9 @@
 	<property name="dir.build.epub" value="${dir.build}/30" />
 	<property name="dir.build.schema" value="${dir.build.epub}/schema" />
 	<property name="dir.build.schemadoc" value="${dir.build.epub}/schemadoc" />
-	<property name="dir.build.vocab" value="${dir.build.epub}/vocab" />
+	<property name="dir.build.vocab" value="${dir.build}/vocab" />
+	<property name="dir.build.vocab.package" value="${dir.build.vocab}/package" />
+	<property name="dir.build.vocab.overlays" value="${dir.build.vocab}/overlays" />
 	<property name="dir.build.profile" value="${dir.build.epub}/profile" />
 	<property name="dir.build.spec" value="${dir.build.epub}/spec" />
 	<property name="dir.temp" value="${basedir}/temp" />
@@ -77,10 +79,9 @@
 	
 
 	<target name="all" depends=" clean,
-		build-vocabs,
 		build-profiles,
 		build-specs,
-		build-spec-vocabs,
+		build-vocabs,
 		build-schemas,
 		build-schema-catalog,		
 		build-archives, 
@@ -194,7 +195,7 @@
 		</saxon-xslt>
 
 		<build-htaccess dest-dir="${dir.build.spec}" index-name="${spec.filename.prefix}-overview.html"/>
-
+		
 		<!-- build the linking spec(s) -->
 		<for param="link-spec">
 			<path>
@@ -247,8 +248,34 @@
 	</target>
 	
 	
-	<target name="build-spec-vocabs">
-	
+	<target name="compile">
+		<javac srcdir="${dir.util.java}" destdir="${dir.util.java}" debug="on" source="1.5">
+			<classpath refid="build.classpath" />
+		</javac>
+	</target>
+
+	<target name="build-schemas" depends="clean"> <!-- , validate-src-rng-schemas" -->
+		<!-- TODO run schemas against test suite -->
+		
+		<clean-dir dir="${dir.build.schema}"/>
+		<copy todir="${dir.build.schema}">
+			<fileset dir="${dir.src.schema}" /> <!--  includes="*.rng *.rnc *.sch" -->
+		</copy>		
+		<build-htaccess-dirlist dest-dir="${dir.build.schema}" />		
+	</target>
+
+	<target name="build-vocabs" depends="clean, copy-css, compile, build-specs">
+		
+		<!-- structure vocab -->
+		<echo>building structure vocab...</echo>
+		<build-xhtml-vocab 
+			in-n3="${dir.src.vocab}/structure.n3" 
+			name="structure"
+			out-xhtml="${dir.build.vocab}/structure/epub30-vocab-structure.html" 
+			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/structure/"
+			output-htu-expl="1"/>
+		<build-htaccess dest-dir="${dir.build.vocab}/structure/" index-name="${spec.filename.prefix}-vocab-structure.html"/>
+		
 		<!-- convert publications properties to rdfa -->
 		<echo>building publications vocab...</echo>
 		<xslt in="${dir.build.spec}/epub30-publications.html" 
@@ -282,38 +309,11 @@
 		<move file="${dir.build.spec}/rdfa-epub30-mediaoverlays.html" 
 			tofile="${dir.build.spec}/epub30-mediaoverlays.html"
 			overwrite="yes"/>
-	</target>
-
+		
+		<!-- create the vocab redirects -->
+		<build-htaccess dest-dir="${dir.build.vocab.package}" index-name="http://www.idpf.org/epub/30/spec/${spec.filename.prefix}-publications.html"/>
+		<build-htaccess dest-dir="${dir.build.vocab.overlays}" index-name="http://www.idpf.org/epub/30/spec/${spec.filename.prefix}-overlays.html"/>
 	
-	<target name="compile">
-		<javac srcdir="${dir.util.java}" destdir="${dir.util.java}" debug="on" source="1.5">
-			<classpath refid="build.classpath" />
-		</javac>
-	</target>
-
-	<target name="build-schemas" depends="clean"> <!-- , validate-src-rng-schemas" -->
-		<!-- TODO run schemas against test suite -->
-		
-		<clean-dir dir="${dir.build.schema}"/>
-		<copy todir="${dir.build.schema}">
-			<fileset dir="${dir.src.schema}" /> <!--  includes="*.rng *.rnc *.sch" -->
-		</copy>		
-		<build-htaccess-dirlist dest-dir="${dir.build.schema}" />		
-	</target>
-
-	<target name="build-vocabs" depends="copy-css">
-		
-		<clean-dir dir="${dir.build.vocab}"/>
-				
-		<!-- structure vocab -->
-		<echo>building structure vocab...</echo>
-		<build-xhtml-vocab 
-			in-n3="${dir.src.vocab}/structure.n3" 
-			name="structure"
-			out-xhtml="${dir.build.vocab}/structure/epub30-vocab-structure.html" 
-			vocab-canonical-uri="http://www.idpf.org/epub/30/vocab/structure/"
-			output-htu-expl="1"/>
-		<build-htaccess dest-dir="${dir.build.vocab}/structure/" index-name="${spec.filename.prefix}-vocab-structure.html"/>		
 	</target>	
 	
 	<target name="build-profiles" depends="copy-css">
@@ -328,6 +328,7 @@
 	<target name="copy-css">		
 		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.epub}" />
 		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.linking}" />
+		<copy file="${css.docbook2xhtml}" overwrite="true" todir="${dir.build.vocab}" />
 	</target>
 	
 	<macrodef name="build-xhtml-vocab" 
@@ -688,6 +689,7 @@
 	<target name="clean-build-dir">
 		<clean-dir dir="${dir.build.epub}" />
 		<clean-dir dir="${dir.build.linking}" />
+		<clean-dir dir="${dir.build.vocab}" />
 		<delete failonerror="false">
 			<fileset dir="${dir.build}" includes="*.zip *.tar *.gz"/>
 		</delete>
@@ -936,5 +938,4 @@
 		</sequential>
 	</macrodef>
 	
-			
 </project>

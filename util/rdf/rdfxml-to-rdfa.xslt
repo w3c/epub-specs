@@ -61,7 +61,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
-				<link rel="stylesheet" type="text/css" href="../../epub-spec.css"/>
+				<link rel="stylesheet" type="text/css" href="../epub-spec.css"/>
 			</head>
 			<body>
 				<h1 property="dcterms:title">
@@ -93,6 +93,14 @@
 							</xsl:if>
 						</div>
 					</xsl:if>
+					
+					<h2>Revision Policy</h2>
+					
+					<p>Changes to this vocabulary will only occur in conjunction with revisions to the 
+						EPUB suite of specifications.</p>
+					<p>Properties defined in this vocabulary may be deprecated over time but will not be 
+						removed.</p>
+					
 					<!--  				  				
   				<p class="vocab-date">Document last modified: <xsl:value-of select="//rdf:Description[@rdf:about=$vocab-uri]/dcterms:modified"
   				/>. Refer to the <a href="{$vocab-revision-history}">revision history</a> for details.</p>
