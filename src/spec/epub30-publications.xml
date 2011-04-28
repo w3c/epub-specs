@@ -316,10 +316,6 @@
                                 <link linkend="cmt-grp-image">vector image Core Media
                             Types</link>.</para>
 
-                        <para xml:id="confreq-rs-epub3-video"><phrase role="conditional">If it has
-                                the capability to render video</phrase>, it must support the <link
-                                linkend="cmt-grp-video">video Core Media Types</link>.</para>
-
                         <para xml:id="confreq-rs-epub3-mp3-aac"><phrase role="conditional">If it has
                                 the capability to render pre-recorded audio</phrase>, it must
                             support the <link linkend="cmt-grp-audio">audio Core Media Types</link>,
@@ -3687,28 +3683,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                             <xref linkend="refAAC"/>
                         </td>
                         <td headers="tbl-cmt-appl"> Used for MP4 AAC LC audio when not embedded in
-                            the <link linkend="cmt-h264">video container</link>. Reading System
-                            support only required when the Reading System also supports <xref
-                                linkend="cmt-h264"/></td>
-                    </tr>
-                    <tr xml:id="cmt-grp-video" xreflabel="Video Core Media Types">
-                        <th colspan="3"> Video Types </th>
-                    </tr>
-                    <tr xml:id="cmt-h264" xreflabel="video/mp4">
-                        <td>
-                            <code>video/mp4</code>
-                            <remark role="todo"><link
-                                    xlink:href="http://code.google.com/p/epub-revision/issues/detail?id=75"
-                                    >Issue 75</link></remark>
-                        </td>
-                        <td>
-                            <xref linkend="refH264"/>
-                        </td>
-                        <td headers="tbl-cmt-appl">MPEG-4 video; must use H.264 Basic Profile video
-                            and MP4 AAC LC audio <xref linkend="refAAC"/>. (In HTML
-                                <code>video</code> element <code>type</code> attribute:
-                                <literal>"video/mp4; codecs='avc1.42E01E,
-                            mp4a.40.2'"</literal>)</td>
+                            a video container. Reading Systems should support this format.</td>
                     </tr>
                     <tr xml:id="cmt-grp-text" xreflabel="Text Core Media Types">
                         <th colspan="3"> Text Types </th>
@@ -3800,12 +3775,33 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                     <title>XHTML Content Documents</title>
 
                     <variablelist role="conformance-list">
+                        <varlistentry xml:id="fallback-processing-xhtml-audio">
+                            <term><code>audio</code></term>
+                            <listitem>
+                                <para> When a child <code>source</code> element references a Foreign Resource, 
+                                    the <code>audio</code> element must contain at least one other child 
+                                    <code>source</code> element that references the Core Media Type fallback(s).</para>
+                                <para>Reading Systems must ignore manifest-level fallbacks in
+                                    resolving such references.</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry xml:id="fallback-processing-xhtml-img">
+                            <term><code>img</code></term>
+                            <listitem>
+                                <para> The text values of the <code>alt</code> and <code>title</code> 
+                                    attributes are considered legitimate fallbacks, and both should be included when 
+                                    an <code>img</code> element references a Foreign Resource. Additional 
+                                    manifest-level fallbacks may be provided. </para>
+                                <para>Reading Systems should process manifest-level fallbacks in
+                                    resolving such references. </para>
+                            </listitem>
+                        </varlistentry>
                         <varlistentry xml:id="fallback-processing-xhtml-object">
                             <term><code>object</code></term>
                             <listitem>
-                                <para>For Foreign Resources referenced via HTML5 <code>object</code>
-                                    elements, Core Media Type fallback(s) must be provided via that
-                                    element’s intrinsic replacement capabilities.</para>
+                                <para>Core Media Type fallback(s) must be provided via the <code>object</code>
+                                    element’s intrinsic replacement capabilities for any Foreign Resources 
+                                    referenced.</para>
                                 <para>Reading Systems must ignore manifest-level fallbacks in
                                     resolving such references. (Note that the <code><link
                                             linkend="sec-bindings-elem">bindings</link></code>
@@ -3814,29 +3810,18 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                                     regardless of scripting support).</para>
                             </listitem>
                         </varlistentry>
-                        <varlistentry xml:id="fallback-processing-xhtml-img">
-                            <term><code>img</code></term>
+                        <varlistentry xml:id="fallback-processing-xhtml-video">
+                            <term><code>video</code></term>
                             <listitem>
-                                <para> For Foreign Resources referenced via HTML5 <code>img</code>
-                                    elements, the text value of the <code>alt</code> and
-                                        <code>title</code> attributes provides a legitimate fallback
-                                    and should be included. Additional manifest-level fallbacks may
-                                    be provided. </para>
-                                <para>Reading Systems should process manifest-level fallbacks in
-                                    resolving such references. </para>
-                            </listitem>
-                        </varlistentry>
-                        <varlistentry xml:id="fallback-processing-xhtml-source">
-                            <term><code>source</code></term>
-                            <listitem>
-                                <para> For Foreign Resources referenced via HTML5
-                                        <code>source</code> elements when used inside <code><link
-                                            xlink:href="http://www.w3.org/TR/html5/video.html#media-element"
-                                            >media elements</link></code>, Core Media Type
-                                    fallback(s) must be provided in at least one <code>source</code>
-                                    child element of the given media element.</para>
-                                <para>Reading Systems must ignore manifest-level fallbacks in
-                                    resolving such references.</para>
+                                <para>The image referenced by the <code>poster</code> attribute and text
+                                    content embeded within the <code>video</code> element are considered 
+                                    legitimate fallbacks, and at least one should be included when a 
+                                    <code>video</code> element references a Foreign Resource.</para>
+                                
+                                <para>The <code>track</code> element is not considered a legitimate fallback, 
+                                    even when its <code>kind</code> attribute is set to the value <literal>descriptions</literal>,
+                                    as the <code>track</code> does not present information that is usable outside of 
+                                    the context of the referenced video.</para>
                             </listitem>
                         </varlistentry>
                     </variablelist>
@@ -3890,7 +3875,7 @@ John Daggett. -->
                         Container or remotely.</para>
                 </listitem>
                 <listitem xml:id="sec-resource-locations-video">
-                    <para><link linkend="cmt-grp-video">Video resources</link> may be located in the
+                    <para>Video resources may be located in the
                         Container or remotely.</para>
                 </listitem>
             </itemizedlist>
