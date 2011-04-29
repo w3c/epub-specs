@@ -881,7 +881,7 @@
                         <varlistentry>
                             <term>Usage</term>
                             <listitem>
-                                <para>... Repeatable.</para>
+                                <para><remark role="todo">restrictions?</remark>. Repeatable.</para>
                             </listitem>
                         </varlistentry>
                         <varlistentry>
@@ -903,14 +903,17 @@
                         <varlistentry>
                             <term>Content Model</term>
                             <listitem>
-                                <para>In this order: <literal role="linkwrap"><xref role="codelink"
-                                    linkend="sec-xhtml-epub-case"/></literal> <option>[0 or more]</option>, 
-                                    <literal role="linkwrap"><xref role="codelink" linkend="sec-xhtml-epub-default"/></literal>
+                                <para>In this order: <literal role="linkwrap"><link role="codelink"
+                                    linkend="sec-xhtml-epub-case">case</link></literal> <option>[1 or more]</option>, 
+                                    <literal role="linkwrap"><link role="codelink" linkend="sec-xhtml-epub-default">default</link></literal>
                                     <option>[exactly 1]</option>.</para>
                             </listitem>
                         </varlistentry>
                     </variablelist>
                     
+                    <para>When processing a <code>switch</code> element, Reading Systems may ignore all
+                        foreign vocabularies defined in the child <code>case</code> elements. Only the 
+                        <code>default</code> element must be processed.</para>
                     
                     <informalexample>
                         <para>An example of markup using the switch element.</para>
@@ -920,8 +923,8 @@
                     <section xml:id="sec-xhtml-epub-case">
                         <title>The <code>case</code> Element</title>
                         
-                        <para>The <code>case</code> element is used to contain markup from foreign
-                            vocabularies not natively supported in XHTML Content Documents.</para>
+                        <para>The <code>case</code> element contains markup from XML vocabularies not 
+                            natively supported in XHTML Content Documents.</para>
                         
                         <variablelist xreflabel="epub:case" role="elem-synopsis" xml:id="elemdef-case">
                             <varlistentry>
@@ -935,8 +938,8 @@
                             <varlistentry>
                                 <term>Usage</term>
                                 <listitem>
-                                    <para>Optional first child of <literal><xref
-                                        linkend="elemdef-switch"/></literal>. Repeatable.</para>
+                                    <para>Optional first child of <code><link
+                                        linkend="elemdef-switch">switch</link></code>. Repeatable.</para>
                                 </listitem>
                             </varlistentry>
                             <varlistentry>
@@ -984,17 +987,25 @@
                             <varlistentry>
                                 <term>Content Model</term>
                                 <listitem>
-                                    <para>An XML fragment.</para>
+                                    <para>An XML fragment conforming to the markup language identified in the
+                                        <code>required-namespace</code> attribute.</para>
                                 </listitem>
                             </varlistentry>
                         </variablelist>
                         
-                        <para>If the <code>case</code> element that matches the <code>switch</code> condition 
-                            contains no content, a Reading System must not render any content for the <code>switch</code>.
+                        <para><!-- Tried to rework this requirement, but it seems redundant:
+                            If a matched <code>case</code> element contains no content, the Reading System 
+                            must not render any content for the <code>switch</code>.
+                            - -  does it need a conditional: (i.e., it must not render  the <code>default</code> element content)
+                               or should it just be removed? -->
                             A <code>case</code> element that returns no content must not invalidate the document.</para>
                     
                         <section xml:id="sec-required-namespace-attr">
                             <title>The <code>required-namespace</code> Attribute</title>
+                            
+                            <para>The <code>required-namespace</code> attribute specifies the namespace of the 
+                                XML vocabulary that the Reading System must support in order to process the content 
+                                of the <code>case</code> element. </para>
                             
                             <variablelist xreflabel="epub:required-namespace" role="elem-synopsis"
                                 xml:id="attrdef-required-namespace">
@@ -1017,8 +1028,8 @@
                                 <varlistentry>
                                     <term>Usage</term>
                                     <listitem>
-                                        <para>May be specified on <code role="linkwrap"><xref role="codelink"
-                                            linkend="elemdef-case"/></code> elements.</para>
+                                        <para>May be specified on <code role="linkwrap"><link role="codelink"
+                                            linkend="elemdef-case">case</link></code> elements.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -1029,23 +1040,25 @@
                                 </varlistentry>
                             </variablelist>
                             
-                            <para>The <code>required-namespace</code> attribute specifies the namespace of the 
-                                XML vocabulary that the Reading System must support in order to process the content 
-                                of the <code>case</code> element. A Reading System should process the content of 
-                                the first <code>case</code> element that has a <code>required-namespace</code> 
-                                attribute value that it supports. Note that processing of extra-OPS XML vocabularies 
-                                is not required. Only the island’s fallback (default element) must be processed.</para>
+                            <para>A Reading System should process the content of the first <code>case</code> 
+                                element containing a <code>required-namespace</code> attribute value it supports.</para>
                             
+                        <!-- remove entirely? long way of saying foreign vocab content can only be contained in switch
                             <para>Documents that have a root element in the XHTML namespace must not use 
                                 elements outside the XHTML namespace and, where allowed, the SVG namespace 
                                 unless they are either specifically allowed there (e.g. SVG metadata element) or 
                                 they are descendants of a <code>case</code> element that has a matching 
-                                required-namespace attribute value.</para>
+                                required-namespace attribute value.</para> -->
                             
                         </section>
                         
                         <section xml:id="sec-epub-required-modules-attr">
                             <title>The <code>required-modules</code> Attribute</title>
+                            
+                            <para>If the XML vocabulary identified in the <code>required-namespace</code>
+                                is modular, the <code>required-modules</code> attribute can be attached to the
+                                <code>case</code> to specify the list of modules that must be supported in order
+                                to render the content.</para>
                             
                             <variablelist xreflabel="epub:required-modules" role="elem-synopsis"
                                 xml:id="attrdef-required-modules">
@@ -1068,8 +1081,8 @@
                                 <varlistentry>
                                     <term>Usage</term>
                                     <listitem>
-                                        <para>May be specified on <code role="linkwrap"><xref role="codelink"
-                                            linkend="elemdef-case"/></code> elements.</para>
+                                        <para>May be specified on <code role="linkwrap"><link role="codelink"
+                                            linkend="elemdef-case">case</link></code> elements.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -1081,43 +1094,42 @@
                             </variablelist>
                             
                             <para>Some XML vocabularies are broken down into distinct modules, which may be 
-                                supported in part or in whole by a compliant application. These vocabularies have a 
+                                supported in part or in whole by a Reading System. These vocabularies have a 
                                 set of named modules defined in their specification, and some or all of these modules 
-                                are optional – such optional modules are deemed Extended Modules in the specification.</para>
+                                are optional<!--– such optional modules are deemed Extended Modules in the specification-->.</para>
                             
                             <para>A modularized XML vocabulary is considered supported by the Reading System if the 
                                 Reading System supports the least number of modules required by the vocabulary's 
-                                specification – supporting at least all non-Extended Modules of the XML vocabulary.</para>
+                                specification<!-- – supporting at least all non-Extended Modules of the XML vocabulary-->.</para>
                             
-                            <para>An Inline XML Island authored in a Preferred Vocabulary by definition incorporates 
+                            <para><!--An Inline XML Island authored in a Preferred Vocabulary by definition incorporates 
                                 use of Extended Modules. In this case, and with non-Preferred Vocabulary islands 
                                 utilizing Extended Modules, the <code>required-modules</code> attribute must 
-                                be present along with the <code>required-namespace</code> attribute. The attribute 
-                                value for <code>required-modules</code> must be a comma-separated list containing 
-                                the name(s) of the Extended Modules used in the Inline XML Island. The names of the 
-                                modules are not case-sensitive, unless specifically defined otherwise in the XML 
-                                vocabulary specification. Spaces in module names must be replaced with "-" for listing 
-                                in the <code>required-modules</code> attribute value. For XHTML, in the context of 
-                                OPS, the Extended Modules include ruby, forms, server-side-image-map, and 
-                                intrinsic-events.</para>
+                                be present along with the <code>required-namespace</code> attribute.--> The 
+                                value of the <code>required-modules</code> attribute must be a comma-separated list 
+                                containing the name(s) of the <!--Extended Modules--> all optional modules used XML fragment.
+                                The names of the modules are not case-sensitive, unless specifically defined otherwise in the XML 
+                                vocabulary specification. Spaces in module names must be replaced with a dash ('-') for listing 
+                                in the attribute.</para>
                             
-                            <para>Note that listing the names of non-Extended Modules in a 
+                            <para>Note that listing the names of core modules in a 
                                 <code>required-modules</code> attribute value is also allowed; such modules are 
                                 always considered to be supported if the XML vocabulary is supported. This can be 
                                 useful both for clarity and in the case where there is a possibility that some modules 
-                                may become optional in the later revisions of the specification (e.g. the currently 
-                                deprecated Style Attribute XHTML module in OPS).</para>
+                                may become optional in the later revisions of the specification <!--(e.g. the currently 
+                                deprecated Style Attribute XHTML module in OPS)-->.</para>
                             
-                            <para>It is allowed, and sometimes useful, to provide a required-modules attribute 
-                                on a case specifying a non-Preferred Vocabulary Inline XML island — either for clarity 
-                                or to specify Extended Modules used in the non-Preferred Vocabulary.</para>
+                            <!-- 
+                            <para>It is allowed, and sometimes useful, to provide a <code>required-modules</code> attribute 
+                                on a <code>case</code> specifying a non-Preferred Vocabulary Inline XML island — either for clarity 
+                                or to specify Extended Modules used in the non-Preferred Vocabulary.</para> -->
                             
                             <informalexample>
                                 <para>An example of using required-modules to specify an XHTML module outside of OPS’s
                                     core supported modules.</para>
                                 <synopsis><xi:include href="examples/contentdocs/switch-2.xml" parse="text"/></synopsis>
                             </informalexample>
-                            
+                        
                         </section>
                     
                     </section>
@@ -1125,14 +1137,8 @@
                     <section xml:id="sec-xhtml-epub-default">
                         <title>The <code>default</code> Element</title>
                         
-                        <para>The <code>default</code> element is nearly identical to the <code>case</code> 
-                            element. The purpose of the <code>default</code> element is to provide compliant 
-                            markup as a baseline (or fallback) for display of the <code>switch</code>. The 
-                            <code>default</code> element must contain only XML nodes that would be allowed 
-                            at the point of the document where its parent <code>switch</code> element was 
-                            used. More precisely, a document is considered valid if and only if replacing all 
-                            <code>switch</code> elements with the content of their child <code>default</code> 
-                            elements yields a valid document.</para>
+                        <para>The <code>default</code> element provides compliant HTML 5 markup for 
+                            when a Reading System cannot render any of the <code>case</code> elements.</para>
                         
                         <variablelist xreflabel="epub:default" role="elem-synopsis" xml:id="elemdef-default">
                             <varlistentry>
@@ -1169,10 +1175,18 @@
                             <varlistentry>
                                 <term>Content Model</term>
                                 <listitem>
-                                    <para>An XML fragment.</para>
+                                    <para>An HTML5 compliant markup fragment.</para>
                                 </listitem>
                             </varlistentry>
                         </variablelist>
+                        
+                        <para>The <code>default</code> element must contain only content that would be allowed 
+                            at the point of the document where its parent <code>switch</code> element is 
+                            used.</para>
+                        
+                        <para><remark role="todo">RS conformance req?</remark>A document is valid if and only if replacing all 
+                            <code>switch</code> elements with the content of their child <code>default</code> 
+                            elements yields a valid document.</para>
                         
                     </section>
                         
