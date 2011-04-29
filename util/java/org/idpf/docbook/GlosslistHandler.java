@@ -29,7 +29,6 @@ public class GlosslistHandler {
 		if(!in.exists()) throw new IOException(inDir);
 		
 		Collection<File> files = in.getFiles();
-		System.out.println("processing glossentries in " + files.size() + " files");
 				
 		con = new XPathContext();
 		con.addNamespace("db", dbns);
@@ -74,7 +73,6 @@ public class GlosslistHandler {
 			String id = glossentry.getAttributeValue("id", xmlns);
 			if(referencedFromOutside(id, linkends, glosslist )) {	
 				if(!contains(usedGlossEntries,glossentry)) {
-					//System.out.println("adding step1");
 					usedGlossEntries.add(glossentry);
 				}
 			}
@@ -84,7 +82,7 @@ public class GlosslistHandler {
 		//2: go through usedEntries nested linkends, and add any referenced glossEntries 		
 		// recursively until list stops growing						
 		while (true) {			
-			List<Element> moreUsedGlossEntries = recurse2(glosslist, allGlossentries, usedGlossEntries);
+			List<Element> moreUsedGlossEntries = recurse(glosslist, allGlossentries, usedGlossEntries);
 			if(moreUsedGlossEntries.size() == 0) {
 				break;
 			}
@@ -107,7 +105,7 @@ public class GlosslistHandler {
 	}
 
 
-	private List<Element> recurse2(Element glosslist, Elements allGlossentries, List<Element> usedGlossEntries) {
+	private List<Element> recurse(Element glosslist, Elements allGlossentries, List<Element> usedGlossEntries) {
 		List<Element> newUsedGlossEntries = new LinkedList<Element>();
 		for(Element usedEntry : usedGlossEntries) {
 			Nodes linkends = usedEntry.query(".//db:*[@linkend]", con);
@@ -196,10 +194,8 @@ public class GlosslistHandler {
 	 * @param args 0: input dir, 1: output dir
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws Exception {
-		
+	public static void main(String[] args) throws Exception {		
 		new GlosslistHandler(args[0], args[1]);
-		System.out.println("done");
 
 	}
 
