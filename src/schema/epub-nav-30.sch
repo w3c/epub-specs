@@ -2,7 +2,7 @@
 <schema xmlns="http://purl.oclc.org/dsdl/schematron">
 
     <ns uri="http://www.w3.org/1999/xhtml" prefix="html"/>
-    <ns uri="http://www.idpf.org/2011/epub" prefix="epub"/>
+    <ns uri="http://www.idpf.org/2007/ops" prefix="epub"/>
 
     <pattern id="nav-ocurrence">
         <rule context="html:body">

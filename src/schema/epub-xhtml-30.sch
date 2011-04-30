@@ -6,7 +6,7 @@
     <!-- TODO h @max and @min -->
             
     <ns uri="http://www.w3.org/1999/xhtml" prefix="h"/>
-    <ns uri="http://www.idpf.org/2011/epub" prefix="epub"/>
+    <ns uri="http://www.idpf.org/2007/ops" prefix="epub"/>
     <ns uri="http://www.w3.org/1998/Math/MathML" prefix="math"/>
     <ns uri="http://www.w3.org/2001/10/synthesis" prefix="ssml"/>
     <ns uri="http://www.w3.org/2001/xml-events" prefix="ev"/>
