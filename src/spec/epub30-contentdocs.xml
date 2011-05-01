@@ -856,29 +856,38 @@
                 <section xml:id="sec-xhtml-content-switch">
                     <title>Content Switching</title>
 
-                    <section xml:id="sec-xhtml-switch-intro">
+                    <section xml:id="sec-xhtml-switch-intro" conformance="informative">
                         <title>Introduction</title>
 
-                        <para>Reading Systems developers may choose to support XML vocabularies and
+                        <para>The <code>switch</code> element provides a simple mechanism 
+                            through which Authors can tailor the Publication content displayed to Users, 
+                            one that isn't dependent on the scripting capabilities of the Reading System.</para>
+                        
+                        <para>Reading System developers may choose to support XML vocabularies and
                             new HTML elements that are not valid in <xref
-                                linkend="gloss-content-document-epub-xhtml"/>s. To encourage their
-                            use and adoption by <xref linkend="gloss-author"/>s, EPUB 3 includes the
-                            content switching mechanism.</para>
-
-                        <para>The <code>switch</code> element allows non-native content types and
-                            elements to be added to the document model so long as a fallback XHTML
-                            equivalent is included in the <code>default</code> element for Reading
-                            Systems that do not support the markup.</para>
+                                linkend="gloss-content-document-epub-xhtml"/>s. The <code>switch</code>
+                            mechanism encourages this type of development and experimentation, but at the
+                            same time provides Authors who wish to take advantage of it the security of 
+                            knowing that their content will still display on any compliant Reading System 
+                            (i.e., it maintains the baseline requirement that all XHTML Content Documents 
+                            be valid if none of the specialized markup is supported).</para>
+                        
+                        <para>Content switching is not just about encouraging future development, however;
+                            it can also be used to create Publications that maintain a level of compatibility with
+                            older Reading Systems unable to handle the new features of EPUB 3. For example, 
+                            instances of MathML, now a native type, could be added using <code>switch</code> 
+                            elements so that EPUB 2 Reading Systems could instead provide fallback images
+                            or text.</para>
                     </section>
 
                     <section xml:id="sec-xhtml-switch-def">
-                        <title>Content Switching Definition</title>
+                        <title>Definition</title>
 
                         <section xml:id="sec-xhtml-epub-switch">
                             <title>The <code>epub:switch</code> Element</title>
 
                             <para>The <code>switch</code> element allows an XML fragment to be
-                                conditionally inserted into the content model of a document.</para>
+                                conditionally inserted into the content model of an XHTML Content Document.</para>
 
                             <variablelist xreflabel="epub:switch" role="elem-synopsis"
                                 xml:id="elemdef-switch">
@@ -930,26 +939,47 @@
                                     </listitem>
                                 </varlistentry>
                             </variablelist>
-
+                            
+                            <para>A Reading System must individually process each <code>switch</code>
+                                element in a document to determine whether it can render any of the
+                                child <code><link linkend="elemdef-case">case</link></code> elements 
+                                (as determined by the value of their
+                                <code><link linkend="attrdef-case-required-namespace">required-namespace</link></code>
+                                attributes).</para>
+                            
+                            <para>For each <code>switch</code> encountered, the Reading System should
+                                render the content of the first <code>case</code> it supports, but is free to
+                                select from any of the available options. 
+                                If the Reading System does not support the markup contained in any of the child
+                                <code>case</code> elements, it must render the contents of the
+                                <code><link linkend="elemdef-default">default</link></code> element.</para>
+                            
                             <note>
                                 <para>The <xref linkend="refHTML5"/>
                                     <code>object</code> element should be used in preference to
                                         <code>epub:switch</code> for displaying content that is not
                                     intended to be embedded within the document.</para>
                             </note>
+                            
+                            <bridgehead>Examples</bridgehead>
 
                             <informalexample>
-                                <para>An example of markup using the switch element.</para>
+                                <para>An example of ChemML markup inserted using the <code>switch</code> element.</para>
                                 <synopsis><xi:include href="examples/contentdocs/switch-1.xml" parse="text"/></synopsis>
                             </informalexample>
-
+                            
+                            <informalexample>
+                                <para>An example of adding MathML markup for compliance with EPUB 2 Reading Systems.</para>
+                                <synopsis><xi:include href="examples/contentdocs/switch-2.xml" parse="text"/></synopsis>
+                            </informalexample>
+                            
                         </section>
 
                         <section xml:id="sec-xhtml-epub-case">
                             <title>The <code>epub:case</code> Element</title>
 
                             <para>The <code>case</code> element contains markup from XML
-                                vocabularies not natively supported in XHTML Content
+                                vocabularies that may or may not be natively supported in XHTML Content
                                 Documents.</para>
 
                             <variablelist xreflabel="epub:case" role="elem-synopsis"
@@ -989,8 +1019,6 @@
                                                   <option>[required]</option>
                                                 </term>
                                                 <listitem>
-                                                  <para>URI that identifies the XML fragment type
-                                                  contained in the element.</para>
                                                   <para>A URI <xref linkend="refRFC2046"/> that
                                                   identifies the XML vocabulary or extension that
                                                   the Reading System must support in order to
@@ -1010,20 +1038,38 @@
                                     </listitem>
                                 </varlistentry>
                             </variablelist>
-
+                            
+                            <para>Each <code>case</code> element must contain an alternate representation
+                                of the same content. To ensure the best rendering of their content, Authors 
+                                should order <code>case</code> elements by to their optimal rendering
+                                format.</para>
+                            
+                            <para>If the <code>case</code> element contains markup that is valid in
+                                an XHTML Content Document (e.g., MathML), that content must be valid 
+                                at the point where the <code><link linkend="elemdef-switch">switch</link></code>
+                                element has been inserted (i.e., its addition must not result in an invalid 
+                                document).</para>
+                            
+                            <para>Foreign markup in a <code>case</code> element must be well formed,
+                                but does not have to be valid at its point of insertion. Authors should ensure
+                                that any foreign markup matches the context in which it is used (e.g., a
+                                block element should not be included in a <code>switch</code> element inserted
+                                in an inline context).</para>
+                            
                             <note>
-                                <para>The IDPF may maintain URI values separately of this
-                                    specification to standardize the use of new HTML elements and
-                                    features.</para>
+                                <para>The IDPF may maintain URI values for the <code>required-namespace</code>
+                                    attribute separately of this specification to standardize the use of new HTML 
+                                    elements and features.</para>
                             </note>
-
+                            
                         </section>
 
                         <section xml:id="sec-xhtml-epub-default">
                             <title>The <code>epub:default</code> Element</title>
 
-                            <para>The <code>default</code> element provides compliant HTML5 markup
-                                for when a Reading System cannot render any of the <code>case</code>
+                            <para>The <code>default</code> element provides markup that is valid in
+                                any XHTML Content Document for when a Reading System cannot render 
+                                any of the <code><link linkend="elemdef-case">case</link></code> 
                                 elements.</para>
 
                             <variablelist xreflabel="epub:default" role="elem-synopsis"
@@ -1066,62 +1112,38 @@
                                     </listitem>
                                 </varlistentry>
                             </variablelist>
+                            
+                            <para>The <code>default</code> element acts as a fallaback for the
+                                <code><link linkend="elemdef-switch">switch</link></code> and must 
+                                include a representation of the content that is valid in XHTML Content 
+                                Documents.</para>
 
-                            <para>The <code>default</code> element must contain only content that
-                                would be allowed at the point of the document where its parent
-                                    <code>switch</code> element is used.</para>
-
+                            <para>The <code>default</code> element must not include content that
+                                would invalidate the document at the point where the <code>switch</code> 
+                                has been inserted: XHTML Content Documents must be valid if all the 
+                                <code>switch</code> elements are replaced by their child <code>default</code> 
+                                elements.</para>
+                            
                         </section>
                     </section>
 
-                    <section xml:id="sec-xhtml-switch-semantics">
-                        <title>Content Switching Semantics</title>
-
-                        <para>A Reading System must individually process all the <code>switch</code>
-                            elements in a document to determine whether it can render any of the
-                            child <code>case</code> elements for each (as identified by their
-                                <code>required-namespace</code> attributes).</para>
-
-                        <para>For each <code>switch</code> encountered, the Reading System should
-                            render the contents of the first <code>case</code> it supports. If the
-                            Reading System does not support the markup contained in any of the child
-                                <code>case</code> elements, it must render the contents of the
-                                <code>default</code> element. The <code>default</code> element
-                            functions as a fallback for the <code>switch</code> and must contain
-                            only valid XHTML markup.</para>
-
-                        <para>Each <code>case</code> element and the <code>default</code> element
-                            must contain alternate representations of the same content. To ensure
-                            the best rendering of their content, Authors should order
-                                <code>case</code> elements by to their optimal rendering
-                            format.</para>
-
-                    </section>
-
                     <section xml:id="sec-xhtml-switch-processing">
-                        <title>Content Switching Processing</title>
+                        <title>Processing</title>
 
-                        <para>This specification does not require a specific processing model for
-                            intepreting <code>switch</code> elements. Reading Systems may choose to
-                            preprocess a document prior to rendering or may choose to apply CSS
-                            styling to render each <code>switch</code>.</para>
+                        <para>This specification does not require a specific rendering approach for 
+                            <code>switch</code> elements. A Reading Systems may choose to
+                            apply CSS styling to render each <code>switch</code>, for example,
+                            but may use any other approach as appropriate. All Reading Systems 
+                            must present the content of only one <code>case</code> element or the 
+                            <code>default</code> element per <code>switch</code> for rendering, 
+                            however.</para>
 
-                        <para>A Reading System must present the content of only one
-                                <code>case</code> element or the <code>default</code> element for
-                            rendering, however. Regular HTML5 processing rules apply to the selected
-                            content after processing of the <code>switch</code>.</para>
-
-                        <para>From an HTML perspective, the <code>switch</code> element should be
-                            rendered as though all of its children but one have the HTML5 <link
+                        <para>The <code>switch</code> element must be processed as though all of its 
+                            children but one have the HTML5 <link
                                 xlink:href="http://www.w3.org/TR/html5/editing.html#the-hidden-attribute"
                                 >hidden attribute</link> set (i.e., all the same processing rules
                             and requirements outlined for that attribute should be applied to the
                             content not to be rendered).</para>
-
-                        <para>XHTML Content Documents that contain <code>switch</code> elements must
-                            be valid after all the <code>switch</code> elements have been replaced
-                            by their child <code>default</code> elements to ensure that any Reading
-                            System can render them.</para>
 
                         <note>
                             <para>As the content that may be rendered depends on the capabilities of
