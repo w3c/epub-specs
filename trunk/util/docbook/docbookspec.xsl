@@ -8,9 +8,11 @@
     xmlns:stbl="http://nwalsh.com/xslt/ext/com.nwalsh.saxon.Table"
     xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="doc stbl xtbl lxslt ptbl d saxon db exsl xlink">
-
+    
     <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl"/>
 
+    <xsl:param name="user.print.css"/>
+    
     <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
 
     <!-- ==================================================================== -->
@@ -428,6 +430,12 @@
         <xsl:element name="meta" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="http-equiv">Content-Type</xsl:attribute>
             <xsl:attribute name="content">text/html; charset=utf-8</xsl:attribute>
+        </xsl:element>
+        <xsl:element name="link">
+            <xsl:attribute name="rel">stylesheet</xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="$user.print.css"/></xsl:attribute>
+            <xsl:attribute name="type">text/css</xsl:attribute>
+            <xsl:attribute name="media">print</xsl:attribute>
         </xsl:element>
     </xsl:template>
 
