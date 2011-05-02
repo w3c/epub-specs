@@ -53,7 +53,8 @@
 	
 	<property name="schema.rng" value="${dir.util.rng}/relaxng.rng" />
 	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl" />
-	<property name="schema.xhtml11" value="${dir.util.xhtml}/relaxng/xhtml.rng" />
+	<property name="schema.xhtml11" value="${dir.util.xhtml}/rng/xhtml.rng" />
+	<property name="schema.xhtmlrdfa11" value="${dir.util.xhtml}/rng/xhtml-rdfa11.rng" />
 	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl" />
 	<property name="xslt.biblio-cleaner" value="${dir.util.docbook}/biblio-cleaner.xsl" />
 	<property name="xslt.terminology-cleaner" value="${dir.util.docbook}/terminology-cleaner.xsl" />
@@ -62,6 +63,7 @@
 	<property name="xslt.link-decorator"  value="${dir.util.docbook}/link-decorator.xsl"/>
 	<property name="xslt.catalog"  value="${dir.util}/catalog.xsl"/>
 	<property name="xslt.link-index"  value="${dir.util}/linking/link-index.xsl"/>
+	<property name="xslt.cleanup"  value="${dir.util}/xhtml/cleanup.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css" />
 	<property name="css.print" value="${dir.src.spec.css}/epub-print.css" />
 	
@@ -178,11 +180,12 @@
 			compaxtsyntax="false" />
 		
 		<!-- run docbook-xhtml -->
+		<mkdir dir="${dir.temp.spec}/60" />
 		<saxon-xslt 
 			classpathref="build.classpath"
 			basedir="${dir.temp.spec}/50/"
 			includes="epub30-*.xml"
-			destdir="${dir.build.spec}"
+			destdir="${dir.temp.spec}/60/"
 			extension=".html" 			
 			style="${xslt.docbook2xhtml}">
 			
@@ -197,6 +200,20 @@
 			
 		</saxon-xslt>
 
+		<!-- run cleanup -->
+		<xslt  			
+			classpathref="build.classpath"
+			basedir="${dir.temp.spec}/60/"			
+			destdir="${dir.build.spec}"
+			extension=".html" 
+			style="${xslt.cleanup}" useimplicitfileset="yes">			
+			<!-- point catalog to empty DTD file; otherwise xml:space="preserve" gets added in identity transform
+				when referencing the local copy of the xhtml 1.1 dtd in the catalog below-->
+			<xmlcatalog>
+				<dtd publicid="-//W3C//DTD XHTML 1.1//EN" location="${dir.util.xhtml.dtd.catalog}/empty.dtd"/>
+			</xmlcatalog>
+		</xslt>
+		
 		<build-htaccess dest-dir="${dir.build.spec}" index-name="${spec.filename.prefix}-overview.html"/>
 		
 		<!-- build the linking spec(s) -->
@@ -242,12 +259,20 @@
 			<param name="base-uri" expression="http://www.idpf.org/epub/linking/"/>
 		</saxon-xslt>
 			
-		<!-- validate output html (dtd) -->
+		<!-- validate output html (dtd) 
 		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
 			<xmlcatalog refid="xhtml-catalog"/>
 			<fileset dir="${dir.build.spec}" includes="*.html"/>
 			<fileset dir="${dir.build.cfi}" includes="*.html"/>
-		</xmlvalidate>
+			</xmlvalidate> -->
+		
+		<echo>OUTPUT XHTML VALIDATION</echo>
+		<jing rngfile="${schema.xhtmlrdfa11}" failonerror="false" compactsyntax="false">				
+			<fileset dir="${dir.build}" includes="**/*.html">
+				<exclude name="@{fileset-excludes}"/>
+			</fileset>
+		</jing>
+		<echo>END OUTPUT XHTML VALIDATION</echo>
 	
 	</target>
 		
