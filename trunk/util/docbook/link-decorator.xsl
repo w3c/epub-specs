@@ -4,7 +4,7 @@
     xmlns:fn="http://idpf.org/fn" 
     xmlns:epub="http://www.idpf.org/2011/epub">
 
-    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db"/>
+    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db" indent="no"/>
     
     <!-- decorate links with different roles in order to be able to style them differently -->
     

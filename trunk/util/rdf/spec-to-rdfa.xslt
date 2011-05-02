@@ -6,9 +6,7 @@
 	<xsl:output method="xml" version="1.0" 
 		encoding="UTF-8" 
 		omit-xml-declaration="no" 
-		indent="yes"
-		doctype-public="-//W3C//DTD XHTML 1.1//EN"
-		doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"/>
+		indent="no"/>
 
 	<!-- the canonical URI of the vocab being rendered -->
 	<xsl:param name="vocab-canonical-uri" required="yes"/>

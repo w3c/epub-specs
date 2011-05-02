@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
     xmlns:db="http://docbook.org/ns/docbook" xmlns:fn="http://idpf.org/fn" xmlns:epub="http://www.idpf.org/2011/epub">
 
-    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db"/>
+    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db" indent="no"/>
      
     <xsl:variable name="current-spec-token">           
         <xsl:choose>

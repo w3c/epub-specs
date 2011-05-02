@@ -3,7 +3,7 @@
     xmlns:db="http://docbook.org/ns/docbook" xmlns:fn="http://idpf.org/fn"
     xmlns:epub="http://www.idpf.org/2011/epub" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db"/>
+    <xsl:output method="xml" encoding="UTF-8" exclude-result-prefixes="db" indent="no"/>
 
     <!-- olink specialization for epub specs. Only used for cross-epub3-spec linking.
        * to activate behavior, must provide @type="epub-spec" 
@@ -48,7 +48,7 @@
             <db:olink type="epub-spec" targetdoc="doc" targetptr="frag" />
 
             generate the following docbook
-            <db:link xlink:href="doc#frag">destination label</db:link> in <db:xref linkend="refDoc"/>.
+            <db:link xlink:href="doc#frag">destination label</db:link> <db:xref linkend="refDoc"/>.
 
             with the intent of generating the following XHTML
             <a href="full-uri">destination label</a> in <a href="#refXXX">[BIBLIOLABEL]</a>                       
@@ -71,7 +71,7 @@
                 <xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
                     <xsl:value-of select="$dest-doc-uri"/>#<xsl:value-of select="$targetptr"/>
                 </xsl:attribute>
-                <xsl:value-of select="$link-label"/>
+                <xsl:copy-of select="$link-label"/>
             </xsl:element>
                         
             <xsl:if test="not(@epub:specref-exclude)">
@@ -99,9 +99,12 @@
         </xsl:if>
 
         <xsl:choose>
+            <xsl:when test="$olink/*">
+                <xsl:message terminate="yes">sorry, no elements on olink link labels: '<xsl:value-of select="$olink"/>'</xsl:message>
+            </xsl:when>
             <xsl:when test="string-length($olink/text())>0">
                 <xsl:value-of select="$olink/text()"/>
-            </xsl:when>
+            </xsl:when>            
             <xsl:when test="$curelem/@xreflabel">
                 <xsl:value-of select="$curelem/@xreflabel"/>
             </xsl:when>

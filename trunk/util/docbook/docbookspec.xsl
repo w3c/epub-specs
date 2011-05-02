@@ -13,7 +13,7 @@
 
     <xsl:param name="user.print.css"/>
     
-    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
+    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="no"/>
 
     <!-- ==================================================================== -->
     <!-- toc settings                                                         -->
@@ -103,17 +103,19 @@
         <!-- editors -->
         <xsl:if test="$topinfo/db:authorgroup[not(@role) or @role='current']">
             <xsl:call-template name="render-authorgroup">
-                <xsl:with-param name="title">Editors (this version)</xsl:with-param>
+                <xsl:with-param name="title">Editors</xsl:with-param>
                 <xsl:with-param name="node"
                     select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
             </xsl:call-template>
-        </xsl:if>
+        </xsl:if>      
+        <!--
         <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
             <xsl:call-template name="render-authorgroup">
                 <xsl:with-param name="title">Editors (previous versions)</xsl:with-param>
                 <xsl:with-param name="node" select="$topinfo/db:authorgroup[@role='previous']"/>
             </xsl:call-template>
         </xsl:if>
+        -->
     </xsl:template>
 
     <xsl:template name="render-authorgroup">
@@ -1031,11 +1033,10 @@
             <xsl:for-each select="./d:person">
                 <span>
                     <xsl:apply-templates select="." mode="common.html.attributes"/>
-                    <span>
-                        <xsl:apply-templates select="." mode="common.html.attributes"/>
+                    <span class="name">
                         <xsl:call-template name="person.name"/>                                                                       
                         <xsl:if test="not(current()/d:affiliation) and not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
-                    </span>   
+                    </span><xsl:text> </xsl:text>   
                     <xsl:if test="current()/d:affiliation">
                         <xsl:apply-templates select="d:affiliation"/>
                         <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
