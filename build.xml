@@ -250,8 +250,7 @@
 		</xmlvalidate>
 	
 	</target>
-	
-	
+		
 	<target name="compile">
 		<javac srcdir="${dir.util.java}" destdir="${dir.util.java}" debug="on" source="1.5">
 			<classpath refid="build.classpath" />
@@ -392,32 +391,53 @@
 	</macrodef>
 	
 	<target name="build-archives" depends="clean, build-vocabs, build-specs, build-schemas">
+		
+		<!-- archives of and in the schema dir -->
+		
 		<zip 
-			destfile="${dir.temp}/epub30-${TODAY}.zip" 
+			destfile="${dir.temp}/${spec.filename.prefix}-schemas.zip" 
+			basedir="${dir.build.schema}/" 
+			excludes="${file.exclude.list},**/.htaccess" />
+		
+		<tar 
+			destfile="${dir.temp}/${spec.filename.prefix}-schemas.tar" 
+			basedir="${dir.build.schema}/" 
+			excludes="${file.exclude.list},**/.htaccess" />
+		
+		<gzip 
+			src="${dir.temp}/${spec.filename.prefix}-schemas.tar" 
+			destfile="${dir.build.schema}/${spec.filename.prefix}-schemas.tar.gz" />
+		
+		<copy file="${dir.temp}/${spec.filename.prefix}-schemas.zip" todir="${dir.build.schema}" />
+		
+		<!-- tutti -->
+		
+		<zip 
+			destfile="${dir.temp}/${spec.filename.prefix}-${TODAY}.zip" 
 			basedir="${dir.build}/" 
 			excludes="${file.exclude.list} spec/" />
 			
 		<tar 
-			destfile="${dir.temp}/epub30-${TODAY}.tar" 
+			destfile="${dir.temp}/${spec.filename.prefix}-${TODAY}.tar" 
 			basedir="${dir.build}/"
 			excludes="${file.exclude.list} spec/" />
 														
 		<gzip 
-			src="${dir.temp}/epub30-${TODAY}.tar" 
-			destfile="${dir.build}/epub30-${TODAY}.tar.gz" />
+			src="${dir.temp}/${spec.filename.prefix}-${TODAY}.tar" 
+			destfile="${dir.build}/${spec.filename.prefix}-${TODAY}.tar.gz" />
 		
-		<copy file="${dir.temp}/epub30-${TODAY}.zip" todir="${dir.build}" />
+		<copy file="${dir.temp}/${spec.filename.prefix}-${TODAY}.zip" todir="${dir.build}" />
 		
 	</target>
 	
 	<target name="build-schema-catalog">		
-		<fileset id="build.contents" dir="${dir.build.schema}" includes="**/*.*"/>
+		<fileset id="build.contents" dir="${dir.build.schema}" includes="**/*.rnc,**/*.rng,**/*.sch,**/*.nvdl"/>
 		<property name="prop.schemadir.contents" refid="build.contents"/>
 		<!-- in is a dummy -->
 		<saxon-xslt 
 			classpathref="build.classpath"
 			in="${schema.epub.package.sch}" 
-			out="${dir.build.schema}/catalog.xml"		
+			out="${dir.build.schema}/${spec.filename.prefix}-catalog.xml"		
 			style="${xslt.catalog}">			
 			<param name="list" expression="${prop.schemadir.contents}"/>
 			<param name="www-base" expression="http://www.idpf.org/epub/30/schema/"/>			
@@ -723,7 +743,6 @@
 		/>
 	</target>
 	
-
 	<macrodef name="trang">
 		<attribute name="in"/> 
 		<attribute name="out"/> 
@@ -764,162 +783,7 @@
 			<pathelement location="${lib.dir}/ant-contrib-10b3.jar"/>
 		</classpath>
 	</taskdef>
-	
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!--   x m l g e n - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-	
-	<macrodef name="xmlgen">
-			<attribute name="input-schema" />		<!-- can't be rnc -->
-			<attribute name="output-dir" />
-			<attribute name="output-count" />		<!-- number of instances to generate -->
-			<attribute name="datatype-example" /> 	<!-- xmlgen datatype training -->
-			<attribute name="root" /> 				<!-- clark syntax -->
 			
-			<sequential>
-				<delete failonerror="false" includeemptydirs="true">
-					<fileset dir="@{output-dir}" includes="**/*" />
-				</delete>
-				<mkdir dir="@{output-dir}" />
-				<java jar="${dir.lib}/xmlgen/xmlgen.jar" 				   				  
-					  fork="true" maxmemory="512m">			
-									
-					<arg value="-n" />
-					<arg value="@{output-count}" />
-					
-					<arg value="-seed" />
-					<arg value="3145349583" />
-					
-					<arg value="-depth" />
-					<arg value="10" />
-					
-					<arg value="-width" />
-					<arg value="10" />
-					
-					<arg value="-example" />				
-					<arg value="@{datatype-example}" />
-					
-					<arg value="-encoding" />				
-					<arg value="utf-8" />
-					
-					<arg value="-root"/>
-					<arg value="@{root}" />
-					
-					<arg value="@{input-schema}"/>
-					<arg value="@{output-dir}/out$.xml" />
-													
-					<classpath>					
-						<pathelement path="${java.class.path}"/>
-						<fileset dir="${dir.lib}/xmlgen/" includes="**/*.jar" />												  
-					</classpath>
-					
-				</java>
-			</sequential>
-			<!--
-		 [java]	Usage: XMLGenerator <options> <schema> [<output name>]
-	     [java] Options:
-	     [java]   -dtd      : use a DTD as a schema
-	     [java]   -ascii    : use US-ASCII characters only
-	     [java]   -seed <n> : set random seed
-	     [java]   -depth <n>: set cut back depth
-	     [java]   -width <n>: maximum number of times '*'/'+' are repeated
-	     [java]   -n <n>    : # of files to be generated
-	     [java]   -warning  : show warnings.
-	     [java]   -quiet    : be quiet.
-	     [java]   -root {<namespaceURI>}<localName>
-	     [java]       fix the root element to the given element
-	     [java]   -encoding <str>
-	     [java]       output encoding (Java name)
-	     [java]   -example <filename>
-	     [java]       use the given file as an example. tokens found in the example
-	     [java]       is used to generate documents
-	     [java]   -error <n>/<m>
-	     [java]       error ratio. generate n errors per m elemnts (average).
-	     [java]       to control error generation, see manual for details.
-	     [java]   -nocomment: suppress insertion of comments that indicate generated errors.
-	     [java] 
-	     [java]   <output name> must include one '$'. '$' will be replaced by number.
-	     [java]   e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...
-	     [java]   if omitted, generated file will be sent to stdout.
-			
-			-->
-		</macrodef>
-	
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!--   s c h e m a d o c - - - - - - - - - - - - - - - - - - - - - - -->
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		
-	<target name="build-schemadoc" depends="build-schemadoc-xhtml, build-schemadoc-package"/>
-		
-	<target name="build-schemadoc-xhtml">		
-		<echoxml file="${dir.temp}/summary.xml">
-			<summary>
-				<profile nicename="EPUB XHTML Content Documents" machinename="epub-xhtml-30" rd-uri="http://www.idpf.org/epub/30/" />								
-			</summary>
-		</echoxml>		
-		<schemadoc-rnc 			
-			in-schema="${schema.epub.xhtml}"
-			out-dir="${dir.build.schemadoc}/xhtml"
-			machine-name="epub-xhtml-30"
-			summary="${dir.temp}/summary.xml"
-		/>
-	</target>	
-	
-	<target name="build-schemadoc-package">		
-		<echoxml file="${dir.temp}/summary.xml">
-			<summary>
-				<profile nicename="EPUB Package Documents" machinename="epub-package-30" rd-uri="http://www.idpf.org/epub/30/" />								
-			</summary>
-		</echoxml>		
-		<schemadoc-rnc 			
-			in-schema="${schema.epub.package}"
-			out-dir="${dir.build.schemadoc}/package"
-			machine-name="epub-package-30"
-			summary="${dir.temp}/summary.xml"
-		/>
-	</target>
-		
-	<macrodef name="schemadoc-rnc">
-		<attribute name="in-schema" />
-		<attribute name="out-dir" />
-		<attribute name="machine-name" />
-		<attribute name="summary" />
-				
-		<sequential>	
-			
-			<echo>Building schemadoc for @{in-schema}... </echo>
-			
-			<clean-dir dir="@{out-dir}"/>
-			
-			<trang in="@{in-schema}" out="${dir.temp}/@{machine-name}-trangd.rng"/>
-			
-			<java classname="org.daisy.z3986.rng.RNGQuasiSimplifier" fork="true" failonerror="true" maxmemory="1024m">			
-				<arg value="${dir.temp}/@{machine-name}-trangd.rng"/>
-				<arg value="${dir.temp}/@{machine-name}-quasi.rng"/>
-				<arg value="false"/>
-				<arg value="false"/>
-				<classpath refid="build.classpath"/>					
-			</java>
-			
-			<saxon-xslt 
-				in="${dir.temp}/@{machine-name}-quasi.rng" 
-				style="${dir.util.rng.schemadoc}/schemadoc2.xsl" 
-				out="${dir.temp}/dummy-schemadoc.xml">
-				<param name="rd-summary" expression="@{summary}" />
-				<param name="output-path" expression="@{out-dir}/" />
-				<param name="profile-machine-name" expression="@{machine-name}" />
-				<param name="debug" expression="0" />
-				<param name="group-rdf-a" expression="0" />
-			</saxon-xslt> 
-			
-			<delete file="${dir.temp}/dummy-schemadoc.xml"/>				
-			
-			<copy file="${dir.util.rng.schemadoc}/schemadoc2-alt.css" tofile="@{out-dir}/schemadoc.css" />	
-		</sequential>
-		
-	</macrodef>
-	
 	<macrodef name="build-htaccess"
 		description="builds a htaccess with settable DirectoryIndex value">
 		<attribute name="dest-dir" />
