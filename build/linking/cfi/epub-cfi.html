@@ -97,34 +97,46 @@
                 section.</p><div class="note" title="note"><h3 class="title">note</h3><p class="para"><code class="literal">epub</code> has been prepended to the name of the scheme as a more
                     generic CFI-like scheme may be defined in the future for all XML+ZIP-based file
                     formats.</p></div></div><div class="section" title="2.2 Syntax" id="sec-epubcfi-syntax"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-epubcfi-syntax">›</a> </span>2.2 Syntax</h3><pre class="programlisting">
-fragment:    "epubcfi(" (path | range) ")" 
+fragment      = "epubcfi(" , ( path | range ) , ")" ;
 
-range:       path "," local_path "," local_path
+path          = step , local_path ;
 
-path:        step local_path
+range         = path , "," , local_path , "," , local_path ;
 
-local_path:  (step | "!")* termstep?
+local_path    = { step | "!" } , [ termstep ] ;
 
-step:        "/" integer ("[" assertion "]")?
+step          = "/" , integer , [ "[" , assertion , "]" ] ;
 
-termstep:    terminus ("[" assertion "]")?
+termstep      = terminus , [ "[" , assertion , "]" ] ;
 
-terminus:    ":" integer | "@" number ":" number |
-             "~" number | "~" number "@" number ":" number 
+terminus      = (":" , integer)
+                | ("@" , number , ":" , number)
+                | ("~" , number)
+                | ("~" , number , "@" , number , ":" , number) ;
 
-number:      digit+ ("." digit+)?
+number        = digit , { digit } , [ "." , digit , { digit } ] ;
 
-integer:     digit+
+integer       = digit , { digit } ;
 
-assertion:   csv? parameters
+assertion     = [ csv ] , parameters ;
 
-parameters:  (";" param_name "=" csv)*
+parameters    = { ";" , param_name , "=" , csv } ;
 
-param_name:  xml_identifier
+param_name    = xml_id ;
 
-csv:         value ("," value)*
+csv           = value , { "," , value } ;
 
-value:       string | quoted-string</pre><p class="para">A Canonical Fragment Identifier (CFI) consists of an initial sequence
+value         = string | quoted-string ;
+
+quoted-string = '"' , string , '"' ;
+
+string        = char , { char } ;
+
+digit         = "0".."9" ;
+
+char          = ? unicode characters ? ;
+
+xml_id        = ? xml identifier ? ;</pre><p class="para">A Canonical Fragment Identifier (CFI) consists of an initial sequence
                     <code class="literal">epubcfi</code> that identifies this particular reference method, and
                 a parenthesized path or range. A path is built up as a sequence of structural steps
                 to reference a location. A range is a path followed by two local (or relative) paths
@@ -139,16 +151,17 @@ value:       string | quoted-string</pre><p class="para">A Canonical Fragment Id
                 string (delimited by quote characters (<code class="literal">"</code>)) or a sequence of
                 characters. The following characters can only appear in a quoted string, as they
                 would otherwise interfere with parsing:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">quote (<code class="literal">"</code>)</p></li><li class="listitem"><p class="para">brackets (<code class="literal">[</code>,<code class="literal">]</code>)</p></li><li class="listitem"><p class="para">parentheses (<code class="literal">(</code>,<code class="literal">)</code>)</p></li><li class="listitem"><p class="para">comma (<code class="literal">,</code>)</p></li><li class="listitem"><p class="para">semicolon (<code class="literal">;</code>)</p></li></ul></div><p class="para">Quote and backslash characters (<code class="literal">\</code>) contained within a quoted
-                string must be escaped by adding a single backslash character before them.</p><div class="informalexample"><p class="para">Example of an EPUB CFI containing a quoted string value:</p><pre class="synopsis"><span class="todo">TODO</span></pre></div><p class="para">The following rules apply to the use of numbers and integers within the path or
+            string must be escaped by adding a single backslash character before them.</p><div class="informalexample"><p class="para">Example of an EPUB CFI containing a quoted string value:</p><pre class="synopsis"><span class="todo">TODO</span></pre></div><p class="para">The following rules apply to the use of numbers and integers within the path or
                 range:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">leading zeros are not allowed for numbers or integers (to ensure
                         uniqueness);</p></li><li class="listitem"><p class="para">trailing zeros are not allowed in the fractional part of a number;</p></li><li class="listitem"><p class="para">zero must be represented as the integer <code class="literal">0</code>;</p></li><li class="listitem"><p class="para">numbers in the range <code class="literal">1 &gt; N &gt; 0</code> must have a leading
-                            <code class="literal">0.</code>;</p></li><li class="listitem"><p class="para">integral numbers must be represented as integers.</p></li></ul></div></div></div><div class="chapter" title="3 EPUB CFI Processing" id="sec-epubcfi-processing"><h2 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-epubcfi-processing">›</a> </span>3 EPUB CFI Processing</h2><div class="section" title="3.1 Path Resolution" id="sec-path-res"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-path-res">›</a> </span>3.1 Path Resolution</h3><p class="para">The process of resolving of an EPUB CFI to a location in a Publication begins with
+                            <code class="literal">0.</code>;</p></li><li class="listitem"><p class="para">integral numbers must be represented as integers.</p></li></ul></div><p class="para">When an EPUB CFI is used as a part of IRI <a class="biblioref" href="#refRFC3987" title="Internationalized Resource Identifiers (IRIs) (RFC 3987)">[<abbr class="abbrev">RFC3987</abbr>]</a>, it must 
+                be escaped as per that specification. When extracting from an IRI, it must be unescaped
+                prior to parsing, sorting or comparing.</p></div></div><div class="chapter" title="3 EPUB CFI Processing" id="sec-epubcfi-processing"><h2 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-epubcfi-processing">›</a> </span>3 EPUB CFI Processing</h2><div class="section" title="3.1 Path Resolution" id="sec-path-res"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-path-res">›</a> </span>3.1 Path Resolution</h3><p class="para">The process of resolving of an EPUB CFI to a location in a Publication begins with
                 the root XML element node of the <a class="glossterm" href="#gloss-package-document" title="Package Document">Package Document</a> (i.e., the
                     <code class="code">package</code> element, not the DOM document node). Each step in the CFI
                 is then processed one by one, left to right, applying the rules defined in the
                 following subsections.</p><p class="para">The following sample content is used by the referencing examples throughout the
-                following subsections:</p><div class="informalexample" id="ex-path-content"><pre class="synopsis">&lt;p id="para05"&gt;aaa&lt;em&gt;bbb&lt;/em&gt;0123456789&lt;/p&gt;</pre></div><div class="note" title="note"><h3 class="title">note</h3><p class="para">This specification assumes that all documents are parsed into a W3C DOM tree,
-                    but any parsing method can be used.</p></div><div class="section" title="3.1.1 Step Reference to Child Node (/)" id="sec-path-child-ref"><h4 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-path-child-ref">›</a> </span>3.1.1 Step Reference to Child Node (<code class="literal">/</code>)</h4><p class="para">A step with a slash (<code class="literal">/</code>) followed by an integer refers to a
+                following subsections:</p><div class="informalexample" id="ex-path-content"><pre class="synopsis">&lt;p id="para05"&gt;aaa&lt;em&gt;bbb&lt;/em&gt;0123456789&lt;/p&gt;</pre></div><div class="section" title="3.1.1 Step Reference to Child Node (/)" id="sec-path-child-ref"><h4 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-path-child-ref">›</a> </span>3.1.1 Step Reference to Child Node (<code class="literal">/</code>)</h4><p class="para">A step with a slash (<code class="literal">/</code>) followed by an integer refers to a
                     child node or nodes in the following manner:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">Each element is assigned an <span class="emphasis"><em>even</em></span> positive index.
                             The first element is given index <code class="literal">2</code>, the second
                             element index <code class="literal">4</code>, etc.</p></li><li class="listitem"><p class="para">Each (possibly empty) collection of non-element nodes before the first
@@ -336,7 +349,7 @@ a a a b b b 0 1 2 3 4 5 6 7 8 9
                 followed by a CFI which must be resolved starting from the document root
                 element.</p><p class="para">For example, using the OPF file in the <a class="link" href="#sec-path-examples" title="3.1.10 Examples">previous 
                 example</a>, a reference to the last location in <code class="filename">chapter02.xhtml</code> 
-                might be written as follows:</p><div class="informalexample"><pre class="synopsis">&lt;a href="chapter01.xhtml#epubcfi(/4[body01]/10[para05]/2/1:3b)"&gt;location&lt;/a&gt;</pre></div></div><div class="section" title="3.4 Simple Ranges" id="sec-ranges"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-ranges">›</a> </span>3.4 Simple Ranges</h3><p class="para">EPUB CFIs allow the expression of simple ranges extending from a start location to
+                might be written as follows:</p><div class="informalexample"><pre class="synopsis">&lt;a href="chapter01.xhtml#epubcfi(/4[body01]/10[para05]/2/1:3[;s=b])"&gt;location&lt;/a&gt;</pre></div></div><div class="section" title="3.4 Simple Ranges" id="sec-ranges"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-ranges">›</a> </span>3.4 Simple Ranges</h3><p class="para">EPUB CFIs allow the expression of simple ranges extending from a start location to
                 an end location. A range must be expressed as a triple of
                     <span class="emphasis"><em>parent</em></span> path (<code class="literal">P</code>),
                     <span class="emphasis"><em>start</em></span> subpath (<code class="literal">S</code>) and
@@ -387,7 +400,9 @@ a a a b b b 0 1 2 3 4 5 6 7 8 9
                     APIs for HTML and XHTML</a></em>. </span></p></div><div class="biblioentry" title="EPUB Media Overlays 3.0" id="refOverlays3"><p>[<abbr class="abbrev">MediaOverlays30</abbr>] <span class="title"><em><a class="link" href="epub30-mediaoverlays.html">EPUB Media Overlays
                 3.0</a></em>. </span></p></div><div class="biblioentry" title="Open Container Format 3.0" id="refOCF30"><p>[<abbr class="abbrev">OCF3</abbr>] <span class="title"><em><a class="link" href="epub30-ocf.html">Open Container Format 3.0</a></em>. </span></p></div><div class="biblioentry" title="EPUB Publications 3.0" id="refPublications3"><p>[<abbr class="abbrev">Publications30</abbr>] <span class="title"><em><a class="link" href="epub30-publications.html">EPUB Publications 3.0</a></em>. </span></p></div><div class="biblioentry" title="Key words for use in RFCs to Indicate Requirement Levels (RFC 2119)" id="refRFC2119"><p>[<abbr class="abbrev">RFC2119</abbr>] <span class="title"><em>
                 <a class="link" href="http://www.ietf.org/rfc/rfc2119.txt">Key words for use in RFCs to
-                    Indicate Requirement Levels</a> (RFC 2119) </em>. </span><span class="date">March 1997. </span></p></div><div class="biblioentry" title="Scalable Vector Graphics (SVG) 1.1 (Second Edition)" id="refSVG"><p>[<abbr class="abbrev">SVG</abbr>] <span class="title"><em>
+                    Indicate Requirement Levels</a> (RFC 2119) </em>. </span><span class="date">March 1997. </span></p></div><div class="biblioentry" title="Internationalized Resource Identifiers (IRIs) (RFC 3987)" id="refRFC3987"><p>[<abbr class="abbrev">RFC3987</abbr>] <span class="title"><em>
+                <a class="link" href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource
+                    Identifiers (IRIs)</a> (RFC 3987) </em>. </span><span class="author">M Duerst, et al. </span><span class="date">January 2005. </span></p></div><div class="biblioentry" title="Scalable Vector Graphics (SVG) 1.1 (Second Edition)" id="refSVG"><p>[<abbr class="abbrev">SVG</abbr>] <span class="title"><em>
                 <a class="link" href="http://www.w3.org/TR/SVG11/">Scalable Vector Graphics (SVG) 1.1 (Second Edition)</a>
             </em>. </span><span class="author">Erik Dahlström, et al. </span><span class="date">22 June 2010. </span></p></div><div class="biblioentry" title="Extensible Markup Language (XML) 1.0 (Fifth Edition)" id="refXML"><p>[<abbr class="abbrev">XML</abbr>] <span class="title"><em>
                 <a class="link" href="http://www.w3.org/TR/2008/REC-xml-20081126/">Extensible Markup

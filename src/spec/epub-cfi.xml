@@ -193,34 +193,46 @@
             <title>Syntax</title>
 
             <programlisting><![CDATA[
-fragment:    "epubcfi(" (path | range) ")" 
+fragment      = "epubcfi(" , ( path | range ) , ")" ;
 
-range:       path "," local_path "," local_path
+path          = step , local_path ;
 
-path:        step local_path
+range         = path , "," , local_path , "," , local_path ;
 
-local_path:  (step | "!")* termstep?
+local_path    = { step | "!" } , [ termstep ] ;
 
-step:        "/" integer ("[" assertion "]")?
+step          = "/" , integer , [ "[" , assertion , "]" ] ;
 
-termstep:    terminus ("[" assertion "]")?
+termstep      = terminus , [ "[" , assertion , "]" ] ;
 
-terminus:    ":" integer | "@" number ":" number |
-             "~" number | "~" number "@" number ":" number 
+terminus      = (":" , integer)
+                | ("@" , number , ":" , number)
+                | ("~" , number)
+                | ("~" , number , "@" , number , ":" , number) ;
 
-number:      digit+ ("." digit+)?
+number        = digit , { digit } , [ "." , digit , { digit } ] ;
 
-integer:     digit+
+integer       = digit , { digit } ;
 
-assertion:   csv? parameters
+assertion     = [ csv ] , parameters ;
 
-parameters:  (";" param_name "=" csv)*
+parameters    = { ";" , param_name , "=" , csv } ;
 
-param_name:  xml_identifier
+param_name    = xml_id ;
 
-csv:         value ("," value)*
+csv           = value , { "," , value } ;
 
-value:       string | quoted-string]]></programlisting>
+value         = string | quoted-string ;
+
+quoted-string = '"' , string , '"' ;
+
+string        = char , { char } ;
+
+digit         = "0".."9" ;
+
+char          = ? unicode characters ? ;
+
+xml_id        = ? xml identifier ? ;]]></programlisting>
 
             <para>A Canonical Fragment Identifier (CFI) consists of an initial sequence
                     <literal>epubcfi</literal> that identifies this particular reference method, and
@@ -263,13 +275,13 @@ value:       string | quoted-string]]></programlisting>
             </itemizedlist>
 
             <para>Quote and backslash characters (<literal>\</literal>) contained within a quoted
-                string must be escaped by adding a single backslash character before them.</para>
+            string must be escaped by adding a single backslash character before them.</para>
 
             <informalexample>
                 <para>Example of an EPUB CFI containing a quoted string value:</para>
                 <synopsis><remark role="todo">TODO</remark></synopsis>
             </informalexample>
-
+            
             <para>The following rules apply to the use of numbers and integers within the path or
                 range:</para>
 
@@ -292,7 +304,11 @@ value:       string | quoted-string]]></programlisting>
                     <para>integral numbers must be represented as integers.</para>
                 </listitem>
             </itemizedlist>
-
+            
+            <para>When an EPUB CFI is used as a part of IRI <xref linkend="refRFC3987"/>, it must 
+                be escaped as per that specification. When extracting from an IRI, it must be unescaped
+                prior to parsing, sorting or comparing.</para>
+            
         </section>
     </chapter>
 
@@ -315,11 +331,6 @@ value:       string | quoted-string]]></programlisting>
                 <synopsis><![CDATA[<p id="para05">aaa<em>bbb</em>0123456789</p>]]></synopsis>
             </informalexample>
             
-            <note>
-                <para>This specification assumes that all documents are parsed into a W3C DOM tree,
-                    but any parsing method can be used.</para>
-            </note>
-
             <section xml:id="sec-path-child-ref">
                 <title>Step Reference to Child Node (<literal>/</literal>)</title>
                 <para>A step with a slash (<literal>/</literal>) followed by an integer refers to a
@@ -708,7 +719,7 @@ a a a b b b 0 1 2 3 4 5 6 7 8 9
                 might be written as follows:</para>
 
             <informalexample>
-                <synopsis><![CDATA[<a href="chapter01.xhtml#epubcfi(/4[body01]/10[para05]/2/1:3b)">location</a>]]></synopsis>
+                <synopsis><![CDATA[<a href="chapter01.xhtml#epubcfi(/4[body01]/10[para05]/2/1:3[;s=b])">location</a>]]></synopsis>
             </informalexample>
         </section>
 
