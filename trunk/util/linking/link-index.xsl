@@ -20,7 +20,7 @@
             <head>
                 <title>EPUB Linking Scheme Registry</title>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                <link type="text/css" rel="stylesheet" href="epub-spec.css"/>
+                <link type="text/css" rel="stylesheet" href="../css/epub-spec.css"/>
             </head>
             <body>
                 <h1>EPUB Linking Scheme Registry</h1>
