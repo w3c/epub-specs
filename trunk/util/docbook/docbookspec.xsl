@@ -1081,18 +1081,6 @@
     
     <!-- override, to avoid nested table layout -->
     <xsl:template match="d:productionset">
-        <p>
-            <xsl:text>EBNF productions (</xsl:text>
-            <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=26153">
-            <xsl:text>ISO/IEC 14977</xsl:text>
-            </a>
-            <xsl:text>)</xsl:text>
-            <xsl:if test="d:title">
-                <xsl:text> for </xsl:text>
-                <xsl:value-of select="d:title"/>
-            </xsl:if>
-            :
-        </p>
         <table width="100%" cellpadding="0" border="0">
             <xsl:if test="$ebnf.table.bgcolor != ''">
                 <xsl:attribute name="style"><xsl:text>background-color: </xsl:text>
@@ -1109,6 +1097,13 @@
                     <xsl:value-of select="d:title"/>
                 </xsl:if>
             </xsl:attribute>
+            <caption>            
+                <xsl:text>(EBNF productions </xsl:text>
+                <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=26153">
+                    <xsl:text>ISO/IEC 14977</xsl:text>
+                </a>
+                <xsl:text>)</xsl:text>
+            </caption>
             <xsl:apply-templates select="d:production|d:productionrecap"/>
         </table>
     </xsl:template>
