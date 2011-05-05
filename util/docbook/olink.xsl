@@ -149,6 +149,9 @@
             <xsl:when test="matches($targetdoc, 'publications')">
                 <xsl:sequence select="$doc-publications"/>
             </xsl:when>
+            <xsl:when test="matches($targetdoc, 'cfi')">
+                <xsl:sequence select="$doc-cfi"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $targetdoc in olink.xsl#fn:getDestDoc
                         (<xsl:value-of select="$targetdoc"/>)</xsl:message>
@@ -194,6 +197,7 @@
             <xsl:when test="matches($targetdoc, 'ocf')">refOCF30</xsl:when>
             <xsl:when test="matches($targetdoc, 'overview')">refEPUB3Overview</xsl:when>
             <xsl:when test="matches($targetdoc, 'publications')">refPublications3</xsl:when>
+            <xsl:when test="matches($targetdoc, 'cfi')">refEPUBCFI</xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $targetdoc in olink.xsl#fn:getBiblioRef
                         (<xsl:value-of select="$targetdoc"/>)</xsl:message>
