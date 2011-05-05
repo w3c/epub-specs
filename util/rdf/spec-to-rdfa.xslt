@@ -22,9 +22,6 @@ rdfs: http://www.w3.org/2000/01/rdf-schema#
 xsd: http://www.w3.org/2001/XMLSchema">
 			<head>
 				<xsl:apply-templates select="xhtm:html/xhtm:head/*"/>
-				<meta property="dcterms:creator" content="mgylling"/>
-				<meta property="dcterms:issued" content="{format-date(current-date(), '[Y,4]-[M,2]-[D,2]')}"/>
-				<meta property="dcterms:publisher" content="International Digital Publishing Forum (IDPF)"/>
 			</head>
 			<body>
 				<xsl:apply-templates select="xhtm:html/xhtm:body/@*|xhtm:html/xhtm:body/*"/>
