@@ -1929,13 +1929,32 @@
                 <para>The <code><xref role="codelink" linkend="elemdef-opf-package"/></code> element
                     may contain at most one <code>bindings</code> element. </para>
 
-                <para>When present, Reading Systems that support scripting must utilize the
-                        <code>bindings</code> element to handle <code>object</code> elements in
-                    XHTML Content Documents that reference MIME media types that are not natively
-                    supported. When encountering such references, a Reading System must instantiate
-                    the designated XHTML Content Document handler as if it had been referenced from
-                    the <code>object</code> element <code>data</code> attribute with the following
-                    URL parameters:</para>
+                <para>The <code>bindings</code> element provides a means for Authors to include more 
+                    sophisticated fallbacks than would otherwise be possible with the  <code>object</code> 
+                    element's intrinsic fallback mechanisms. When present, Reading Systems that support 
+                    scripting must utilize the <code>bindings</code> element to handle <xref linkend="refHTML5"/>
+                    <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-object-element">object</link></code> 
+                    elements that reference unsupported media types.</para>
+                
+                <para>Each of the <code>bindings</code> element's child 
+                    <code><link linkend="sec-mediaType-elem">mediaType</link></code> elements defines a 
+                    unique handler for one of the foreign media types referenced in the Publication's
+                    <xref linkend="gloss-content-document-epub-xhtml"/>s.</para>
+                
+                <para>When an unsupported media type is encountered during processing of a document, 
+                    the Reading System must look up the handler in the <code>bindings</code> element by checking the
+                    <code><link linkend="attrdef-mediaType-media-type">media-type</link></code> attribute of 
+                    each <code>mediaType</code> element for a match (and before attempting any other type of 
+                    <link linkend="sec-fallback-processing-flow">fallback processing</link>).
+                    If a match is found, the XHTML Content Document referenced in the element's 
+                    <code><link linkend="attrdef-mediaType-handler">handler</link></code> attribute must be 
+                    instantiated instead of the referenced resource. If no match is found, the Reading System
+                    should continue with normal fallback processing (i.e., check for an intrinsic fallback for the 
+                    <code>object</code>).</para>
+                
+                <para>The Reading System must instantiate the designated handler as if it had been referenced 
+                    from the <code>object</code> element's <code>data</code> attribute with the following 
+                    parameters:</para>
 
                 <variablelist>
                     <varlistentry>
@@ -1956,82 +1975,91 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>All <code>param</code> children of the <code>object</code> element must be
-                    similarly encoded as URL parameters using the <code>param</code>'s
+                <para>Any additional <code>param</code> children of the <code>object</code> element 
+                    must be similarly added as parameters using the <code>param</code>'s
                         <code>name</code> attribute as the new parameter name and its
                         <code>value</code> attribute as the new value.</para>
-
-                <note>
-                    <para>All reserved and non-ASCII characters in the generated query string values
-                        must be URL encoded.</para>
-                </note>
-
+                
+                <para>For example, the following <code>object</code> element containing a foreign 
+                    media type:</para>
+                
                 <informalexample>
-                    <para>The following example shows an example of an <code>object</code> element
-                        containing a non-native media type and the resulting query string after
-                        handling.</para>
-                    <synopsis>
-<![CDATA[
-<object data="horse.ogg" media-type="audio/ogg"/>
-    <param name="autoplay" value="false">
-</object>
-
-Resulting URI query string:
-                    
-src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
-]]>
-                    </synopsis>
+                    <synopsis><xi:include href="examples/publications/bindings-1.xml" parse="text"/></synopsis>
                 </informalexample>
-
+                
+                <para>would result in the following query string being sent to the handler XHTML Content
+                    Document after processing:</para>
+                
+                <informalexample><synopsis>src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false</synopsis></informalexample>
+                
+                <para>All reserved IRI characters in the generated query string must be 
+                    encoded and decoded as per <xref linkend="refRFC3987"/>.</para>
+                
+                <para>The content of the handler XHTML Content Document must be inserted into the
+                    DOM for the <code>object</code>.</para>
+                
+                <para>XHTML Content Documents included via <xref linkend="refHTML5"/> 
+                    <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-iframe-element">iframe</link></code>
+                    elements (i.e., that are in a <olink targetdoc="contentdocs" targetptr="sec-scripted-content-models" 
+                        type="epub-spec" epub:specref-exclude="true">container-constrained scripting context</olink>) 
+                    must not reference foreign media types that require <code>bindings</code> processing. Only 
+                    <xref linkend="gloss-spine"/>-level Content Documents may include <code>object</code> 
+                    elements that rely on this fallback method.</para>
+                
+                <bridgehead>Example</bridgehead>
+                
+                <para>The following partial example illustrates how bindings can be used to
+                    provide a slideshow.</para>
+                
+                <para>Consider a Publication with the following Package document:</para>
+                
                 <informalexample>
-                    <para>The following partial example illustrates how bindings can be used to
-                        provide a default implementation.</para>
-                    <synopsis>
-<![CDATA[
-<manifest>
-    <item id="pict1" href="images/Pict1.jpg" media-type="image/jpeg"/>
-    …
-    <item id="content" href="content.xhtml" media-type="application/xhtml+xml"/>
-    <item id="impl" href="impl.xhtml" media-type="application/xhtml+xml"/>
-    <item id="slideshow" href="slideshow.xml" media-type="application/x-demo-slideshow"/>
-</manifest>
-
-<bindings>
-    <mediaType media-type="application/x-demo-slideshow" handler="impl"/>
-</bindings>
-]]>                        
-<emphasis role="italic">in content.xhtml:</emphasis>
-<![CDATA[
-…
-<object data="slideshow.xml" type="application/x-demo-slideshow">
-    <!-- if scripting is not available, just show them inline -->
-    <img src="images/Pict1.jpg"/>
-    <img src="images/Pict2.jpg"/>
-    <img src="images/Pict3.jpg"/>
-    <img src="images/Pict4.jpg"/>
-</object>
-…
-]]>
-<emphasis role="italic">in slideshow.xml:</emphasis>
-<![CDATA[
-<slides>
-    <slide src="images/Pict1.jpg" dur="3"/>
-    <slide src="images/Pict2.jpg" dur="3"/>
-    <slide src="images/Pict3.jpg" dur="3"/>
-    <slide src="images/Pict4.jpg" dur="3"/>
-</slides>
-]]>
-                        </synopsis>
+                    <synopsis><xi:include href="examples/publications/bindings-2.xml" parse="text"/></synopsis>
                 </informalexample>
+                
+                <para>and the following content in the file <filename>content.xhtml</filename>:</para>
+                
+                <informalexample>
+                    <synopsis><xi:include href="examples/publications/bindings-3.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>and the following content in the file <filename>slideshow.xml</filename>:</para>
+                
+                <informalexample>
+                    <synopsis><xi:include href="examples/publications/bindings-4.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>Depending on the Reading System the User opens this Publication in, they will see
+                    one of the following renditions of the slideshow:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>If the Reading System supports the native slideshow format, it will render 
+                            a rotating set of images as specified in <filename>slideshow.xml</filename>.</para>
+                    </listitem>
+                    <listitem>
+                        <para>If the Reading System cannot support the slideshow media type but supports 
+                            scripting, it can check the <code>bindings</code> element in the Package document 
+                            for a scripted fallback. There it will find a reference to the <code>item</code> element 
+                            containing the handler document (<filename>impl.xhtml</filename>). The Reading System 
+                            can now load this document to render a JavaScripted equivalent of the slideshow 
+                            (source not shown).</para>
+                    </listitem>
+                    <listitem>
+                        <para>If the Reading System does not support the slideshow media type and also
+                            does not support scripting, it will use the fallback images specified in the <code>object</code>
+                            element to show a static set of all the images.</para>
+                    </listitem>
+                </itemizedlist>
+                
             </section>
 
             <section xml:id="sec-mediaType-elem" xreflabel="mediaType">
                 <title>The <code>mediaType</code> Element</title>
 
-                <para>The <code>mediaType</code> element associates a non-native media type with a
-                    handler (the handler provides a default script-based implementation for items of
-                    the given media type when they are referenced from <code>object</code> elements
-                    in a <xref linkend="gloss-content-document-epub-xhtml"/>).</para>
+                <para>The <code>mediaType</code> element associates a 
+                    <xref linkend="gloss-publication-resource-foreign"/> media type with a handler 
+                    <xref linkend="gloss-content-document-epub-xhtml"/>.</para>
 
                 <variablelist xreflabel="mediaType" role="elem-synopsis" xml:id="elemdef-mediaType">
                     <varlistentry>
@@ -2083,7 +2111,7 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                 </variablelist>
 
                 <para>Each child <code>mediaType</code> of a <code>bindings</code> element must
-                    define a unique content type in its <code>media-type</code> attribute. The media
+                    define a unique content type in its <code>media-type</code> attribute, and the media
                     type specified must not be a Core Media Type.</para>
 
                 <para>The required <code>handler</code> attribute must reference the ID <xref
@@ -2092,7 +2120,14 @@ src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false
                             role="codelink" linkend="elemdef-opf-manifest">manifest</link></code> of
                     the default implementation for this media type. The referenced <code>item</code>
                     must be an XHTML Content Document.</para>
-
+                
+                <para>All <xref linkend="gloss-content-document-epub-xhtml"/>s designated as
+                    handlers must have the <code><link linkend="scripted">scripted</link></code>
+                    property set in their <xref linkend="gloss-manifest"/> 
+                    <code><link linkend="sec-item-elem">item</link></code>'s
+                    <code><link linkend="attrdef-item-properties">properties</link></code> 
+                    attribute.</para>
+                
             </section>
         </section>
     </chapter>
