@@ -150,14 +150,22 @@
                         <a href="#epubcfi.ebnf.number">number</a>
                         )
                     ;</td></tr><tr><td align="right" valign="top" id="epubcfi.ebnf.number"><a href="#epubcfi.ebnf.number">number</a></td><td valign="top" align="center"><code>=</code></td><td valign="top">
+                        (
                         <a href="#epubcfi.ebnf.digit-non-zero">digit-non-zero</a>
                         , { 
                         <a href="#epubcfi.ebnf.digit">digit</a>
-                        } , [ "." , { 
+                        }
+                        , [ "." , { 
                         <a href="#epubcfi.ebnf.digit">digit</a>
                         } ,
                         <a href="#epubcfi.ebnf.digit-non-zero">digit-non-zero</a>
-                        ]
+                        ] ) | (
+                        <a href="#epubcfi.ebnf.zero">zero</a>
+                        , "." , { 
+                        <a href="#epubcfi.ebnf.digit">digit</a>
+                        } , 
+                        <a href="#epubcfi.ebnf.digit-non-zero">digit-non-zero</a>
+                        )
                     ;</td></tr><tr><td align="right" valign="top" id="epubcfi.ebnf.integer"><a href="#epubcfi.ebnf.integer">integer</a></td><td valign="top" align="center"><code>=</code></td><td valign="top">
                         <a href="#epubcfi.ebnf.zero">zero</a>
                         | (
@@ -233,7 +241,7 @@
                 a parenthesized path or range. A path is built up as a sequence of structural steps
                 to reference a location. A range is a path followed by two local (or relative) paths
                 that identify the start and end of the range.</p><p class="para">Steps can either be navigational or terminating. Navigational steps may be
-                repeated as necessary (to count elements, to process children, or to follow
+                repeated as necessary (e.g., to count elements, to process children or to follow
                 references). There may be only one terminating step, which, if present, must be the
                 last step in the sequence. </p><p class="para">Substrings in brackets are extensible assertions that improve the robustness of
                 traversing paths and migrating them from one revision of the document to another.
@@ -241,9 +249,9 @@
                 document, which makes it possible to recover intended location even after some
                 modifications are made to the Publication.</p><p class="para">The <code class="literal">value</code> definition in the syntax above can either be a quoted
                 string (delimited by quote characters (<code class="literal">"</code>)) or a sequence of
-                characters. The following characters can only appear in a quoted string, as they
-                would otherwise interfere with parsing:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">quote (<code class="literal">"</code>)</p></li><li class="listitem"><p class="para">brackets (<code class="literal">[</code>,<code class="literal">]</code>)</p></li><li class="listitem"><p class="para">parentheses (<code class="literal">(</code>,<code class="literal">)</code>)</p></li><li class="listitem"><p class="para">comma (<code class="literal">,</code>)</p></li><li class="listitem"><p class="para">semicolon (<code class="literal">;</code>)</p></li></ul></div><p class="para">Quote and backslash characters (<code class="literal">\</code>) contained within a quoted
-            string must be escaped by adding a single backslash character before them.</p><div class="informalexample"><p class="para">Example of an EPUB CFI containing a quoted string value:</p><pre class="synopsis"><span class="todo">TODO</span></pre></div><p class="para">The following rules apply to the use of numbers and integers within the path or
+                characters. The following characters must only appear in a quoted string, however,
+                as they would otherwise interfere with parsing:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">quote (<code class="literal">"</code>)</p></li><li class="listitem"><p class="para">brackets (<code class="literal">[</code>,<code class="literal">]</code>)</p></li><li class="listitem"><p class="para">parentheses (<code class="literal">(</code>,<code class="literal">)</code>)</p></li><li class="listitem"><p class="para">comma (<code class="literal">,</code>)</p></li><li class="listitem"><p class="para">semicolon (<code class="literal">;</code>)</p></li></ul></div><p class="para">Quote and backslash characters (<code class="literal">\</code>) contained within a quoted
+            string must be escaped by adding a single backslash character before them.</p><div class="informalexample"><p class="para">Example of an EPUB CFI that points a location after the text <code class="literal">"c:\" drive</code>.</p><pre class="synopsis">#epubcfi(/6/7[chap05ref]!/4[body01]/10/2/1:3["\"c:\\\" drive"])</pre></div><p class="para">The following rules apply to the use of numbers and integers within the path or
                 range:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p class="para">leading zeros are not allowed for numbers or integers (to ensure
                         uniqueness);</p></li><li class="listitem"><p class="para">trailing zeros are not allowed in the fractional part of a number;</p></li><li class="listitem"><p class="para">zero must be represented as the integer <code class="literal">0</code>;</p></li><li class="listitem"><p class="para">numbers in the range <code class="literal">1 &gt; N &gt; 0</code> must have a leading
                             <code class="literal">0.</code>;</p></li><li class="listitem"><p class="para">integral numbers must be represented as integers.</p></li></ul></div><p class="para">When an EPUB CFI is used as a part of IRI <a class="biblioref" href="#refRFC3987" title="Internationalized Resource Identifiers (IRIs) (RFC 3987)">[<abbr class="abbrev">RFC3987</abbr>]</a>, it must 
@@ -499,7 +507,7 @@ a a a b b b 0 1 2 3 4 5 6 7 8 9
                     <a class="xref" href="#sec-extensions" title="4 Extending EPUB CFIs"><em>Extending EPUB CFIs</em></a> for more information on how to develop such functionality.</p></div></div></div><div class="chapter" title="4 Extending EPUB CFIs" id="sec-extensions"><h2 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#sec-extensions">›</a> </span>4 Extending EPUB CFIs</h2><p class="para">The provision for extensions (CSV parameter lists, prefixed by a parameter name, 
             and separated by semicolons) allow Reading Systems to apply new or experimental heuristics 
             to assist, for example, in migrating EPUB CFI fragments to updated documents.</p><p class="para">It is recommended that any vendor-specific parameter names start with
-            <code class="literal">vnd.</code> followed by the vendor name.</p><div class="informalexample"><p class="para">An EPUB CFI with a custom vendor extension.</p><pre class="synopsis"><span class="todo">todo</span></pre></div><p class="para">Implementations must ignore all parameters that they do not understand or 
+            <code class="literal">vnd.</code> followed by the vendor name.</p><p class="para">Implementations must ignore all parameters that they do not understand or 
             cannot parse.</p></div><div class="bibliography" title="References" id="references"><div class="titlepage"><div><div><h2 class="title"><span class="link-marker"><a class="hidden-reveal" title="Link here" href="#references">›</a> </span>References</h2></div></div></div><div class="bibliodiv" title="Normative References"><h3 class="title">Normative References</h3><div class="biblioentry" title="EPUB Content Documents 3.0" id="refContentDocs3"><p>[<abbr class="abbrev">ContentDocs30</abbr>] <span class="title"><em><a class="link" href="epub30-contentdocs.html">EPUB Content Documents
                 3.0</a></em>. </span></p></div><div class="biblioentry" title="EPUB Canonical Fragment Identifier (epubcfi) Specification" id="refEPUBCFI"><p>[<abbr class="abbrev">EPUBCFI</abbr>] <span class="title"><em><a class="link" href="http://www.idpf.org/epub/linking/cfi/epub-cfi.html">EPUB Canonical 
                 Fragment Identifier (epubcfi) Specification</a></em>. </span></p></div><div class="biblioentry" title="HTML5: A vocabulary and associated APIs for HTML and XHTML" id="refHTML5"><p>[<abbr class="abbrev">HTML5</abbr>] <span class="title"><em><a class="link" href="http://www.w3.org/TR/html5/">HTML5: A vocabulary and associated
