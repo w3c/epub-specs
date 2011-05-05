@@ -10,17 +10,17 @@
     exclude-result-prefixes="doc stbl xtbl lxslt ptbl d saxon db exsl xlink">
     
     <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl"/>
+    <xsl:output method="xml" encoding="UTF-8" indent="no" omit-xml-declaration="no"/>
     
+    <!-- default is "::=" -->
     <xsl:param name="ebnf.assignment">
-        <code>=</code> <!-- default is "::=" -->
+        <code>=</code> 
     </xsl:param>
     <xsl:param name="ebnf.statement.terminator">;</xsl:param>
     <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
     <xsl:param name="ebnf.table.border" select="0"/>
     
     <xsl:param name="user.print.css"/>
-    
-    <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="no"/>
 
     <!-- ==================================================================== -->
     <!-- toc settings                                                         -->
@@ -1093,9 +1093,9 @@
             </xsl:if>
             :
         </p>
-        <table border="0" width="99%" cellpadding="0">
+        <table width="100%" cellpadding="0" border="0">
             <xsl:if test="$ebnf.table.bgcolor != ''">
-                <xsl:attribute name="bgcolor">
+                <xsl:attribute name="style"><xsl:text>background-color: </xsl:text>
                     <xsl:value-of select="$ebnf.table.bgcolor"/>
                 </xsl:attribute>
             </xsl:if>
@@ -1113,15 +1113,16 @@
         </table>
     </xsl:template>
     
+        <!-- td align="{$direction.align.start}" valign="top" width="3%">
+            <xsl:text>[</xsl:text>
+            <xsl:number count="d:production" level="any"/>
+            <xsl:text>]</xsl:text>
+            </td -->
+        
     <xsl:template match="d:production">
         <xsl:param name="recap" select="false()"/>
         <tr>
-            <!-- td align="{$direction.align.start}" valign="top" width="3%">
-                <xsl:text>[</xsl:text>
-                <xsl:number count="d:production" level="any"/>
-                <xsl:text>]</xsl:text>
-            </td -->
-            <td align="{$direction.align.end}" valign="top" width="10%">
+            <td align="{$direction.align.end}" valign="top">
                 <xsl:choose>
                     <xsl:when test="$recap">
                         <a>
@@ -1139,27 +1140,27 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </td>
-            <td valign="top" width="5%" align="center">
+            <td valign="top" align="center">
                 <xsl:copy-of select="$ebnf.assignment"/>
             </td>
-            <td valign="top" width="85%">
+            <td valign="top">
                 <xsl:apply-templates select="d:rhs"/>
                 <xsl:copy-of select="$ebnf.statement.terminator"/>
             </td>
-            <!-- td align="{$direction.align.start}" valign="top" width="30%">
-                <xsl:choose>
-                    <xsl:when test="d:rhs/d:lineannotation|d:constraint">
-                        <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
-                        <xsl:apply-templates select="d:constraint"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>&#160;</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </td -->
+            
         </tr>
     </xsl:template>
-    
+        <!-- td align="{$direction.align.start}" valign="top">
+            <xsl:choose>
+            <xsl:when test="d:rhs/d:lineannotation|d:constraint">
+            <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
+            <xsl:apply-templates select="d:constraint"/>
+            </xsl:when>
+            <xsl:otherwise>
+            <xsl:text>&#160;</xsl:text>
+            </xsl:otherwise>
+            </xsl:choose>
+            </td -->
     <xsl:template match="d:lhs">
         <a>
             <xsl:attribute name="href">
