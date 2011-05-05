@@ -192,7 +192,375 @@
         <section xml:id="sec-epubcfi-syntax">
             <title>Syntax</title>
 
-            <programlisting><![CDATA[
+            <productionset><title>The EPUB Canonical Fragment Identifier (CFI) Syntax</title>
+                
+                <production xml:id="epubcfi.ebnf.fragment">
+                    <lhs>fragment</lhs>
+                    <rhs>
+                        "epubcfi(" , (
+                        <nonterminal def="#epubcfi.ebnf.path">path</nonterminal>
+                        |
+                        <nonterminal def="#epubcfi.ebnf.range">range</nonterminal>
+                        ) , ")"
+                        
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.path">
+                    <lhs>path</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.step">step</nonterminal>
+                        ,
+                        <nonterminal def="#epubcfi.ebnf.local_path">local_path</nonterminal>
+                        
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.range">
+                    <lhs>range</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.path">path</nonterminal>
+                        ,
+                        ","
+                        ,
+                        <nonterminal def="#epubcfi.ebnf.local_path">local_path</nonterminal>
+                        ,
+                        ","
+                        ,
+                        <nonterminal def="#epubcfi.ebnf.local_path">local_path</nonterminal>
+                        
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.local_path">
+                    <lhs>local_path</lhs>
+                    <rhs>
+                        {
+                        <nonterminal def="#epubcfi.ebnf.step">step</nonterminal>
+                        | "!" } , [ 
+                        <nonterminal def="#epubcfi.ebnf.termstep">termstep</nonterminal>
+                        ]
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.step">
+                    <lhs>step</lhs>
+                    <rhs>
+                        "/" ,
+                        <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal>
+                        , [ "[" , 
+                        <nonterminal def="#epubcfi.ebnf.assertion">assertion</nonterminal>
+                        , "]" ]
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.termstep">
+                    <lhs>termstep</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.terminus">terminus</nonterminal>
+                        ,
+                        [ "[" , 
+                        <nonterminal def="#epubcfi.ebnf.assertion">assertion</nonterminal>
+                        , "]" ] 
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.terminus">
+                    <lhs>terminus</lhs>
+                    <rhs>
+                        (":" ,
+                        <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal>
+                        ) | ("@" , 
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        , ":" , 
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        ) | ("~" ,
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        ) | ("~" ,
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        , "@" ,
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        , ":" , 
+                        <nonterminal def="#epubcfi.ebnf.number">number</nonterminal>
+                        )
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.number">
+                    <lhs>number</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal>
+                        , { 
+                        <nonterminal def="#epubcfi.ebnf.digit">digit</nonterminal>
+                        } , [ "." , { 
+                        <nonterminal def="#epubcfi.ebnf.digit">digit</nonterminal>
+                        } ,
+                        <nonterminal def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal>
+                        ]
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.integer">
+                    <lhs>integer</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.zero">zero</nonterminal>
+                        | (
+                        <nonterminal def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal>
+                        , { 
+                        <nonterminal def="#epubcfi.ebnf.digit">digit</nonterminal>
+                        })
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.assertion">
+                    <lhs>assertion</lhs>
+                    <rhs>
+                        [
+                        <nonterminal def="#epubcfi.ebnf.csv">csv</nonterminal>
+                        ] , {
+                        <nonterminal def="#epubcfi.ebnf.parameter">parameter</nonterminal>
+                        }
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.parameter">
+                    <lhs>parameter</lhs>
+                    <rhs>
+                        ";" ,
+                        <nonterminal def="#epubcfi.ebnf.string-no-special-chars">string-no-special-chars</nonterminal>
+                        , "=" ,
+                        <nonterminal def="#epubcfi.ebnf.csv">csv</nonterminal>
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.csv">
+                    <lhs>csv</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.value">value</nonterminal>
+                        , { "," ,
+                        <nonterminal def="#epubcfi.ebnf.value">value</nonterminal>
+                        }
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.value">
+                    <lhs>value</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.string-no-special-chars">string-no-special-chars</nonterminal>
+                        | ('"' ,
+                        <nonterminal def="#epubcfi.ebnf.quoted-string-no-special-chars">quoted-string-no-special-chars</nonterminal>
+                        , '"')
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.string">
+                    <lhs>string</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.character">character</nonterminal>
+                        ,
+                        { 
+                        <nonterminal def="#epubcfi.ebnf.character">character</nonterminal>
+                        }
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.quoted-string-no-special-chars">
+                    <lhs>quoted-string-no-special-chars</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.string">string</nonterminal>
+                        |
+                        ! EXCLUDE !
+                        , (
+                        <nonterminal def="#epubcfi.ebnf.square-brackets">square-brackets</nonterminal>
+                        | 
+                        <nonterminal def="#epubcfi.ebnf.parenthesis">parenthesis</nonterminal>
+                        | 
+                        <nonterminal def="#epubcfi.ebnf.comma">comma</nonterminal>
+                        | 
+                        <nonterminal def="#epubcfi.ebnf.semicolumn">semicolumn</nonterminal>
+                        )
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.string-no-special-chars">
+                    <lhs>string-no-special-chars</lhs>
+                    <rhs>
+                        <nonterminal def="#epubcfi.ebnf.quoted-string-no-special-chars">quoted-string-no-special-chars</nonterminal>
+                        |
+                        ! EXCLUDE !
+                        , (
+                        <nonterminal def="#epubcfi.ebnf.double-quote">double-quote</nonterminal>
+                        | 
+                        <nonterminal def="#epubcfi.ebnf.backslash">backslash</nonterminal>
+                        )
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.digit">
+                    <lhs>digit</lhs>
+                    <rhs>
+                        "0" | "1" | "..." | "9"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.digit-non-zero">
+                    <lhs>digit-non-zero</lhs>
+                    <rhs>
+                        "1" | "2" | "..." | "9"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.zero">
+                    <lhs>zero</lhs>
+                    <rhs>
+                        "0"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.backslash">
+                    <lhs>backslash</lhs>
+                    <rhs>
+                        "\"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.double-quote">
+                    <lhs>double-quote</lhs>
+                    <rhs>
+                        '"'
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.square-brackets">
+                    <lhs>square-brackets</lhs>
+                    <rhs>
+                        "[" | "]"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.parenthesis">
+                    <lhs>parenthesis</lhs>
+                    <rhs>
+                        "(" | ")"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.comma">
+                    <lhs>comma</lhs>
+                    <rhs>
+                        ","
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.semicolumn">
+                    <lhs>semicolumn</lhs>
+                    <rhs>
+                        ";"
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                
+                <production xml:id="epubcfi.ebnf.character">
+                    <lhs>character</lhs>
+                    <rhs>
+                        ? UNICODE-CHAR ?
+                        <!-- lineannotation>Comment.</lineannotation -->
+                    </rhs>
+                    <!-- constraint linkend="div0"/ -->
+                </production>
+                <!-- 
+                    ascii-string = ascii-char { ascii-char } .
+                    ascii-char     = lowercase-char | uppercase-char | digit .
+                    lowercase-char = "a" | "b" | "..." | "z" .
+                    uppercase-char = "A" | "B" | "..." | "Z" .
+                    -->
+                
+            </productionset>
+            
+            <!-- constraintdef xml:id="div0">
+                <title>Division by Zero</title>
+                <para>Division by zero is an error.</para>
+            </constraintdef -->
+            
+            
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="http://data.daisy.org/projects/tobi/ebnf/ebnf.php?syntax=%22EBNF%20production%20rules%20/%20syntax%20diagram%20for%20EPUB%20CFI%20(Canonical%20Fragment%20Identifiers)%22%20{fragment%20=%20%22epubcfi(%22%20,%20(%20path%20|%20range%20)%20,%20%22)%22%20;path%20=%20step%20,%20local_path%20;range%20=%20path%20,%20%22,%22%20,%20local_path%20,%20%22,%22%20,%20local_path%20;local_path%20=%20{%20step%20|%20%22!%22%20}%20,%20[%20termstep%20]%20;step%20=%20%22/%22%20,%20integer%20,%20[%20%22[%22%20,%20assertion%20,%20%22]%22%20]%20;termstep%20=%20terminus%20,%20[%20%22[%22%20,%20assertion%20,%20%22]%22%20]%20;terminus%20=%20(%22:%22%20,%20integer%20)%20|%20(%22@%22%20,%20number%20,%20%22:%22%20,%20number%20)%20|%20(%22~%22%20,%20number%20)%20|%20(%22~%22%20,%20number%20,%20%22@%22%20,%20number%20,%20%22:%22%20,%20number%20)%20;number%20=%20digit-non-zero%20,%20{%20digit%20}%20,%20[%20%22.%22%20,%20{%20digit%20}%20,%20digit-non-zero%20]%20;integer%20=%20zero%20|%20(%20digit-non-zero%20,%20{%20digit%20})%20;assertion%20=%20[%20csv%20]%20,%20{%20parameter%20}%20;parameter%20=%20%22;%22%20,%20string-no-special-chars%20,%20%22=%22%20,%20csv%20;csv%20=%20value%20,%20{%20%22,%22%20,%20value%20}%20;value%20=%20string-no-special-chars%20|%20('%22'%20,%20quoted-string-no-special-chars%20,%20'%22')%20;string%20=%20character%20,%20{%20character%20}%20;quoted-string-no-special-chars%20=%20string%20|%20!%20EXCLUDE%20!%20,%20(%20square-brackets%20|%20parenthesis%20|%20comma%20|%20semicolumn%20)%20;string-no-special-chars%20=%20quoted-string-no-special-chars%20|%20!%20EXCLUDE%20!%20,%20(%20double-quote%20|%20backslash%20)%20;digit%20=%20%220%22%20|%20%221%22%20|%20%22...%22%20|%20%229%22%20;digit-non-zero%20=%20%221%22%20|%20%222%22%20|%20%22...%22%20|%20%229%22%20;zero%20=%20%220%22%20;backslash%20=%20%22\%22%20;double-quote%20=%20'%22'%20;square-brackets%20=%20%22[%22%20|%20%22]%22%20;parenthesis%20=%20%22(%22%20|%20%22)%22%20;comma%20=%20%22,%22%20;semicolumn%20=%20%22;%22%20;character%20=%20?%20UNICODE-CHAR%20?%20;}" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase>EBNF production rules / syntax diagram for EPUB CFI (Canonical Fragment Identifiers)</phrase>
+                </textobject>
+                <caption>
+                <para>
+                    EBNF production rules / syntax diagram for EPUB CFI (Canonical Fragment Identifiers)
+                </para>
+                </caption>
+                </mediaobject>
+            
+            <!-- mediaobject>
+                <imageobject>
+                    <imagedata fileref="./epub-cfi-ebnf-syntax-diagram.png" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase>The EPUB Canonical Fragment Identifier (CFI) Syntax Diagram</phrase>
+                </textobject>
+                <caption>
+                    <para>
+                        The EPUB Canonical Fragment Identifier (CFI) Syntax Diagram
+                    </para>
+                </caption>
+            </mediaobject -->
+
+            <!-- programlisting><![CDATA[
 fragment      = "epubcfi(" , ( path | range ) , ")" ;
 
 path          = step , local_path ;
@@ -232,7 +600,7 @@ digit         = "0".."9" ;
 
 char          = ? unicode characters ? ;
 
-xml_id        = ? xml identifier ? ;]]></programlisting>
+xml_id        = ? xml identifier ? ;]]></programlisting -->
 
             <para>A Canonical Fragment Identifier (CFI) consists of an initial sequence
                     <literal>epubcfi</literal> that identifies this particular reference method, and

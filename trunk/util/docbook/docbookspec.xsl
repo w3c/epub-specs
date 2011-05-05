@@ -10,7 +10,14 @@
     exclude-result-prefixes="doc stbl xtbl lxslt ptbl d saxon db exsl xlink">
     
     <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl"/>
-
+    
+    <xsl:param name="ebnf.assignment">
+        <code>=</code> <!-- default is "::=" -->
+    </xsl:param>
+    <xsl:param name="ebnf.statement.terminator">;</xsl:param>
+    <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
+    <xsl:param name="ebnf.table.border" select="0"/>
+    
     <xsl:param name="user.print.css"/>
     
     <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no" indent="no"/>
@@ -170,7 +177,8 @@
 
         <!-- for cals tables, there's no way to reasonably override table.xsl#d:entry|d:entrytbl -->
         <xsl:if
-            test="(local-name($node) = 'entry' or local-name($node) = 'tgroup') and $node/@xml:id">
+            test="(local-name($node) = 'production' or local-name($node) = 'constraintdef' or
+                    local-name($node) = 'entry' or local-name($node) = 'tgroup') and $node/@xml:id">
             <xsl:attribute name="id">
                 <xsl:value-of select="$id"/>
             </xsl:attribute>
@@ -1071,4 +1079,94 @@
         </ul>    
     </xsl:template>
     
+    <!-- override, to avoid nested table layout -->
+    <xsl:template match="d:productionset">
+        <p>
+            <xsl:text>EBNF productions (</xsl:text>
+            <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=26153">
+            <xsl:text>ISO/IEC 14977</xsl:text>
+            </a>
+            <xsl:text>)</xsl:text>
+            <xsl:if test="d:title">
+                <xsl:text> for </xsl:text>
+                <xsl:value-of select="d:title"/>
+            </xsl:if>
+            :
+        </p>
+        <table border="0" width="99%" cellpadding="0">
+            <xsl:if test="$ebnf.table.bgcolor != ''">
+                <xsl:attribute name="bgcolor">
+                    <xsl:value-of select="$ebnf.table.bgcolor"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:attribute name="class">
+                <xsl:value-of select="local-name(.)"/>
+            </xsl:attribute>
+            <xsl:attribute name="summary">
+                <xsl:text>EBNF productions</xsl:text>
+                <xsl:if test="d:title">
+                    <xsl:text> for </xsl:text>
+                    <xsl:value-of select="d:title"/>
+                </xsl:if>
+            </xsl:attribute>
+            <xsl:apply-templates select="d:production|d:productionrecap"/>
+        </table>
+    </xsl:template>
+    
+    <xsl:template match="d:production">
+        <xsl:param name="recap" select="false()"/>
+        <tr>
+            <!-- td align="{$direction.align.start}" valign="top" width="3%">
+                <xsl:text>[</xsl:text>
+                <xsl:number count="d:production" level="any"/>
+                <xsl:text>]</xsl:text>
+            </td -->
+            <td align="{$direction.align.end}" valign="top" width="10%">
+                <xsl:choose>
+                    <xsl:when test="$recap">
+                        <a>
+                            <xsl:attribute name="href">
+                                <xsl:call-template name="href.target">
+                                    <xsl:with-param name="object" select="."/>
+                                </xsl:call-template>
+                            </xsl:attribute>
+                            <xsl:apply-templates select="d:lhs"/>
+                        </a>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:call-template name="anchor"/>
+                        <xsl:apply-templates select="d:lhs"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </td>
+            <td valign="top" width="5%" align="center">
+                <xsl:copy-of select="$ebnf.assignment"/>
+            </td>
+            <td valign="top" width="85%">
+                <xsl:apply-templates select="d:rhs"/>
+                <xsl:copy-of select="$ebnf.statement.terminator"/>
+            </td>
+            <!-- td align="{$direction.align.start}" valign="top" width="30%">
+                <xsl:choose>
+                    <xsl:when test="d:rhs/d:lineannotation|d:constraint">
+                        <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
+                        <xsl:apply-templates select="d:constraint"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>&#160;</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </td -->
+        </tr>
+    </xsl:template>
+    
+    <xsl:template match="d:lhs">
+        <a>
+            <xsl:attribute name="href">
+                <xsl:text>#</xsl:text>
+                <xsl:value-of select="../@xml:id"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </a>
+    </xsl:template>
 </xsl:stylesheet>
