@@ -99,6 +99,15 @@
                 </xsl:for-each>
             </xsl:element>
         </xsl:if>
+        
+        <!-- diff -->
+        
+        <xsl:if test="$topinfo/db:releaseinfo[@role='diff']">
+            <xsl:element name="p">
+                <xsl:attribute name="class">diff</xsl:attribute>
+                <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='diff']/node()"/>
+            </xsl:element>
+        </xsl:if>
 
         <!-- copyright -->
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
