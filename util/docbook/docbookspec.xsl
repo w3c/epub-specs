@@ -8,18 +8,18 @@
     xmlns:stbl="http://nwalsh.com/xslt/ext/com.nwalsh.saxon.Table"
     xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="doc stbl xtbl lxslt ptbl d saxon db exsl xlink">
-    
+
     <xsl:import href="docbook-xsl-ns-1.76.1/xhtml-1_1/docbook.xsl"/>
     <xsl:output method="xml" encoding="UTF-8" indent="no" omit-xml-declaration="no"/>
-    
+
     <!-- default is "::=" -->
     <xsl:param name="ebnf.assignment">
-        <code>=</code> 
+        <code>=</code>
     </xsl:param>
     <xsl:param name="ebnf.statement.terminator">;</xsl:param>
     <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
     <xsl:param name="ebnf.table.border" select="0"/>
-    
+
     <xsl:param name="user.print.css"/>
 
     <!-- ==================================================================== -->
@@ -114,7 +114,7 @@
                 <xsl:with-param name="node"
                     select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
             </xsl:call-template>
-        </xsl:if>      
+        </xsl:if>
         <!--
         <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
             <xsl:call-template name="render-authorgroup">
@@ -443,7 +443,9 @@
         </xsl:element>
         <xsl:element name="link">
             <xsl:attribute name="rel">stylesheet</xsl:attribute>
-            <xsl:attribute name="href"><xsl:value-of select="$user.print.css"/></xsl:attribute>
+            <xsl:attribute name="href">
+                <xsl:value-of select="$user.print.css"/>
+            </xsl:attribute>
             <xsl:attribute name="type">text/css</xsl:attribute>
             <xsl:attribute name="media">print</xsl:attribute>
         </xsl:element>
@@ -1035,55 +1037,46 @@
 
     <!-- ==================================================================== -->
     <!-- acknowledgements -->
-    <xsl:template match="d:para[@role='personlist']">
-        <div>
-            <xsl:apply-templates select="." mode="common.html.attributes"/>
-            <xsl:for-each select="./d:person">
-                <span>
-                    <xsl:apply-templates select="." mode="common.html.attributes"/>
-                    <span class="name">
-                        <xsl:call-template name="person.name"/>                                                                       
-                        <xsl:if test="not(current()/d:affiliation) and not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
-                    </span><xsl:text> </xsl:text>   
-                    <xsl:if test="current()/d:affiliation">
-                        <xsl:apply-templates select="d:affiliation"/>
-                        <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
-                    </xsl:if>                        
-                </span>                
-            </xsl:for-each>
-        </div>
-    </xsl:template>
-    
-    <xsl:template match="d:affiliation">
-        <span>
-            <xsl:apply-templates select="." mode="common.html.attributes"/>
-            <xsl:text>(</xsl:text>
-            <xsl:apply-templates/>
-            <xsl:text>)</xsl:text>
-        </span>
-    </xsl:template>
-        
-    <xsl:template match="d:itemizedlist[@role='leads']">
+    <xsl:template match="d:itemizedlist[@role='personlist']">
         <ul>
             <xsl:apply-templates select="." mode="common.html.attributes"/>
             <xsl:for-each select="./d:listitem">
-                <li>
-                    <xsl:apply-templates select="." mode="common.html.attributes"/>
-                    <xsl:apply-templates select=".//d:personname"/>       
-                    <span class="orgname">
-                        (<xsl:value-of select=".//d:orgname"/>)
+                <li class="person">
+                    <span class="name">
+                        <span class="surname">
+                            <xsl:value-of select="current()//d:surname"/>
+                        </span>
+                        <xsl:text>, </xsl:text>
+                        <span class="givenname">
+                            <xsl:value-of select="current()//d:firstname"/>
+                        </span>
                     </span>
-                    <xsl:apply-templates select=".//d:jobtitle"/>
+                    <xsl:if test="current()//d:affiliation">
+                        <xsl:text> </xsl:text>
+                        <span class="affiliation">(<xsl:value-of select="current()//d:affiliation"
+                            />)</span>
+                        <xsl:text> </xsl:text>
+                    </xsl:if>
+                    <xsl:if test="current()//d:jobtitle">
+                        <xsl:text> </xsl:text>
+                        <span class="wg-role">
+                            <xsl:value-of select="current()//d:jobtitle"/>
+                        </span>
+                    </xsl:if>
                 </li>
             </xsl:for-each>
-        </ul>    
+        </ul>
     </xsl:template>
-    
+
+    <!-- ==================================================================== -->
+    <!-- ebnf -->
+
     <!-- override, to avoid nested table layout -->
     <xsl:template match="d:productionset">
         <table width="100%" cellpadding="0" border="0">
             <xsl:if test="$ebnf.table.bgcolor != ''">
-                <xsl:attribute name="style"><xsl:text>background-color: </xsl:text>
+                <xsl:attribute name="style">
+                    <xsl:text>background-color: </xsl:text>
                     <xsl:value-of select="$ebnf.table.bgcolor"/>
                 </xsl:attribute>
             </xsl:if>
@@ -1097,9 +1090,10 @@
                     <xsl:value-of select="d:title"/>
                 </xsl:if>
             </xsl:attribute>
-            <caption>            
+            <caption>
                 <xsl:text>(EBNF productions </xsl:text>
-                <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=26153">
+                <a
+                    href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=26153">
                     <xsl:text>ISO/IEC 14977</xsl:text>
                 </a>
                 <xsl:text>)</xsl:text>
@@ -1107,13 +1101,13 @@
             <xsl:apply-templates select="d:production|d:productionrecap"/>
         </table>
     </xsl:template>
-    
-        <!-- td align="{$direction.align.start}" valign="top" width="3%">
+
+    <!-- td align="{$direction.align.start}" valign="top" width="3%">
             <xsl:text>[</xsl:text>
             <xsl:number count="d:production" level="any"/>
             <xsl:text>]</xsl:text>
             </td -->
-        
+
     <xsl:template match="d:production">
         <xsl:param name="recap" select="false()"/>
         <tr>
@@ -1142,10 +1136,10 @@
                 <xsl:apply-templates select="d:rhs"/>
                 <xsl:copy-of select="$ebnf.statement.terminator"/>
             </td>
-            
+
         </tr>
     </xsl:template>
-        <!-- td align="{$direction.align.start}" valign="top">
+    <!-- td align="{$direction.align.start}" valign="top">
             <xsl:choose>
             <xsl:when test="d:rhs/d:lineannotation|d:constraint">
             <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
