@@ -66,6 +66,8 @@
 	<property name="xslt.cleanup" value="${dir.util}/xhtml/cleanup.xsl"/>
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css"/>
 	<property name="css.print" value="${dir.src.spec.css}/epub-print.css"/>
+	
+	<property name="www.base.path" value="http://www.idpf.org/epub/"/>
 
 	<property name="spec.filename.prefix" value="epub30"/>
 
@@ -310,14 +312,16 @@
 		</xslt>
 
 		<move file="${dir.build.spec}/rdfa-epub30-mediaoverlays.html"
-			tofile="${dir.build.spec}/epub30-mediaoverlays.html" overwrite="yes"/>
-
-		<!-- create the vocab redirects -->
-		<build-htaccess dest-dir="${dir.build.vocab.package}"
-			index-name="http://www.idpf.org/epub/30/spec/${spec.filename.prefix}-publications.html"/>
-		<build-htaccess dest-dir="${dir.build.vocab.overlays}"
-			index-name="http://www.idpf.org/epub/30/spec/${spec.filename.prefix}-overlays.html"/>
-
+			tofile="${dir.build.spec}/${spec.filename.prefix}-mediaoverlays.html" overwrite="yes"/>
+		<!-- note: need a server Alias for these two; "http://www.idpf.org/epub/vocab/package/#switch" 
+			should return 
+			"http://www.idpf.org/epub/30/spec/epub30-mediaoverlays.html#switch" 
+			and so on. -->
+		
+		<mkdir dir="${dir.build.vocab}/package"/>			
+		<mkdir dir="${dir.build.vocab}/overlays"/>
+		
+		
 	</target>
 
 	<target name="build-profiles" depends="copy-css">
@@ -334,7 +338,7 @@
 	<target name="build-switch-registry" depends="copy-css">
 		<mkdir dir="${dir.build}/switch/"/>
 		<copy todir="${dir.build}/switch/" file="${dir.util}/switch/switch-index.html"/>					
-		<build-htaccess dest-dir="${dir.build}/switch/" index-name="switch-index-html"/>
+		<build-htaccess dest-dir="${dir.build}/switch/" index-name="switch-index.html"/>
 	</target>
 
 	<target name="copy-css">
@@ -783,15 +787,21 @@
 		<attribute name="dest-dir"/>
 		<attribute name="index-name"/>
 		<sequential>
-			<echo file="@{dest-dir}/.htaccess">DirectoryIndex @{index-name} </echo>
+			<echo file="@{dest-dir}/.htaccess">DirectoryIndex @{index-name} 
+			</echo>
 		</sequential>
 	</macrodef>
 
 	<macrodef name="build-htaccess-dirlist" description="builds a htaccess with dirlisting enabler">
 		<attribute name="dest-dir"/>
 		<sequential>
-			<echo file="@{dest-dir}/.htaccess">Options +Indexes </echo>
+			<echo file="@{dest-dir}/.htaccess">Options +Indexes 
+			</echo>
 		</sequential>
 	</macrodef>
+	
+	
+	
+	
 
 </project>
