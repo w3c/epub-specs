@@ -25,19 +25,32 @@
             <body>
                 <h1>EPUB Linking Scheme Registry</h1>
                 
-                <p>This document lists the available schemes that can be used to provide linking functionality
-                    into and between EPUB&#174; 3 Publications.</p>
+                <p>This registry of linking schemes is maintained by the IDPF to promote and encourage
+                    the development of linking mechanisms for use with EPUB® Publications.</p>
                 
-                <p>These schemes are not a normative part of the EPUB 3 collection of specifications, but are
-                    maintained separately by the IPDF. The available schemes are subject to change independent 
-                    of the EPUB 3 specification revision cycle.</p>
+                <h2>Overview</h2>
                 
-                <p>For more information regarding normative support for these schemes in Reading Systems, 
-                    please refer to <a href="../30/spec/epub3-contentdocs.html">EPUB 3 Content Documents</a>.</p>
+                <p>Although content authors have always been able to take advantage of the hyperlinking 
+                    capabilities the Web makes available, linking to the Internet only addresses one dimension 
+                    of a Publication. This registry focuses instead on specialized linking capabilities 
+                    that more fully address the range of needs and requirements unique to Publications,
+                    to layer in the missing functionality and open up the insides of Publications both for
+                    linking into from outside and for referencing from within.</p>
+                
+                <p>The schemes listed in this registry are not a normative part of the EPUB suite of specifications. 
+                    The available schemes are subject to change independent of the EPUB specification revision cycle 
+                    and may or may not be compatible with past, present or future versions of the specification. 
+                    Please consult each document for more information on the version(s) supported.</p>
                 
                 <h2>Linking Schemes</h2>
                 
                 <xsl:call-template name="add-schemes"/>
+
+                <h2>Contribute</h2>
+                
+                <p>If you would like to suggest or submit a new scheme for consideration by the IDPF,
+                    please use the <span class="todo">TODO: issue tracker/contact form?</span></p>
+                
             </body>
         </html>
     </xsl:template>
