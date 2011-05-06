@@ -1,0 +1,90 @@
+default namespace = "http://www.w3.org/2009/xmlenc11#"
+namespace ds = "http://www.w3.org/2000/09/xmldsig#"
+namespace xenc = "http://www.w3.org/2001/04/xmlenc#"
+namespace xenc11 = "http://www.w3.org/2009/xmlenc11#"
+
+xenc11_ConcatKDFParams =
+  element ConcatKDFParams { xenc11_ConcatKDFParamsType }
+xenc11_ConcatKDFParamsType =
+  attribute AlgorithmID { xsd:hexBinary }?,
+  attribute PartyUInfo { xsd:hexBinary }?,
+  attribute PartyVInfo { xsd:hexBinary }?,
+  attribute SuppPubInfo { xsd:hexBinary }?,
+  attribute SuppPrivInfo { xsd:hexBinary }?,
+  ds_DigestMethod
+xenc11_DerivedKey = element DerivedKey { xenc11_DerivedKeyType }
+xenc11_DerivedKeyType =
+  attribute Recipient { xsd:string }?,
+  attribute Id { xenc11_IdType }?,
+  attribute Type { xsd:anyURI }?,
+  xenc11_KeyDerivationMethod?,
+  xenc_ReferenceList?,
+  element DerivedKeyName { xsd:string }?,
+  element MasterKeyName { xsd:string }?
+xenc11_KeyDerivationMethod =
+  element KeyDerivationMethod { xenc11_KeyDerivationMethodType }
+xenc11_KeyDerivationMethodType = 
+    (attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#ConcatKDF" },
+     xenc11_ConcatKDFParams)
+  | (attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#pbkdf2" },
+     xenc11_PBKDF2-params)
+xenc11_PBKDF2-params =
+  element PBKDF2-params { xenc11_PBKDF2ParameterType }
+xenc11_AlgorithmIdentifierType =
+  attribute Algorithm { text }?,
+  element Parameters { anyAttribute*, mixed { anyElement* } }?
+xenc11_PRFAlgorithmIdentifierType =
+  # Restricts xenc11:AlgorithmIdentifierType
+  
+  ## default value: http://www.w3.org/2000/09/xmldsig#hmac-sha1
+  attribute Algorithm { xsd:anyURI }?
+xenc11_PBKDF2ParameterType =
+  element Salt {
+    element Specified { xsd:base64Binary }
+    | element OtherSource { xenc11_AlgorithmIdentifierType }
+  },
+  element IterationCount { xsd:positiveInteger },
+  element KeyLength { xsd:positiveInteger },
+  element PRF { xenc11_PRFAlgorithmIdentifierType }
+
+xenc11_IdType = xsd:NCName # xsd:ID does not work
+
+xenc_EncryptionMethodOtherParams |= 
+  attribute Algorithm {
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes256-gcm" }
+
+xenc11_AgreementMethodParams =
+    (attribute Algorithm { xsd:anyURI "http://www.w3.org/2001/04/xmlenc#dh" },
+     ds_DigestMethod)
+  | attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es" }
+  | attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES" }
+
+xenc_EncryptionMethodOtherParams |=  
+  attribute Algorithm { 
+      xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
+    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-192-pad"
+    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-256-pad"
+  }
+
+xenc11_KeyDerivationAlgorithms = 
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#ConcatKDF"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#pbkdf2"
+
+xenc11_AgreementAlgorithms = 
+    xsd:anyURI "http://www.w3.org/2001/04/xmlenc#dh"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES"
+
+xenc_EncryptionAlgorithms |=
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+
+xenc_KeyAgreementAlgorithms |= 
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES"
+
+xenc_EncryptionAlgorithms |=
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-192-pad"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-256-pad"
