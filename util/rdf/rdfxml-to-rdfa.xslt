@@ -26,7 +26,6 @@
 	<!-- a relative link to this vocabs revision history document -->
 	<xsl:param name="vocab-revision-history" required="yes"/>
 
-
 	<!-- whether to output a leading blurb on the nature of htu:usage (for epub structure vocab only) -->
 	<xsl:param name="output-htu-expl" required="no" select="0"/>
 
@@ -116,7 +115,7 @@
 
 	<xsl:template match="rdf:Bag">
 		<xsl:variable name="id" select="./@rdf:ID"/>
-		<div id="{$id}" about="#{$id}" typeof="rdf:Bag">
+		<div id="{$id}" about="#{$id}" typeof="rdf:Bag">			
 			<xsl:element name="{zf:get-heading-for-bag(.)}">
 				<xsl:attribute name="id">h_<xsl:value-of select="$id"/></xsl:attribute>
 				<xsl:attribute name="about">#<xsl:value-of select="$id"/></xsl:attribute>
@@ -135,8 +134,9 @@
 				</xsl:for-each>
 			</xsl:if>
 			<dl about="#{$id}" rev="rdfs:member">
-				<xsl:apply-templates/>
+				<xsl:apply-templates select="./rdf:Description"/>
 			</dl>
+			<xsl:apply-templates select="./rdf:Bag"/>
 		</div>
 	</xsl:template>
 
