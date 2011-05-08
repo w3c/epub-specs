@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="epub-revision" basedir="." default="all" xmlns:antcontrib="antlib:net.sf.antcontrib">
+<project name="epub-revision" basedir="." default="default"
+	xmlns:antcontrib="antlib:net.sf.antcontrib">
 
 	<tstamp>
 		<format property="TODAY" pattern="yyyyMMdd"/>
@@ -22,6 +23,7 @@
 	<property name="dir.util.xhtml" value="${dir.util}/xhtml"/>
 	<property name="dir.util.xhtml.dtd.catalog" value="${dir.util.xhtml}/dtd"/>
 	<property name="dir.util.rdf" value="${dir.util}/rdf"/>
+	<property name="dir.util.linking" value="${dir.util}/linking"/>
 	<property name="dir.util.java" value="${dir.util}/java"/>
 
 	<property name="dir.test" value="${basedir}/test"/>
@@ -40,6 +42,8 @@
 	<property name="dir.temp.spec" value="${dir.temp}/spec"/>
 	<property name="dir.build.linking" value="${dir.build}/linking"/>
 	<property name="dir.build.cfi" value="${dir.build.linking}/cfi"/>
+	<property name="dir.build.switch" value="${dir.build}/switch"/>
+	<property name="dir.build.altss-tags" value="${dir.build}/altss-tags"/>
 
 	<property name="schema.epub.xhtml.rnc" value="${dir.src.schema}/epub-xhtml-30.rnc"/>
 	<property name="schema.epub.xhtml.sch" value="${dir.src.schema}/epub-xhtml-30.sch"/>
@@ -55,6 +59,7 @@
 	<property name="schema.docbook" value="${dir.util.docbook.schema}/docbook.nvdl"/>
 	<property name="schema.xhtml11" value="${dir.util.xhtml}/rng/xhtml.rng"/>
 	<property name="schema.xhtmlrdfa11" value="${dir.util.xhtml}/rng/xhtml-rdfa11.rng"/>
+
 	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl"/>
 	<property name="xslt.biblio-cleaner" value="${dir.util.docbook}/biblio-cleaner.xsl"/>
 	<property name="xslt.terminology-cleaner" value="${dir.util.docbook}/terminology-cleaner.xsl"/>
@@ -64,10 +69,14 @@
 	<property name="xslt.catalog" value="${dir.util}/catalog.xsl"/>
 	<property name="xslt.link-index" value="${dir.util}/linking/link-index.xsl"/>
 	<property name="xslt.cleanup" value="${dir.util}/xhtml/cleanup.xsl"/>
+	<property name="xslt.css.link.replacer" value="${dir.util}/xhtml/xsl/css-link-replacer.xsl"/>
+	<property name="xslt.redirect" value="${dir.util}/xhtml/xsl/redirect.xsl"/>
+
 	<property name="css.docbook2xhtml" value="${dir.src.spec.css}/epub-spec.css"/>
 	<property name="css.print" value="${dir.src.spec.css}/epub-print.css"/>
-	
+
 	<property name="www.base.path" value="http://www.idpf.org/epub/"/>
+	<property name="www.spec.path" value="http://www.idpf.org/epub/30/spec"/>
 
 	<property name="spec.filename.prefix" value="epub30"/>
 
@@ -84,7 +93,7 @@
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
-	<target name="all"
+	<target name="default"
 		depends=" clean,
 		build-profiles,
 		build-specs,
@@ -93,38 +102,43 @@
 		build-schemas,
 		build-schema-catalog,		
 		build-archives, 
-		copy-css"/>
-	<!-- build-index, -->
+		copy-css,
+		validate-html-output"/>
 
 	<target name="build-specs" depends="clean, copy-css, compile">
-		<!-- , validate-src-specs, validate-spec-examples" -->
 
 		<mkdir dir="${dir.temp.spec}/00"/>
-
 		<copy todir="${dir.temp.spec}/00">
 			<fileset dir="${dir.src.spec}"/>
 		</copy>
 
 		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10"/>
-		<saxon-xslt description="process epub-specific olinks" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/00/" includes="epub30-*.xml" destdir="${dir.temp.spec}/10/"
-			extension=".xml" style="${xslt.olink}">
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub30-*.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="epub30"/>
 		</saxon-xslt>
-		<saxon-xslt description="process epub-specific olinks" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/00/" includes="epub-*.xml" destdir="${dir.temp.spec}/10/"
-			extension=".xml" style="${xslt.olink}">
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-cfi.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="linking"/>
+		</saxon-xslt>
+		<!-- no olinks in altsstags but run anyway to get xincludes dereferenced -->
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="altss-tags.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="altss-tags"/>
 		</saxon-xslt>
 
 		<!-- run the bibliocleaner preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/20"/>
 		<saxon-xslt description="filters out unreferenced bibliorefs" classpathref="build.classpath"
 			basedir="${dir.temp.spec}/10" destdir="${dir.temp.spec}/20/" extension=".xml"
-			style="${xslt.biblio-cleaner}"> </saxon-xslt>
+			style="${xslt.biblio-cleaner}" includes="*.xml"/>
 
 		<!-- run the terminology preprocess class -->
 		<java classname="org.idpf.docbook.GlosslistHandler" fork="true" failonerror="true"
@@ -134,37 +148,26 @@
 			<classpath refid="build.classpath"/>
 		</java>
 
-		<!-- run the terminology preprocess xslt 
-			<mkdir dir="${dir.temp.spec}/30" />
-			<saxon-xslt description="filters out unreferenced glossentries"
-			classpathref="build.classpath"
-			basedir="${dir.temp.spec}/20/"
-			includes="*.xml"
-			destdir="${dir.temp.spec}/30/"
-			extension=".xml" 			
-			style="${xslt.terminology-cleaner}">
-			</saxon-xslt> -->
-
 		<!-- run the switch preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/40"/>
 		<saxon-xslt description="conditional exclude/include" classpathref="build.classpath"
 			basedir="${dir.temp.spec}/30/" destdir="${dir.temp.spec}/40/" extension=".xml"
-			style="${xslt.switch}"> </saxon-xslt>
+			style="${xslt.switch}"/>
 
 		<!-- run the link decorator xslt -->
 		<mkdir dir="${dir.temp.spec}/50"/>
 		<saxon-xslt description="decorate links with @role" classpathref="build.classpath"
 			basedir="${dir.temp.spec}/40/" destdir="${dir.temp.spec}/50/" extension=".xml"
-			style="${xslt.link-decorator}"> </saxon-xslt>
+			style="${xslt.link-decorator}"/>
 
 		<!-- validate docbook sources -->
-		<validate-fileset-rng fileset-dir="${dir.temp.spec}/50" fileset-includes="*.xml cfi/*.xml"
+		<validate-fileset-rng fileset-dir="${dir.temp.spec}/50" fileset-includes="**/*.xml"
 			fileset-excludes="" schema="${schema.docbook}" failonerror="true" compaxtsyntax="false"/>
 
-		<!-- run docbook-xhtml -->
+		<!-- run docbook-to-xhtml -->
 		<mkdir dir="${dir.temp.spec}/60"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50/"
-			includes="epub30-*.xml" destdir="${dir.temp.spec}/60/" extension=".html"
+			includes="**/*.xml" destdir="${dir.temp.spec}/60/" extension=".html"
 			style="${xslt.docbook2xhtml}">
 
 			<param name="section.autolabel" expression="1"/>
@@ -193,62 +196,24 @@
 		<build-htaccess dest-dir="${dir.build.spec}"
 			index-name="${spec.filename.prefix}-overview.html"/>
 
-		<!-- build the linking spec(s) -->
-		<for param="link-spec">
-			<path>
-				<fileset dir="${dir.temp.spec}/50/" includes="epub-*.xml"
-					excludes="epub-linking.xml"/>
-			</path>
-			<sequential>
-				<propertyregex override="yes" property="spec.name" input="@{link-spec}"
-					regexp=".*[\\/](.*)\.xml" select="\1" casesensitive="false"/>
-				<propertyregex override="yes" property="spec.file" input="@{link-spec}"
-					regexp=".*[\\/](.*\.xml)" select="\1" casesensitive="false"/>
-				<propertyregex override="yes" property="spec.suffix" input="@{link-spec}"
-					regexp=".*[\\/]epub-(.*)\.xml" select="\1" casesensitive="false"/>
-				<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50"
-					includes="${spec.file}" destdir="${dir.build.linking}/${spec.suffix}"
-					extension=".html" style="${xslt.docbook2xhtml}">
-
-					<param name="section.autolabel" expression="1"/>
-					<param name="part.autolabel" expression="1"/>
-					<param name="chapter.autolabel" expression="1"/>
-					<param name="toc.section.depth" expression="6"/>
-					<param name="section.label.includes.component.label" expression="1"/>
-					<param name="section.autolabel.max.depth" expression="8"/>
-					<param name="html.stylesheet" expression="../../css/epub-spec.css"/>
-					<param name="user.print.css" expression="../../css/epub-print.css"/>
-
-				</saxon-xslt>
-				<build-htaccess dest-dir="${dir.build.linking}/${spec.suffix}"
-					index-name="${spec.name}.html"/>
-			</sequential>
-		</for>
-
-		<fileset id="linking.specs" dir="${dir.src.spec}" includes="epub-*.xml"/>
-		<property name="prop.linking.specs" refid="linking.specs"/>
-
-		<saxon-xslt destdir="${dir.build.linking}" in="${dir.temp.spec}/50/epub-cfi.xml"
-			out="${dir.build.linking}/index.html" style="${xslt.link-index}">
-			<param name="file-list" expression="${prop.linking.specs}"/>
-			<param name="build-dir" expression="${dir.src.spec}/"/>
-			<param name="base-uri" expression="http://www.idpf.org/epub/linking/"/>
+		<!-- move the altss-tags spec and fix the css link -->
+		<mkdir dir="${dir.build.altss-tags}"/>
+		<saxon-xslt in="${dir.build.spec}/altss-tags.html"
+			out="${dir.build.altss-tags}/altss-tags.html" classpathref="build.classpath"
+			style="${xslt.css.link.replacer}">
+			<param name="css.link" expression="reduce-depth"/>
 		</saxon-xslt>
+		<delete file="${dir.build.spec}/altss-tags.html"/>
+		<build-htaccess dest-dir="${dir.build.altss-tags}" index-name="altss-tags.html"/>
 
-		<!-- validate output html (dtd) 
-		<xmlvalidate classpathref="build.classpath" failonerror="false"> 
-			<xmlcatalog refid="xhtml-catalog"/>
-			<fileset dir="${dir.build.spec}" includes="*.html"/>
-			<fileset dir="${dir.build.cfi}" includes="*.html"/>
-			</xmlvalidate> -->
+		<!-- move the linking spec -->
+		<mkdir dir="${dir.build.cfi}"/>
+		<move file="${dir.build.spec}/epub-cfi.html" todir="${dir.build.cfi}"/>
+		<build-htaccess dest-dir="${dir.build.cfi}" index-name="epub-cfi.html"/>
 
-		<echo>OUTPUT XHTML VALIDATION</echo>
-		<jing rngfile="${schema.xhtmlrdfa11}" failonerror="false" compactsyntax="false">
-			<fileset dir="${dir.build}" includes="**/*.html">
-				<exclude name="@{fileset-excludes}"/>
-			</fileset>
-		</jing>
-		<echo>END OUTPUT XHTML VALIDATION</echo>
+		<!-- create the linking registry page -->
+		<copy todir="${dir.build.linking}" file="${dir.util.linking}/index.html"/>
+		<build-htaccess dest-dir="${dir.build.linking}" index-name="index.html"/>
 
 	</target>
 
@@ -280,49 +245,60 @@
 		<build-htaccess dest-dir="${dir.build.vocab}/structure/"
 			index-name="${spec.filename.prefix}-vocab-structure.html"/>
 
-		<!-- convert publications properties to rdfa -->
+		<!-- add rdfa to publications -->
 		<echo>building publications vocab...</echo>
-		<xslt in="${dir.build.spec}/epub30-publications.html"
-			out="${dir.build.spec}/rdfa-epub30-publications.html"
-			style="${dir.util.rdf}/spec-to-rdfa.xslt" useimplicitfileset="yes">
-			<param name="vocab-canonical-uri" expression="http://www.idpf.org/epub/vocab/package/"/>
-			<param name="vocab-name" expression="package"/>
-			<!-- point catalog to empty DTD file; otherwise xml:space="preserve" gets added in identity transform
-				when referencing the local copy of the xhtml 1.1 dtd in the catalog below-->
-			<xmlcatalog>
-				<dtd publicid="-//W3C//DTD XHTML 1.1//EN"
-					location="${dir.util.xhtml.dtd.catalog}/empty.dtd"/>
-			</xmlcatalog>
-		</xslt>
+		<spec-rdfa spec="${dir.build.spec}/epub30-publications.html"
+			vocab-canonical-uri="http://www.idpf.org/epub/vocab/package/" vocab-name="package"/>
 
-		<move file="${dir.build.spec}/rdfa-epub30-publications.html"
-			tofile="${dir.build.spec}/epub30-publications.html" overwrite="yes"/>
+		<!-- add rdfa to overlays -->
+		<echo>building publications vocab...</echo>
+		<spec-rdfa spec="${dir.build.spec}/epub30-mediaoverlays.html"
+			vocab-canonical-uri="http://www.idpf.org/epub/vocab/overlays/" vocab-name="overlays"/>
 
-		<!-- convert overlays properties to rdfa -->
-		<echo>building overlays vocab...</echo>
-		<xslt in="${dir.build.spec}/epub30-mediaoverlays.html"
-			out="${dir.build.spec}/rdfa-epub30-mediaoverlays.html"
-			style="${dir.util.rdf}/spec-to-rdfa.xslt">
-			<param name="vocab-canonical-uri" expression="http://www.idpf.org/epub/vocab/overlays/"/>
-			<param name="vocab-name" expression="package"/>
-			<xmlcatalog>
-				<dtd publicid="-//W3C//DTD XHTML 1.1//EN"
-					location="${dir.util.xhtml.dtd.catalog}/empty.dtd"/>
-			</xmlcatalog>
-		</xslt>
-
-		<move file="${dir.build.spec}/rdfa-epub30-mediaoverlays.html"
-			tofile="${dir.build.spec}/${spec.filename.prefix}-mediaoverlays.html" overwrite="yes"/>
 		<!-- note: need a server Alias for these two; "http://www.idpf.org/epub/vocab/package/#switch" 
-			should return 
-			"http://www.idpf.org/epub/30/spec/epub30-mediaoverlays.html#switch" 
-			and so on. -->
-		
-		<mkdir dir="${dir.build.vocab}/package"/>			
+			should return "http://www.idpf.org/epub/30/spec/epub30-publications.html#switch" and so on. -->
+		<mkdir dir="${dir.build.vocab}/package"/>
+		<build-htaccess dest-dir="${dir.build.vocab}/package" index-name="index.html"/>
+		<!-- a client redirect page that should never be reachedm but is added if the server Alias fails -->
+		<saxon-xslt classpathref="build.classpath" in="${schema.rng}"
+			out="${dir.build.vocab}/package/index.html" style="${xslt.redirect}">
+			<param name="target"
+				expression="${www.spec.path}/${spec.filename.prefix}-publications.html"/>
+			<param name="title" expression="Package Vocabulary"/>
+		</saxon-xslt>
+
 		<mkdir dir="${dir.build.vocab}/overlays"/>
-		
-		
+		<build-htaccess dest-dir="${dir.build.vocab}/overlays" index-name="index.html"/>
+		<!-- a client redirect page that should never be reachedm but is added if the server Alias fails -->
+		<saxon-xslt classpathref="build.classpath" in="${schema.rng}"
+			out="${dir.build.vocab}/overlays/index.html" style="${xslt.redirect}">
+			<param name="target"
+				expression="${www.spec.path}/${spec.filename.prefix}-mediaoverlays.html"/>
+			<param name="title" expression="Media Overlays Vocabulary"/>
+		</saxon-xslt>
+
 	</target>
+
+	<macrodef name="spec-rdfa">
+		<attribute name="spec"/>
+		<attribute name="vocab-canonical-uri"/>
+		<attribute name="vocab-name"/>
+		<sequential>
+			<xslt in="@{spec}" out="${dir.temp}/rdfa-temp.html"
+				style="${dir.util.rdf}/spec-to-rdfa.xslt" useimplicitfileset="yes"
+				classpathref="build.classpath">
+				<param name="vocab-canonical-uri" expression="@{vocab-canonical-uri}"/>
+				<param name="vocab-name" expression="@vocab-name"/>
+				<!-- point catalog to empty DTD file; otherwise xml:space="preserve" gets added in identity transform
+				when referencing the local copy of the xhtml 1.1 dtd in the catalog below-->
+				<xmlcatalog>
+					<dtd publicid="-//W3C//DTD XHTML 1.1//EN"
+						location="${dir.util.xhtml.dtd.catalog}/empty.dtd"/>
+				</xmlcatalog>
+			</xslt>
+			<move file="${dir.temp}/rdfa-temp.html" tofile="@{spec}" overwrite="yes"/>
+		</sequential>
+	</macrodef>
 
 	<target name="build-profiles" depends="copy-css">
 		<clean-dir dir="${dir.build.profile}"/>
@@ -336,9 +312,9 @@
 	</target>
 
 	<target name="build-switch-registry" depends="copy-css">
-		<mkdir dir="${dir.build}/switch/"/>
-		<copy todir="${dir.build}/switch/" file="${dir.util}/switch/switch-index.html"/>					
-		<build-htaccess dest-dir="${dir.build}/switch/" index-name="switch-index.html"/>
+		<mkdir dir="${dir.build.switch}"/>
+		<copy todir="${dir.build.switch}" file="${dir.util}/switch/switch-index.html"/>
+		<build-htaccess dest-dir="${dir.build.switch}" index-name="switch-index.html"/>
 	</target>
 
 	<target name="copy-css">
@@ -454,6 +430,14 @@
 		==> no implementation available for schema language with namespace URI 
 		"http://purl.oclc.org/dsdl/schematron". 
 		See http://code.google.com/p/jing-trang/issues/detail?id=23 -->
+
+	<target name="validate-html-output">
+		<jing rngfile="${schema.xhtmlrdfa11}" failonerror="false" compactsyntax="false">
+			<fileset dir="${dir.build}" includes="**/*.html">
+				<exclude name="@{fileset-excludes}"/>
+			</fileset>
+		</jing>
+	</target>
 
 	<target name="validate-tests"
 		depends="validate-tests-package, validate-tests-overlays, 
@@ -599,19 +583,92 @@
 		</sequential>
 	</macrodef>
 
-	<target name="build-index">
-		<fileset id="build.contents" dir="${dir.build.epub}" includes="**/*.*"
-			excludes="**/.DS_Store,**/.localized,**/.htaccess,**/.svn"/>
-		<property name="prop.build.contents" refid="build.contents"/>
 
-		<xslt in="${schema.epub.package.sch}" out="${dir.build.epub}/index.html"
-			style="${dir.util.xhtml}/build-index.xsl">
-			<param name="file-list" expression="${prop.build.contents}"/>
-			<param name="base" expression="${dir.build.epub}/"/>
-			<xmlcatalog refid="xhtml-catalog"/>
-		</xslt>
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   u t i l i t i e s - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+	<target name="clean" depends="clean-temp-dir, clean-build-dir"/>
+
+	<target name="clean-temp-dir">
+		<clean-dir dir="${dir.temp}"/>
 	</target>
+
+	<target name="clean-build-dir">
+		<clean-dir dir="${dir.build.epub}"/>
+		<clean-dir dir="${dir.build.linking}"/>
+		<clean-dir dir="${dir.build.vocab}"/>
+		<delete failonerror="false">
+			<fileset dir="${dir.build}" includes="*.zip *.tar *.gz"/>
+		</delete>
+	</target>
+
+	<macrodef name="clean-dir">
+		<attribute name="dir"/>
+		<sequential>
+			<delete failonerror="false" includeemptydirs="true">
+				<fileset dir="@{dir}" includes="**/*"/>
+			</delete>
+			<mkdir dir="@{dir}"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="trang">
+		<attribute name="in"/>
+		<attribute name="out"/>
+		<sequential>
+			<java jar="${dir.lib}/trang.jar" fork="true" failonerror="true" maxmemory="512m">
+				<arg value="@{in}"/>
+				<arg value="@{out}"/>
+				<classpath refid="build.classpath"/>
+			</java>
+		</sequential>
+	</macrodef>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!--   t a s k d e f s - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<taskdef name="jing" classname="com.thaiopensource.relaxng.util.JingTask">
+		<classpath>
+			<pathelement location="${dir.lib}/jing.jar"/>
+		</classpath>
+	</taskdef>
+
+	<taskdef name="saxon-xslt" classname="net.sf.saxon.ant.AntTransform">
+		<classpath>
+			<pathelement location="${dir.lib}/saxon9.jar"/>
+			<pathelement location="${dir.lib}/saxon9-ant.jar"/>
+		</classpath>
+	</taskdef>
+
+	<taskdef name="schematron" classname="com.schematron.ant.SchematronTask">
+		<classpath>
+			<path refid="build.classpath"/>
+		</classpath>
+	</taskdef>
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib-10b3.jar"/>
+		</classpath>
+	</taskdef>
+
+	<macrodef name="build-htaccess"
+		description="builds a htaccess with settable DirectoryIndex value">
+		<attribute name="dest-dir"/>
+		<attribute name="index-name"/>
+		<sequential>
+			<echo file="@{dest-dir}/.htaccess">DirectoryIndex @{index-name} </echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="build-htaccess-dirlist" description="builds a htaccess with dirlisting enabler">
+		<attribute name="dest-dir"/>
+		<sequential>
+			<echo file="@{dest-dir}/.htaccess">Options +Indexes </echo>
+		</sequential>
+	</macrodef>
 
 	<xmlcatalog id="xhtml-catalog">
 		<dtd publicId="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -703,105 +760,5 @@
 		<entity publicid="-//W3C//ENTITIES XHTML Character Entities 1.0//EN"
 			location="${dir.util.xhtml.dtd.catalog}/xhtml-charent-1.mod"/>
 	</xmlcatalog>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!--   u t i l i t i e s - - - - - - - - - - - - - - - - - - - - - - -->
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-	<target name="clean" depends="clean-temp-dir, clean-build-dir"/>
-
-	<target name="clean-temp-dir">
-		<clean-dir dir="${dir.temp}"/>
-	</target>
-
-	<target name="clean-build-dir">
-		<clean-dir dir="${dir.build.epub}"/>
-		<clean-dir dir="${dir.build.linking}"/>
-		<clean-dir dir="${dir.build.vocab}"/>
-		<delete failonerror="false">
-			<fileset dir="${dir.build}" includes="*.zip *.tar *.gz"/>
-		</delete>
-	</target>
-
-	<macrodef name="clean-dir">
-		<attribute name="dir"/>
-		<sequential>
-			<delete failonerror="false" includeemptydirs="true">
-				<fileset dir="@{dir}" includes="**/*"/>
-			</delete>
-			<mkdir dir="@{dir}"/>
-		</sequential>
-	</macrodef>
-
-	<target name="xmlgen-ops">
-		<mkdir dir="${dir.temp}/trang"/>
-		<trang in="${schema.src.ops}" out="${dir.temp}/trang/ops30.rng"/>
-		<xmlgen input-schema="${dir.temp}/trang/ops30.rng" output-dir="${dir.temp}/xmlgen"
-			output-count="10" datatype-example="${dir.util}/xmlgen/ops-datatypes.xml"
-			root="{http://www.w3.org/1999/xhtml}html"/>
-	</target>
-
-	<macrodef name="trang">
-		<attribute name="in"/>
-		<attribute name="out"/>
-		<sequential>
-			<java jar="${dir.lib}/trang.jar" fork="true" failonerror="true" maxmemory="512m">
-				<arg value="@{in}"/>
-				<arg value="@{out}"/>
-				<classpath refid="build.classpath"/>
-			</java>
-		</sequential>
-	</macrodef>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!--   t a s k d e f s - - - - - - - - - - - - - - - - - - - - - - - -->
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-	<taskdef name="jing" classname="com.thaiopensource.relaxng.util.JingTask">
-		<classpath>
-			<pathelement location="${dir.lib}/jing.jar"/>
-		</classpath>
-	</taskdef>
-
-	<taskdef name="saxon-xslt" classname="net.sf.saxon.ant.AntTransform">
-		<classpath>
-			<pathelement location="${dir.lib}/saxon9.jar"/>
-			<pathelement location="${dir.lib}/saxon9-ant.jar"/>
-		</classpath>
-	</taskdef>
-
-	<taskdef name="schematron" classname="com.schematron.ant.SchematronTask">
-		<classpath>
-			<path refid="build.classpath"/>
-		</classpath>
-	</taskdef>
-
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="${lib.dir}/ant-contrib-10b3.jar"/>
-		</classpath>
-	</taskdef>
-
-	<macrodef name="build-htaccess"
-		description="builds a htaccess with settable DirectoryIndex value">
-		<attribute name="dest-dir"/>
-		<attribute name="index-name"/>
-		<sequential>
-			<echo file="@{dest-dir}/.htaccess">DirectoryIndex @{index-name} 
-			</echo>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="build-htaccess-dirlist" description="builds a htaccess with dirlisting enabler">
-		<attribute name="dest-dir"/>
-		<sequential>
-			<echo file="@{dest-dir}/.htaccess">Options +Indexes 
-			</echo>
-		</sequential>
-	</macrodef>
-	
-	
-	
-	
 
 </project>

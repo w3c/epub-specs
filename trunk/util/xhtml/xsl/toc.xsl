@@ -22,7 +22,7 @@
 	</xsl:template>
 
 	<xsl:template name="toc">
-		<h2 id="toc">Table of Contents</h2>
+		<h2 id="tocxsl">Table of Contents</h2>
 		<xsl:for-each-group
 			select="//xhtml:h1|//xhtml:h2|//xhtml:h3|//xhtml:h4|//xhtml:h5|//xhtml:h6"
 			group-starting-with="xhtml:h1">
