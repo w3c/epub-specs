@@ -15,13 +15,6 @@
         </rule>
     </pattern>
 
-    <pattern id="page-list-flat">
-        <rule context="html:body//html:nav[@epub:type='page-list']">
-            <assert test="count(.//html:ol) = 1">The page-list navigation structure should be a
-                list, not a nested hierarchy</assert>
-        </rule>
-    </pattern>
-
     <pattern id="span-no-sublist">
         <rule context="html:body//html:nav//html:span">
             <assert test="count(.//ol) = 0"> The span element must only be used as heading for flat
@@ -66,5 +59,14 @@
                 contain text</assert>
         </rule>
     </pattern>
+
+
+    <!-- warnings mode <pattern id="page-list-flat">
+        <rule context="html:body//html:nav[@epub:type='page-list']">
+        <assert test="count(.//html:ol) = 1">The page-list navigation structure should be a
+        list, not a nested hierarchy</assert>
+        </rule>
+        </pattern> 
+    -->
 
 </schema>
