@@ -328,4 +328,8 @@
         </rule>
     </pattern>
     
+    <!-- 
+        TODO aria-haspopup - check owns or descendant	
+    -->
+    
 </schema>
