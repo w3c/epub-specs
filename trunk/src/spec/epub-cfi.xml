@@ -273,25 +273,29 @@
           <lhs>value</lhs>
           <rhs>
             <nonterminal def="#epubcfi.ebnf.string-no-special-chars"
-              >string-no-special-chars</nonterminal> | "^^" | "^[" | "^]" | "^(" | "^)" | "^," |
-            "^;" </rhs>
+              >string-no-special-chars</nonterminal>
+            <!--  | "^^" | "^[" | "^]" | "^(" | "^)" | "^," | "^;" -->
+          </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.value-no-space">
           <lhs>value-no-space</lhs>
           <rhs>
-            <nonterminal def="#epubcfi.ebnf.string-no-special-chars"
-              >string-no-special-chars</nonterminal> - <nonterminal def="#epubcfi.ebnf.space"
-                >space</nonterminal></rhs>
+            <nonterminal def="#epubcfi.ebnf.value">value</nonterminal> - ( [ <nonterminal
+              def="#epubcfi.ebnf.value">value</nonterminal> ] , <nonterminal
+              def="#epubcfi.ebnf.space">space</nonterminal> , [ <nonterminal
+              def="#epubcfi.ebnf.value">value</nonterminal> ] ) </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.string-no-special-chars">
           <lhs>string-no-special-chars</lhs>
           <rhs>
-            <nonterminal def="#epubcfi.ebnf.string">string</nonterminal> - ( <nonterminal
+            <nonterminal def="#epubcfi.ebnf.string">string</nonterminal> - ( [ <nonterminal
+              def="#epubcfi.ebnf.string">string</nonterminal> ] , ( <nonterminal
               def="#epubcfi.ebnf.circumflex">circumflex</nonterminal> | <nonterminal
               def="#epubcfi.ebnf.square-brackets">square-brackets</nonterminal> | <nonterminal
               def="#epubcfi.ebnf.parentheses">parentheses</nonterminal> | <nonterminal
               def="#epubcfi.ebnf.comma">comma</nonterminal> | <nonterminal
-              def="#epubcfi.ebnf.semicolon">semicolon</nonterminal> ) </rhs>
+              def="#epubcfi.ebnf.semicolon">semicolon</nonterminal> ) , [ <nonterminal
+              def="#epubcfi.ebnf.string">string</nonterminal> ] ) </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.string">
           <lhs>string</lhs>
@@ -344,25 +348,42 @@
         </production>
         <production xml:id="epubcfi.ebnf.character">
           <lhs>character</lhs>
-          <rhs> ? UNICODE [#x0-#x10FFFF] ? </rhs>
+          <rhs> ? Unicode Characters ? <lineannotation>/* . */</lineannotation>
+          </rhs>
+          <constraint linkend="unicode-chars" />
         </production>
       </productionset>
+      <constraintdef xml:id="unicode-chars">
+        <title>Unicode Characters</title>
+        <para> The definition of allowed Unicode characters is the same as [XML 1.0]. This excludes
+          the surrogate blocks, FFFE, and FFFF (#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
+          [#x10000-#x10FFFF]). </para>
+        <para>Document authors are encouraged to avoid "compatibility characters", as defined in
+          section 2.3 of [Unicode]. The characters defined in the following ranges are also
+          discouraged. They are either control characters or permanently undefined Unicode
+          characters:</para>
+        <programlisting>
+<![CDATA[
+[#x7F-#x84], [#x86-#x9F], [#xFDD0-#xFDEF],
+[#x1FFFE-#x1FFFF], [#x2FFFE-#x2FFFF], [#x3FFFE-#x3FFFF],
+[#x4FFFE-#x4FFFF], [#x5FFFE-#x5FFFF], [#x6FFFE-#x6FFFF],
+[#x7FFFE-#x7FFFF], [#x8FFFE-#x8FFFF], [#x9FFFE-#x9FFFF],
+[#xAFFFE-#xAFFFF], [#xBFFFE-#xBFFFF], [#xCFFFE-#xCFFFF],
+[#xDFFFE-#xDFFFF], [#xEFFFE-#xEFFFF], [#xFFFFE-#xFFFFF],
+[#x10FFFE-#x10FFFF].
+]]></programlisting>
+      </constraintdef>
       <!-- 
                 ascii-string = ascii-char { ascii-char } .
                 ascii-char     = lowercase-char | uppercase-char | digit .
                 lowercase-char = "a" | "b" | "..." | "z" .
                 uppercase-char = "A" | "B" | "..." | "Z" .
             -->
-      <!-- constraintdef xml:id="div0">
-                <title>Division by Zero</title>
-                <para>Division by zero is an error.</para>
-            </constraintdef -->
       <!-- production xml:id="epubcfi.ebnf.fragment">
                 <lhs>fragment</lhs>
                 <rhs -->
       <!-- lineannotation>Comment.</lineannotation -->
       <!-- /rhs -->
-      <!-- constraint linkend="div0"/ -->
       <!-- /production -->
       <!-- REPLACE "xxx" with copy/paste of the EBNF production rules (using mouse from web browser) -->
       <!-- imagedata fileref="http://data.daisy.org/projects/tobi/ebnf/ebnf.php?syntax=%22EBNF%20production%20rules%20/%20syntax%20diagram%20for%20EPUB%20CFI%20(Canonical%20Fragment%20Identifiers)%20%22{
