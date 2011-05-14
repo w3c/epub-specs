@@ -2,8 +2,7 @@
 <schema xmlns="http://purl.oclc.org/dsdl/schematron">
     <!-- TODO
         meta element values, property dependant
-        @profile, @prefix, and prefix resolution in meta/@property
-        meta@about target restriction
+        @profile, @prefix, and prefix resolution in meta/@property        
     -->
     
     <ns uri="http://www.idpf.org/2007/opf" prefix="opf"/>
@@ -23,10 +22,7 @@
             <let name="item" value="//opf:manifest/opf:item[@id = $ref]"/>
             <let name="item-media-type" value="$item/@media-type" />                                   
             <assert test="$item"
-                >itemref element idref attribute does not resolve to a manifest item element</assert>            
-            <assert test="$item-media-type = 'application/xhtml+xml' or $item-media-type = 'image/svg+xml'"
-                >spine items must be XHTML or SVG (given value was '<value-of select="$item-media-type"/>')</assert>
-            
+                >itemref element idref attribute does not resolve to a manifest item element</assert>
         </rule>    
     </pattern>
     
@@ -96,7 +92,7 @@
     <pattern id="opf.scheme-datatype">
         <rule context="opf:meta[@property='scheme']">
             <assert test="@datatype">scheme property must include a datatype attribute.</assert>
-            <assert test="@datatype='xsd:anyURI' or @datatype='xsd:string'">scheme property datatype must of the type xsd:string or xsd:anyURI.</assert>
+            <assert test="@datatype='xsd:anyURI' or @datatype='xsd:string'">scheme property datatype must of the type 'xsd:string' or 'xsd:anyURI'.</assert>
         </rule>
     </pattern>
     
