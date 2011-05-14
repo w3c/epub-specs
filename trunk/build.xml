@@ -477,22 +477,9 @@
 			<validate-fileset-rng fileset-dir="${dir.test}/@{dir}/valid"
 				fileset-includes="@{includes}" fileset-excludes="@{excludes}" compaxtsyntax="true"
 				failonerror="true" schema="@{schema-rng}"/>
-			<schematron OutputDir="${dir.build.epub}" schema="@{schema-sch}" failOnError="true">
-				<fileset dir="${dir.test}/@{dir}/valid" includes="@{includes}"
-					excludes="@{excludes}"/>
-			</schematron>
-
-			<echo> </echo>
-			<echo> </echo>
-			<echo>test validation: @{dir}; invalid branch</echo>
-			<validate-fileset-rng fileset-dir="${dir.test}/@{dir}/invalid"
-				fileset-includes="@{includes}" fileset-excludes="@{excludes}" compaxtsyntax="true"
-				failonerror="false" schema="@{schema-rng}"/>
-			<schematron OutputDir="${dir.build.epub}" schema="@{schema-sch}" failOnError="false">
-				<fileset dir="${dir.test}/@{dir}/invalid" includes="@{includes}"
-					excludes="@{excludes}"/>
-			</schematron>
-
+			
+			<iso-sch in-isosch="@{schema-sch}" in-basedir="${dir.test}/@{dir}/valid" in-includes="@{includes}" in-excludes="@{excludes}"/>
+						
 		</sequential>
 	</macrodef>
 
@@ -622,6 +609,26 @@
 				<arg value="@{out}"/>
 				<classpath refid="build.classpath"/>
 			</java>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="iso-sch">
+		<attribute name="in-isosch"/>
+		<attribute name="in-basedir"/>
+		<attribute name="in-includes"/>
+		<attribute name="in-excludes"/>
+		
+		<sequential>
+			<property name="dir.util.sch" value="${dir.util}/sch"/>
+			<property name="xslt.sch.abstract" value="${dir.util}/sch/iso-schematron-abstract.xsl"/>
+			<property name="xslt.sch.message" value="${dir.util}/sch/iso-schematron-message.xsl"/>
+			
+			<saxon-xslt in="@{in-isosch}" out="${dir.temp}/isosch-1.sch" style="${xslt.sch.abstract}" />
+			<saxon-xslt in="${dir.temp}/isosch-1.sch" out="${dir.temp}/isosch-2.xsl" style="${xslt.sch.message}" />
+			
+			<saxon-xslt basedir="@{in-basedir}" includes="@{in-includes}" excludes="@{in-excludes}" 
+				style="${dir.temp}/isosch-2.xsl" destdir="${dir.temp}/sch-out/"/>
+													
 		</sequential>
 	</macrodef>
 
