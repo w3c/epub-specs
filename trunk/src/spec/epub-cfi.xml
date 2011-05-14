@@ -302,7 +302,8 @@
               def="#epubcfi.ebnf.square-brackets">square-brackets</nonterminal> | <nonterminal
               def="#epubcfi.ebnf.parentheses">parentheses</nonterminal> | <nonterminal
               def="#epubcfi.ebnf.comma">comma</nonterminal> | <nonterminal
-              def="#epubcfi.ebnf.semicolon">semicolon</nonterminal> ) , [ <nonterminal
+              def="#epubcfi.ebnf.semicolon">semicolon</nonterminal>| <nonterminal
+              def="#epubcfi.ebnf.equal">equal</nonterminal> ) , [ <nonterminal
               def="#epubcfi.ebnf.string">string</nonterminal> ] ) </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.string">
@@ -353,6 +354,10 @@
         <production xml:id="epubcfi.ebnf.semicolon">
           <lhs>semicolon</lhs>
           <rhs> ";" </rhs>
+        </production>
+        <production xml:id="equal">
+          <lhs>equal</lhs>
+          <rhs> "=" </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.character">
           <lhs>character</lhs>
@@ -531,38 +536,45 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
     <section xml:id="sec-epubcfi-escaping">
       <title>Character Escaping</title>
       <para> As described in <xref linkend="sec-epubcfi-syntax" />, the EPUB CFI grammar contains
-        "special" characters that act as delimiters within a fragment identifier expression. These
-        characters must therefore be escaped using the circumflex '<literal>^</literal>' character
-        when not used as delimiters. Depending on the usage context of such EPUB CFI, further
-        character escaping may be required in order to ensure that all potentially-conflicting text
-        tokens are encoded correctly. </para>
+        characters that have a special purpose as delimiters within a fragment identifier
+        expression. These characters must be escaped using the circumflex '<literal>^</literal>'
+        character when *not* used as delimiters, so that they can appear within the EPUB CFI data
+        without being mistaken for delimiters. . Depending on the usage context of such EPUB CFI,
+        further character escaping may be required in order to ensure that all
+        potentially-conflicting text tokens are encoded correctly. </para>
       <itemizedlist>
         <listitem>
           <itemizedlist>
             <para>IRI and URI references:</para>
             <listitem>
               <para> The EPUB CFI (fragment identifier) scheme is designed to be used within URI and
-                IRI references. As per the <xref linkend="refRFC3986" /> specification, it is
-                required to escaped a number of "reserved" and "unwise" / "unsafe" characters. A
-                significant character to IRI parsing is the '%' percent character, so it becomes
-                  "<literal>%25</literal>" when percent-encoded (without the double quotes). </para>
+                IRI references. The <xref linkend="refRFC3986" /> specification defines a number of
+                "reserved" characters that have a specific purpose as delimiters, and which may need
+                to be escaped in cases when they would otherwise conflict with the syntactical
+                structure of the URI/IRI reference. The character used for escaping is the percent
+                sign '<literal>%</literal>', and escapable characters get percent-encoded. For
+                example, the percent character itself becomes "<literal>%25</literal>" when it gets
+                escaped (note the difference with EPUB CFI's circumflex '<literal>^</literal>',
+                which gets escaped using a double character '<literal>^^</literal>').</para>
             </listitem>
             <listitem>
               <para> Unlike IRI references, URI references require unicode characters to be
                 ASCII-encoded. Although the EPUB specification itself is based on IRIs (i.e. authors
-                and production tools are expected to use IRIs), some systems may only support URIs.
-                As a result, implementors may still need too handle the conversion of IRI to URI
-                references, as defined in <xref linkend="refRFC3987" />. Disallowed characters are
-                escaped as follows: </para>
+                and production tools are expected to use IRIs), some systems or APIs may only
+                support URIs. As a result, implementors may still need too handle the conversion of
+                IRI to URI references, as defined in <xref linkend="refRFC3987" />. Disallowed
+                characters are escaped as follows: </para>
               <itemizedlist>
                 <listitem>
-                  <para> Each disallowed character is converted to UTF-8 [RFC 2279] as one or more
-                    bytes. The disallowed characters in URI references include all non-ASCII
-                    characters, plus the excluded characters listed in Section 2.4 of [RFC 2396],
-                    except for the number sign (#) and percent sign (%) and the square bracket
-                    characters re-allowed in [RFC 2732].</para>
+                  <para> Each disallowed character is converted to UTF-8 <xref linkend="refRFC2279"
+                     /> as one or more bytes. The disallowed characters in URI references include
+                    all non-ASCII characters, plus the excluded characters listed in Section 2.4 of
+                      <xref linkend="refRFC2396" />, except for the number sign
+                      '<literal>#</literal>' and percent sign '<literal>%</literal>' and the square
+                    bracket characters re-allowed in <xref linkend="refRFC2732" />.</para>
                   <para> The resulting bytes are escaped with the URI escaping mechanism (that is,
-                    converted to %HH, where HH is the hexadecimal notation of the byte value). </para>
+                    converted to '<literal>%HH</literal>', where HH is the hexadecimal notation of
+                    the byte value). </para>
                   <para> The original character is replaced by the resulting character sequence.
                   </para>
                 </listitem>
@@ -576,7 +588,7 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
             publications comprise. XML and XHTML represent yet another insertion context that
             requires specific character escaping rules. For example, double quote characters or
             angle brackets conflict with significant delimiters in the markup syntax, and must
-            therefore be escaped using the <literal>&amp;...;</literal> special sequence (character
+            therefore be escaped using the <literal>&amp;xxx;</literal> special sequence (character
             reference).</para>
         </listitem>
       </itemizedlist>
@@ -584,44 +596,40 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
         CFI, they must be applied in reverse order to revert back to the original form. For example,
         [ EPUB-CFI -> IRI -> XHTML ] becomes [ XHTML -> IRI -> EPUB-CFI ] </para>
       <informalexample>
-        <para>The following example shows an EPUB CFI in its "raw" form (only with '^' circumflex
-          escaping). Note the assertion text at the end of it, with escaped opening square brackets
-          as well as the escaped circumflex character itself (the unescape text is 'Ф-"spa
-          ce"-99%-aa[bb]^'):</para>
+        <para>The following example shows an EPUB CFI in its "raw" form (only with
+            '<literal>^</literal>' circumflex escaping). Note the assertion text at the end of it,
+          with escaped opening square brackets as well as the escaped circumflex character itself
+          (the unescape text is 'Ф-"spa ce"-99%-aa[bb]^'):</para>
         <synopsis>epubcfi(/6/7!/4/10/2/1:3[Ф-"spa ce"-99%-aa^[bb^]^^])</synopsis>
       </informalexample>
       <informalexample>
         <para>When taking part in a IRI, the space character within the assertion may become
-          percent-escaped (%20), and the percent character itself must be escaped (%25). Note that
-          the square brackets '[' ']' and semicolumn ':' are "reserved" characters (as per the URI
-          specification) but because they serve no purpose as delimiters for the IRI processor per
-          say, they do not need to be escaped (i.e. the fragment identifier can non-ambiguously be
-          extracted from the IRI by copying all the text after the '#' character). The circumflex
-          '^' also falls within a special category of "unwise" characters, but the EPUB fragment
+          percent-escaped ('<literal>%20</literal>'), and the percent character itself must be
+          escaped ('<literal>%25</literal>'). Note that the square brackets '<literal>[</literal>'
+            '<literal>]</literal>' and semicolumn '<literal>:</literal>' are "reserved" characters
+          (as per the URI specification) but because they serve no purpose as delimiters when the
+          IRI processor extracts the fragment identifier, they do not need to be escaped (i.e. the
+          fragment component of the IRI can non-ambiguously be parsed by copying all the text after
+          the '<literal>#</literal>' character). The circumflex '<literal>^</literal>' also falls
+          within a the category of "unwise" (or "unsafe") characters, but the EPUB fragment
           identifier scheme does not require escaping them. Here is the IRI-escaped EPUB CFI:</para>
         <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[Ф-"spa%20ce"-99%25-aa^[bb^]^^])</synopsis>
       </informalexample>
       <informalexample>
         <para>When the IRI appears within an XML attribute, the double quote character (quotation
           mark) is significant as a delimiter of the attribute value, so it becomes escaped with
-          "&amp;#x22;". Note that the Cyrillic "EF" character (Ф) is directly supported in EPUB XML
-          documents (which use the UTF-8 encoding to represent the unicode character repertoire), so
-          it doesn't need to be encoded:</para>
+            '<literal>&amp;#x22;</literal>'. Note that the Cyrillic "EF" character
+            ('<literal>Ф</literal>') is directly supported in EPUB XML documents (which use the
+          UTF-8 encoding to represent the unicode character repertoire), so it doesn't need to be
+          encoded:</para>
         <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[Ф-&amp;#x22;spa%20ce-99%25&amp;#x22;-aa^[bb^]^^])</synopsis>
       </informalexample>
       <informalexample>
-        <para>Should the IRI need to be converted to URI, the non-ASCII Cyrillic "EF" character (Ф)
-          would get percent-escaped with 2 bytes (0xd0 0xa4, in hexadecimal). This would result in
-          the following URI:</para>
+        <para>Should the IRI need to be converted to URI, the non-ASCII Cyrillic "EF" character
+            ('<literal>Ф</literal>') would get percent-escaped with 2 bytes ('<literal>0xd0
+            0xa4</literal>', in hexadecimal). This would result in the following URI:</para>
         <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[%d0%a4-&amp;#x22;spa%20ce&amp;#x22;-99%25-aa^[bb^]^^])</synopsis>
       </informalexample>
-      <!-- itemizedlist>
-        <listitem>
-          <para>
-            <literal />
-          </para>
-        </listitem>
-      </itemizedlist -->
     </section>
   </chapter>
   <chapter xml:id="sec-epubcfi-processing">
