@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
-    
-    <!-- TODO fix variable references not working in abstract assert/report strings -->
-    <!-- TODO check if anything need to be added from embedded SVG11 -->                    
-    <!-- TODO h @max and @min -->
-            
+                        
     <ns uri="http://www.w3.org/1999/xhtml" prefix="h"/>
     <ns uri="http://www.idpf.org/2007/ops" prefix="epub"/>
     <ns uri="http://www.w3.org/1998/Math/MathML" prefix="math"/>
@@ -242,7 +238,7 @@
     <pattern id='lang-xmllang'>
         <rule context='h:*[@lang and @xml:lang]'>
             <assert test="lower-case(@xml:lang) = lower-case(@lang)"
-                >The lang and xml:lang attributes must have the same value</assert>                
+                >The lang and xml:lang attributes must have the same value.</assert>                
         </rule>
     </pattern>
     
@@ -262,14 +258,14 @@
     
     <pattern id="track">                
         <rule context="h:track">
-            <report test="@label = ''"
+            <report test="@label and normalize-space(@label) = ''"
                 >The track element label attribute value must not be the empty string.</report>
             <report test="@default and preceding-sibling::h:track[@default]"
                 >There must not be more than one track child of a media element element with the default attribute specified.</report>            
         </rule>
     </pattern>
     
-    <pattern id="ssml">        
+    <pattern id="ssml-ph">        
         <rule context="*[@ssml:ph]">
             <report test="ancestor::*[@ssml:ph]"
                 >The ssml:ph attribute must not be specified on a descendant of an element that also carries this attribute.</report>
@@ -277,10 +273,10 @@
     </pattern>
     
     <pattern id="profile">        
-        <rule context="*[@epub:type]">
-            <assert test="ancestor-or-self::h:html[@profile]"
-                >The profile attribute must be specified on the root element when the epub:type attribute is used.</assert>
-        </rule>            
+        <rule context="h:html[not(@profile)]">
+            <report test="//*[@epub:type]"
+                >The profile attribute must be specified on the html element when the epub:type attribute is used.</report>
+        </rule>
     </pattern>
         
     <pattern abstract="true" id="idref-any">
@@ -292,31 +288,31 @@
     </pattern>
 
     <pattern abstract="true" id="idref-named">
-        <rule context="$element[@$idref-attr-name]">
+        <rule context="$element[@$idref-attr-name]">            
             <assert test="//$target-name[@id = current()/@$idref-attr-name]">The <name
                     path="@$idref-attr-name"/> attribute does not refer to an allowed target element (expecting: <value-of 
-                        select="$target-name"/>).</assert>
+                        select="replace('$target-name','h:','')"/>).</assert>
         </rule>
     </pattern>
 
     <pattern abstract="true" id="required-attr">
         <rule context="$elem">
             <assert test="@$attr"
-                >The <name/> element must have a <value-of select="$attr"/> attribute.</assert>            
+                >The <name/> element must have a <value-of select="'$attr'"/> attribute.</assert>            
         </rule>
     </pattern>
 
     <pattern abstract="true" id="disallowed-descendants">
         <rule context="$descendant">
             <report test="ancestor::$ancestor"
-                >The <name/> element must not appear inside <value-of select="$ancestor"/> elements.</report>            
+                >The <name/> element must not appear inside <value-of select="local-name(ancestor::$ancestor)"/> elements.</report>            
         </rule>
     </pattern>
     
     <pattern abstract="true" id="required-ancestor">
-        <rule context='$descendant'>
+        <rule context='$descendant'>            
             <assert test='ancestor::$ancestor'
-                >The <value-of select="$descendant"/> element must have an ancestor <value-of select="$ancestor"/> element.</assert>
+                >The <value-of select="replace('$descendant','h:','')"/> element must have an ancestor <value-of select="replace('$ancestor','h:','')"/> element.</assert>
         </rule>
     </pattern>
     
@@ -324,12 +320,15 @@
         <rule context="h:a|h:audio[@controls]|h:button|h:details|h:embed|h:iframe|h:img[@usemap]|h:input[not(@type='hidden')]
             |h:keygen|h:label|h:menu[@type='toolbar']|h:object[@usemap]|h:select|h:textarea|h:video[@controls]">
             <report test="ancestor::$ancestor"
-                >The <name/> element must not appear inside <value-of select="$ancestor"/> elements.</report>            
+                >The <name/> element must not appear inside <value-of select="local-name(ancestor::$ancestor)"/> elements.</report>            
         </rule>
     </pattern>
     
-    <!-- 
-        TODO aria-haspopup - check owns or descendant	
+    <!--         
+        TODO check if anything need to be added from embedded SVG11SE
+        TODO check if anything need to be added from embedded MathML3
+        TODO @max and @min    
+        TODO @role restrictions
     -->
     
 </schema>
