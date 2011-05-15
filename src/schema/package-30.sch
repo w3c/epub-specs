@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://purl.oclc.org/dsdl/schematron">
-    <!-- TODO
-        meta element values, property dependant
-        @profile, @prefix, and prefix resolution in meta/@property        
-    -->
+<schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
     
     <ns uri="http://www.idpf.org/2007/opf" prefix="opf"/>
     <ns uri="http://purl.org/dc/elements/1.1/" prefix="dc"/>
@@ -43,6 +39,21 @@
             <assert test="$item-media-type = 'application/smil+xml'"
                 >media overlay items must be of the 'application/smil+xml' type (given type was '<value-of select="$item-media-type"/>')</assert>
         </rule>            
+    </pattern>
+    
+    <pattern id="opf.media.overlay.metadata"> 
+        <rule context="opf:manifest[opf:item[@media-overlay]]">
+            <assert test="//opf:meta[@property='media:duration' and not (@about)]"
+                >global media:duration meta element not set</assert>
+        </rule>
+        <rule context="opf:manifest/opf:item[@media-overlay]">
+            <let name="mo-idref" value="@media-overlay"/>
+            <let name="mo-item" value="//opf:item[@id = $mo-idref]"/>
+            <let name="mo-item-id" value="$mo-item/@id"/>
+            <let name="mo-item-uri" value="concat('#', $mo-item-id)"/>
+            <assert test="//opf:meta[@property='media:duration' and @about = $mo-item-uri ]"
+                >item media:duration meta element not set (expecting: meta property='media:duration' about='<value-of select="$mo-item-uri"/>')</assert>
+        </rule>
     </pattern>
           
     <pattern id="opf.bindings.handler"> 
@@ -96,6 +107,32 @@
         </rule>
     </pattern>
     
+    <pattern id="opf.nav"> 
+        <rule context="opf:manifest">            
+            <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]" />            
+            <assert test="count($item) = 1"
+                >Exactly one manifest item must declare the 'nav' property (number of 'nav' items: <value-of select="count($item)"/>).</assert>                            
+        </rule> 
+        <rule context="opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]">
+            <assert test="@media-type = 'application/xhtml+xml'"
+                >The manifest item representing the Navigation Document must be of the 'application/xhtml+xml' type (given type was '<value-of select="@media-type"/>')</assert>
+        </rule>    
+    </pattern>
+    
+    <pattern id="opf.cover-image"> 
+        <rule context="opf:manifest">            
+            <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'cover-image'))]" />            
+            <assert test="count($item) &lt; 2"
+                >Multiple occurrences of the 'cover-image' property (number of 'cover-image' items: <value-of select="count($item)"/>).</assert>                            
+        </rule> 
+    </pattern>
+    
     <include href="./mod/id-unique.sch"/>     
-             
+         
+         
+    <!-- TODO
+        meta element values, property dependant
+        @profile, @prefix, and prefix resolution in meta/@property, check profile adherence and recognized unprefixed tokens        
+    -->
+    
 </schema>

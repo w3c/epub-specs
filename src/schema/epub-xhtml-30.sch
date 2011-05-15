@@ -278,7 +278,28 @@
                 >The profile attribute must be specified on the html element when the epub:type attribute is used.</report>
         </rule>
     </pattern>
+    
+    <pattern id="style-scoped">
+        <rule context="h:style[ancestor::h:body]">
+            <assert test="every $elem in preceding-sibling::* satisfies local-name($elem) eq 'style'"
+                >The scoped style element must occur before any other flow content other than other style elements and inter-element whitespace.</assert>
+        </rule>
+    </pattern>
         
+    <pattern id="link-sizes">
+        <rule context="h:link[@sizes]">
+            <assert test="@rel='icon'"
+                >The sizes attribute must not be specified on link elements that do not have a rel attribute that specifies the icon keyword.</assert>
+        </rule>
+    </pattern>   
+    
+    <pattern id="meta-charset">
+        <rule context="h:meta[@charset]">
+            <assert test="count(preceding-sibling::h:meta[@charset]) = 0"
+                >There must not be more than one meta element with a charset attribute per document.</assert>
+        </rule>
+    </pattern>
+                
     <pattern abstract="true" id="idref-any">
         <rule context="$element[@$idref-attr-name]">
             <assert test="some $elem in $id-set satisfies $elem/@id eq current()/@$idref-attr-name"
@@ -324,11 +345,13 @@
         </rule>
     </pattern>
     
+       
     <!--         
         TODO check if anything need to be added from embedded SVG11SE
         TODO check if anything need to be added from embedded MathML3
         TODO @max and @min    
         TODO @role restrictions
+        TODO A base element, if it has an href attribute, must come before any other elements in the tree that have attributes defined as taking URLs, except the html element (its manifest attribute isn't affected by base elements).        
     -->
     
 </schema>
