@@ -2269,21 +2269,30 @@
                 instances of <link xlink:href="http://www.w3.org/TR/html5/Overview.html#forms"
                     >HTML5 forms</link>.</para>
             
-            <section xml:id="sec-scripted-inclusion">
-                <title>Inclusion Models</title>
+            <section xml:id="sec-scripted-context">
+                <title>Scripting Contexts</title>
                 
-                <para xml:id="sec-scripted-content-models">In the context of <xref
-                        linkend="gloss-content-document-epub-xhtml"/>s, this specification
-                    distinguishes between two models of script inclusion:</para>
+                <para xml:id="sec-scripted-content-models">This specification
+                    defines two contexts in which scripts may appear:</para>
 
                 <variablelist>
+                    <varlistentry xml:id="sec-scripted-content-type-spine-level"
+                        xreflabel="spine-level">
+                        <term>spine-level</term>
+                        <listitem>
+                            <para>An instance of the <xref linkend="refHTML5"/> <code><link
+                                xlink:href="http://www.w3.org/TR/html5/Overview.html#the-script-element"
+                                >script</link></code> element included in a 
+                                <xref linkend="gloss-content-document-top-level"/>.</para>
+                        </listitem>
+                    </varlistentry>
                     <varlistentry xml:id="sec-scripted-content-type-container-constrained"
                         xreflabel="container-constrained">
                         <term>container-constrained</term>
                         <listitem>
-                            <para>In this model of scripting, the script execution scope is constrained to
-                                a <xref linkend="gloss-content-document-epub"/> embedded in 
-                                a parent Content Document using one of the <xref linkend="refHTML5"/>
+                            <para>An instance of the <xref linkend="refHTML5"/> <code>script</code> 
+                                element included in an <xref linkend="gloss-content-document-epub"/> 
+                                that is embedded in a parent Content Document using one of the <xref linkend="refHTML5"/>
                                 <code><link
                                         xlink:href="http://www.w3.org/TR/html5/Overview.html#the-object-element"
                                         >object</link></code>, <code><link
@@ -2293,15 +2302,59 @@
                                         >embed</link></code> elements.</para>
                         </listitem>
                     </varlistentry>
-                    <varlistentry xml:id="sec-scripted-content-type-spine-level"
-                        xreflabel="spine-level">
-                        <term>spine-level</term>
-                        <listitem>
-                            <para>In this model of scripting, the script execution scope is a <xref
-                                    linkend="gloss-content-document-top-level"/>.</para>
-                        </listitem>
-                    </varlistentry>
                 </variablelist>
+                
+                <para>In both of the above-defined contexts, whether the JavaScript code is embedded directly 
+                    in the <code>script</code> element or referenced via its <code>src</code> attribute
+                    makes no difference to the executing context.</para>
+                
+                <para>Which context a script is used in determines the rights and restrictions that a Reading
+                    System may place on it. Refer to <link linkend="sec-scripted-content-content-reqs">Content
+                    Conformance</link> and <link linkend="sec-scripted-content-rs-reqs">Reading System 
+                    Conformance</link> for some specific requirements that must be adhered to (not all
+                    Reading Systems may provide the same scripting functionality).</para>
+                
+                <bridgehead>Example</bridgehead>
+                
+                <para>Consider the following example Package Document:</para>
+                
+                <informalexample>
+                    <synopsis><xi:include href="examples/contentdocs/scriptcontext-01.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>and the following file <filename>scripted01.xhtml</filename>:</para>
+                
+                <informalexample>
+                    <synopsis><xi:include href="examples/contentdocs/scriptcontext-02.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>and the following file <filename>scripted02.xhtml</filename>:</para>
+                
+                <informalexample>
+                    <synopsis><xi:include href="examples/contentdocs/scriptcontext-03.xml" parse="text"/></synopsis>
+                </informalexample>
+                
+                <para>From these examples, it is true that:</para>
+                
+                <itemizedlist>
+                    <listitem>
+                        <para>the code in the <code>script</code> element in the <code>head</code> in 
+                            <filename>scripted01.xhtml</filename> is a spine-level script because the document is 
+                            referenced from the spine;</para>
+                    </listitem>
+                    <listitem>
+                        <para>the code in the <code>script</code> element in the <code>iframe</code> in 
+                            <filename>scripted01.xhtml</filename> is also a spine-level script because it is a fallback
+                            in case the referenced document is not available (i.e., it is part of the top-level
+                            document content);</para>
+                    </listitem>
+                    <listitem>
+                        <para>the code in the <code>script</code> element in <filename>scripted02.xhtml</filename> 
+                            is a container-constrained script because the HTML file it occurs in is included in
+                            <filename>scripted01.xhtml</filename> via the <code>iframe</code> element.</para>
+                    </listitem>
+                </itemizedlist>
+                
             </section>
 
             <section xml:id="sec-scripted-content-content-reqs"
@@ -3427,8 +3480,8 @@ alert("Feature " + feature + " supported?: " + conformTest);</synopsis>
 
                     <para>The following table details the features that must be recognized by all
                         Reading Systems that support scripting (<link
-                            linkend="sec-scripted-inclusion">spine-level</link> or <link
-                            linkend="sec-scripted-inclusion">container-constrained</link>). Reading
+                            linkend="sec-scripted-context">spine-level</link> or <link
+                            linkend="sec-scripted-context">container-constrained</link>). Reading
                         Systems may support some or all of these features (refer to <xref
                             linkend="sec-scripted-content-rs-reqs"/> for more information).</para>
 
