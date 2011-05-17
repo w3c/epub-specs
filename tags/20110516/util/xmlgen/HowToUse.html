@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!-- saved from url=(0075)file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	
+	<title>USER'S GUIDE FOR SUN XML GENERATOR</title>
+	<style>
+		.title
+		{
+			text-align:center;
+			font-weight:bold;
+		}
+		PRE
+		{
+			background-color: rgb(240,240,240);
+		}
+	</style>
+</head>
+<body>
+<p align="center"><b>
+USER'S GUIDE FOR SUN XML GENERATOR<br>
+Version 20060319<br>
+<br>
+Copyright (c) Sun Microsystems, 2001-2006</b>
+</p>
+<p><br></p>
+<p align="right">Document written by <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a> <br>
+$Id: HowToUse.html,v 1.6 2003/02/25 19:20:46 kk122374 Exp $ </p>
+<p>
+  Sun XML Generator is a tool to generate XML instances from various kinds of schemas.
+</p>
+<h1>Contents of This Document</h1>
+<ol>
+	<li><a href="file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html#quick">Quick Start</a>
+	</li><li><a href="file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html#root">Specifying the Root Element</a>
+	</li><li><a href="file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html#example">Providing Examples</a>
+	</li><li><a href="file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html#size">Controlling the Size of Documents</a>
+	</li><li><a href="file://localhost/Users/mgylling/Downloads/xmlgen-20060319%202/HowToUse.html#error">Generating Invalid Documents</a>
+<!--	<LI><A href="#custom">Writing Code to Customize Behavior</A>	-->
+</li></ol>
+
+
+
+<h1><a name="quick">Quick Start</a></h1>
+<p>
+  To generate a valid instance from a RELAX grammar, enter the following command:
+</p>
+<pre>$ java -jar xmlgen.jar myGrammar.rxg
+</pre>
+
+<p>
+  To generate 100 valid instances from a TREX pattern, enter the command:
+</p>
+<pre>$ java -jar xmlgen.jar -n 100 myPattern.trex out$.xml
+</pre>
+<p>
+  This will create out00.xml, out01.xml, ... out99.xml.
+</p>
+
+<p>
+  XML Generator is also capable of generating invalid instances.
+  The following example generates one instance(<code>invalid.xml</code>)
+  from a W3C XML Schema(<code>mine.xsd</code>).
+  The generated file is usually almost valid.
+</p>
+<pre>$ java -jar xmlgen.jar -error 1/100 mine.xsd invalid.xml
+</pre>
+<p>
+  The next example also generates an invalid instance. But this time
+  the generated instance is almost completely wrong.
+</p>
+<pre>$ java -jar xmlgen.jar -error 1/2 mine.xsd terrible.xml
+</pre>
+
+
+<a name="root">
+<h1>Specifying the Root Element</h1></a>
+<p>
+  With schema languages like XML Schema, the generator cannot tell what element should be used as the root element. Therefore, by default it picks one randomly. The "-root" option allows you to change this behavior by telling the generator to use a specific element.
+</p><p>
+  To generate XML files that start with a <code>foo</code> element of the namespace <code>http://my.name.space/</code>, specify:
+</p>
+<pre>$ java -jar xmlgen.jar mine.xsd -root {http://my.name.space/}foo
+</pre>
+<p>
+  If you are not using XML namespaces, you say
+</p>
+<pre>$ java -jar xmlgen.jar mine.xsd -root {}foo
+</pre>
+
+
+<a name="example">
+<h1>Providing Examples</h1></a>
+<p>
+  Due to the expressiveness of W3C XML Schema Part 2, sometimes it is difficult
+  to generate a string that satisfies a given datatype, especially when the type is derived with
+  many facets.
+</p>
+<p>
+  If this is the case, XML Generator reports the following error and stops.
+</p>
+<pre>unable to generate value for this datatype: XXXX
+</pre>
+<p>
+  You can provide example instances to avoid this problem. If you have a valid instance
+  <code>abc.xml</code> that conforms to <code>joe.trex</code>,
+  then enter the following command:
+</p>
+<pre>$ java -jar xmlgen.jar joe.trex <b>-example abc.xml</b>
+</pre>
+<p>
+  XML Generator will read that file and extract literals found in it. Those literals
+  are then used to generate instances. 
+  The "-example" option can be used more than once to provide additional examples.
+</p>
+<pre>$ java -jar xmlgen.jar joe.trex -example ex1.xml -example ex2.xml
+</pre>
+
+<h1><a name="intro">Controlling the Size of Documents</a></h1>
+<p>
+	The size of generated documents can be controlled with two parameters:
+	cut-back depth and width.
+</p>
+<p>
+	Cut-back depth decides how deep a document can be. Once the depth exceeds this value,
+	the generator is switched to "cut back" mode. In this mode, the generator skips any optional
+	expressions (like <code>'?'</code> or <code>'*'</code> in a DTD) and tries to stop
+	further generation.
+	Therefore if the cut-back depth is set to a bigger value,
+	generated documents tend to be big.
+</p>
+<p>
+	Width decides how many times repeatable items are repeated.
+	If you set this value to 5, then
+	<code>'*'</code> will be repeated from 0 to 5 times (uniformly distributed),
+	and <code>'+'</code> will be repeated from 1 to 6 times (uniformly distributed).
+	Therefore if width is set to a bigger value, generated documents tend to be also big.
+</p>
+<p>
+	Depending on the schema used,
+	the correlation between the size of generated documents and these parameters
+	varies.
+	So you may need to tune these parameters through trial-and-error.	
+</p>
+
+
+<h1><a name="error">Generating Invalid Documents</a></h1>
+<p>
+	Generator is capable of generating invalid instances.
+	In this mode, generator randomly inserts errors into the document.
+	Errors are made by manipulating the document according to several predefined patterns.
+</p>
+<p>
+	You can control the probability of each pattern,
+	or you can set all probabilities to the same value with the "-error" option.
+</p>
+<p>
+	Probabilities are set by a fractional number "m/n".
+	"2/100" indicates probability of 2%.
+</p>
+<p>
+	The following sub-sections enumerates each pattern and command line option to control the probability.
+</p>
+
+
+<h3>Greedy Choice</h3>
+<p>
+	A "greedy choice" error is one that selects more than one choice at a time.
+</p>
+<pre><xmp>
+Schema:
+<choice>
+  <element name="A"> .... </element>
+  <element name="B"> .... </element>
+</choice>
+
+Instance:
+<A> ... </A>
+<B> ... </B>
+</xmp></pre>
+<p>
+	This probability can be controlled through the "-error-greedyChoice" option.
+</p>
+
+
+<h3>Missing Attribute</h3>
+<p>
+	A "missing attribute" error is made by intentionally skipping a required attribute.
+	This probability can be controlled through the "-error-missingAttribute" option.
+</p>
+<pre><xmp>
+Schema:
+<element name="foo">
+  <attribute name="bar">
+  ...
+</element>
+
+Instance:
+<foo>
+   ...
+</foo>
+</xmp></pre>
+
+
+
+<h3>Missing Element</h3>
+<p>
+	A "missing element" error is made by intentionally skipping a required element.
+	This probability can be controlled through the "-error-missingElement" option.
+</p>
+
+
+
+<h3>Mutated Attribute</h3>
+<p>
+	A "mutated attribute" error is made by intentionally replacing an attribute
+	by another completely irrelevant attribute.
+	This probability can be controlled through the "-error-mutatedAttribute" option.
+</p>
+<pre><xmp>
+Schema:
+<element name="foo">
+  <attribute name="bar">
+  ...
+</element>
+...
+<attribute name="zoo" />
+
+Instance:
+<foo zoo="...">
+   ...
+</foo>
+</xmp></pre>
+
+
+
+<h3>Mutated Element</h3>
+<p>
+	A "mutated element" error is made by intentionally replacing an element
+	by another completely irrelevant element.
+	This probability can be controlled through the "-error-mutatedElement" option.
+</p>
+
+
+
+<h3>Sequence Error</h3>
+<p>
+	A "sequence error" is made by swapping the order of items of a sequence.
+	This probability can be controlled through the "-error-sequenceError" option.
+</p>
+<pre><xmp>
+Schema:
+<sequence>
+  <element name="foo"/>
+  <element name="bar"/>
+</sequence>
+
+Instance:
+<bar/>
+<foo/>
+</xmp></pre>
+
+
+<h3>Slip-in Attribute</h3>
+<p>
+	A "slip-in attribute" error is made by adding an irrelevant attribute to an element.
+	This probability can be controlled through the "-error-slipinAttribute" option.
+</p>
+<pre><xmp>
+Schema:
+<element name="foo"/>
+  <attribute name="a"/>
+  ...
+</element>
+
+Instance:
+<foo a="..." xyz="...">
+  ...
+</foo>
+</xmp></pre>
+
+
+<h3>Slip-in Element</h3>
+<p>
+	A "slip-in element" error is the element counterpart of the "slip-in attribute" error.
+	This probability can be controlled through the "-error-slipinElement" option.
+</p>
+
+
+<h3>Missing '+'</h3>
+<p>
+	A "missing plus" error is made by not generating a
+	non-optional repeatable item.
+	This probability can be controlled through the "-error-missingPlus" option.
+</p>
+<pre><xmp>
+Schema:
+<!ELEMENT foo  (a,b+,c)>
+
+Instance:
+<foo>
+  <a/><c/>
+</foo>
+</xmp></pre>
+
+
+<h3>Attribute Name Typo</h3>
+<p>
+	An "attribute name typo" error is made by modifying several characters of 
+	an attribute name.
+	This probability can be controlled through the "-error-attributeNameTypo" option.
+</p>
+<pre><xmp>
+Schema:
+<!ATTLIST foo  bar CDATA #IMPLIED>
+
+Instance:
+<foo bbr="..." />
+</xmp></pre>
+
+
+<h3>Element Name Typo</h3>
+<p>
+	An "element name typo" error is the element version of the "attribute name typo" error.
+	It is made by modifying several characters of an element name.
+	This probability can be controlled through the "-error-elementNameTypo" option.
+</p>
+
+
+
+</body></html>

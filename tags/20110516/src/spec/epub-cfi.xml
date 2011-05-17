@@ -1,0 +1,1064 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../util/docbook/schema/docbookspec.rng" type="xml"?>
+<?oxygen SCHSchema="../../util/docbook/schema/docbookspec.sch"?>
+<?oxygen SCHSchema="../../util/docbook/schema/docbook.sch"?>
+<book version="5.1" xmlns="http://docbook.org/ns/docbook" xmlns:epub="http://www.idpf.org/2011/epub"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>EPUB Canonical Fragment Identifier (epubcfi) Specification</title>
+  <info>
+    <releaseinfo>Working Group Draft</releaseinfo>
+    <pubdate>16 May 2011</pubdate>
+    <printhistory>
+      <formalpara>
+        <title>This version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/linking/cfi/epub-cfi-20110516.html" />
+        </para>
+      </formalpara>
+      <formalpara>
+        <title>Latest version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/linking/cfi/epub-cfi.html" />
+        </para>
+      </formalpara>
+      <formalpara>
+        <title>Previous version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/linking/cfi/epub-cfi-20110506.html" />
+        </para>
+      </formalpara>
+    </printhistory>
+    <releaseinfo role="diff">
+      A diff of changes from the previous Working Draft is available at
+      <link xlink:href="http://code.google.com/p/epub-revision/source/diff?spec=svn2989&amp;old=2925&amp;r=2989&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fspec%2Fepub-cfi.xml">this link</link>.
+    </releaseinfo>
+    <copyright xmlns="http://docbook.org/ns/docbook">
+      <year>2011</year>
+      <holder>International Digital Publishing Forum™</holder>
+    </copyright>
+    <xi:include href="./share/legalnotice.xml" />
+    <authorgroup>
+      <editor>
+        <personname>Peter Sorotokin</personname>
+        <affiliation>
+          <org>
+            <orgname>Adobe</orgname>
+          </org>
+        </affiliation>
+      </editor>
+      <editor>
+        <personname>Garth Conboy</personname>
+        <affiliation>
+          <org>
+            <orgname>Google Inc.</orgname>
+          </org>
+        </affiliation>
+      </editor>
+      <editor>
+        <personname>John Rivlin</personname>
+        <affiliation>
+          <org>
+            <orgname>Google Inc.</orgname>
+          </org>
+        </affiliation>
+      </editor>
+      <editor>
+        <personname>Daniel Weck</personname>
+        <affiliation>
+          <org>
+            <orgname>DAISY Consortium</orgname>
+          </org>
+        </affiliation>
+      </editor>
+    </authorgroup>
+    <abstract role="index-description">
+      <para>This specification defines a standardized method for referencing arbitrary content
+        within an EPUB 3 Publication through the use of fragment identifiers. </para>
+    </abstract>
+  </info>
+  <chapter xml:id="sec-overview">
+    <title>Overview</title>
+    <section xml:id="sec-overview-purpose-and-scope">
+      <title>Purpose and Scope</title>
+      <para xml:id="sibling-specs">This specification, EPUB Canonical Fragment Identifier (epubcfi),
+        defines a standardized method for referencing arbitrary content within an EPUB® Publication
+        through the use of fragment identifiers. </para>
+      <para>The Web has proven that the concept of hyperlinking is tremendously powerful, but EPUB
+        Publications have been denied much of the benefit that hyperlinking makes possible because
+        of the lack of a standardized scheme to link into them. Although proprietary schemes have
+        been developed and implemented for individual Reading Systems, without a commonly-understood
+        syntax there has been no way to achieve cross-platform interoperability. The functionality
+        that can see significant benefit from breaking down this barrier, however, is varied: from
+        reading location maintenance to annotation attachment to navigation, the ability to point
+        into any Publication opens a whole new dimension not previously available to developers and
+        Authors. </para>
+      <para>This specification attempts to rectify this situation by defining an arbitrary
+        structural reference that can uniquely identify any location, or simple range of locations,
+        in a Publication: the EPUB CFI. The following considerations have strongly influenced the
+        design and scope of this scheme:</para>
+      <itemizedlist>
+        <listitem>
+          <para>The mechanism used to reference content should be interoperable: references to a
+            reading position created by one Reading System should be usable by another.</para>
+        </listitem>
+        <listitem>
+          <para>Document references to EPUB content should be enabled in the same way that existing
+            hyperlinks enable references throughout the Web.</para>
+        </listitem>
+        <listitem>
+          <para>Each location in an EPUB file should be able to be identified without the need to
+            modify the document.</para>
+        </listitem>
+        <listitem>
+          <para>All fragment identifiers that reference the same logical location should be equal
+            when compared.</para>
+        </listitem>
+        <listitem>
+          <para>Comparison operations, including tests for sorting and comparison, should be able to
+            be performed without accessing the referenced files.</para>
+        </listitem>
+        <listitem>
+          <para>Simple manipulations should be possible without access to the original files (e.g.,
+            given a reference deep in a file, it should be possible to generate a reference to the
+            start of the file).</para>
+        </listitem>
+        <listitem>
+          <para>Identifier resolution should be reasonably efficient (e.g., processing of the first
+            chapter is not required to resolve a fragment identifier that points to the last
+            chapter).</para>
+        </listitem>
+        <listitem>
+          <para>References should be able to recover their target locations through parser
+            variations and document revisions.</para>
+        </listitem>
+        <listitem>
+          <para>Expression of simple, contiguous ranges should be supported.</para>
+        </listitem>
+        <listitem>
+          <para>An extensible mechanism to accommodate future reference recovery heuristics should
+            be provided.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section xml:id="sec-terminology">
+      <title>Terminology</title>
+      <para>
+        <emphasis>Please refer to the EPUB Specifications for definitions of EPUB-specific
+          terminology used in this document.</emphasis>
+      </para>
+      <glosslist>
+        <glossentry xml:id="gloss-cfi-pub">
+          <glossterm>Standard EPUB CFI</glossterm>
+          <glossdef>
+            <para>A Publication-level EPUB CFI links into an EPUB Publication. The path preceding
+              the EPUB CFI references the location of the Publication.</para>
+          </glossdef>
+        </glossentry>
+        <glossentry xml:id="gloss-cfi-intra-pub">
+          <glossterm>Intra-Publication EPUB CFI</glossterm>
+          <glossdef>
+            <para>An intra-Publication EPUB CFI allows one Content Document to reference another
+              within the same Publication. The path preceding the EPUB CFI references the current
+              Publication's Package Document.</para>
+            <para>Refer to <xref epub:spec-include="cfi" linkend="sec-intra-cfis" />
+              <olink epub:spec-include="default" targetdoc="cfi" targetptr="sec-intra-cfis"
+                type="epub-spec" /> for more information. </para>
+          </glossdef>
+        </glossentry>
+      </glosslist>
+    </section>
+    <xi:include href="./share/conformancestatements.xml" />
+  </chapter>
+  <chapter xml:id="sec-epubcfi-def">
+    <title>EPUB CFI Definition</title>
+    <section conformance="informative" xml:id="sec-epubcfi-intro">
+      <title>Introduction</title>
+      <para>A fragment identifier is the part of an IRI <xref linkend="refRFC3987" /> that defines a
+        location within a resource. Syntactically, it is the segment attached to the of end the
+        resource IRI starting with a hash (<literal>#</literal>). For HTML documents, IDs and named
+        anchors are used as fragment identifiers, while for XML documents the Shorthand XPointer
+          <xref linkend="refXPTRSH" /> notation is used to refer to a given ID.</para>
+      <para>A Canonical Fragment Identifier (CFI) is a similar construct to these, but expresses a
+        location within an EPUB Publication. For example:</para>
+      <informalexample>
+        <synopsis>book.epub#epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)</synopsis>
+      </informalexample>
+      <para>The function-like string immediately following the hash (<literal>epubcfi(…)</literal>)
+        indicates that this fragment identifier conforms to the scheme defined by this
+        specification, and the value contained in the parentheses is the syntax used to reference
+        the location within the specified Publication (<filename>demo.epub</filename>). Using the
+        processing rules defined in <xref linkend="sec-path-res" />, any Reading System can parse
+        this syntax, open the corresponding Content Document in the Publication and load the
+        specified location for the User.</para>
+      <para>A complete definition of the EPUB CFI syntax is provided in the next section.</para>
+      <note>
+        <para><literal>epub</literal> has been prepended to the name of the scheme as a more generic
+          CFI-like scheme may be defined in the future for all XML+ZIP-based file formats.</para>
+      </note>
+    </section>
+    <section xml:id="sec-epubcfi-syntax">
+      <title>Syntax</title>
+      <productionset>
+        <title>The EPUB Canonical Fragment Identifier (CFI) Syntax</title>
+        <production xml:id="epubcfi.ebnf.fragment">
+          <lhs>fragment</lhs>
+          <rhs> "epubcfi(" , ( <nonterminal def="#epubcfi.ebnf.path">path</nonterminal> |
+              <nonterminal def="#epubcfi.ebnf.range">range</nonterminal> ) , ")" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.path">
+          <lhs>path</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.step">step</nonterminal> , <nonterminal
+              def="#epubcfi.ebnf.local_path">local_path</nonterminal>
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.range">
+          <lhs>range</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.path">path</nonterminal> , "," , <nonterminal
+              def="#epubcfi.ebnf.local_path">local_path</nonterminal> , "," , <nonterminal
+              def="#epubcfi.ebnf.local_path">local_path</nonterminal>
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.local_path">
+          <lhs>local_path</lhs>
+          <rhs> { <nonterminal def="#epubcfi.ebnf.step">step</nonterminal> | "!" } , [ <nonterminal
+              def="#epubcfi.ebnf.termstep">termstep</nonterminal> ] </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.step">
+          <lhs>step</lhs>
+          <rhs> "/" , <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal> , [ "[" ,
+              <nonterminal def="#epubcfi.ebnf.assertion">assertion</nonterminal> , "]" ] </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.termstep">
+          <lhs>termstep</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.terminus">terminus</nonterminal> , [ "[" , <nonterminal
+              def="#epubcfi.ebnf.assertion">assertion</nonterminal> , "]" ] </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.terminus">
+          <lhs>terminus</lhs>
+          <rhs> ( ":" , <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal> ) | ( "@" ,
+              <nonterminal def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
+              def="#epubcfi.ebnf.number">number</nonterminal> ) | ( "~" , <nonterminal
+              def="#epubcfi.ebnf.number">number</nonterminal> ) | ( "~" , <nonterminal
+              def="#epubcfi.ebnf.number">number</nonterminal> , "@" , <nonterminal
+              def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
+              def="#epubcfi.ebnf.number">number</nonterminal> ) </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.number">
+          <lhs>number</lhs>
+          <rhs> ( <nonterminal def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal> , {
+              <nonterminal def="#epubcfi.ebnf.digit">digit</nonterminal> } , [ "." , { <nonterminal
+              def="#epubcfi.ebnf.digit">digit</nonterminal> } , <nonterminal
+              def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal> ] ) | ( <nonterminal
+              def="#epubcfi.ebnf.zero">zero</nonterminal> , "." , { <nonterminal
+              def="#epubcfi.ebnf.digit">digit</nonterminal> } , <nonterminal
+              def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal> ) </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.integer">
+          <lhs>integer</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.zero">zero</nonterminal> | ( <nonterminal
+              def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal> , { <nonterminal
+              def="#epubcfi.ebnf.digit">digit</nonterminal> } ) </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.assertion">
+          <lhs>assertion</lhs>
+          <rhs> [ <nonterminal def="#epubcfi.ebnf.csv">csv</nonterminal> ] , { <nonterminal
+              def="#epubcfi.ebnf.parameter">parameter</nonterminal> } </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.parameter">
+          <lhs>parameter</lhs>
+          <rhs> ";" , <nonterminal def="#epubcfi.ebnf.value-no-space">value-no-space</nonterminal> ,
+            "=" , <nonterminal def="#epubcfi.ebnf.csv">csv</nonterminal>
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.csv">
+          <lhs>csv</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.value">value</nonterminal> , { "," , <nonterminal
+              def="#epubcfi.ebnf.value">value</nonterminal> } </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.value">
+          <lhs>value</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.string-no-special-chars"
+              >string-no-special-chars</nonterminal>
+            <!--  | "^^" | "^[" | "^]" | "^(" | "^)" | "^," | "^;" -->
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.value-no-space">
+          <lhs>value-no-space</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.value">value</nonterminal> - ( [ <nonterminal
+              def="#epubcfi.ebnf.value">value</nonterminal> ] , <nonterminal
+              def="#epubcfi.ebnf.space">space</nonterminal> , [ <nonterminal
+              def="#epubcfi.ebnf.value">value</nonterminal> ] ) </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.string-no-special-chars">
+          <lhs>string-no-special-chars</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.string">string</nonterminal> - ( [ <nonterminal
+              def="#epubcfi.ebnf.string">string</nonterminal> ] , <nonterminal
+              def="#epubcfi.ebnf.special-chars">special-chars</nonterminal> , [ <nonterminal
+              def="#epubcfi.ebnf.string">string</nonterminal> ] ) </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.special-chars">
+          <lhs>special-chars</lhs>
+          <rhs><nonterminal def="#epubcfi.ebnf.circumflex">circumflex</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.square-brackets">square-brackets</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.parentheses">parentheses</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.comma">comma</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.semicolon">semicolon</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.equal">equal</nonterminal>
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.string">
+          <lhs>string</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.character">character</nonterminal> , { <nonterminal
+              def="#epubcfi.ebnf.character">character</nonterminal> } </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.digit">
+          <lhs>digit</lhs>
+          <rhs>
+            <nonterminal def="#epubcfi.ebnf.zero">zero</nonterminal> | <nonterminal
+              def="#epubcfi.ebnf.digit-non-zero">digit-non-zero</nonterminal>
+          </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.digit-non-zero">
+          <lhs>digit-non-zero</lhs>
+          <rhs> "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.zero">
+          <lhs>zero</lhs>
+          <rhs> "0" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.space">
+          <lhs>space</lhs>
+          <rhs> " " </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.circumflex">
+          <lhs>circumflex</lhs>
+          <rhs> "^" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.double-quote">
+          <lhs>double-quote</lhs>
+          <rhs> '"' </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.square-brackets">
+          <lhs>square-brackets</lhs>
+          <rhs> "[" | "]" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.parentheses">
+          <lhs>parentheses</lhs>
+          <rhs> "(" | ")" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.comma">
+          <lhs>comma</lhs>
+          <rhs> "," </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.semicolon">
+          <lhs>semicolon</lhs>
+          <rhs> ";" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.equal">
+          <lhs>equal</lhs>
+          <rhs> "=" </rhs>
+        </production>
+        <production xml:id="epubcfi.ebnf.character">
+          <lhs>character</lhs>
+          <rhs> ? Unicode Characters ? <lineannotation>/* . */</lineannotation>
+          </rhs>
+          <constraint linkend="unicode-chars" />
+        </production>
+      </productionset>
+      <constraintdef xml:id="unicode-chars">
+        <title>Unicode Characters</title>
+        <para> The definition of allowed Unicode characters is the same as [XML 1.0]. This excludes
+          the surrogate blocks, FFFE, and FFFF: </para>
+        <programlisting>
+<![CDATA[
+#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+]]></programlisting>
+        <para>Document authors are encouraged to avoid "compatibility characters", as defined in
+          section 2.3 of [Unicode]. The characters defined in the following ranges are also
+          discouraged. They are either control characters or permanently undefined Unicode
+          characters:</para>
+        <programlisting>
+<![CDATA[
+[#x7F-#x84], [#x86-#x9F], [#xFDD0-#xFDEF],
+[#x1FFFE-#x1FFFF], [#x2FFFE-#x2FFFF], [#x3FFFE-#x3FFFF],
+[#x4FFFE-#x4FFFF], [#x5FFFE-#x5FFFF], [#x6FFFE-#x6FFFF],
+[#x7FFFE-#x7FFFF], [#x8FFFE-#x8FFFF], [#x9FFFE-#x9FFFF],
+[#xAFFFE-#xAFFFF], [#xBFFFE-#xBFFFF], [#xCFFFE-#xCFFFF],
+[#xDFFFE-#xDFFFF], [#xEFFFE-#xEFFFF], [#xFFFFE-#xFFFFF],
+[#x10FFFE-#x10FFFF].
+]]></programlisting>
+      </constraintdef>
+      <!-- 
+                ascii-string = ascii-char { ascii-char } .
+                ascii-char     = lowercase-char | uppercase-char | digit .
+                lowercase-char = "a" | "b" | "..." | "z" .
+                uppercase-char = "A" | "B" | "..." | "Z" .
+            -->
+      <!-- production xml:id="epubcfi.ebnf.fragment">
+                <lhs>fragment</lhs>
+                <rhs -->
+      <!-- lineannotation>Comment.</lineannotation -->
+      <!-- /rhs -->
+      <!-- /production -->
+      <!-- REPLACE "xxx" with copy/paste of the EBNF production rules (using mouse from web browser) -->
+      <!-- imagedata fileref="http://data.daisy.org/projects/tobi/ebnf/ebnf.php?syntax=%22EBNF%20production%20rules%20/%20syntax%20diagram%20for%20EPUB%20CFI%20(Canonical%20Fragment%20Identifiers)%20%22{
+                xxx
+                }" format="PNG"/ -->
+      <!--
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase>EBNF production rules / syntax diagram for EPUB CFI (Canonical Fragment Identifiers)</phrase>
+                </textobject>
+                <caption>
+                <para>
+                    EBNF production rules / syntax diagram for EPUB CFI (Canonical Fragment Identifiers)
+                </para>
+                </caption>
+                </mediaobject>
+            
+             mediaobject>
+                <imageobject>
+                    <imagedata fileref="./epub-cfi-ebnf-syntax-diagram.png" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase>The EPUB Canonical Fragment Identifier (CFI) Syntax Diagram</phrase>
+                </textobject>
+                <caption>
+                    <para>
+                        The EPUB Canonical Fragment Identifier (CFI) Syntax Diagram
+                    </para>
+                </caption>
+            </mediaobject -->
+      <!-- programlisting><![CDATA[
+fragment      = "epubcfi(" , ( path | range ) , ")" ;
+
+path          = step , local_path ;
+
+range         = path , "," , local_path , "," , local_path ;
+
+local_path    = { step | "!" } , [ termstep ] ;
+
+step          = "/" , integer , [ "[" , assertion , "]" ] ;
+
+termstep      = terminus , [ "[" , assertion , "]" ] ;
+
+terminus      = (":" , integer)
+                | ("@" , number , ":" , number)
+                | ("~" , number)
+                | ("~" , number , "@" , number , ":" , number) ;
+
+number        = digit , { digit } , [ "." , digit , { digit } ] ;
+
+integer       = digit , { digit } ;
+
+assertion     = [ csv ] , parameters ;
+
+parameters    = { ";" , param_name , "=" , csv } ;
+
+param_name    = xml_id ;
+
+csv           = value , { "," , value } ;
+
+value         = string | quoted-string ;
+
+quoted-string = '"' , string , '"' ;
+
+string        = char , { char } ;
+
+digit         = "0".."9" ;
+
+char          = ? unicode characters ? ;
+
+xml_id        = ? xml identifier ? ;]]></programlisting -->
+      <para>A Canonical Fragment Identifier (CFI) consists of an initial sequence
+          <literal>epubcfi</literal> that identifies this particular reference method, and a
+        parenthesized path or range. A path is built up as a sequence of structural steps to
+        reference a location. A range is a path followed by two local (or relative) paths that
+        identify the start and end of the range.</para>
+      <para>Steps can either be navigational or terminating. Navigational steps may be repeated as
+        necessary (e.g., to count elements, to process children or to follow references). There may
+        be only one terminating step, which, if present, must be the last step in the sequence. </para>
+      <para>Substrings in brackets are extensible assertions that improve the robustness of
+        traversing paths and migrating them from one revision of the document to another. These
+        assertions preserve additional information about traversed elements of the document, which
+        makes it possible to recover intended location even after some modifications are made to the
+        Publication.</para>
+      <para>Although the <literal>value</literal> definition in the syntax above allows any a
+        sequence of characters, a circumflex (<literal>^</literal>) must be used to escape the
+        following characters to ensure their presence does not interfere with parsing:</para>
+      <itemizedlist>
+        <listitem>
+          <para>brackets (<literal>[</literal>,<literal>]</literal>)</para>
+        </listitem>
+        <listitem>
+          <para>circumflex (<literal>^</literal>)</para>
+        </listitem>
+        <listitem>
+          <para>comma (<literal>,</literal>)</para>
+        </listitem>
+        <listitem>
+          <para>parentheses (<literal>(</literal>,<literal>)</literal>)</para>
+        </listitem>
+        <listitem>
+          <para>semicolon (<literal>;</literal>)</para>
+        </listitem>
+      </itemizedlist>
+      <informalexample>
+        <para>Example of an EPUB CFI that points to a location after the text
+            <literal>2[1]</literal>.</para>
+        <synopsis>epubcfi(/6/7[chap05ref]!/4[body01]/10/2/1:3[2^[1^]])</synopsis>
+      </informalexample>
+      <para>The following rules apply to the use of numbers and integers within the path or
+        range:</para>
+      <itemizedlist>
+        <listitem>
+          <para>leading zeros are not allowed for numbers or integers (to ensure uniqueness);</para>
+        </listitem>
+        <listitem>
+          <para>trailing zeros are not allowed in the fractional part of a number;</para>
+        </listitem>
+        <listitem>
+          <para>zero must be represented as the integer <literal>0</literal>;</para>
+        </listitem>
+        <listitem>
+          <para>numbers in the range <literal>1 > N > 0</literal> must have a leading
+              <literal>0.</literal>;</para>
+        </listitem>
+        <listitem>
+          <para>integral numbers must be represented as integers.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section xml:id="sec-epubcfi-escaping">
+      <title>Character Escaping</title>
+      <para> As described in <xref linkend="sec-epubcfi-syntax" />, the EPUB CFI grammar contains
+        characters that have a special purpose as delimiters within a fragment identifier
+        expression. These characters must be escaped using the circumflex '<literal>^</literal>'
+        character when *not* used as delimiters, so that they can appear within the EPUB CFI data
+        without being mistaken for delimiters. . Depending on the usage context of such EPUB CFI,
+        further character escaping may be required in order to ensure that all
+        potentially-conflicting text tokens are encoded correctly. </para>
+      <itemizedlist>
+        <listitem>
+          <itemizedlist>
+            <para>IRI and URI references:</para>
+            <listitem>
+              <para> The EPUB CFI (fragment identifier) scheme is designed to be used within URI and
+                IRI references. The <xref linkend="refRFC3986" /> specification defines a number of
+                "reserved" characters that have a specific purpose as delimiters, and which may need
+                to be escaped in cases when they would otherwise conflict with the syntactical
+                structure of the URI/IRI reference. The character used for escaping is the percent
+                sign '<literal>%</literal>', and escapable characters get percent-encoded. For
+                example, the percent character itself becomes "<literal>%25</literal>" when it gets
+                escaped (note the difference with EPUB CFI's circumflex '<literal>^</literal>',
+                which gets escaped using a double character '<literal>^^</literal>').</para>
+            </listitem>
+            <listitem>
+              <para> Unlike IRI references, URI references require unicode characters to be
+                ASCII-encoded. Although the EPUB specification itself is based on IRIs (i.e. authors
+                and production tools are expected to use IRIs), some systems or APIs may only
+                support URIs. As a result, implementors may still need too handle the conversion of
+                IRI to URI references, as defined in <xref linkend="refRFC3987" />. Disallowed
+                characters are escaped as follows: </para>
+              <itemizedlist>
+                <listitem>
+                  <para> Each disallowed character is converted to UTF-8 <xref linkend="refRFC2279"
+                     /> as one or more bytes. The disallowed characters in URI references include
+                    all non-ASCII characters, plus the excluded characters listed in Section 2.4 of
+                      <xref linkend="refRFC2396" />, except for the number sign
+                      '<literal>#</literal>' and percent sign '<literal>%</literal>' and the square
+                    bracket characters re-allowed in <xref linkend="refRFC2732" />.</para>
+                  <para> The resulting bytes are escaped with the URI escaping mechanism (that is,
+                    converted to '<literal>%HH</literal>', where HH is the hexadecimal notation of
+                    the byte value). </para>
+                  <para> The original character is replaced by the resulting character sequence.
+                  </para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <para>(X)HTML context:</para>
+          <para> IRI references are designed to be used in the various types of documents that EPUB
+            publications comprise. XML and XHTML represent yet another insertion context that
+            requires specific character escaping rules. For example, double quote characters or
+            angle brackets conflict with significant delimiters in the markup syntax, and must
+            therefore be escaped using the <literal>&amp;xxx;</literal> special sequence (character
+            reference).</para>
+        </listitem>
+      </itemizedlist>
+      <para> When multiple layers of character escaping are applied to escape or unescape an EPUB
+        CFI, they must be applied in reverse order to revert back to the original form. For example,
+        [ EPUB-CFI -> IRI -> XHTML ] becomes [ XHTML -> IRI -> EPUB-CFI ] </para>
+      <informalexample>
+        <para>The following example shows an EPUB CFI in its "raw" form (only with
+            '<literal>^</literal>' circumflex escaping). Note the assertion text at the end of it,
+          with escaped opening square brackets as well as the escaped circumflex character itself
+          (the unescape text is 'Ф-"spa ce"-99%-aa[bb]^'):</para>
+        <synopsis>epubcfi(/6/7!/4/10/2/1:3[Ф-"spa ce"-99%-aa^[bb^]^^])</synopsis>
+      </informalexample>
+      <informalexample>
+        <para>When taking part in a IRI, the space character within the assertion may become
+          percent-escaped ('<literal>%20</literal>'), and the percent character itself must be
+          escaped ('<literal>%25</literal>'). Note that the square brackets '<literal>[</literal>'
+            '<literal>]</literal>' and semicolumn '<literal>:</literal>' are "reserved" characters
+          (as per the URI specification) but because they serve no purpose as delimiters when the
+          IRI processor extracts the fragment identifier, they do not need to be escaped (i.e. the
+          fragment component of the IRI can non-ambiguously be parsed by copying all the text after
+          the '<literal>#</literal>' character). The circumflex '<literal>^</literal>' also falls
+          within a the category of "unwise" (or "unsafe") characters, but the EPUB fragment
+          identifier scheme does not require escaping them. Here is the IRI-escaped EPUB CFI:</para>
+        <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[Ф-"spa%20ce"-99%25-aa^[bb^]^^])</synopsis>
+      </informalexample>
+      <informalexample>
+        <para>When the IRI appears within an XML attribute, the double quote character (quotation
+          mark) is significant as a delimiter of the attribute value, so it becomes escaped with
+            '<literal>&amp;#x22;</literal>'. Note that the Cyrillic "EF" character ('Ф') is directly
+          supported in EPUB XML documents (which use the UTF-8 encoding to represent the unicode
+          character repertoire), so it doesn't need to be encoded:</para>
+        <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[Ф-&amp;#x22;spa%20ce-99%25&amp;#x22;-aa^[bb^]^^])</synopsis>
+      </informalexample>
+      <informalexample>
+        <para>Should the IRI need to be converted to URI, the non-ASCII Cyrillic "EF" character
+          ('Ф') would get percent-escaped with 2 bytes ('<literal>0xd0 0xa4</literal>', in
+          hexadecimal). This would result in the following URI:</para>
+        <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3[%d0%a4-&amp;#x22;spa%20ce&amp;#x22;-99%25-aa^[bb^]^^])</synopsis>
+        <para> URI encoding / decoding APIs usually "aggressively" percent-encode characters, as
+          demonstrated in the following example. Note how the circumflexes '<literal>^</literal>'
+          (%5E), square brackets '<literal>[</literal>' (%5B) '<literal>]</literal>' (%5D) and
+          double-quotes '<literal>"</literal>' (%22) are also percent-encoded (due to their "unsafe"
+          / "unwise" nature within URIs) :</para>
+        <synopsis>book.epub#epubcfi(/6/7!/4/10/2/1:3%5B%D0%A4-%22spa%20ce%22-99%25-aa%5E%5Bbb%5E%5D%5E%5E%5D)</synopsis>
+      </informalexample>
+    </section>
+  </chapter>
+  <chapter xml:id="sec-epubcfi-processing">
+    <title>EPUB CFI Processing</title>
+    <section xml:id="sec-path-res">
+      <title>Path Resolution</title>
+      <para>The process of resolving an EPUB CFI to a location within an Publication begins with the
+        root <code>package</code> element of the Package Document. Each step in the CFI is then
+        processed one by one, left to right, applying the rules defined in the following
+        subsections.</para>
+      <note>
+        <para>The EPUB CFI examples in the following subsections are based on the sample documents
+          in <xref linkend="sec-path-examples" />.</para>
+      </note>
+      <section xml:id="sec-path-child-ref">
+        <title>Step Reference to Child Node (<literal>/</literal>)</title>
+        <para>A step with a slash (<literal>/</literal>) followed by an integer refers to a child
+          node or nodes in the following manner:</para>
+        <itemizedlist>
+          <listitem>
+            <para>Each element is assigned an <emphasis>even</emphasis> positive index: the first
+              element is given index <literal>2</literal>, the second element index
+                <literal>4</literal>, etc.</para>
+          </listitem>
+          <listitem>
+            <para>Each (possibly empty) collection of non-element nodes before the first element,
+              between elements, and after the last element are given <emphasis>odd</emphasis>
+              indices according to their position (these typically refer to the text of the
+              Publication).</para>
+          </listitem>
+          <listitem>
+            <para>Non-element nodes that are not text nodes are always ignored (for the purposes of
+              this specification, a text node includes text, CDATA sections and entity
+              references).</para>
+          </listitem>
+        </itemizedlist>
+        <para>This indexing method ensures that node identification is not sensitive to XML parser
+          handling of whitespace text nodes, CDATA sections and entity references (e.g., to avoid
+          the ambiguity that can arise depending on whether a parser collapses whitespace-only text
+          nodes, keeps text, CDATA sections and entity references as distinct nodes or doesn't, or
+          breaks text in multiple nodes).</para>
+        <para>For a <xref linkend="gloss-cfi-pub" />, the leading step in the CFI must start with a
+          slash (<literal>/</literal>) followed by an even number that references the
+            <code>spine</code> child element of the Package Document's root <code>package</code>
+          element. The Package Document traversed by the CFI must be the one specified as the
+          default rendition in the Publication's <filename>META-INF/container.xml</filename> file
+          (i.e., the Package Document referenced by the first <code>rootfile</code> element in
+            <filename>container.xml</filename>).</para>
+        <para>For an <xref linkend="gloss-cfi-intra-pub" />, the first step must start with a slash
+          followed by a node number that references a position in Package Document starting from the
+          root <code>package</code> element.</para>
+      </section>
+      <section xml:id="sec-path-xmlid">
+        <title>XML ID Assertion (<literal>[</literal>)</title>
+        <para>When an EPUB CFI references an element that contains an ID <xref linkend="refXML" />,
+          the corresponding path step must include that ID in square brackets (i.e., after the slash
+            (<literal>/</literal>) and even number that identifies the element).</para>
+        <para>Specification of identifiers adds robustness to the CFI scheme: a Reading System may
+          determine that the location referenced by the CFI is not the original intended location,
+          and may use the identifier to compute the set of steps that reach the desired destination
+          in the content (see <xref linkend="sec-target-correction" />). The cost of this added
+          robustness is that comparison (and sorting) of CFI strings may be performed only after
+          logically stripping all bracketed substrings (see <xref linkend="sec-sorting" />).</para>
+      </section>
+      <section xml:id="sec-path-indirection">
+        <title>Step Indirection (<literal>!</literal>)</title>
+        <para>A step with a leading exclamation point (<literal>!</literal>) indicates that the
+          reference must be followed and the next step applied starting from the new target node (or
+          root element node when a complete XML document is referenced).</para>
+        <para>Only the following references are honored:</para>
+        <itemizedlist>
+          <listitem>
+            <para>For <code>itemref</code> in the Package Document <code>spine</code>, the reference
+              is defined by the <code>href</code> attribute of the corresponding <code>item</code>
+              element in the <code>manifest</code> (i.e., that the <code>itemref</code>'s
+                <code>idref</code> attribute references).</para>
+          </listitem>
+          <listitem>
+            <para>For <xref linkend="refHTML5" />
+              <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-iframe-element"
+                  >iframe</link></code> and <code><link
+                  xlink:href="http://www.w3.org/TR/html5/Overview.html#the-embed-element"
+                  >embed</link></code> elements, references are defined by the <code>src</code>
+              attribute</para>
+          </listitem>
+          <listitem>
+            <para>For the <xref linkend="refHTML5" />
+              <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-object-element"
+                  >object</link></code> element, the reference is defined by the <code>data</code>
+              attribute</para>
+          </listitem>
+          <listitem>
+            <para>For <xref linkend="refSVG" />
+              <code><link xlink:href="http://www.w3.org/TR/SVG11/struct.html#ImageElement"
+                  >image</link></code> and <code><link
+                  xlink:href="http://www.w3.org/TR/SVG11/struct.html#UseElement">use</link></code>
+              elements, references are defined by the <code>xlink:href</code> attribute</para>
+          </listitem>
+        </itemizedlist>
+        <note>
+          <para>This scheme does not take into account hyperlinks, only embedding references.
+            Consequently, it is illegal to follow links from the <xref linkend="refHTML5" /> (or
+              <xref linkend="refSVG" />) <code>a</code> element.</para>
+        </note>
+      </section>
+      <section xml:id="sec-path-terminating-char">
+        <title>Terminating Step – Character Offset (<literal>:</literal>)</title>
+        <para>A terminating step with a leading colon (<literal>:</literal>) followed by an integer
+          refers to a character offset. The given character offset may apply to an element node only
+          if this element is the <xref linkend="refHTML5" />
+          <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-img-element"
+              >img</link></code> element with an <code>alt</code> attribute containing the text to
+          which the character offset applies.</para>
+        <para>For text nodes, the offset is zero-based and always refers to a position between
+          characters, so <literal>0</literal> means before the first character and a number equal to
+          the total UTF-16 length means after the last character. A character offset value greater
+          than the UTF-16 length of the available text must not be specified.</para>
+        <para>A character offset terminating step may be present only following a
+            <literal>/N</literal> step. For XHTML Content Documents, <literal>N</literal> would be
+          an even number when referencing the <code>alt</code> text of an <code>img</code> element,
+          and <literal>N</literal> would be odd when referencing text in a text node.</para>
+        <para>No other steps may follow a character offset terminating step.</para>
+      </section>
+      <section xml:id="sec-path-terminating-temporal">
+        <title>Terminating Step – Temporal Offset (<literal>~</literal>)</title>
+        <para>A terminating step with a leading tilde (<literal>~</literal>) followed by a number
+          indicates a temporal position for audio or video measured in seconds.</para>
+        <para>No other steps can follow a temporal offset terminating step.</para>
+      </section>
+      <section xml:id="sec-path-terminating-spatial">
+        <title>Terminating Step – Spatial Offset (<literal>@</literal>)</title>
+        <para>A terminating step with a leading at sign (<literal>@</literal>) followed by two
+          colon-separated numbers indicates a 2D spatial position within an image or video. The two
+          numbers represent scaled locations in the <literal>x</literal> and <literal>y</literal>
+          axes, and must be in the range <literal>0</literal> to <literal>100</literal> regardless
+          of the image's native or display dimensions (i.e., the upper left is
+            <literal>0:0</literal> and the lower right is <literal>100:100</literal>).</para>
+        <para>No other steps can follow a spatial offset terminating step.</para>
+      </section>
+      <section xml:id="sec-path-terminating-tempspatial">
+        <title>Terminating Step – Temporal-Spatial Offset (<literal>~</literal> +
+            <literal>@</literal>)</title>
+        <para>A temporal and a spatial position may be used together. In this case, the temporal
+          specification must precede the spatial one syntactically (e.g.,
+            <literal>~23.5@5.75:97.6</literal> refers to a point 23.5 seconds into a video in the
+          lower left of the frame).</para>
+        <para>No other steps can follow a temporal-spatial position terminating step.</para>
+      </section>
+      <section xml:id="sec-path-text-location">
+        <title>Text Location Assertion (<literal>[</literal>)</title>
+        <para>An EPUB CFI may specify a substring that should precede and/or follow the encountered
+          point, but such assertions must occur only after a <link
+            linkend="sec-path-terminating-char">character offset terminating step</link>.</para>
+        <para>For example, the following expression asserts that <literal>yyy</literal> is expected
+          immediately before the encountered point using the <link linkend="sec-path-examples"
+            >sample content below</link>:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3[yyy])</synopsis>
+        </informalexample>
+        <para>An additional substring that follows the encountered point can be given after a comma.
+          For example:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/1:3[xx,y])</synopsis>
+        </informalexample>
+        <para>refers to the position marked by the asterisk:</para>
+        <informalexample>
+          <synopsis><![CDATA[
+x x x y y y 0 1 2 3 4 5 6 7 8 9
+| | | * | | | | | | | | | | | |]]></synopsis>
+        </informalexample>
+        <para>If there is no preceding text, or only trailing text is specified, a comma must
+          immediately precede the text assertion:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3[,y])</synopsis>
+        </informalexample>
+        <para>There is no restriction on the amount of the preceding and following text that can be
+          included in the match. Text is taken from the document ignoring element boundaries and
+          whitespace is always collapsed (i.e., a non-empty sequence of contiguous whitespace
+          characters is always replaced with a single space character).</para>
+        <para>A Reading System may determine that the location referenced by the CFI is not the
+          original intended location (due to non-matching text), and may use the preceding/trailing
+          text to compute the set of steps that reach the desired destination in the content (see
+            <xref linkend="sec-target-correction" />). The cost of this added robustness is that
+          comparison (and sorting) of CFI strings may be performed only after logically stripping
+          all bracketed substrings (see <xref linkend="sec-sorting" />).</para>
+      </section>
+      <section xml:id="sec-path-side-bias">
+        <title>Side Bias (<literal>[</literal> + <literal>;s=</literal>)</title>
+        <para>In some situations, it is important to preserve which side of a location a reference
+          points to. For example, when resolving a location in a dynamically paginated environment,
+          it would make a difference if a location is attached to the content before or after it
+          (e.g., to determine whether to display the verso or recto side at a page break).</para>
+        <para>The <literal>s</literal> parameter is used to preserve this sided-ness aspect of a
+          location. It can take two values: <literal>b</literal> means that the location belongs
+          with the content <emphasis>before</emphasis> it and <literal>a</literal> with the content
+            <emphasis>after</emphasis>. This parameter must always be used inside square brackets at
+          the end of the CFI, even if the ID <xref linkend="refXML" /> or text location assertion is
+          empty.</para>
+        <para>The location just after <literal>yyy</literal> in the <link
+            linkend="sec-path-examples">sample content below</link> can be expressed as belonging
+          with the content before it as follows:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3[;s=b])</synopsis>
+        </informalexample>
+        <para>Equally, it can be expressed including a text location assertion as:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3[yyy;s=b])</synopsis>
+        </informalexample>
+        <para>The location at the start of <code>em</code> element can be attached to the content
+          preceding the <code>em</code> element as follows:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2[;s=b])</synopsis>
+        </informalexample>
+        <para>If the side bias in the preceding example was set to <literal>a</literal> rather than
+            <literal>b</literal>, the location would be attached to the child content of the
+            <code>em</code> element, not the content following the <code>em</code> element.</para>
+        <para>Since side bias is expressed as a parameter, it does not participate in CFI comparison
+          (see <xref linkend="sec-sorting" />).</para>
+        <para>Side is not defined for locations with spatial terminus.</para>
+        <note>
+          <para>Side bias is only meaningful when some type of break falls at the location (e.g., a
+            page break or line break).</para>
+        </note>
+      </section>
+      <section conformance="informative" xml:id="sec-path-examples">
+        <title>Examples</title>
+        <para>Given the following Package Document:</para>
+        <informalexample>
+          <synopsis><xi:include href="examples/cfi/opf-1.xml" parse="text" /></synopsis>
+        </informalexample>
+        <para>and the XHTML Content Document <filename>chapter01.xhtml</filename>:</para>
+        <informalexample>
+          <synopsis><xi:include href="examples/cfi/html-1.xml" parse="text" /></synopsis>
+        </informalexample>
+        <para>Then the EPUB CFI:</para>
+        <informalexample>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)</synopsis>
+        </informalexample>
+        <para>refers to the position right after the digit <literal>9</literal> in the paragraph
+          with the ID <literal>para05</literal>. When producing CFIs for text locations, unless the
+          text is defined by an <code>img</code> element's <code>alt</code> tag, one should always
+          start with the text node or text node collection (even if empty) that corresponds to the
+          location and then trace the ancestor and reference chain to the Package Document
+          root.</para>
+        <para>The following examples show how EPUB CFIs can be constructed to reference additional
+          content locations.</para>
+        <informalexample>
+          <para>Reference to the <code>img</code> element.</para>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/16[svgimg])</synopsis>
+        </informalexample>
+        <informalexample>
+          <para>Reference to the location just before <literal>xxx</literal>.</para>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/1:0)</synopsis>
+        </informalexample>
+        <informalexample>
+          <para>Reference to the location just before <literal>yyy</literal>.</para>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:0)</synopsis>
+        </informalexample>
+        <informalexample>
+          <para>Reference to the location just after <literal>yyy</literal>.</para>
+          <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3)</synopsis>
+        </informalexample>
+      </section>
+    </section>
+    <section xml:id="sec-sorting">
+      <title>Sorting Rules</title>
+      <para>In order to sort or compute relative locations of multiple EPUB CFIs referencing the
+        same EPUB Publication, the following rules must be applied:</para>
+      <orderedlist>
+        <listitem>
+          <para> The EPUB CFI scheme data must be in unescaped form, as per the rules described in
+              <xref linkend="sec-epubcfi-escaping" />.</para>
+        </listitem>
+        <listitem>
+          <para>all bracketed assertions are removed (ignored) entirely;</para>
+        </listitem>
+        <listitem>
+          <para>steps that come earlier in the sequence are more important;</para>
+        </listitem>
+        <listitem>
+          <para>XML child nodes, character offsets and temporal positions are sorted in natural
+            order;</para>
+        </listitem>
+        <listitem>
+          <para>the <literal>y</literal> position is more important than
+            <literal>x</literal>;</para>
+        </listitem>
+        <listitem>
+          <para>omitted spatial position precedes all other spatial positions;</para>
+        </listitem>
+        <listitem>
+          <para>omitted temporal position precedes all other temporal positions;</para>
+        </listitem>
+        <listitem>
+          <para>temporal position is more important than spatial;</para>
+        </listitem>
+        <listitem>
+          <para>different step types come in the following order from least important to most
+            important: character offset (<literal>:</literal>), child (<literal>/</literal>),
+            temporal-spatial (<literal>~</literal> or <literal>@</literal>), reference/indirect
+              (<literal>!</literal>).</para>
+        </listitem>
+      </orderedlist>
+    </section>
+    <section xml:id="sec-intra-cfis">
+      <title>Intra-Publication CFIs</title>
+      <para>An EPUB CFI can be used to reference content inside the container. This kind of
+        referencing can be achieved by specifying a reference to the Package Document followed by a
+        CFI, which must be resolved starting from the root <code>package</code> element.</para>
+      <para>For example, using the Package Document in the <link linkend="sec-path-examples"
+          >previous example</link>, a reference to the last location in
+          <filename>chapter02.xhtml</filename> might be written as follows:</para>
+      <informalexample>
+        <synopsis><![CDATA[<a href="pub.opf#epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/2/1:3[;s=b])">location</a>]]></synopsis>
+      </informalexample>
+    </section>
+    <section xml:id="sec-ranges">
+      <title>Simple Ranges</title>
+      <para>EPUB CFIs allow the expression of simple ranges extending from a start location to an
+        end location. A range must be expressed as a triple of <emphasis>parent</emphasis> path
+          (<literal>P</literal>), <emphasis>start</emphasis> subpath (<literal>S</literal>) and
+          <emphasis>end</emphasis> subpath (<literal>E</literal>), or of the form:</para>
+      <informalexample>
+        <synopsis>epubcfi(P,S,E)</synopsis>
+      </informalexample>
+      <para>The parent path must end at a step that is common for resolving both the path of the
+        start and end locations of the range, and each start and end subpath must resolve to a
+        location in non-decreasing order in the document.</para>
+      <para>To determine the start and end locations of the range, the start and end subpaths must
+        be concatenated to the parent path to create the start location path (<literal>PS</literal>)
+        and end location path (<literal>PE</literal>).</para>
+      <para>Using the <link linkend="sec-path-examples">sample documents above</link>, the following
+        range would represents the text from the second <literal>y</literal> in
+          <literal>yyy</literal> up to (and including) digit <literal>3</literal>:</para>
+      <informalexample>
+        <synopsis>epubcfi(/6/4[chap01ref]!/4[body01]/10[para05],/2/1:1,/3:4)</synopsis>
+      </informalexample>
+      <para>Ranges must be compared according to their <literal>PS</literal>, then
+          <literal>PE</literal>, components.</para>
+      <para>It is not valid to use a path to an element as a shorthand for the range from the
+        beginning to the end of the element. Single path notation always denotes a location point,
+        and range is represented by the notation described above. There is no special step to
+        produce a reference to the end of an element, as that would make sorting impossible without
+        consulting the content of the document.</para>
+      <para>If range is used where single location is expected by the context, the start location
+        must be used.</para>
+      <para>Side-bias parameters must not be used for ranges; the start of a range is implicitly
+        attached to the content after the start location and the end is implicitly attached to the
+        content before the end location.</para>
+    </section>
+    <section xml:id="sec-target-correction">
+      <title>Intended Target Location Correction</title>
+      <para>As an EPUB Publication may be updated, corrected or otherwise altered over time, it is
+        useful to be able to derive an EPUB CFI for the modified document from one that targeted a
+        previous version. This specification provides two mechanisms to detect and adapt to content
+        changes that impact CFIs: IDs <xref linkend="refXML" /> and <link
+          linkend="sec-path-text-location">text location assertions</link>.</para>
+      <para>When a Reading System is processing a CFI, it should check the correctness of any
+        encountered assertions. For example, given the path <literal>/6/4[chap01ref]!...</literal>,
+        the Reading System should verify that the element has the ID matching
+          <literal>chap01ref</literal> when processing element <literal>4</literal> (for this
+        example, an <code>itemref</code> in the <code>spine</code>). If not, the Reading System
+        should locate the ID <literal>chap01ref</literal> within the document and correct the CFI
+        (e.g., if a new <code>itemref</code> was inserted before the <literal>chap01ref</literal>
+        <code>itemref</code>, the desired element number would now be <literal>6</literal> and the
+        corrected CFI would be <literal>/6/6[chap01ref]!...</literal>). Likewise, text location
+        assertions should be used to check referenced target locations, and used to derive a
+        corrected CFI that targets the desired text location.</para>
+      <para>If one of the assertions fails during processing, and a corrected CFI can not be derived
+        (the ID is not found in the document, or text matches could not be found), the CFI must be
+        considered an invalid reference. In cases where a Reading System cannot check for
+        correctness (e.g., document-resident XML IDs are not available at CFI processing time), a
+        Reading System must ignore the CFI assertions.</para>
+      <para>This notion of correcting CFIs can lead to circumstances where two different CFIs point
+        to the same location (i.e., the "stale" CFI, pre-correction, and the corrected CFI). The
+        corrected CFI should be used where possible. A Reading System and any surrounding content
+        management system should attempt to replace stale CFIs with their corrected versions where
+        possible.</para>
+      <note>
+        <para>This specification encourages the development of custom functions to assist with CFI
+          correction where the intrinsic functionality is insufficient. Refer to <xref
+            linkend="sec-extensions" /> for more information on how to develop such
+          functionality.</para>
+      </note>
+    </section>
+  </chapter>
+  <chapter xml:id="sec-extensions">
+    <title>Extending EPUB CFIs</title>
+    <para>The provision for extensions (CSV parameter lists, prefixed by a parameter name, and
+      separated by semicolons) allow Reading Systems to apply new or experimental heuristics to
+      assist, for example, in migrating EPUB CFI fragments to updated documents.</para>
+    <para>It is recommended that any vendor-specific parameter names start with
+        <literal>vnd.</literal> followed by the vendor name.</para>
+    <para>Implementations must ignore all parameters that they do not understand or cannot
+      parse.</para>
+  </chapter>
+  <xi:include href="./share/references.xml" />
+  <appendix xml:id="DUMMY_REMOVE">
+    <!-- a dummy that is removed by the build -->
+    <title>THIS SECTION SHOULD NOT BE IN THE BUILD</title>
+    <para xml:id="confreq-spine-itemtypes" />
+    <para xml:id="sec-fallback-processing-flow" />
+    <para xml:id="sec-link-elem" />
+    <para xml:id="sec-manifest-elem" />
+    <para xml:id="sec-opf-metadata-identifiers-pid" />
+    <para xml:id="sec-package-documents" />
+    <para xml:id="sec-publication-resources" />
+    <para xml:id="sec-resource-locations" />
+    <para xml:id="sec-spine-elem" />
+    <para xml:id="sec-css" />
+    <para xml:id="sec-contentdocs" />
+    <para xml:id="physical-container-zip" />
+    <para xml:id="sec-xhtml" />
+    <para xml:id="sec-svg" />
+    <para xml:id="sec-xhtml-nav-content-conf" />
+    <para xml:id="sec-xhtml-nav" />
+    <para xml:id="sec-scripted-content" />
+  </appendix>
+</book>
