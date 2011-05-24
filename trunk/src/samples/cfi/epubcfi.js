@@ -28,6 +28,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+// Note: this is a prototype implementation that does not do complete parsing/processing
+// of CFI. You WOULD need to tighten and test it before using for production purposes.
+
 function log(error)
 {
 	if( error && window.console && window.console.log )
@@ -95,7 +98,7 @@ function encodeCFI(doc, node, offset, tail)
 			child = child.nextSibling;
 		}
 		if( node.id && node.id.match(/^[-a-zA-Z_0-9.\u007F-\uFFFF]+$/) )
-			index = index + "$" + node.id;
+			index = index + "[" + node.id + "]";
 		cfi = "/" + index + cfi;
 		node = parent;
 	}
@@ -110,7 +113,7 @@ function decodeCFI(doc, cfi)
 	
 	while(cfi.length > 0 || error)
 	{
-		if( (r = cfi.match(/^\/(\d+)(\$([-a-zA-Z_0-9.\u007F-\uFFFF]+))?/)) !== null )
+		if( (r = cfi.match(/^\/(\d+)(\[([-a-zA-Z_0-9.\u007F-\uFFFF]+)\])?/)) !== null )
 		{
 			var targetIndex = r[1] - 0;
 			var id = r[3];
@@ -177,10 +180,13 @@ function decodeCFI(doc, cfi)
 		point.y = r[3] - 0;
 		cfi = cfi.substr(r[0].length);
 	}
-	if( (r = cfi.match(/^[ab]/)) !== null )
+	if( (r = cfi.match(/^\[.*(;s=[ab])?.*\]/)) !== null ) // pretty lame
 	{
-		point.forward = r[0] == "a";
-		cfi = cfi.substr(1);
+		if( r[1] )
+		{
+			point.forward = r[0] == "s=a";
+			cfi = cfi.substr(1);
+		}
 	}
 	
 	// find correct text node
@@ -379,252 +385,53 @@ function pointFromCFI(doc, cfi)
 
 //----------- Test code --------------
 
-function ID(name)
+function showCFI(dontSeek)
 {
-	return document.getElementById(name);
+    if( window.cfi )
+    {
+		var pos = pointFromCFI(document, window.cfi);
+        var ms = document.getElementById("marker").style;
+        if( pos )
+        {
+            ms.visibility = "visible";
+            ms.top = (pos.y - 30) + window.scrollY + "px";
+            ms.left = (pos.x - 1) + window.scrollX + "px";
+            if( !dontSeek )
+            {   
+                if( typeof pos.time == "number" )
+                    pos.node.currentTime = pos.time;
+                scrollTo(0, pos.y - 30);
+            }
+        }
+    }
 }
 
-function readSelection()
+function markAndReload(evt)
 {
-	var selection = window.getSelection();
-	if( selection.rangeCount == 0 )
-	{
-		// try iframes
-		var iframes = document.getElementsByTagName("iframe");
-		for( var k = 0 ; k < iframes.length ; k++ )
-		{
-			var iframe = iframes.item(k);
-			selection = iframe.contentWindow.getSelection();
-			if( selection.rangeCount != 0 )
-				break;
-		}
-	}
-	if( selection.rangeCount == 0 )
-	{
-		ID("start").value = "";
-		ID("end").value = "";
-	}
-	else
-	{
-		var range = selection.getRangeAt(0);
-		ID("start").value = encodeCFI(document, range.startContainer, range.startOffset, "a"); // after
-		ID("end").value = encodeCFI(document, range.endContainer, range.endOffset, "b"); // before
-	}
+	window.cfi = cfiAt( document, evt.clientX, evt.clientY );
+    showCFI(true);
+    if( window.cfi )
+    {
+        setTimeout( function() {
+            location.replace( location.href.replace(/#.*$/,'') + "#epubcfi(" + window.cfi + ")" );
+        }, 1000 );
+    }
 }
-
-var useSelection;
-var hroot;
-
-function displayPosition(dontSeek)
-{
-	var pos;
-	var cfi = ID("pos").value;
-	if( cfi )
-		pos = pointFromCFI(document, cfi);
-	var ms = ID("marker").style;
-	if( pos )
-	{
-		ms.visibility = "visible";
-		ms.top = (pos.y - 30) + window.scrollY + "px";
-		ms.left = (pos.x - 1) + window.scrollX + "px";
-		if( !dontSeek && typeof pos.time == "number" )
-			pos.node.currentTime = pos.time;
-	}
-	else
-	{
-		ms.visibility = "hidden";
-	}
-}
-											   
-function highlightRange()
-{
-	if( hroot )
-	{
-		hroot.parentNode.removeChild(hroot);
-		hroot = null;
-	}
-	
-	var start = decodeCFI(document, ID("start").value);
-	var end = decodeCFI(document, ID("end").value);
-	var doc = start.node.ownerDocument;
-	if( !doc )
-		return;
-	
-	var win = doc.defaultView;
-	var range = doc.createRange();
-	if( typeof start.offset == "number" )
-		range.setStart(start.node, start.offset);
-	else
-		range.setStartBefore(start.node);
-	if( typeof end.offset == "number" )
-		range.setEnd(end.node, end.offset);
-	else
-		range.setEndBefore(end.node);
-	
-	if( useSelection )
-	{
-		// works only on desktop right now
-		var selection = win.getSelection();
-		selection.removeAllRanges();
-		selection.addRange(range);
-	}
-	else
-	{
-		hroot = doc.createElement("div");
-		doc.body.appendChild(hroot);
-		while( hroot.lastChild )
-			hroot.removeChild(hroot.lastChild);
-		// Note: there is a bug for cross-element ranges in WebKit
-		// don't bother working around for now
-		var rects = range.getClientRects();
-		for( var k = 0 ; k < rects.length ; k++ )
-		{
-			var rect = rects[k];
-			var re = doc.createElement("div");
-			var se = re.style;
-			se.position = "absolute";
-			se.top = (rect.top + win.scrollY) + "px";
-			se.left = (rect.left + win.scrollX) + "px";
-			se.width = rect.width + "px";
-			se.height = rect.height + "px";
-			se.backgroundColor = "red";
-			se.opacity = "0.2";
-			hroot.appendChild(re);
-		}
-	}
-}
-
-
 														   
-														   
-var oldData;
-
-function sendToServer()
+function hookAndScroll()
 {
-	readSelection();
-	var data = "<range start=\"" + ID("start").value + "\" end=\"" + ID("end").value +
-	   "\" pos=\"" + ID("pos").value + "\"/>";
-	if( data != oldData )
-	{
-		oldData = data;
-		var req = new XMLHttpRequest();
-		req.open("POST", "/cgi-bin/echo.bash", true);
-		req.send(data);
-	}
-}
-
-function readFromServer()
-{
-	var req = new XMLHttpRequest();
-	req.open("GET", "/cgi-bin/echo.bash?t=" + (new Date()).valueOf(), true);
-	req.onreadystatechange = function()
-	{
-		if( req.readyState == 4 && req.status == 200 )
-		{
-			var range = req.responseXML.documentElement;
-			var start = range.getAttribute("start");
-			var end = range.getAttribute("end");
-			var pos = range.getAttribute("pos");
-			if( start != ID("start").value || end != ID("end").value || pos != ID("pos").value)
-			{
-				ID("start").value = start;
-				ID("end").value = end;
-				ID("pos").value = pos;
-				highlightRange();
-				displayPosition();
-			}
-		}
-	};
-	req.send();
-}
-
-function click(evt)
-{
-	if( evt.target.localName == "input")
-		return;
-	var cfi = cfiAt( document, evt.clientX, evt.clientY );
-	ID("pos").value = cfi;
-	displayPosition(true);
-}
-
-var track = true;
-var share = false;
-var follow = false;
-
-function updateLabels()
-{
-	ID("share").value = share ? "Stop Sharing" : "Start Sharing";
-	ID("follow").value = follow ? "Stop Following" : "Start Following";
-	ID("track").value = track ? "Stop Tracking" : "Start Tracking";
-}
-
-function toggleSharing()
-{
-	if( share )
-	{
-		share = false;
-	}
-	else
-	{
-		oldData = "";
-		share = true;
-		follow = false;
-		track = false;
-	}
-	updateLabels();
-}
-
-function toggleFollowing()
-{
-	if( follow )
-	{
-		follow = false;
-	}
-	else
-	{
-		follow = true;
-		share = false;
-		track = false;
-	}
-	updateLabels();
-}
-
-function toggleSelectionTracking()
-{
-	if( track )
-	{
-		track = false;
-	}
-	else
-	{
-		follow = false;
-		share = false;
-		track = true;
-	}
-	updateLabels();
-}
-
-function doStuff()
-{
-	if( share )
-		sendToServer();
-	else if( follow )
-		readFromServer();
-	else if( track )
-		readSelection();
-}
-
-function hook()
-{
-	updateLabels();
-	setInterval(doStuff, 300);
-	window.onscroll = displayPosition;
-	window.onresize = displayPosition;
+	window.onscroll = showCFI;
+	window.onresize = showCFI;
 	var iframes = document.getElementsByTagName("iframe");
 	for( var k = 0 ; k < iframes.length ; k++ )
 	{
 		var iframe = iframes.item(k);
-		iframe.contentWindow.onscroll = displayPosition;
+		iframe.contentWindow.onscroll = showCFI;
 	}
-	useSelection = !navigator.userAgent.match( /(\(iPad;)|(\(iPod;)|(\(iPhone;)|(\sAndroid\s)/ );
+    var r = location.hash.match(/#epubcfi\((.*)\)$/);
+    if( r )
+    {
+        window.cfi = decodeURI(r[1]);
+        setTimeout(showCFI, 10);
+    }
 }
