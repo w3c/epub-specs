@@ -385,6 +385,20 @@ function pointFromCFI(doc, cfi)
 
 //----------- Test code --------------
 
+function setCurrentTime(node, time)
+{
+    if( node.currentTime === undefined )
+        return;
+    if( node.readyState == 4 )
+        node.currentTime = time;
+    else
+    {
+        node.addEventListener( "canplay", function() {
+            node.currentTime = time;        
+        }, false );
+    }
+}
+
 function showCFI(dontSeek)
 {
     if( window.cfi )
@@ -399,7 +413,7 @@ function showCFI(dontSeek)
             if( !dontSeek )
             {   
                 if( typeof pos.time == "number" )
-                    pos.node.currentTime = pos.time;
+                    setCurrentTime(pos.node, pos.time);
                 scrollTo(0, pos.y - 30);
             }
         }
