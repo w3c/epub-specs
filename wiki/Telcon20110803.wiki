@@ -27,4 +27,28 @@ http://code.google.com/p/epub-revision/issues/detail?id=148
 == Solution proposals ==
 
 === Proposal #1 ===
-_ TBD by BillK and Markus late tuesday CET _
+_ from BillK and Markus _
+
+
+==== Overview ====
+
+This proposal uses the approach of "rolling our own" syntactical solution, as opposed to (the charter-imposed) reusal of existing standards where possible. Given the current TAG activities on merging RDFa and Microdata, and given the graph problems identified with our previous minimalistic subset of RDFa (thanks Kawabata-san), it is suggested that rolling ones own is currently the best available option after all.
+
+This proposal intends to achieve these effects:
+ * zero dependency on RDFa in Package File metadata (typically achieved by reverting to local semantic definitions)
+ * as a result of the above, no implied RDF semantics, no implied RDF graph generation algorithm 
+ * introduce as minimal syntactical changes as possible, without loosing any of the current top-level functionality
+
+_(For those with an interest in representing the package file metadata as an RDF graph: it should remain possible to describe an algorithm for generating an RDF graph from the metadata. However, the EPUB spec will not define this; such an algorithm could be defined and published as a separate note or some such, if there is enough interest.)_ 
+
+==== Details ====
+The attribute collection (property, about, datatype, prefix) remains conceptually in the Package file, but no longer has any relation to RDFa, and does not carry any inherent RDF semantics. As noted below, we may/should consider some attribute name changes in order to disassociate further; alternatively an informative note that clarifies.
+
+ * *@profile* is dropped in favor of having the specs directly define predefined vocabulary prefixes _dcterms_ and _dc_ as well as the unprefixed vocabulary (which as before is the only one used without a prefix). No change in functionality, but a change in how RS detects which vocabularies are predefined
+ * *@prefix* is kept functionally (may change name), but is defined locally. In XHTML and MO, needs to be namespaced to epub:prefix.
+ * *@property* is kept functionally (may change name), but is defined locally. The suggestion is, contrary to Issue 148, to retain a single token model; we believe we currently lack both real-world usage pattern information and time to define a satisfactory model for a compact/shorthand syntax
+ * *@about* is kept functionally (may change name), but is defined locally.
+ * *@datatype* is kept functionally (may change name), but is defined locally.
+ * The W3C *CURIE* datatype is no longer referenced, but replaced by a local simplified QName-derived construct that represents the subset of CURIEs we currently use (e.g. 'dcterms:isPartOf').
+
+In XHTML and MO, *@epub:type* remains as-is, the only difference is that *@profile* is removed from these grammars, replaced by the directly-in-spec simplification as described for the Package file above.
