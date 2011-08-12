@@ -1,21 +1,26 @@
 # xmldsig11-schema.rnc
 #
-# This schema invokes "xmldsig-core-schema.rnc" and futher 
-# defines elements specific to 1.1.  Note that the definition
+# This schema complements "xmldsig-core-schema.rnc" by 
+# introducing elements specific to 1.1.  Note that the definition
 # of ds_KeyValueType, ds_KeyInfoChild, and ds_X509DataChild
-# in "xmldsig-core-schema.rnc" has been extended by the first
-# three definitions so that elements specific to 1.1 are allowed.
+# in "xmldsig-core-schema.rnc" has been extended so that 
+# elements specific to 1.1 are allowed.
 
 default namespace = "http://www.w3.org/2009/xmldsig11#"
 
 ds_KeyValueType |= dsig11_ECKeyValue
 ds_KeyInfoChild |= dsig11_DEREncodedKeyValue | dsig11_KeyInfoReference
-ds_X509DataChild |= dsig11_OCSPResponse
+ds_X509DataChild |= dsig11_OCSPResponse | dsig11_X509Digest
 ds_CanonicalizationMethodType |=
   attribute Algorithm { 
       xsd:anyURI "http://www.w3.org/2006/12/xml-c14n11"
     | xsd:anyURI "http://www.w3.org/2006/12/xml-c14n11#WithComments"
   }
+ds_TransformType |=
+    attribute Algorithm { 
+      xsd:anyURI "http://www.w3.org/2002/06/xmldsig-filter2"
+    }, 
+    external "xmldsig-filter2.rnc" +
 ds_DigestMethodType |=
     attribute Algorithm { 
       xsd:anyURI "http://www.w3.org/2001/04/xmlenc#sha256"
@@ -90,6 +95,11 @@ dsig11_KeyInfoReference = element KeyInfoReference { dsig11_KeyInfoReferenceType
 dsig11_KeyInfoReferenceType =
   attribute URI { xsd:anyURI },
   attribute Id { ds_IdType }?
+dsig11_X509Digest = dsig11_X509DigestType
+dsig11_X509DigestType =  {
+  attribute Algorithm {xsd:anyURI},
+  xsd:base64Binary
+}
 
 # List of known algorithms
 ds_CanonicalizationAlgorithms |=
@@ -112,3 +122,5 @@ ds_DigestAlgorithms |=
     xsd:anyURI "http://www.w3.org/2001/04/xmlenc#sha256"
   | xsd:anyURI "http://www.w3.org/2001/04/xmldsig-more#sha384"
   | xsd:anyURI "http://www.w3.org/2001/04/xmlenc#sha512"
+ds_TransformAlgorithms |= 
+    xsd:anyURI "http://www.w3.org/2002/06/xmldsig-filter2"
