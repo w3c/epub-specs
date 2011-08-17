@@ -44,12 +44,26 @@ Implementation of these specifications becomes much simpler if it is limited to 
 
 === 2. Define concept of page masters and page master selection ===
 
-This is a remaining portion of "SNL_R2.1 Multi-region flow".
+This is a remaining portion of "SNL_R2.1 Multi-region flow". A page master is a template for page partitioning. Page area is broken in multiple regions and content is assigned to a particular region (or a sequence of regions). This integrates naturally with the CSS Regions.
+
+Page masters are important because they allow design to be centered on the overall page; regions are placed relative to the page geometry, not relative to the content (as it is done traditional CSS layout). This also addresses the problem of conflicts between various "sidebar" elements. In traditional "long scroll" CSS layout this can be dealt with by pushing content down, but that does not always work well for paginated content. For instance, using page masters, a designer may define a page master with pull quote and a page master with sidebar. This way a sidebar will never be used on the same page with pull quote. (Alternatively, a designer could design a third page master that has both, but position pull quote and a sidebar so that they don't conflict with each other visually).
+
+Since for most rich layout documents multiple page masters are required, there is a need for page master selection mechanism. Two complimentary methods are useful: one is based on device characteristics (e.g. minimal size) and the other one based on the content (e.g. only use this page master if there is content available for this region). Content-based method requires for some sort of lookup in the not-yet-laid-out content. 
 
 === 3. Define "variables" and property calculation ===
-details tbd
+
+This addresses "SNL_R1.2 Property value calculation based on environment" and "SNL_R2.3 Page elements alignment". For complex layouts it is not sufficient to express box geometry in terms of single CSS value, even when percentages are involved. In many cases, certain reference points for layout are calculated based on the page geometry and default font size and then these points are used as a reference position to place various pieces of content on the page.
+
+Most of these issues can be resolved using one of the CSS Level 3 positioning modules (Grid Layout, Flex Box, or Templates) and calc value in CSS Level 3 Values that allows for simple expressions. This makes it simpler for hand coders, but much harder for tools that rely on precise positioning and for implementers.
+
+The alternative approach is to extend calc to allow "variables" or, more precisely, named values (calculated once and unchanged). This approach was proposed before ([http://oocss.org/spec/css-variables.html CSS Variables]), but was never standardized. There was indication at the Adaptive Layout workshop that this area will be looked at again on W3C level.
+
+If expressions and named values are defined, it also may be useful to allow one region to refer to geometry of other regions for relative positioning in the context of a page master. 
+
 === 4. Flow properties (repeated content, exclusive flows) ===
-details tbd
+
+This stems from "SNL_R2.2 Fixed (repeatable) content". Even when an element is placed in a flow, it is still displayed only once. In paginated environments, though, some parts of the layout are typically repeated (e.g. headers and footers, but in some cases sidebars as well).
+
 === 5. integration with interactivity (CSS3 Animations and Transitions) ===
 details tbd
 === 6. region-based styling (??) ===
