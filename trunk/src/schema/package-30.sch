@@ -41,11 +41,14 @@
         </rule>            
     </pattern>
     
-    <pattern id="opf.media.overlay.metadata"> 
+    <pattern id="opf.media.overlay.metadata.global"> 
         <rule context="opf:manifest[opf:item[@media-overlay]]">
             <assert test="//opf:meta[@property='media:duration' and not (@about)]"
                 >global media:duration meta element not set</assert>
-        </rule>
+        </rule>        
+    </pattern>
+    
+    <pattern id="opf.media.overlay.metadata.item">
         <rule context="opf:manifest/opf:item[@media-overlay]">
             <let name="mo-idref" value="@media-overlay"/>
             <let name="mo-item" value="//opf:item[@id = $mo-idref]"/>
@@ -107,12 +110,15 @@
         </rule>
     </pattern>
     
-    <pattern id="opf.nav"> 
+    <pattern id="opf.nav.prop"> 
         <rule context="opf:manifest">            
             <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]" />            
             <assert test="count($item) = 1"
                 >Exactly one manifest item must declare the 'nav' property (number of 'nav' items: <value-of select="count($item)"/>).</assert>                            
         </rule> 
+    </pattern>
+    
+    <pattern id="opf.nav.type"> 
         <rule context="opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]">
             <assert test="@media-type = 'application/xhtml+xml'"
                 >The manifest item representing the Navigation Document must be of the 'application/xhtml+xml' type (given type was '<value-of select="@media-type"/>')</assert>
