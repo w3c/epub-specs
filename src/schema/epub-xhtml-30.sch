@@ -6,7 +6,8 @@
     <ns uri="http://www.w3.org/1998/Math/MathML" prefix="math"/>
     <ns uri="http://www.w3.org/2001/10/synthesis" prefix="ssml"/>
     <ns uri="http://www.w3.org/2001/xml-events" prefix="ev"/>
-        
+    <ns uri="http://www.w3.org/2000/svg" prefix="svg" />
+    
     <let name="id-set" value="//*[@id]"/>
     
     <pattern id="ancestor-area-map" is-a="required-ancestor">        
@@ -121,7 +122,12 @@
         <param name="ancestor" value="math:annotation-xml[@encoding='application/xhtml+xml' and @name='alternate-representation']"/>
         <param name="descendant" value="math:*"/>        
     </pattern>
-
+    
+    <pattern id="descendant-svgtitle-svg" is-a="disallowed-descendants">        
+        <param name="ancestor" value="svg:title"/>
+        <param name="descendant" value="svg:*"/>        
+    </pattern>
+    
     <pattern id="bdo-dir" is-a="required-attr">
         <param name="elem" value="h:bdo"/>
         <param name="attr" value="dir"/>
@@ -279,14 +285,7 @@
                 >The ssml:ph attribute must not be specified on a descendant of an element that also carries this attribute.</report>
         </rule>            
     </pattern>
-    
-    <pattern id="profile">        
-        <rule context="h:html[not(@profile)]">
-            <report test="//*[@epub:type]"
-                >The profile attribute must be specified on the html element when the epub:type attribute is used.</report>
-        </rule>
-    </pattern>
-    
+            
     <pattern id="style-scoped">
         <rule context="h:style[ancestor::h:body]">
             <assert test="every $elem in preceding-sibling::* satisfies local-name($elem) eq 'style'"
@@ -320,7 +319,7 @@
         <rule context="$element[@$idref-attr-name]">            
             <assert test="//$target-name[@id = current()/@$idref-attr-name]">The <name
                     path="@$idref-attr-name"/> attribute does not refer to an allowed target element (expecting: <value-of 
-                        select="replace('$target-name','h:','')"/>).</assert>
+                    select="replace('$target-name','h:','')"/>).</assert>
         </rule>
     </pattern>
 
@@ -352,5 +351,7 @@
                 >The <name/> element must not appear inside <value-of select="local-name(ancestor::$ancestor)"/> elements.</report>            
         </rule>
     </pattern>
+    
+    <include href="./mod/epub-svg11-re.sch"/>
     
 </schema>

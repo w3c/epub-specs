@@ -12,6 +12,20 @@
         </rule>    
     </pattern>
     
+    <pattern id="opf.dcterms.modified">
+        <rule context="opf:metadata">            
+            <assert test="count(opf:meta[@property='dcterms:modified' and not(@refines)]) = 1"
+                >package dcterms:modified meta element must occur exactly once</assert>            
+        </rule>        
+    </pattern>
+    
+    <pattern id="opf.dcterms.modified.syntax">
+        <rule context="opf:meta[@property='dcterms:modified']">            
+            <assert test="matches(normalize-space(.), '^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z$')"
+                >dcterms:modified illegal syntax (expecting: 'CCYY-MM-DDThh:mm:ssZ')</assert>            
+        </rule>
+    </pattern>    
+    
     <pattern id="opf.itemref">        
         <rule context="opf:spine/opf:itemref[@idref]">    
             <let name="ref" value="./@idref" />            
@@ -43,7 +57,7 @@
     
     <pattern id="opf.media.overlay.metadata.global"> 
         <rule context="opf:manifest[opf:item[@media-overlay]]">
-            <assert test="//opf:meta[@property='media:duration' and not (@about)]"
+            <assert test="//opf:meta[@property='media:duration' and not (@refines)]"
                 >global media:duration meta element not set</assert>
         </rule>        
     </pattern>
@@ -54,8 +68,8 @@
             <let name="mo-item" value="//opf:item[@id = $mo-idref]"/>
             <let name="mo-item-id" value="$mo-item/@id"/>
             <let name="mo-item-uri" value="concat('#', $mo-item-id)"/>
-            <assert test="//opf:meta[@property='media:duration' and @about = $mo-item-uri ]"
-                >item media:duration meta element not set (expecting: meta property='media:duration' about='<value-of select="$mo-item-uri"/>')</assert>
+            <assert test="//opf:meta[@property='media:duration' and @refines = $mo-item-uri ]"
+                >item media:duration meta element not set (expecting: meta property='media:duration' refines='<value-of select="$mo-item-uri"/>')</assert>
         </rule>
     </pattern>
           
@@ -78,38 +92,14 @@
                 >spine element toc attribute must reference the NCX manifest item (referenced media type was '<value-of select="$item-media-type"/>')</assert>
         </rule>            
     </pattern>    
+    
+    <pattern id="opf.toc.ncx.2">     
+        <rule context="opf:item[@media-type='application/x-dtbncx+xml']">
+            <assert test="//opf:spine[@toc]"
+                >spine element toc attribute must be set when an NCX is included in the publication</assert>
+        </rule>    
+    </pattern>    
         
-    <pattern id="opf.dc.override" abstract="true"> 
-        <rule context="$dc">            
-            <let name="ref" value="./@opf:override" />            
-            <let name="meta" value="/opf:package/opf:metadata/opf:meta[@id = $ref]"/>
-            <assert test="$meta/@property = '$prop'"
-                >opf:override attribute on a <name /> element must resolve to a meta element with the equivalent dcterms property (given property was <value-of select="$meta/@property"/>)</assert>
-        </rule>            
-    </pattern>
-    
-    <pattern id="opf.dc.identifier.override" is-a="opf.dc.override">
-        <param name="prop" value="dcterms:identifier"/>
-        <param name="dc" value="/opf:package/opf:metadata/dc:identifier[@opf:override]"/>           
-    </pattern>
-    
-    <pattern id="opf.dc.title.override" is-a="opf.dc.override">
-        <param name="prop" value="dcterms:title"/>
-        <param name="dc" value="/opf:package/opf:metadata/dc:title[@opf:override]"/>           
-    </pattern>
-    
-    <pattern id="opf.dc.language.override" is-a="opf.dc.override">
-        <param name="prop" value="dcterms:language"/>
-        <param name="dc" value="/opf:package/opf:metadata/dc:language[@opf:override]"/>           
-    </pattern>
-    
-    <pattern id="opf.scheme-datatype">
-        <rule context="opf:meta[@property='scheme']">
-            <assert test="@datatype">scheme property must include a datatype attribute.</assert>
-            <assert test="@datatype='xsd:anyURI' or @datatype='xsd:string'">scheme property datatype must of the type 'xsd:string' or 'xsd:anyURI'.</assert>
-        </rule>
-    </pattern>
-    
     <pattern id="opf.nav.prop"> 
         <rule context="opf:manifest">            
             <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]" />            
@@ -135,10 +125,5 @@
     
     <include href="./mod/id-unique.sch"/>     
          
-         
-    <!-- TODO
-        meta element values, property dependant
-        @profile, @prefix, and prefix resolution in meta/@property, check profile adherence and recognized unprefixed tokens        
-    -->
-    
+             
 </schema>
