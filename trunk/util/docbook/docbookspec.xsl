@@ -99,9 +99,9 @@
                 </xsl:for-each>
             </xsl:element>
         </xsl:if>
-        
+
         <!-- diff -->
-        
+
         <xsl:if test="$topinfo/db:releaseinfo[@role='diff']">
             <xsl:element name="p">
                 <xsl:attribute name="class">diff</xsl:attribute>
@@ -374,24 +374,26 @@
 
     <!-- ==================================================================== -->
     <!-- override to add @id to element instead of child anchor -->
-    
+
     <xsl:template name="formal.object">
         <xsl:param name="placement" select="'before'"/>
         <xsl:param name="class">
             <xsl:apply-templates select="." mode="class.value"/>
         </xsl:param>
-        
+
         <xsl:call-template name="id.warning"/>
-        
+
         <xsl:variable name="content">
             <xsl:element name="div">
-                <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
+                <xsl:attribute name="class">
+                    <xsl:value-of select="$class"/>
+                </xsl:attribute>
                 <xsl:apply-templates select="." mode="common.html.attributes"/>
-                
+
                 <xsl:call-template name="anchor">
                     <xsl:with-param name="conditional" select="0"/>
                 </xsl:call-template>
-                
+
                 <xsl:choose>
                     <xsl:when test="$placement = 'before'">
                         <xsl:call-template name="formal.object.heading"/>
@@ -404,19 +406,25 @@
                         <xsl:if test="local-name(.) = 'table'">
                             <xsl:call-template name="table.longdesc"/>
                         </xsl:if>
-                        
-                        <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
+
+                        <xsl:if test="$spacing.paras != 0">
+                            <p/>
+                        </xsl:if>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:if test="$spacing.paras != 0"><p/></xsl:if>
-                        <div class="{$class}-contents"><xsl:apply-templates/></div>
+                        <xsl:if test="$spacing.paras != 0">
+                            <p/>
+                        </xsl:if>
+                        <div class="{$class}-contents">
+                            <xsl:apply-templates/>
+                        </div>
                         <!-- HACK: This doesn't belong inside formal.object; it 
                             should be done by the table template, but I want 
                             the link to be inside the DIV, so... -->
                         <xsl:if test="local-name(.) = 'table'">
                             <xsl:call-template name="table.longdesc"/>
                         </xsl:if>
-                        
+
                         <xsl:call-template name="formal.object.heading"/>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -425,15 +433,16 @@
                 <br class="{$class}-break"/>
             </xsl:if>
         </xsl:variable>
-        
+
         <xsl:variable name="floatstyle">
             <xsl:call-template name="floatstyle"/>
         </xsl:variable>
-        
+
         <xsl:choose>
             <xsl:when test="$floatstyle != ''">
                 <xsl:call-template name="floater">
-                    <xsl:with-param name="class"><xsl:value-of select="$class"/>-float</xsl:with-param>
+                    <xsl:with-param name="class"><xsl:value-of select="$class"
+                        />-float</xsl:with-param>
                     <xsl:with-param name="floatstyle" select="$floatstyle"/>
                     <xsl:with-param name="content" select="$content"/>
                 </xsl:call-template>
@@ -442,7 +451,7 @@
                 <xsl:copy-of select="$content"/>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
 
     <!-- ============================================================================= -->
@@ -1218,20 +1227,20 @@
                 <xsl:apply-templates select="d:rhs"/>
                 <xsl:copy-of select="$ebnf.statement.terminator"/>
             </td>
+            <td align="{$direction.align.start}" valign="top">
+                <xsl:choose>
+                    <xsl:when test="d:rhs/d:lineannotation|d:constraint">
+                        <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
+                        <xsl:apply-templates select="d:constraint"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>&#160;</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </td>
 
         </tr>
     </xsl:template>
-    <!-- td align="{$direction.align.start}" valign="top">
-            <xsl:choose>
-            <xsl:when test="d:rhs/d:lineannotation|d:constraint">
-            <xsl:apply-templates select="d:rhs/d:lineannotation" mode="rhslo"/>
-            <xsl:apply-templates select="d:constraint"/>
-            </xsl:when>
-            <xsl:otherwise>
-            <xsl:text>&#160;</xsl:text>
-            </xsl:otherwise>
-            </xsl:choose>
-            </td -->
     <xsl:template match="d:lhs">
         <a>
             <xsl:attribute name="href">

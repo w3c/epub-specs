@@ -1,3 +1,11 @@
+# xenc-schema-11.rnc (derived from xenc-schema.xsd)
+#
+# This schema complements "xenc-schema.rnc" by introducing 
+# elements specific to 1.1.  Note that the definitions of
+# xenc_EncryptionMethodOtherParams and 
+# xenc_AgreementMethodParams have been extended so that 
+# elements specific to 1.1 are allowed.
+
 default namespace = "http://www.w3.org/2009/xmlenc11#"
 namespace ds = "http://www.w3.org/2000/09/xmldsig#"
 namespace xenc = "http://www.w3.org/2001/04/xmlenc#"
@@ -31,12 +39,10 @@ xenc11_KeyDerivationMethodType =
 xenc11_PBKDF2-params =
   element PBKDF2-params { xenc11_PBKDF2ParameterType }
 xenc11_AlgorithmIdentifierType =
-  attribute Algorithm { text }?,
-  element Parameters { anyAttribute*, mixed { anyElement* } }?
+  attribute Algorithm { xsd:anyURI }?,
+  element Parameters { security_anyAttribute*, mixed { security_anyElement* } }?
 xenc11_PRFAlgorithmIdentifierType =
   # Restricts xenc11:AlgorithmIdentifierType
-  
-  ## default value: http://www.w3.org/2000/09/xmldsig#hmac-sha1
   attribute Algorithm { xsd:anyURI }?
 xenc11_PBKDF2ParameterType =
   element Salt {
@@ -51,40 +57,32 @@ xenc11_IdType = xsd:NCName # xsd:ID does not work
 
 xenc_EncryptionMethodOtherParams |= 
   attribute Algorithm {
+# Block Encryption
     xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes128-gcm"
-    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes256-gcm" }
-
-xenc11_AgreementMethodParams =
-    (attribute Algorithm { xsd:anyURI "http://www.w3.org/2001/04/xmlenc#dh" },
-     ds_DigestMethod)
-  | attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es" }
-  | attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES" }
-
-xenc_EncryptionMethodOtherParams |=  
-  attribute Algorithm { 
-      xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
+    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+# Symmetric Key Wrap
+    | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
     | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-192-pad"
     | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-256-pad"
   }
 
-xenc11_KeyDerivationAlgorithms = 
-    xsd:anyURI "http://www.w3.org/2009/xmlenc11#ConcatKDF"
-  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#pbkdf2"
+xenc_AgreementMethodParams |=
+    attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es" }
+  | attribute Algorithm { xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES" }
 
-xenc11_AgreementAlgorithms = 
-    xsd:anyURI "http://www.w3.org/2001/04/xmlenc#dh"
-  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es"
-  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES"
 
+# List of known algorithms
 xenc_EncryptionAlgorithms |=
+# Block Encryption
     xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes128-gcm"
   | xsd:anyURI "http://www.w3.org/2009/xmlenc11#aes256-gcm"
-
+# Symmetric Key Wrap
+  |  xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-192-pad"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-256-pad"
 xenc_KeyAgreementAlgorithms |= 
     xsd:anyURI "http://www.w3.org/2009/xmlenc11#dh-es"
   | xsd:anyURI "http://www.w3.org/2009/xmlenc11#ECDH-ES"
-
-xenc_EncryptionAlgorithms |=
-    xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-128-pad"
-  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-192-pad"
-  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#kw-aes-256-pad"
+xenc11_KeyDerivationAlgorithms = 
+    xsd:anyURI "http://www.w3.org/2009/xmlenc11#ConcatKDF"
+  | xsd:anyURI "http://www.w3.org/2009/xmlenc11#pbkdf2"
