@@ -5,12 +5,5 @@
     <ns uri="http://www.w3.org/ns/SMIL" prefix="s"/>
           
     <include href="./mod/id-unique.sch"/>     
-    
-    <pattern id="profile">        
-        <rule context="*[@epub:type]">
-            <assert test="ancestor-or-self::s:smil[@profile]"
-                >The profile attribute must be specified on the root element when the epub:type attribute is used.</assert>
-        </rule>            
-    </pattern>
-    
+            
 </schema>
