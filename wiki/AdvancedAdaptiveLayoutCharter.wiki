@@ -38,40 +38,40 @@ Leads of this working group will be: _TBD_
 
 == Initial Direction ==
 
-This provides more specific direction to address a large subset of our original requirements listed below. One underlying assumption is that all new features should be implementable on top of the modern browser engines, without need to rework their internals.
+This section provides more specific direction to address a large subset of the original requirements listed below (see _Original EPUB 3 WG Requirements_). One underlying assumption is that all new features should be implementable on top of the modern browser engines, without need to rework their internals.
 
 === 1. Integrate with subset of CSS3 Regions and CSS3 Exclusions ===
 _ Priority: high _
 
 This is a portion of "SNL_R2.1 Multi-region flow". There are two new CSS Level 3 Modules: [http://www.w3.org/TR/css3-regions/ CSS Regions]  and [http://dev.w3.org/csswg/css3-exclusions/ CSS Exclusions]. These modules are still in the early stages on the standardization track, but there are already implementations being done.
 
-CSS Regions introduce a concepts of flow and region. Flow is a sequence of content (potentially from many parts of the document) and region is an area where flow can be presented. Flow can go from one region to the next, much like content flows from one column to the next in multi-column layout.
+CSS Regions introduce a concepts of flow and region. Flow is a sequence of content (potentially from many parts of the document) and region is an area where flow can be presented. Flow can proceed from one region to the next, much like content flows from one column to the next in multi-column layout.
 
-CSS Exclusions define a way to position an exclusion area (generalization of CSS2 float) and give it a more complex shape (not just a rectangle).
+CSS Exclusions define a way to position an exclusion area (generalization of CSS2 float) and give it a more complex shape (not just rectangular).
 
 Implementation of these specifications becomes much simpler if it is limited to only apply to the components of a page master (see next subsection), hence a proposal to subset it.
 
 === 2. Define concept of page masters and page master selection ===
 _ Priority: high _
 
-This is a remaining portion of "SNL_R2.1 Multi-region flow". A page master is a template for page partitioning. Page area is broken in multiple regions and content is assigned to a particular region (or a sequence of regions). This integrates naturally with the CSS Regions.
+This is a remaining portion of "SNL_R2.1 Multi-region flow". A page master is a template for page partitioning. Page area is broken in multiple regions and content is assigned to a particular region (or sequence of regions). This integrates naturally with CSS Regions.
 
-Page masters are important because they allow design to be centered on the overall page; regions are placed relative to the page geometry, not relative to the content (as it is done traditional CSS layout). This also addresses the problem of conflicts between various "sidebar" elements. In traditional "long scroll" CSS layout this can be dealt with by pushing content down, but that does not always work well for paginated content. For instance, using page masters, a designer may define a page master with pull quote and a page master with sidebar. This way a sidebar will never be used on the same page with pull quote. (Alternatively, a designer could design a third page master that has both, but position pull quote and a sidebar so that they don't conflict with each other visually).
+Page masters are important because they allow design to be centered on the overall page; regions are placed relative to the page geometry, not relative to the content (as it is done traditional CSS layout). This also addresses the problem of conflicts between various "sidebar" elements. In traditional "long scroll" CSS layout this can be dealt with by pushing content down, but that does not always work well for paginated content. For instance, using page masters, a designer may define a page master with a pull quote and a page master with sidebar. This way a sidebar will never be used on the same page with pull quote. (Alternatively, a designer could design a third page master that has both, but position the pull quote and the sidebar so that they don't conflict with each other visually).
 
-Since for most rich layout documents multiple page masters are required, there is a need for page master selection mechanism. Two complimentary methods are useful: one is based on device characteristics (e.g. minimal size) and the other one based on the content (e.g. only use this page master if there is content available for this region). Content-based method requires for some sort of lookup in the not-yet-laid-out content. 
+Since for most rich layout documents multiple page masters are required, there is a need for page master selection mechanism. Two complimentary methods are useful: one is based on device characteristics (e.g. minimal size) and the other one based on the content (e.g. only use this page master if there is content available for this region). The content-based method requires some sort of lookup in the not-yet-laid-out content. 
 
 === 3. Define "variables" and property calculation ===
 _ Priority: high _
 
-This addresses "SNL_R1.2 Property value calculation based on environment", "SNL_R2.3 Page elements alignment", and "SNL_R2.5 Dynamic formatting based on intersection of multiple properties". For complex layouts it is not sufficient to express box geometry in terms of single CSS value, even when percentages are involved. In many cases, certain reference points for layout are calculated based on the page geometry and default font size and then these points are used as a reference position to place various pieces of content on the page.
+This addresses "SNL_R1.2 Property value calculation based on environment", "SNL_R2.3 Page elements alignment", and "SNL_R2.5 Dynamic formatting based on intersection of multiple properties". For complex layouts, it is not sufficient to express box geometry in terms of single CSS value, even when using percentages. In many cases, certain reference points for layout are calculated based on the page geometry and the default font size and then these values are used as a reference position to place various pieces of content on the page.
 
-Most of these issues can be resolved using one of the CSS Level 3 positioning modules (Grid Layout, Flex Box, or Templates) and calc value in CSS Level 3 Values that allows for simple expressions. This makes it simpler for hand coders, but much harder for tools that rely on precise positioning and for implementers.
+Most of these issues can be resolved using one of the CSS Level 3 positioning modules (Grid Layout, Flex Box, or Templates) and calc value in CSS Level 3 Values that allows for simple expressions. This makes it simpler for hand coders, but much harder for tools and tools implementers that rely on precise positioning.
 
 The alternative approach is to extend calc to allow "variables" or, more precisely, named values (calculated once and unchanged). This approach was proposed before ([http://oocss.org/spec/css-variables.html CSS Variables]), but was never standardized. There was indication at the Adaptive Layout workshop that this area will be looked at again on W3C level.
 
 If expressions and named values are defined, it also may be useful to allow one region to refer to geometry of other regions for relative positioning in the context of a page master. 
 
-Yet another convenience feature is to be able to use named values in media-query-like conditional styling.
+Yet another convenience feature would be able to use named values in media-query-like conditional styling.
 
 === 4. Flow properties (repeated content, exclusive flows) ===
 _ Priority: high _
@@ -81,7 +81,7 @@ This stems from "SNL_R2.2 Fixed (repeatable) content". Even when an element is p
 === 5. integration with interactivity (CSS3 Animations and Transitions) ===
 _ Priority: medium (??) _
 
-Modern tablet devices typically have screen sizes which are smaller than a typical magazine page. On the other hand, electronic devices provide some level of interactivity which is completely missing in paper. A trend can be observed to use interactivity as an additional "axis" in the layout to overcome space limitations imposed by the device screens and provide more engaging experience for the reader. "SNL_R3.11 Expando Image Support" is a good example: if there is not enough space for the image, it makes sense to make image zoomable. Another example is to stack several pieces of content on top of each other and present relevant one on demand (for instance a movie review might have actor names linked to their pictures which are presented in a sidebar when the link is activated).
+Modern tablet devices typically have screen sizes which are smaller than a typical magazine page. On the other hand, electronic devices provide some level of interactivity which is completely missing in paper. A trend can be observed to use interactivity as an additional "axis" in the layout to overcome space limitations imposed by the device screens and provide more engaging experience for the reader. "SNL_R3.11 Expando Image Support" is a good example: if there is not enough space for the image, it makes sense to make image zoomable. Another example is to stack several pieces of content on top of each other and present the relevant one on demand (for instance a movie review might have actor names linked to their pictures which are presented in a sidebar when the link is activated).
 
 Mixing rich layout and scripting is somewhat challenging, especially if the layout itself is implemented on top of the browser engine. Fortunately, a lot of the visual effects can be encoded using CSS Transitions and CSS Animation Level 3 modules, which are widely implemented. What's missing is a declarative trigger that could apply CSS properties when certain UI gestures are performed.
 
