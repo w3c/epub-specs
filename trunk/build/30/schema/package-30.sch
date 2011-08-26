@@ -26,6 +26,14 @@
         </rule>
     </pattern>    
     
+    <pattern id="opf.refines.relative">
+        <rule context="*[@refines and starts-with(@refines,'#')]">
+            <let name="refines-target-id" value="substring(@refines, 2)" />
+            <assert test="//*[@id=$refines-target-id]"
+                >@refines missing target id: '<value-of select="$refines-target-id"/>'</assert>
+        </rule>
+    </pattern>
+    
     <pattern id="opf.itemref">        
         <rule context="opf:spine/opf:itemref[@idref]">    
             <let name="ref" value="./@idref" />            
