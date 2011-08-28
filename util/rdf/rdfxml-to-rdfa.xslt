@@ -37,14 +37,14 @@
 		select="//rdf:Description[@rdf:about=$vocab-uri]|//rdf:Description[@rdf:about='']|//rdf:Description[@rdf:about='.']"/>
 
 	<xsl:template match="rdf:RDF">
-		<html lang="en-US" xml:lang="en-US"
-			prefix="dcterms: http://purl.org/dc/terms/ 
-  			owl: http://www.w3.org/2002/07/owl#
-  			rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  			rdfs: http://www.w3.org/2000/01/rdf-schema#
-  			xsd: http://www.w3.org/2001/XMLSchema 
-  			role: http://www.w3.org/1999/xhtml/vocab#
-  			htu: http://www.daisy.org/ns/rdf/usage/html/#">
+		<html xml:lang="en-US" version="XHTML+RDFa 1.0"
+			xmlns:dcterms="http://purl.org/dc/terms/" 
+  			xmlns:owl="http://www.w3.org/2002/07/owl#"
+  			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  			xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  			xmlns:role="http://www.w3.org/1999/xhtml/vocab#"
+  			xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#">
 			<head>
 				<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 				<xsl:for-each select="$vocab-rdf-description/*">
