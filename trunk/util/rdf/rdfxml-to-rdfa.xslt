@@ -97,6 +97,12 @@
 					
 					<p>Changes to this vocabulary will only occur in conjunction with revisions to the 
 						EPUB suite of specifications.</p>
+					
+					<p>New terms may be introduced at any time for experimental purposes, however.
+						All such terms will be clearly marked with the label <strong class="experimental">[experimental]</strong>.
+						Experimental terms are likewise subject to removal at any time, and may remain 
+						designated as experimental across revisions to the EPUB specifications.</p>
+					
 					<p>Properties defined in this vocabulary may be deprecated over time but will not be 
 						removed.</p>
 					
