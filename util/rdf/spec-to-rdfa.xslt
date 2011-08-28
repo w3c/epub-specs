@@ -15,8 +15,11 @@
 	<xsl:param name="vocab-name" required="yes"/>
 	
 	<xsl:template match="/">
-		<html lang="en-US" xml:lang="en-US" version="XHTML+RDFa 1.1"
-			prefix="dcterms: http://purl.org/dc/terms/ rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema">
+		<html xml:lang="en-US" version="XHTML+RDFa 1.0"
+			xmlns:dcterms="http://purl.org/dc/terms/"
+			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 			<head>
 				<xsl:apply-templates select="xhtm:html/xhtm:head/*"/>
 			</head>
