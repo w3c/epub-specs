@@ -103,8 +103,7 @@
 						Experimental terms are likewise subject to removal at any time, and may remain 
 						designated as experimental across revisions to the EPUB specifications.</p>
 					
-					<p>Properties defined in this vocabulary may be deprecated over time but will not be 
-						removed.</p>
+					<p>Officially recognized terms may be deprecated but will not be removed.</p>
 					
 					<!--  				  				
   				<p class="vocab-date">Document last modified: <xsl:value-of select="//rdf:Description[@rdf:about=$vocab-uri]/dcterms:modified"
