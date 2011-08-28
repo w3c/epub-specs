@@ -13,6 +13,19 @@
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="xhtml:html">
+		<html xml:lang="en-US" version="XHTML+RDFa 1.0"
+			xmlns:dcterms="http://purl.org/dc/terms/" 
+  			xmlns:owl="http://www.w3.org/2002/07/owl#"
+  			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  			xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  			xmlns:role="http://www.w3.org/1999/xhtml/vocab#"
+  			xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#">
+			<xsl:apply-templates/>
+		</html>
+	</xsl:template>
 
 	<xsl:template match="xhtml:body/xhtml:h1[1]">
 		<xsl:copy>
