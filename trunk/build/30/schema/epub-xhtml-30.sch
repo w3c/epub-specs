@@ -133,29 +133,34 @@
         <param name="attr" value="dir"/>
     </pattern>
 
-    <pattern id="idref-aria-describedby" is-a="idref-any">
+    <pattern id="idrefs-aria-describedby" is-a="idrefs-any">
         <param name="element" value="*"/>
-        <param name="idref-attr-name" value="aria-describedby"/>
+        <param name="idrefs-attr-name" value="aria-describedby"/>
     </pattern>
 
-    <pattern id="idref-aria-flowto" is-a="idref-any">
-        <param name="element" value="*"/>
-        <param name="idref-attr-name" value="aria-flowto"/>
+    <pattern id="idrefs-output-for" is-a="idrefs-any">
+        <param name="element" value="h:output"/>
+        <param name="idrefs-attr-name" value="for"/>
     </pattern>
 
-    <pattern id="idref-aria-labelledby" is-a="idref-any">
+    <pattern id="idrefs-aria-flowto" is-a="idrefs-any">
         <param name="element" value="*"/>
-        <param name="idref-attr-name" value="aria-labelledby"/>
+        <param name="idrefs-attr-name" value="aria-flowto"/>
     </pattern>
 
-    <pattern id="idref-aria-owns" is-a="idref-any">
+    <pattern id="idrefs-aria-labelledby" is-a="idrefs-any">
         <param name="element" value="*"/>
-        <param name="idref-attr-name" value="aria-owns"/>
+        <param name="idrefs-attr-name" value="aria-labelledby"/>
     </pattern>
 
-    <pattern id="idref-aria-controls" is-a="idref-any">
+    <pattern id="idrefs-aria-owns" is-a="idrefs-any">
         <param name="element" value="*"/>
-        <param name="idref-attr-name" value="aria-controls"/>
+        <param name="idrefs-attr-name" value="aria-owns"/>
+    </pattern>
+
+    <pattern id="idrefs-aria-controls" is-a="idrefs-any">
+        <param name="element" value="*"/>
+        <param name="idrefs-attr-name" value="aria-controls"/>
     </pattern>
     
     <pattern id="idref-mathml-xref" is-a="idref-any">
@@ -208,14 +213,7 @@
                 >The for attribute does not refer to an allowed target element (expecting: button|keygen|meter|output|progress|select|textarea|input[not(@type='hidden')]).</assert>
         </rule>
     </pattern>
-    
-    <pattern id="idrefs-output-for">        
-        <rule context="h:output[@for]">
-            <assert test="every $idref in tokenize(@for, '\s+') satisfies (some $elem in $id-set satisfies $elem/@id eq $idref)"
-                >The for attribute must refer to elements in the same document.</assert>
-        </rule>
-    </pattern>
-    
+            
     <pattern id="idrefs-headers">        
         <rule context="h:*[@headers]">    
             <let name="table" value="ancestor::h:table"/>
@@ -306,12 +304,34 @@
                 >There must not be more than one meta element with a charset attribute per document.</assert>
         </rule>
     </pattern>
-                
+    
+    <pattern id="article-pubdate">
+        <rule context="h:article[h:time]">
+            <assert test="count(./h:time[@pubdate]) &lt; 2"
+                >For each article element, there must be no more than one time element child with a pubdate attribute</assert>
+        </rule>
+    </pattern>
+    
+    <pattern id="document-pubdate">
+        <rule context="h:time[not (ancestor::h:article)]">
+            <assert test="count(//h:time[@pubdate and not (ancestor::h:article)]) &lt; 2"
+                >For each Document, there must be no more than one time element with a pubdate 
+                attribute that does not have an ancestor article element.</assert>
+        </rule>
+    </pattern>
+
     <pattern abstract="true" id="idref-any">
         <rule context="$element[@$idref-attr-name]">
             <assert test="some $elem in $id-set satisfies $elem/@id eq current()/@$idref-attr-name"
                 >The <name path="@$idref-attr-name"/> attribute must refer to an element in the same document (the ID '<value-of 
                     select="current()/@$idref-attr-name"/>' does not exist).</assert>
+        </rule>
+    </pattern>
+
+    <pattern abstract="true" id="idrefs-any">
+        <rule context="$element[@$idrefs-attr-name]">            
+            <assert test="every $idref in tokenize(@$idrefs-attr-name,'\s+') satisfies (some $elem in $id-set satisfies ($elem/@id eq $idref))"
+                >The <name path="@$idrefs-attr-name"/> attribute must refer to elements in the same document (target ID missing)</assert>
         </rule>
     </pattern>
 
