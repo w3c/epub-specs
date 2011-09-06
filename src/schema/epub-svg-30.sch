@@ -5,7 +5,6 @@
     
     <include href="./mod/id-unique.sch"/>
     <include href="./mod/epub-svg11-re.sch"/>
-    
         
 </schema>
 
