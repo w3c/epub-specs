@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="../../util/docbook/schema/docbookspec.rng" type="xml"?>
+<?oxygen SCHSchema="../../util/docbook/schema/docbookspec.sch"?>
+<?oxygen SCHSchema="../../util/docbook/schema/docbook.sch"?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:epub="http://www.idpf.org/2011/epub" xmlns:xi="http://www.w3.org/2001/XInclude"
+  version="5.1">
+
+  <title>Alternate Style Tags</title>
+
+  <info>
+    <releaseinfo>Proposed Specification</releaseinfo>
+    <pubdate>6 September 2011</pubdate>
+    <printhistory>
+      <formalpara>
+        <title>This version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/altss-tags/altss-tags-20110906.html"/>
+        </para>
+      </formalpara>
+      <formalpara>
+        <title>Latest version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/altss-tags/"/>
+        </para>
+      </formalpara>
+      <formalpara>
+        <title>Previous version</title>
+        <para>
+          <link xlink:href="http://www.idpf.org/epub/altss-tags/altss-tags-20110523.html"/>
+        </para>
+      </formalpara>
+    </printhistory>
+    <releaseinfo role="diff"> A diff of changes from the previous draft is available at
+      <link
+        xlink:href="http://code.google.com/p/epub-revision/source/diff?spec=svn3163&amp;old=2997&amp;r=3163&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fspec%2Faltss-tags.xml"
+        >this link</link>. 
+    </releaseinfo>
+    <copyright>
+      <year>2011</year>
+      <holder>International Digital Publishing Forum™</holder>
+    </copyright>
+    <xi:include href="./share/legalnotice.xml"/>
+    <authorgroup role="current">
+      <editor>
+        <personname>Elika J. Etemad</personname>
+        <affiliation>
+          <org>
+            <orgname>Invited Expert</orgname>
+          </org>
+        </affiliation>
+      </editor>
+    </authorgroup>
+
+  </info>
+
+  <chapter xml:id="intro">
+    <title>Introduction</title>
+
+    <!--<h2 class="no-num no-toc" id="abstract">Abstract</h2> -->
+
+    <para>This module defines a pattern for tagging alternate style sheets using a microformat. It
+      can be used to define standardized classes that can be hooked into the browser UI. Sample use
+      cases include horizontal-vertical layout switches in Japanese Ebook readers; automatically
+      selecting high-contrast styles; and other accessibility concerns.</para>
+
+    <para><link linkend="refHTML4">HTML 4.0</link> defines the linking of external style sheets
+      using the <code>link</code> element. Although typically a style sheet is linked in
+      unconditionally, HTML 4 also defines <emphasis>alternate style sets</emphasis>, which are
+      named, mutually-exclusive sets of style sheets that the reader can use to alter the
+      display.</para>
+
+    <para>Until now, few HTML user agents have exposed alternate styles in a meaningful way.
+      However, alternate styles are a very simple way to allow the user to alter a document's
+      presentation to his or her preferences and accessibility needs.</para>
+
+    <para>This specification takes advantage of the <code>class</code> attribute of the HTML
+        <code>&lt;link&gt;</code> tag (introduced in <xref linkend="refHTML5"/>, but supported in
+      many UAs for much longer) to define <emphasis>style tags</emphasis>: a markup pattern for
+      tagging style sheets with standardized class names. These class names can be used by a UA to
+      offer special UI access to such tagged style sets.</para>
+
+    <para>The original impetus for this proposal was to offer standard controls for switching
+      between horizontal and vertical layouts in Japanese ebook readers; this use case is addressed
+      in <xref linkend="app-night-version-style-set-tags"/>.</para>
+
+  </chapter>
+
+  <chapter xml:id="conformance">
+    <title>Conformance</title>
+
+    <para>None of this specification applies if the UA has unilaterally turned author style sheets
+      off. (This ability is required by HTML and CSS.) In this case, of course, all style sheets are
+      disabled.</para>
+
+    <para>The <xref linkend="refCSSOM"/> has more low-level controls for controlling whether a given
+      style sheet is enabled or disabled; scripting the CSSOM may alter the behavior defined
+      here.</para>
+
+    <note xml:id="note-cssom">
+      <para>Future versions of this specification will define error handling rules and interaction
+        with <xref linkend="refCSSOM"/>.
+        <!--<remark role="todo">TODO It is a known bug that this revision of the spec doesn't fully
+          define interaction with the CSSOM and has no error handling rules. Probably error-handling
+          will be defined by pointing to the CSSOM spec.</remark>--></para>
+    </note>
+  </chapter>
+
+  <chapter xml:id="style-sets" conformance="informative">
+    <title>Style Sets</title>
+    <para><emphasis>This is an informative summary of HTML's declarative alternate style set
+        mechanism, with a few slight changes to terminology.</emphasis></para>
+
+    <para>HTML 4 defines two types of style sheets in its linking mechanism: persistent style sheets
+      and alternate style sheets.</para>
+
+    <para>A <emphasis>persistent style sheet</emphasis> is one that is always enabled, regardless of
+      which alternate style set is enabled. A persistent style sheet is indicated by omitting the
+        <code>title</code> attribute from the &lt;link&gt; or &lt;style&gt; element that imports
+      it.</para>
+
+    <para>An <emphasis>alternate style sheet</emphasis> is one that is part of an alternate set, and
+      may be enabled or disabled as part of that set. An alternate style sheet is indicated by
+      setting a non-empty value for the <code>title</code> attribute of the &lt;link&gt; or
+      &lt;style&gt; that imports it. Except for style sheets belonging to a <emphasis>preferred
+        style set</emphasis> (see below), alternate style sheets must have an <code>alternate</code>
+      value in the <code>rel</code> attribue value addition to the <code>stylesheet</code>
+      value.</para>
+
+    <para>HTML allows the grouping of multiple alternate style sheets into a single, named
+        <emphasis>alternate style set</emphasis>. All alternate style sheets with the same
+        <code>title</code> value belong to the same style set.</para>
+
+    <para>The author can indicate whether an alternate style set is <emphasis>preferred</emphasis>
+      by omitting the <code>alternate</code> value from the <code>rel</code> attribute of each of
+      its component alternate style sheets. If no preferred style sets are defined, the default
+      preferred style set is an unnamed set containing no alternate style sheets.</para>
+
+    <para>By default, the first preferred style set is loaded. The author can override this behavior
+      with the <code>Default-Style</code> meta or HTTP header as defined in <xref linkend="refHTML4"
+      />.</para>
+
+  </chapter>
+
+  <chapter xml:id="style-tag">
+    <title>Tagging Style Sets</title>
+
+    <para> A style sheet can be tagged by adding the tag's name to the <code>class</code> attribute
+      of the <code>&lt;link&gt;</code> or <code>&lt;style&gt;</code> elements that imports it.
+      Tagging a style sheet with a <emphasis>standard style tag</emphasis> (one defined by a
+      specification referencing this specification) indicates that it
+        <emphasis>implements</emphasis> the functionality described by the style tag's definition.
+      Both alternate style sheets and persistent style sheets may be tagged in this way.</para>
+
+    <para>A style set can be tagged by tagging any one of its component style sheets. Tagging a
+      style set indicates that it <emphasis>offers</emphasis> the functionality described by the
+      style tag's definition.</para>
+
+    <para>Authors using standard tags should tag all alternate style sheets within a style set with
+      the same set of standard tags.</para>
+
+    <note xml:id="note-disabling-tagged-style-sheets">
+      <para> Future versions of this specification may allow UAs to selectively disable tagged style
+        sheets within a style set. Therefore all alternate style sheets that need to be enabled or
+        disabled together must have the same set of standard tags.</para>
+    </note>
+
+    <!-- 
+<p>The UA may offer the ability to disable a tagged feature
+within a style set by disabling the style sheets tagged as
+implementing that feature. However, if all alternate style
+sheets within a style set are tagged with that feature, the
+UA should instead switch to a different alternate style set
+(if one is available).
+ 
+<p>Therefore unless their tagged style sheets are designed to
+be selectively disabled within the style set, authors using
+standard tags should tag all alternate style sheets within a
+style set with the same set of standard tags.
+-->
+
+    <para>If two style sheets within a style set are tagged with mutually exclusive tags, both tags
+      are ignored.</para>
+
+    <para>A specification that defines style tags may indicate that a particular tag is assumed to
+      be the default for untagged style sets. </para>
+  </chapter>
+
+  <appendix xml:id="app-vertical-text-style-set-tags">
+    <title>Vertical Text Style Set Tags</title>
+
+    <para>The following style tags are defined by this appendix:</para>
+
+
+    <variablelist>
+      <varlistentry>
+        <term>horizontal</term>
+        <listitem>
+          <para>This style set provides a primarily horizontal presentation of text. This tag is
+            mutually exclusive with <code>vertical</code>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>vertical</term>
+        <listitem>
+          <para>This style set provides a primarily vertical presentation of text. This tag is
+            mutually exclusive with <code>horizontal</code>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+
+
+    <para>The UA may guess whether an untagged style set is <code>horizontal</code> or
+        <code>vertical</code>, or may instead assign such a style set an indeterminate state.</para>
+
+    <bridgehead>Examples</bridgehead>
+
+    <para>The following examples use XHTML syntax; to use HTML syntax, simply drop the slash before
+      the <code>></code> in the tags.</para>
+
+
+    <informalexample xml:id="ex.1">
+
+      <para>In the following example, the author provides a style sheet for a primarily
+        horizontal-text presentation of the document:</para>
+
+      <synopsis>
+   &lt;link rel="stylesheet" href="horizontal.css" class="horizontal"/></synopsis>
+      <para>The UA, knowing that only a horizontal version is provided, would have to synthesize a
+        vertical style if one is needed.</para>
+    </informalexample>
+
+    <informalexample xml:id="ex.2">
+      <para>In the following example, the author provides a style sheet for a primarily
+        vertical-text presentation of the document:</para>
+      <synopsis>
+   &lt;link rel="stylesheet" href="vertical.css" class="vertical"/></synopsis>
+      <para>The UA, knowing that only a vertical version is provided, would have to synthesize a
+        horizontal style if one is needed.</para>
+    </informalexample>
+
+    <informalexample xml:id="ex.3">
+      <para>In the following example, the author provides style sheets for both horizontal-text and
+        vertical-text presentations of the document:</para>
+      <synopsis>
+  &lt;link rel="stylesheet" href="horizontal.css" class="horizontal" title="横組"/>
+  &lt;link rel="alternate stylesheet" href="vertical.css" class="vertical" title="縦組"/></synopsis>
+      <para>Since only the second style set is marked with the <code>alternate</code> value of the
+          <code>rel</code> attribute, the author has indicated a preference for the horizontal style
+        set which, in the absence of a user override, should be used by default.</para>
+    </informalexample>
+
+
+    <informalexample xml:id="ex.4">
+      <para>In the following example, the author provides style sheets for both horizontal-text and
+        vertical-text presentations of the document:</para>
+      <synopsis>
+  &lt;link rel="alternate stylesheet" href="horizontal.css" class="horizontal" title="横組"/>
+  &lt;link rel="stylesheet" href="vertical.css" class="vertical" title="縦組"/></synopsis>
+      <para>Since only the first style set is marked with the <code>alternate</code> value of the
+          <code>rel</code> attribute, the author has indicated a preference for the vertical style
+        set which, in the absence of a user override, should be used by default.</para>
+    </informalexample>
+
+    <informalexample xml:id="ex.5">
+      <para>In the following example, the author provides style sheets for both horizontal-text and
+        vertical-text presentations of the document:</para>
+      <synopsis>
+  &lt;link rel="stylesheet" href="horizontal.css" class="horizontal" title="横組"/>
+  &lt;link rel="stylesheet" href="vertical.css" class="vertical" title="縦組"/></synopsis>
+      <para>Since neither is marked with the <code>alternate</code> value of the <code>rel</code>
+        attribute, both are preferred presentations by the author. Since the horizontal presentation
+        is provided first, in the absence of a user preference to the contrary, it will be used by
+        default.</para>
+    </informalexample>
+  </appendix>
+
+  <appendix xml:id="app-night-version-style-set-tags">
+    <title>Night Vision Style Set Tags</title>
+
+    <para>The following style tags are defined by this appendix:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>day</term>
+        <listitem>
+          <para>This style set provides a color scheme suited for daytime use (light background,
+            dark text). This tag is mutually exclusive with <code>night</code>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>night</term>
+        <listitem>
+          <para>This style set provides a color scheme suited for nighttime use (dark background,
+            light text). This tag is mutually exclusive with <code>day</code>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+
+    <bridgehead>Examples</bridgehead>
+    <informalexample xml:id="ex.b.1">
+      <para>In the following example, the author provides style sheets for both both day vision and
+        night vision presentations of the document. Both horizontal-text and vertical-text
+        presentations are available, but the horizontal presentation is preferred:</para>
+      <synopsis>
+  &lt;link rel="alternate stylesheet" href="vertical.css" class="vertical" title="Vertical Day"
+  &lt;link rel="alternate stylesheet" href="day.css"      class="day"      title="Vertical Day"/>
+  &lt;link rel="alternate stylesheet" href="vertical.css" class="vertical" title="Vertical Night"/>
+  &lt;link rel="alternate stylesheet" href="night.css"    class="night"    title="Vertical Night"/>
+  &lt;link rel="stylesheet" href="horizontal.css" class="horizontal" title="Horizontal Day"/>
+  &lt;link rel="stylesheet" href="day.css"        class="day"        title="Horizontal Day"/>
+  &lt;link rel="stylesheet" href="horizontal.css" class="horizontal" title="Horizontal Night"/>
+  &lt;link rel="stylesheet" href="night.css"      class="night"      title="Horizontal Night"/></synopsis>
+      <para>Of the preferred style sets, the day vision variant is listed first, and so in the
+        absence of other preferences will be loaded by default.</para>
+    </informalexample>
+    <informalexample xml:id="ex.b.2">
+      <para>The same effect can be created with fewer link tags by using @import statements:</para>
+      <synopsis>
+  &lt;link rel="alternate stylesheet" href="vertical-day.css"   class="vertical day"   title="Vertical Day"/>
+  &lt;link rel="alternate stylesheet" href="vertical-night.css" class="vertical night" title="Vertical Night"/>
+  &lt;link rel="stylesheet" href="horizontal-day.css"   class="horizontal day"   title="Horizontal Day"/>
+  &lt;link rel="stylesheet" href="horizontal-night.css" class="horizontal night" title="Horizontal Night"/></synopsis>
+
+      <para>where vertical-day.css is</para>
+      <synopsis>
+  @import "vertical.css";
+  @import "day.css";</synopsis>
+      <para>and vertical-night.css is</para>
+      <synopsis>
+  @import "vertical.css";
+  @import "night.css";</synopsis>
+      <para>and horizontal-day.css is</para>
+      <synopsis>
+  @import "horizontal.css";
+  @import "day.css";</synopsis>
+      <para>and vertical-night.css is</para>
+      <synopsis>
+  @import "horizontal.css";
+  @import "night.css";</synopsis>
+    </informalexample>
+  </appendix>
+
+  <appendix xml:id="app-acknowledgements">
+    <title>Acknowledgements</title>
+
+    <para>This draft resulted from discussion in the <link
+        xlink:href="http://www.w3.org/Style/CSS/Group">W3C CSS Working Group</link> and the <link
+        xlink:href="http://www.idpf.org/epub/30/spec/epub30-overview.html#sec-contributors-30">IDPF
+        EPUB Working Group</link> and would not exist without the particular suggestion of <link
+        xlink:href="http://annevankesteren.nl">Anne van Kesteren</link>.</para>
+
+  </appendix>
+
+  <xi:include href="./share/references.xml"/>
+
+</book>
