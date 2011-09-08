@@ -13,6 +13,7 @@
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples"/>
 	<property name="dir.src.vocab" value="${dir.src}/vocab"/>
 	<property name="dir.src.linking" value="${dir.src}/linking"/>
+	<property name="dir.src.errata" value="${dir.src}/errata"/>
 
 	<property name="dir.util" value="${basedir}/util"/>
 	<property name="dir.util.rng" value="${dir.util}/relaxng"/>
@@ -673,7 +674,63 @@
 		<attribute name="dest-dir"/>
 		<sequential>
 			<echo file="@{dest-dir}/.htaccess">Options +Indexes </echo>
+		</sequential>		
+	</macrodef>
+	
+	<target name="copy-dated">
+		<copy-dated-impl date="${TODAY}"/>
+	</target>
+	
+	<target name="build-errata" description="generates errata dirs">
+		<generate-errata-impl
+			output-dir="${dir.build.altss-tags}/altss-tags-errata/"
+			input-file="${dir.src.errata}/altss-tags.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.cfi}/epub-cfi-errata/"
+			input-file="${dir.src.errata}/epub-cfi.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.spec}/epub30-contentdocs-errata/"
+			input-file="${dir.src.errata}/epub30-contentdocs.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.spec}/epub30-mediaoverlays-errata/"
+			input-file="${dir.src.errata}/epub30-mediaoverlays.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.spec}/epub30-ocf-errata/"
+			input-file="${dir.src.errata}/epub30-ocf.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.spec}/epub30-publications-errata/"
+			input-file="${dir.src.errata}/epub30-publications.html" />		
+	</target>
+	
+	<macrodef name="generate-errata-impl">
+		<attribute name="output-dir"/>
+		<attribute name="input-file"/>
+		<sequential>
+			<mkdir dir="@{output-dir}"/>
+			<copy file="@{input-file}" tofile="@{output-dir}/index.html" overwrite="true" failonerror="true"/>
+			<echo file="@{output-dir}/.htaccess">DirectoryIndex index.html </echo>
 		</sequential>
+	</macrodef>
+	
+	<macrodef name="copy-dated-impl" description="makes dated copies of the spec files">
+		<attribute name="date"/>		
+		<sequential>
+			<!-- main specs -->
+			<property name="sd" value="${dir.build.spec}/${spec.filename.prefix}"/>
+			<copy file="${sd}-changes.html" tofile="${sd}-changes-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${sd}-contentdocs.html" tofile="${sd}-contentdocs-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${sd}-mediaoverlays.html" tofile="${sd}-mediaoverlays-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${sd}-ocf.html" tofile="${sd}-ocf-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${sd}-overview.html" tofile="${sd}-overview-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${sd}-publications.html" tofile="${sd}-publications-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- cfi -->
+			<copy file="${dir.build.linking}/cfi/epub-cfi.html" tofile="${dir.build.linking}/cfi/epub-cfi-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- altsstags -->
+			<copy file="${dir.build.altss-tags}/altss-tags.html" tofile="${dir.build.altss-tags}/altss-tags-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- main zips -->
+			<copy file="${dir.build}/epub30-@{date}.zip" tofile="${dir.build}/epub30-latest.zip" overwrite="true" failonerror="true"/>
+			<copy file="${dir.build}/epub30-@{date}.tar.gz" tofile="${dir.build}/epub30-latest.tar.gz" overwrite="true" failonerror="true"/>
+		</sequential>			
 	</macrodef>
 
 	<xmlcatalog id="xhtml-catalog">

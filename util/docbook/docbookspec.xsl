@@ -108,6 +108,13 @@
                 <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='diff']/node()"/>
             </xsl:element>
         </xsl:if>
+        
+        <xsl:if test="$topinfo/db:releaseinfo[@role='errata']">
+            <xsl:element name="p">
+                <xsl:attribute name="class">errata</xsl:attribute>
+                <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='errata']/node()"/>
+            </xsl:element>
+        </xsl:if>
 
         <!-- copyright -->
         <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
