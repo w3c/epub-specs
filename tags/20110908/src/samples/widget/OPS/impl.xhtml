@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ops="http://www.idpf.org/2007/ops"
+	xmlns:ev="http://www.w3.org/2001/xml-events">
+<head>
+<script><![CDATA[
+
+var index = -1;
+var slides = [];
+var img;
+
+function showNext()
+{
+	index++;
+	if( index >= slides.length )
+		index = 0;
+	var slide = slides[index];
+	img.setAttribute("src", slide.src);
+	setTimeout( showNext, slide.dur );
+}
+
+function load(xmldoc)
+{
+	var list = xmldoc.getElementsByTagName("slide");
+	for( var i = 0 ; i < list.length ; i++ )
+	{
+		var slide = list[i];
+		var s = {};
+		s.src = slide.getAttribute("src");
+		s.dur = (slide.getAttribute("dur") - 0)*1000;
+		slides.push(s);
+	}
+	showNext();
+}
+
+function init()
+{
+	img = document.getElementById("img");
+	var m = document.URL.match(/[&\?]src=([^&]*)/);
+	if( m )
+	{
+		var src = m[1];
+		var req = new XMLHttpRequest();
+		req.open("GET", src, true);
+		req.onreadystatechange = function()
+			{
+				if( req.readyState == 4 )
+					load(req.responseXML);
+			};
+		req.send(null);  
+	}
+}
+
+window.onload = init;
+
+]]></script>
+</head>
+<body>
+<img id="img" src="" style="width:100%"/>
+</body>
+</html>
