@@ -4,13 +4,85 @@
 
 Note: The first two examples below ('lie') illustrate how two separate English entries with the same part of speech (verb, in this case) might be laid out. The third example ('color/colour') serves to show how multiple headwords in the same entry would relate to each other. The fourth and fifth examples show how two different Japanese words with distinct meanings and kanji could be handled when the hiragana (phonetic) spellings are the same. 
 
+= Approach 3 =
+  * The _display form_ of the headword is expressed in the text node of the `<headword>` element. This is how the user would view the headword when accessing the complete entry content. 
+  * The _canonical form_ is the standard spelling of the headword without any of the decoration (homograph, pronunciation, syllable markers) that might be present in the display form of the headword. This can be expressed as an optional _canonical-form_ attribute of `<headword>`. Reading systems can use this attribute to obtain the normative spelling of an entry headword for purposes such as identifying homograph entries. If no _canonical-form_ attribute is present, then the text node of `<headword>` represents the canonical form.
+  * The _search results form_ is a presentation more suitable for search result display than the `<headword>` element's text node. It is expressed as an optional `<search-results-form>` element that is a child of `<headword>`. If no `<search-results-form>` is present, then the reading system should use the contents of `<headword>` in displaying search results. Possible uses include:
+    * Specifying both the _kanji_ and _kana_ spellings for clarity in a Japanese dictionary;
+    * Providing disambiguation information, such as homograph numbers, part of speech, or glosses.
+  * The _search forms_ are captured as sibling `<search-form>` elements that are children of `<headword>`. Each valid match during a lookup or input search should be expressed in a `<search-form>`, whether it is an inflected form, headword displayed in the entry content, or an alternate spelling of the headword that may not be displayed in the entry content (eg, a _pinyin_ spelling of a Chinese headword). Thus, the reading system can find all relevant matches for a headword by examining `<search-form>` elements.
+  * At least one `<headword>` element is *required* to be present in an entry, and each `<headword>` *must* contain at least one `<search-form>` child. Both the _canonical-form_ attribute of `<headword>` and the `<search-results-form>` element are *optional*.
+
+{{{
+<entry>
+  <headword canonical-form=”lie”>lie<sup>1</sup>
+    <search-results-form hidden="hidden">lie<sup>1</sup> (verb)</search-results-form>
+    <search-form value=”lie”/>
+    <search-form value=”lay”/>
+    <search-form value=”lain”/>
+    <search-form value=”lying”/>
+  </headword>
+  <definition>To rotate oneself 90 degrees towards the horizontal plane</definition>
+</entry>
+}}}
+
+{{{
+<entry>
+  <headword canonical-form=”lie”>lie<sup>2</sup>
+    <search-results-form hidden="hidden">lie<sup>2</sup> (verb)</search-results-form>
+    <search-form value=”lie”/>
+    <search-form value=”lied”/>
+    <search-form value=”lying”/>
+  </headword>
+  <definition>The act of not sticking to truthiness</definition>
+</entry>
+}}}
+
+{{{
+<entry>
+  <headword canonical-form="color">col*or <!--here * is used to separate syllables-->
+    <search-results-form hidden="hidden">color</search-results-form>
+    <search-form value="color"/>
+    <search-form value="colors"/>
+  </headword>
+  or (UK)
+  <headword canonical-form="colour">col*our
+    <search-results-form hidden="hidden">colour</search-results-form>
+    <search-form value="colour"/>
+    <search-form value="colours"/>
+  </headword>
+</entry>
+}}}
+
+{{{
+<entry>
+  <headword canonical-form="橋">橋 (kanji ideograph) / はし (hiragana phonetic spelling)
+    <search-results-form hidden="hidden">橋 (はし)</search-results-form>
+    <search-form value="橋"/>
+    <search-form value="はし"/>
+  </headword>
+   1. bridge
+</entry>
+}}}
+
+{{{
+<entry>
+  <headword canonical-form="端">端 (kanji ideograph) / はし (hiragana phonetic spelling)
+    <search-results-form hidden="hidden">端 (はし)</search-results-form>
+    <search-form value="端"/>
+    <search-form value="はし"/>
+  </headword>
+   1. edge, end 2. beginning, first
+</entry>
+}}}
+
 = Approach 2 =
   * The _display form_ of the headword is expressed in the text node of the `<headword>` element. This is how the user would view the headword when accessing the complete entry content. 
   * The _search results form_ is a presentation more suitable for search result display than the `<headword>` element's text node. It is expressed by an optional _search-results-form_ attribute of `<headword>` and/or its `<search-form>` children. If no _search-results-form_ attribute is specified on a `<search-form>`, then the value is inherited from any _search-results-form_ of its parent `<headword>`. Possible uses include:
     * Specifying both the _kanji_ and _kana_ spellings for clarity in a Japanese dictionary;
     * Specifying the canonical spelling of the headword when the `<headword>` element contents may include hyphenation or syllable markers, superscript homograph markers, etc.
   * The `<homograph>` element is an optional child of the `<headword>` element. It marks homograph entries as such, making that information available for possible reading system use. Numbers or other values used by the publisher to identify homograph entries are contained in the _value_ attribute.
-  * The _search forms_ are captured as sibling `<search-form>` elements that are children of `<headword>`. Each valid match during a lookup or input search should be expressed in a `<search-form>`, whether it is an inflected form, headword displayed in the entry content, or an alternate spelling of the headword that may not displayed in the entry content (eg, a _pinyin_ spelling of a Chinese headword). Thus, the reading system can find all relevant matches for a headword by examining `<search-form>` elements.
+  * The _search forms_ are captured as sibling `<search-form>` elements that are children of `<headword>`. Each valid match during a lookup or input search should be expressed in a `<search-form>`, whether it is an inflected form, headword displayed in the entry content, or an alternate spelling of the headword that may not be displayed in the entry content (eg, a _pinyin_ spelling of a Chinese headword). Thus, the reading system can find all relevant matches for a headword by examining `<search-form>` elements.
 
 {{{
 <entry>
@@ -41,7 +113,7 @@ Note: The first two examples below ('lie') illustrate how two separate English e
     <search-form value=”color”/>
     <search-form value=“colors”/>
   </headword>
-  or _(UK)_
+  or (UK)
   <headword>colour
     <search-form value=”colour”/>
     <search-form value=”colours”/>
@@ -103,7 +175,7 @@ Note: The first two examples below ('lie') illustrate how two separate English e
     <search-form type=”headword” value=”color”/>
     <search-form type=”inflection” value=“colors”/>
   </headword>
-  or _(UK)_
+  or (UK)
   <headword>colour
     <search-form type=”headword” value=”colour”/>
     <search-form type=”inflection” value=”colours”/>
