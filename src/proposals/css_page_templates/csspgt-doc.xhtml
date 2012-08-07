@@ -1,1756 +1,1904 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>CSS Page Templates</title>
-<link rel="stylesheet" type="text/css" href="csspgt-doc.css"/>
+<title/>
+<link rel="stylesheet" href="csspgt-doc.css" type="text/css"/>
 </head>
-<body>
-
-<div class="head">
-<h1>CSS Page Templates</h1>
-
-<dl>
-  <dt>Revision:</dt>
-  <dd>Revision: 0.51</dd>
-  <dt>Authors:</dt>
-  <dd><a href="mailto:psorotok@adobe.com">Peter Sorotokin</a> (<a href="http://www.adobe.com">Adobe Systems, Inc.</a>)</dd>
-</dl>
-
-<p class="copyright">Copyright © 2010 International Digital Publishing Forum (IDPF)</p>
-</div>
-
-<hr/>
-
-<h3 id="abstract">Abstract</h3>
-<p>This module defines a model for template-based paginated layouts in CSS, a style sheet language
-      for the web. Using functionality described in the specification, content can be flowed into
-      regions of a sequence of potentially highly-designed pages, rather than being presented as a
-      single scrolled container (as per the standard CSS formatting process for on-screen display)
-      or as a scrolled container which has been simply split up into a sequence of pages (as per the
-      standard CSS formatting process for printing).</p>
-  <h3 id="status">Status of this Document</h3>
-  <p>This is an unapproved Working Draft and has no official status at this time. It may be updated,
-      replaced or rendered obsolete by other documents at any time. Its publication does not imply
-      endorsement by the IDPF membership or IDPF EPUB Working Group.</p>
+<body class="primary">
+<h1>EPUB Adaptive Layout</h1>
+<p>Editors:</p>
+<ul>
+    <li>Peter Sorotokin (Adobe Systems, Inc.),</li>
+    <li>Brady Duga (Google, Inc.),</li>
+    <li>Garth Conboy (Google, Inc.),</li>
+    <li>Markus Gylling (IDPF)</li>
+</ul>
+<p>Copyright © 2011, 2012 International Digital Publishing Forum™</p>
+<h3>Abstract</h3>
+<p>This EPUB specification defines a model for template-based adaptive paginated layouts as an extension to CSS. The features
+ described in the specification allow authors to describe precise page appearances that adapt to a wide range of device sizes and custom
+ user settings. Its primary focus is interactive display environments in which the page size and user-defined font metrics are unknown
+ at the time of document authoring and layout has to be done on the fly. This specification builds on CSS 2.1 and several CSS3 modules.</p>
+<h3>Status of this Document</h3>
+<p>This draft of the document has no official status at this time. It may be updated, replaced or rendered obsolete by other
+ documents at any time. Its publication does not imply endorsement by the IDPF membership, IDPF EPUB Working Group, W3C membership or
+ the CSS Working Group.</p>
 <h3>Table of Contents</h3>
+<div class="toc">
+<ol>
+<li><a href="#s1">1. Introduction</a>
+	<ol>
+		<li><a href="#s1.1">1.1 Basic Processing Model</a></li>
+		<li><a href="#s1.2">1.2 Design Constraints</a></li>
+		<li><a href="#s1.3">1.3 Feature set</a></li>
+		<li><a href="#s1.4">1.4 Relationship with CSS3 modules</a>
+			<ol>
+				<li><a href="#s1.4.1">1.4.1 Referenced modules</a></li>
+				<li><a href="#s1.4.2">1.4.2. Related Modules</a></li>
+				<li><a href="#s1.4.3">1.4.3. Relationship with EPUB3 CSS profile</a></li>
+				<li><a href="#s1.5">1.5. Prefixes</a></li>
+			</ol>
+		</li>
+	</ol>
+</li>
+<li><a href="#s2">2. Adaptive styling</a>
+	<ol>
+		<li><a href="#s2.1">2.1. Calculated Values: ‘-epubx-expr()’</a></li>
+		<li><a href="#s2.2">2.2. Defining named values: the ‘@-epubx-define’ rule</a></li>
+		<li><a href="#s2.3">2.3. Conditional styling: ‘@-epubx-when’ rule</a></li>
+	</ol>
+</li>
+<li><a href="#s3">3. Page Layout</a>
+	<ol>
+		<li><a href="#s3.1">3.1. Flows, partition and page masters</a>
+			<ol>
+				<li><a href="#s3.1.1">3.1.1. Introduction</a></li>
+			</ol>
+		</li>
+		<li><a href="#s3.2">3.2. W3C CSS Dependencies</a>
+			<ol>
+				<li><a href="#s3.2.1">3.2.1. Regions</a></li>
+				<li><a href="#s3.2.2">3.2.2. Exclusions</a></li>
+				<li><a href="#s3.2.3">3.2.3. Multi-column Layout</a></li>
+				<li><a href="#s3.2.4">3.2.4. 2D Transforms</a></li>
+				<li><a href="#s3.2.5">3.2.5. Backgrounds and Borders</a></li>
+			</ol>
+		</li>
+		<li><a href="#s3.3">3.3. Content Styling</a>
+			<ol>
+				<li><a href="#s3.3.1">3.3.1. Flow overview</a></li>
+				<li><a href="#s3.3.2">3.3.2. Types of content in the flow: the ‘-epubx-flow-options’ property</a></li>
+				<li><a href="#s3.3.3">3.3.3. Flow content lifetime: the ‘-epubx-flow-linger’ property</a></li>
+				<li><a href="#s3.3.4">3.3.4. Flow content selection: the ‘-epubx-flow-priority’ property</a></li>
+				<li><a href="#s3.3.5">3.3.5. Controlling column/region/page breaking points</a></li>
+			</ol>
+		</li>
+		<li><a href="#s3.4">3.4. Page Masters</a>
+			<ol>
+				<li><a href="#s3.4.1">3.4.1. Assigning CSS classes to at-rules</a></li>
+				<li><a href="#s3.4.2">3.4.2. Defining page layout: ‘@-epubx-page-master’ rule</a></li>
+				<li><a href="#s3.4.3">3.4.3. Page Master Selection</a></li>
+				<li><a href="#s3.4.4">3.4.4. Allocating the page area: the ‘@-epubx-partition’ rule</a></li>
+				<li><a href="#s3.4.5">3.4.5. Styling content in a partition: the ‘@-epubx-region’ rule</a></li>
+				<li><a href="#s3.4.6">3.4.6. Grouping the partitions: the ‘@-epubx-partition-group’ rule</a></li>
+				<li><a href="#s3.4.7">3.4.7. Conditional page master and partition usage: the ‘-epubx-enabled’ property</a></li>
+				<li><a href="#s3.4.8">3.4.8. Using page layout for a particular page: the ‘-epubx-page’ property</a></li>
+				<li><a href="#s3.4.9">3.4.9. Selecting a page master based on device dimensions: the ‘-epubx-min-page-width’ and ‘-epubx-min-page-height’ properties</a></li>
+				<li><a href="#s3.4.10">3.4.10. Selecting a page master based on content: the ‘-epubx-required’ property</a></li>
+				<li><a href="#s3.4.11">3.4.11. Using only one in a set of partitions: the ‘-epubx-conflicting-partitions’ property</a></li>
+				<li><a href="#s3.4.12">3.4.12. Using multiple partitions together: the ‘-epubx-required-partitions’ property</a></li>
+				<li><a href="#s3.4.13">3.4.13. Snapping to the line grid: the ‘-epubx-snap-height’ and ‘-epubx-snap-width’ properties</a></li>
+				<li><a href="#s3.4.14">3.4.14. Primary flows: the ‘@-epubx-flow’ rule and ‘-epubx-flow-consume’ property.</a></li>
+				<li><a href="#s3.4.15">3.4.15. Lookup range: the ‘-epubx-utilization’ property</a></li>
+				<li><a href="#s3.4.16">3.4.16. Expressions inside the ‘@-epubx-page-master’ rule</a></li>
+			</ol>
+		</li>
+		<li><a href="#s3.5">3.5. Page Layout Processing Model</a></li>
+		<li><a href="#s3.6">3.6. Viewport control</a>
+			<ol>
+			    <li><a href="#s3.6.1">3.6.1. The ‘@-epubx-viewport’ rule and ‘-epubx-text-zoom’ property</a></li>
+			</ol>
+		</li>
+	</ol>
+</li>
+<li><a href="#s4">4. Compatibility At-Rule: ‘@-epubx-page-template’</a></li>
+</ol>
+</div>
+<h2 id="s1">1. Introduction</h2>
+<h3 id="s1.1">1.1 Basic Processing Model</h3>
+<p>This specification defines a process in which EPUB Reading Systems can flow content dynamically into a series of linked
+ containers based on page templates. The separation of content and template enhances content reuse, accessibility, and expressiveness.</p>
+<h3 id="s1.2">1.2 Design Constraints</h3>
+<p>An important design constraint of this specification is that it should be implementable in JavaScript in the modern
+ browser engine environment so that it can be employed in practical applications. Depending on the direction CSS development takes
+ in W3C, it may be possible in the future to map Adaptive Layout content into W3C CSS features. Using new W3C CSS developments where
+ possible is preferable. However, the availability of JavaScript implementations ensures that content can be rendered in current and
+ future browser engines regardless of the state of the future CSS implementations.</p>
+<p>The development of this specification started in September 2010. Since then, an effort has been made to track similar
+ developments in W3C. For instance, features related to regions and exclusions are no longer defined in this specification, as they
+ were originally, but reused via reference to the corresponding W3C CSS modules. In order to deliver a standard to the publishing
+ community in a timely manner, a stable set of features was chosen for this document.</p>
+<h3 id="s1.3">1.3 Feature set</h3>
+<p>This specification consists of two parts: <em>Page Layout</em> and <em>Adaptive Styling</em>.</p>
+<p>Page Layout defines how to divide a page into multiple partitions, associate content with a specified partition, and add
+ partition-specific styling. Page Layout also defines the process by which an EPUB reader flows content into partitions.</p>
+<p>Adaptive Styling defines two supporting features to make Page Layout (and potentially other document styling functions)
+ adapt according to the environment: (1) a means to turn styling rules on and off based on conditions, and (2) a means to perform
+ simple calculations based on environmental parameters.</p>
+<h3 id="s1.4">1.4 Relationship with CSS3 modules</h3>
+<p>Note: all references point to the most recent versions of the specs.</p>
+<h4 id="s1.4.1">1.4.1 Referenced modules</h4>
+<p>This specification relies on the following CSS modules:</p>
 <ul>
-	<li><a href="#intro">Introduction</a>
-		<ul>
-			<li><a href="#features">Feature set</a></li>
-			<li><a href="#css3-rel">Relationship with CSS3 modules</a></li>
-			<li><a href="#css-other">Other notable CSS efforts</a></li>
-			<li><a href="#history">History</a></li>
-		</ul>
-	</li>
-	<li><a href="#adaptive-styling">Adaptive Styling</a>
-		<ul>
-			<li><a href="pgt-rule-def">Compatibility: ‘@pgt’ Rule</a></li>
-			<li><a href="#expr-value-def">Simple calculations: ‘expr()’ value</a></li>
-			<li><a href="#define-rule-def">Defining named values: ‘@define’ rule</a></li>
-			<li><a href="#when-rule-def">Conditional styling: ‘@when’ rule</a></li>
-		</ul>
-	</li>
-	<li><a href="#page-layout">Page Layout</a>
-		<ul>
-			<li><a href="#page-layout-terms">Flows, regions and page masters</a></li>
-			<li><a href="#flow-name-def">Assigning flows: the ‘flow-name’ property</a></li>
-			<li><a href="#flow-options-def">Types of content in the flow: ‘flow-options’ property</a></li>
-			<li><a href="#flow-linger-def">Flow content lifetime: ‘flow-linger’ property</a></li>
-			<li><a href="#flow-priority-def">Flow content selection: ‘flow-priority’ property</a></li>
-			<li><a href="#breaking-points">Controlling column/region breaking points</a></li>
-			<li><a href="#region-placement-def">Avoiding blank space: ‘region-placement’ property</a></li>
-			<li><a href="#page-master-rule-def">Defining page layout: ‘@page-master’ rule</a></li>
-			<li><a href="#region-rule-def">Partitioning page area: ‘@region’ rule</a></li>
-			<li><a href="#enabled-def">Conditional page master and region usage: ‘enabled’ property</a></li>
-			<li><a href="#page-master-selection">Page Master selection</a></li>
-			<li><a href="#page-def">Using page layout for a particular page: ‘page’ property</a></li>
-			<li><a href="#page-dims">Selecting page master based on device dimensions: ‘min-page-width’ and ‘min-page-height’ properties</a></li>
-			<li><a href="#required-def">Selecting page master based on content: ‘required’ property</a></li>
-			<li><a href="#conflicting-regions-def">Using only one in a set of regions: ‘conflicting-regions’ property</a></li>
-			<li><a href="#required-regions-def">Using multiple regions together: ‘required-regions’ property</a></li>
-			<li><a href="#mode-def">Styling content in a region: ‘mode’ property</a></li>
-			<li><a href="#snap-height-def">Snapping to the line grid: ‘snap-height’ property</a></li>
-			<li><a href="#region-overlap-def">Controlling overlap: ‘region-overlap’ property</a></li>
-			<li><a href="#outer-shape-def">Custom region shape: ‘outer-shape’ property</a></li>
-			<li><a href="#utilization-def">Lookup range: ‘utilization’ property</a></li>
-			<li><a href="#page-master-expr">Expressions inside ‘@page-master’ rule</a></li>
-			<li><a href="#mode-rule-def">Styling content in a region: ‘@mode’ rule</a></li>
-			<li><a href="#flow-rule-def">Fitting the text: ‘@flow’ rule</a></li>
-		</ul>
-	</li>
-	<li><a href="#appendix-a">Appendix A. Current state of JavaScript-based implementation</a>
-		<ul>
-			<li><a href="#limitations">General limitations</a></li>
-			<li><a href="#unimplemented">Unimplemented properties</a></li>
-			<li><a href="#incomplete">Incompletely implemented properties</a></li>
-			<li><a href="#view-placement-def">Integrating with interactive content: ‘view-placement’ property</a></li>
-			<li><a href="#pgt-params-rule-def">Passing parameters to script implementation: ‘@pgt-params’ rule</a></li>
-		</ul>
-	</li>
+    <li>Regions</li>
+    <li>Exclusions</li>
+    <li><a href="http://www.w3.org/TR/css3-multicol/">Multi-column Layout</a>.</li>
+    <li><a href="http://www.w3.org/TR/css3-2d-transforms/">2D Transforms</a></li>
+    <li><a href="http://www.w3.org/TR/css3-background/">Backgrounds and Borders</a></li>
 </ul>
-
-<h2 id="intro">Introduction</h2>
-
-<p>This module describes functionality to dynamically layout a document into a sequence of pages (or
-      "screens"). Its primary focus is interactive display environments in which  the page size and
-      user preferred font metrics are unknown at the time of document authoring and layout has to be
-      done on the fly. This module builds on CSS 2.1 and several CSS3 modules. </p>
-    <h3 id="processing_model">Basic Processing Model</h3>
-    <p>The processing model defined by this specification enables a User Agent (UA) to flow content
-      (such as HTML) into a series of linked containers separately described by CSS page templates.
-      The separation of content and template is prevalent in document-oriented formatting systems,
-      and enhances content reusability, accessibility, and expressivity. This specification also
-      defines an associated means for style property selection to be parameterized based on dynamic
-      conditions, such as the width of the display region.</p>
-
-<h3 id="features">Feature set</h3>
-
-<p>This Page Templates specification consists of two parts:   <a href="#page-layout">Page Layout</a>
-      and <a href="#adaptive-styling">Adaptive Styling</a>.</p>
-    <p>Page Layout  defines a way to partition a page into multiple regions, associate content with
-      a specified region and add region-specific styling, as well as defining the process by which a
-      UA that supports this proposal flows content into regions.</p>
-
-<p>Adaptive Styling defines two supporting features to make Page Layout (and potentially other
-      document styling functions) depend on the environment: a means to turn styling rules on and
-      off based on conditions, and a means to perform simple calculations based on environmental
-      parameters. </p>
-    <p>While Adaptive Styling capabilities could be used independently of Page Layout, such
-      potential use is beyond the scope of  this proposal, thus the entire content of this proposal
-      is </p>
-    <h3 id="history">Background and Assumptions</h3>
-    <p>CSS Page Templates can be viewed as an adaptation of the XSL-FO master page vocabulary and
-      abstract formatting model to CSS syntax. XSL-FO is a W3C Recommendation that has seen adoption
-      in certain batch processing workflows, but is much less widely used than CSS, and is not
-      natively supported in Web browsers.</p>
-    <p>An important design constraint of this module is that a reasonable level of emulated
-      implementation in JavaScript via existing User Agents be feasible, in order that this
-      specification can be immediately useful and its major features can be tested in practical
-      applications.</p>
-
-<h3 id="css3-rel">Relationship with CSS3 modules</h3>
-<p>Note: all references point to the most recent versions of the specs</p>
+<p>For more information on the rules and properties used from these modules, see W3C CSS Dependencies, below.</p>
+<h4 id="s1.4.2">1.4.2. Related Modules</h4>
+<p>Several CSS modules address topics similar or related to those in this specification. The rules and properties defined in this specification are not intended to replace the ones found in these modules. Future versions of this specification are expected to increase the alignment with these and other forthcoming W3C specifications.</p>
 <ul>
-      <li>The Page Layout part of this specification builds on and can in some respects be viewed as
-        an extension and generalization of <a href="http://www.w3.org/TR/css3-multicol/"
-          >Multi-column Layout</a>. Many properties defined by the Multi-column Layout module are
-        reused by this specification..</li>
-<li><a href="http://www.w3.org/TR/css3-page/">Paged Media</a> is focused on the fundamentally
-        different problem of making existing scrollable content to be printable, i.e. rules for
-        dividing up a logically single scrolling container of content into a series of pages,
-        possibly decorated in a simple manner with header/footer content or additional content
-        defined <a href="http://www.w3.org/TR/css3-gcpm/">Generated Content for Paged Media</a> .
-        Several  properties defined by the Paged Media module are reused by this specification.</li>
-<li>The <a href="http://www.w3.org/TR/css3-layout/">Template Layout Module</a> draft proposal also
-        addresses a different problem: dynamic layout of Web application screens / panels. In
-        particular in the Template Layout Module each content item "knows" something about its
-        preferred location within a containing context, and templates are in effect used to assist
-        in solving the resulting constraint satisfaction problem. Whereas in this proposal's layout
-        model, a content element has no knowledge about the geometry of the template-defined page
-        regions into which it will flow.</li>
-<li><a href="http://www.w3.org/TR/css3-values/">Values and Units</a> introduces "calc" value which
-        is somewhat similar to "expr" value introduced in this specification. Unlike "expr", "calc"
-        expressions must  be resolved during CSS cascade and inheritance which would significantly
-        complicate emulated support via JavaScript on existing UAs. </li>
-<li><a href="http://www.w3.org/TR/css3-mediaqueries/">Media Queries</a> has some overlap with the
-        "@when" rule defined in this specification, relative to  dynamic style rule selection based
-        on  device dimension. However Media Queries has a much more limited expression syntax, and
-        is more oriented towards stylesheet selection. There is no conflict between Media Queries
-        and this specification and, in circumstances where "@media" provides appropriate
-        expressivity, it could be used in lieu of "@when".</li>
+    <li><a href="http://www.w3.org/TR/css3-mediaqueries/">Media Queries</a> has some overlap with the "<a href="#rule-when" class="rule">@-epubx-when</a>" rule defined in this
+     specification, relative to dynamic style rule selection based on device dimension. However, Media Queries has a much more limited expression syntax,
+     and is more oriented towards style rule selection. There is no conflict between Media Queries and this specification. If "@media" provides appropriate
+     formatting control, it should be used in lieu of the "<a href="#rule-when" class="rule">@-epubx-when</a>" rule. The EPUB3 specification already requires
+     Media Queries support.</li>
+    <li>CSS3 effort includes several modules that aim to provide better positioning of descendant boxes in a container. These modules include
+     <a href="http://www.w3.org/TR/css3-layout/">Template Layout</a>, <a href="http://dev.w3.org/csswg/css3-grid-align/">Grid Alignment</a>, and 
+     <a href="http://dev.w3.org/csswg/css3-flexbox/">Flexible Box Layout</a>. Going forward, it should be possible to use these modules to position
+     partitions on the page. Currently, Adaptive Layout specification simply uses absolute positioning and expressions.</li>
+    <li><a href="http://www.w3.org/TR/css3-values/">Values and Units</a> introduces the <span class="func">calc</span> value which is somewhat similar to
+     "<a href="#func-expr" class="func">-epubx-expr</a>" value introduced in this specification. <a href="http://dev.w3.org/csswg/css-variables/">W3C CSS
+     Variables</a> provide a way to define reusable values, similar to the <a href="#rule-define" class="rule">@-epubx-define</a> rule in this specification.
+     Unlike <a href="#func-expr" class="func">-epubx-expr</a>, <span class="func">calc</span> expressions, and CSS variables must be resolved during CSS
+     cascade and inheritance. This requirement would significantly complicate emulated support via JavaScript on existing User Agents.</li>
+    <li><a href="http://dev.w3.org/csswg/css3-page-template/">CSS Pagination Templates:</a> is a recent effort at W3C that aligns with this specification,
+     but it is not yet ready for reuse.</li>
+    <li><a href="http://www.w3.org/TR/css3-page/">Paged Media</a> focuses on the problem of making existing scrollable content printable; that is,
+     it defines rules for dividing up a logically single scrolling container of content into a series of pages, possibly decorated in a simple manner
+     with header/footer content or additional content defined in <a href="http://www.w3.org/TR/css3-gcpm/">Generated Content for Paged Media</a>.</li>
 </ul>
-
-<h3 id="css-other">Other notable CSS efforts</h3>
-
+<h4 id="s1.4.3">1.4.3. Relationship with EPUB3 CSS profile</h4>
+<p>This specification has no conflicts with the modules in EPUB3 profile. It does not alter the rules for the layout of the content itself. Instead,
+ it only flows the content in a sequence of containers and positions these containers on pages. Potential issues that can arise due to non-uniform
+ container size are handled by CSS Regions module.</p>
+<p>For compatibility, <span class="val">oeb-page-head</span> and <span class="val">oeb-page-foot</span> values for <span class="prop">display</span> property
+  act as if <span class="prop">display</span> property was set to <span class="val">block</span> and <a href="#prop-flow-into" class="prop">-epubx-flow-into</a>
+  property set to <span class="val">oeb-page-head</span> and <span class="val">oeb-page-foot</span> respectively.</p>
+<h3 id="s1.5">1.5. Prefixes</h3>
+<p>Since this specification is not on the W3C Recommendation track, all properties, at-rules, and CSS constructs (e.g.,
+ <a href="#func-expr" class="func">-epubx-expr</a>) that it defines must have vendor-specific prefixes, such as <span class="name">-epubx-</span>. The
+ <span class="name">-epub-</span> prefix is used for items that have a stable syntax in a CSS module, whereas <span class="name">-epubx-</span>
+ is used for items defined in this specification or in particularly unstable CSS modules.</p>
+<p>The following properties and at-rules from CSS modules require prefixing and their specific prefixes:</p>
 <ul>
-<li><a href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a> provides a mechanism
-to define a set of values that can be referred in other parts of the stylesheet. It was implemented in WebKit
-but then removed from it. This specification creates a similar mechanism</li>
+    <li><a href="#rule-region" class="rule">@-epubx-region</a></li>
+    <li><a href="#rule-viewport" class="rule">@-epubx-viewport</a></li>
+    <li><a href="#prop-flow-from" class="prop">-epubx-flow-from</a></li>
+    <li><a href="#prop-flow-into" class="prop">-epubx-flow-into</a></li>
+    <li><a href="#prop-shape-inside" class="prop">-epubx-shape-inside</a></li>
+    <li><a href="#prop-shape-outside" class="prop">-epubx-shape-outside</a></li>
+    <li><span class="prop">-epub-transform</span></li>
+    <li><span class="prop">-epub-transform-origin</span></li>
+    <li><a href="#prop-wrap-flow" class="prop">-epubx-wrap-flow</a></li>
 </ul>
-
-<h2 id="conformance">Conformance </h2>
-  <h3 id="definitions">Definitions</h3>
-  <p>This specification is based on CSS 2.1 and unless otherwise specified all terms used that are key words and definitions in that specification have the meaning defined therein.</p>
-  <h3 id="error_handling">UA Conformance and Error Handling</h3>
-  <p>TODO. In particular, the interaction of this specification with <a href="http://www.w3.org/TR/css3-mediaqueries/"
-        >CSSOM</a>  is not yet defined</p>
-  
-  <h2 id="adaptive-styling">Adaptive styling</h2>
-
-  <p>This section defines two supporting features that enable the Page Layout processing model to
-      dynamically depend on the current environment:  a means to turn styling rules on and off based
-      on conditions, and a means to perform simple calculations based on environmental parameters.
-      As well this section also defines a compatibilitiy at-rule to encapsulate all the
-      funcctionality defined in this specification.</p>
-  
-  <h3 id="pgt-rule-def">Compatibility At-Rule: ‘@pgt’</h3>
-    <p>i</p>
-    <p>All constructs defined in this module must occur within a containing @pgt rule. This ensures
-      compatiblity with User Agents that do not support this module, since UAs are required to
-      ignore content inside any unsupported at-rule. As well a UA supporting this module may
-      activate its functionality conditionally. Determination of activation is UA-dependent and not
-      defined here, but this could for example include ignoring Page Templates on a very small
-      screen device unless printing, or when creating an aural rendition.</p>
-    <p>Example:</p>
-
-<pre>... Regular rules ...
-
-@pgt {
-  ... Page Template rules ...
-}
+<h2 id="s2">2. Adaptive styling</h2>
+<p>This section defines two supporting features that enable the Page Layout processing model to dynamically depend on the current environment:</p>
+<ul>
+    <li>means to turn styling rules on and off based on conditions,</li>
+    <li>means to perform simple calculations based on environmental parameters.</li>
+</ul>
+<h3 id="s2.1">2.1. Calculated Values: ‘-epubx-expr()’</h3>
+<p id="func-expr">Achieving complex page layouts based on dynamic conditions requires taking into account various parameters. These parameters include the media
+ characteristics (width, height) and user preferences (font size). CSS 2.1 provides limited ways to specify property values based on container
+ dimensions (percentages) and current font size (<span class="name">em</span> unit). However, this approach works only for some properties. For example, it is not possible
+ to set font size based on viewport width. It is also not possible to use viewport height if the parent element height was not defined as a percentage.
+ In addition, different values cannot be combined. For example, specifying values based on both viewport width and height is not supported.</p>
+<p>Adaptive Layout specification defines a generalized expression value that uses function notation in this form:</p>
+<pre>-epubx-expr( &lt;expression&gt; )
 </pre>
-
-<p>When Page Template is unsupported or not active, only regular rules are applied. When Page
-      Template is active <em>both</em> regular rules and Page Template rules are applied. Rules
-      inside pgt rule are considered to have higher specificity than regular rules for all
-      selectors.</p>
-
-<h3 id="expr-value-def">Calculated Values: ‘expr()’ </h3>
-
-<p>Achieving complex page layouts based on dynamic conditions requires taking into account various
-      parameters include the media characteristics (width, height) and user preferences (font size).
-      CSS 2.1 provides limited ways to specify property values based on container dimensions
-      (percentages) and current font size (em unit). However, this only works for some properties
-      (e.g. it is not possible to set font size based on viewport width), and some elements (e.g. it
-      is not possible to use viewport height if parent element height was not defined as a
-      percentage) and different values cannot be combined (cannot specify value based on both
-      viewport width and height). </p>
-
-<p>Page Template specification defines a generalized expression value that uses function notation in
-      this form:</p>
-<pre>expr( &lt;expression&gt; )</pre>
-  <p>This value can be use for any CSS property that is not a <a
-        href="http://www.w3.org/TR/CSS2/about.html#shorthand">shorthand property</a> as defined in
-      [CSS21]. </p>
-    <p>The expression syntax grammar is</p>
-<pre class="syntax">expression := cond_term
-cond_term = infix_term '?' infix_term ':' infix_term | infix_term
-infix_term = infix_term infix_op prefix_term | prefix_term
+<p>You can use this value for any CSS property that is not a <a href="http://www.w3.org/TR/CSS2/about.html#shorthand">shorthand property</a> as
+ defined in [CSS21] and unless otherwise specified.</p>
+<p>The expression syntax grammar is:</p>
+<pre>expression = cond_term
+cond_term = log_term '?' log_term ':' log_term | log_term
+log_term = log_term log_op comp_term | comp_term
+comp_term = comp_term comp_op add_term | add_term
+add_term = add_term add_op mul_term | mul_term
+mul_term = mul_term mul_op prefix_term | prefix_term
 prefix_term = prefix_op prefix_term | term
 term = simple_term | '(' cond_term ')' | call_term
-call_term := func '(' args ')'
+call_term = func '(' args ')'
 args = args ',' cond_term | cond_term
 func = identifier '.' identifier | identifier
 simple_term = number | number unit | string |
   identifier | identifier '.' identifier
 prefix_op = '-' | '!'
-infix_op = '+' | '-' | '*' | '/' | '%' | '&lt;' | '&gt;' | '=' |
-   '==' | '&lt;=' | '&gt;=' | '!=' | '&amp;&amp;' | '||'
+log_op = '&amp;&amp;' | '||'
+comp_op = '&lt;' | '&gt;' | '=' | '==' | '&lt;=' | '&gt;=' | '!='
+add_op = '+' | '-'
+mul_op = '*' | '/' | '%'
+unit = 'px' | 'pc' | 'pt' | 'in' | 'mm' | 'cm' | 'em' | 'ex' | '%'  
 </pre>
-<p>Operator priorities are given by this table from highest to lowest</p>
-<table class="operators">
-  <tr><td>'*', '/'</td></tr>
-  <tr><td>'+', '-'</td></tr>
-  <tr><td>'&lt;', '&gt;', '=', '==', '&lt;=', '&gt;=', '!='</td></tr>
-  <tr><td>'&amp;&amp;', '||'</td></tr>
-</table>
-<p>Since CSS names treat "dash" as a valid identifier character and a percent sign after a number is
-      treated as a unit designation, it is recommended to put spaces around dash and percent signs
-      (this is similar to XPath).</p> 
-<p>When an expression is evaluated the processing model is that the result is converted to string
-      and parsed as a base CSS value. If the result is of type number, it is converted to string by
-      appending "px" at the end. If it is not desired authors should explicitly convert value to
-      string by appending an empty string as part of the expression.</p>
+<p>Since CSS names treat "dash" (-) as a valid identifier character and a percent sign (%) after a number is treated as a unit designation, it is
+ recommended to put spaces around dash and percent signs when they are used as operators, as is the case with XPath.</p>
+<p>Operators work with three basic data types: numbers, strings, and booleans. Their behavior, including converting between them, is defined in
+ ECMAScript specification: <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMA-262</a>.</p>
+<p>Both “=” and “==” operators test equality. Using one or the other is a matter of taste. Operators other than “=” have the same meaning
+ as in ECMAScript.</p>
+<p>Values with units are always converted to pixels in the context of the document root. Percentages are relative to the viewport width,
+ except when used for properties with names that contain words “height”, “top” or “bottom” for which they are relative to the viewport height.</p>
+<p>When a property value is given using <a href="#func-expr" class="func">-epubx-expr</a> syntax, the result of the expression evaluation is
+ interpreted as a CSS value. If the result is a type number and if the property accepts the CSS Length value, the result is interpreted as
+ CSS Length in <span class="name">px</span> units. In all other cases the result is converted to a string and parsed according to the parsing
+  rules of the given property.</p>
+<p>Note: These interpretation rules can potentially cause compatibility problems if a CSS property that previously did not accept CSS Length
+ suddenly started to accept CSS Length in a future CSS specification. There are three such properties today: <span class="prop">z-index</span>,
+ <span class="prop">column-count</span>, and <span class="prop">opacity</span>. They are unlikely to accept CSS Lengths. (Two other properties
+ are defined in this specification: <a href="#prop-page" class="prop">-epubx-page</a> and <a href="#prop-utilization" class="prop">-epubx-utilization</a>).
+ If a unitless number is required as a part of the calculation, it is safer in all cases to explicitly convert the number it to a string by appending
+ an empty string.</p>
 <p>The following values are predefined:</p>
 <dl>
-<dt>page-width</dt>
-<dd>width of page in CSS pixels</dd>
-<dt>page-height</dt>
-<dd>height of page in CSS pixels</dd>
+    <dt>page-width</dt> <dd>width of the page in CSS pixels</dd>
+    <dt>page-height</dt> <dd>height of the page in CSS pixels</dd>
+    <dt>true</dt> <dd>boolean value <span class="name">true</span></dd>
+    <dt>false</dt> <dd>boolean value <span class="name">false</span></dd>
 </dl>
-<p class="note">Note: we need to communicate user preferences: preferred orientation for
-languages that support vertical writing, night mode, high contrast mode, preferred margin,
-preferred column width, preferred body font. Conceptually these can come from the user
-stylesheet, but they need to have well-defined names.</p>
+<p>The default values for the following parameters are set to false (i.e. boolean false, empty string, or number zero), but could be defined
+ in user stylesheet to represent that user’s preference: </p>
+<dl>
+    <dt>pref-font-family</dt> <dd>preferred font family for body font, if set by the user</dd>
+    <dt>pref-night-mode</dt> <dd>true if night mode is preferred by the user</dd>
+    <dt>pref-high-contrast</dt> <dd>true if high contract is preferred by the user</dd>
+    <dt>pref-margin</dt> <dd>preferred page margin in pixels</dd>
+    <dt>pref-line-height</dt> <dd>preferred line height as a multiple of the font size</dd>
+    <dt>pref-column-width</dt> <dd>preferred width of a column in pixels</dd>
+    <dt>pref-horizontal</dt> <dd>true if user prefers horizontal writing mode layout to vertical</dd>
+</dl>
 <p>The following intrinsic functions are predefined:</p>
 <dl>
-<dt>floor(x)</dt>
-<dd>largest integer with is less than or equal to x</dd>
-<dt>ceil(x)</dt>
-<dd>smallest integer with is greater than or equal to x</dd>
-<dt>round(x)</dt>
-<dd>integer which is closest to x</dd>
-<dt>sqrt(x)</dt>
-<dd>square root of x</dd>
-<dt>min(x,y)</dt>
-<dd>smallest of x and y</dd>
-<dt>max(x,y)</dt>
-<dd>largest of x and y</dd>
+    <dt>floor(x)</dt> <dd>largest integer which is less than or equal to <span class="name">x</span></dd>
+    <dt>ceil(x)</dt> <dd>smallest integer which is greater than or equal to <span class="name">x</span></dd>
+    <dt>round(x)</dt> <dd>integer which is closest to <span class="name">x</span></dd>
+    <dt>sqrt(x)</dt> <dd>square root of <span class="name">x</span></dd>
+    <dt>min(x,y)</dt> <dd>smallest of <span class="name">x</span> and <span class="name">y</span></dd>
+    <dt>max(x,y)</dt> <dd>largest of <span class="name">x</span> and <span class="name">y</span></dd>
+    <dt>letterbox(viewW,viewH,objW,objW)</dt> <dd>letterbox transformation matrix</dd>
+    <dt>typeof(x)</dt> <dd>returns type of the parameter as <span class="name">typeof</span> operator in ECMAScript</dd>
 </dl>
-
-<p>Units in expr() values are always resolved in the context of the root element in the document.
-      Percentages are resolved based on width or height as defined by the appropriate property.</p>
-
-<h3 id="define-rule-def">Defining named values: the ‘@define’ rule: </h3>
-
-<p>In many cases certain combination of values appear over and over. A stylesheet is more readable
-      and efficient when these combination are factored out and given descriptive names. The
-      ‘@define’ rule enables this functionality.</p>
-
-<pre>@define {
-	&lt;name&gt;: &lt;value&gt;
-	...
+<p>Letterbox function calculates transformation matrix to scale an object of dimensions <span class="name">objW</span>, <span class="name">objH</span>
+ into a viewing area of dimensions <span class="name">viewW</span>, <span class="name">viewH</span> without cropping.</p>
+<p>Example: absolutely positioned and sized box in the middle of the page, snapped to 20px multiples vertically (e.g. to align with the line grid):</p>
+<pre>.abspos {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: -epubx-expr(50% - 100px);
+    top: -epubx-expr(round((50% - 100px)/20px)*20px);
+}
+</pre>
+<h3 id="s2.2">2.2. Defining named values: the ‘@-epubx-define’ rule</h3>
+<p id="rule-define">Certain value combinations appear repeatedly. A stylesheet is more readable and efficient when these combinations are factored out and
+ given descriptive names. The ‘<a href="#rule-define" class="rule">@-epubx-define</a>’ rule enables this functionality.</p>
+<pre>@-epubx-define {
+    [ &lt;name&gt;: &lt;value&gt;; ]*
+}
+</pre>
+<p><span class="name">name</span> must be a valid CSS name; <span class="name">value</span> must be a valid CSS value or a valid
+ <a href="#func-expr" class="func">-epubx-expr</a> calculation. Names defined by <a href="#rule-define" class="rule">@-epubx-define</a> rules can be used
+ only inside <a href="#func-expr" class="func">-epubx-expr</a> values (which includes other <a href="#rule-define" class="rule">@-epubx-define</a> rules).
+ Wherever used, the indicated value is substituted. A given name can be defined at most once in all stylesheets referenced by a document. These definitions
+ depend only on the current environment. That is, their values cannot be redefined, but will change to reflect changes to underlying document
+ characteristics such as page width. Named values may be defined in terms of other named values. Order does not matter, and a value can be used before
+ it is defined, as long as there are no circular dependencies. If an expression contains a circular dependency, it evaluates to an empty string. Redefining
+ predefined values is strongly discouraged, except for defining preference values in the user stylesheet.</p>
+<p>Example: define width for a landscape-oriented image with 3x4 aspect ratio to fill up the viewport without letterboxing (but allowing cropping):</p>
+<pre>@-epubx-define {
+    full-page-width: -epubx-expr(max(page-height*4/3, page-width));
+ }
+</pre>
+ 
+<h3 id="s2.3">2.3. Conditional styling: ‘@-epubx-when’ rule</h3>
+<p id="rule-when">Some styling rules need to be applied only under certain conditions, such as when the viewport area is small. This can be achieved
+ by ‘<a href="#rule-when" class="rule">@-epubx-when</a>’ rule:</p>
+<pre>@-epubx-when &lt;expression&gt; {
+    [ &lt;css-rule&gt; ]*
+}
+</pre>
+<p><span class="name">expression</span> must be a valid expression as defined in "<a href="#func-expr" class="func">-epubx-expr</a>" value. Enclosed CSS
+ rules are applied only when the given expression is calculated to true.</p>
+<p>Use the <a href="#rule-when" class="rule">@-epubx-when</a> rule only for cases in which the condition either depends on some named values introduced
+ in <a href="#rule-define" class="rule">@-epubx-define</a> rules, or cannot be expressed through media queries. In other cases, use media queries.</p>
+<p>Example: apply certain rules when screen has more than 800k pixels:</p>
+<pre>@-epubx-when page-width*page-height &gt; 800000 {
+    ...
 }
 </pre>
 
-<p>"name" must be a valid CSS name; "value" must be a valid CSS value or a valid "expr" calculation.
-      Names defined by @define rules can be used only inside expr() values (which includes other
-      @define rules), and wherever used the indicated value is substituted. A given name can be
-      defined at most once at the document-level scope and once within a given page-master scope:
-      these are definitions, not "variables". Named values may be defined in terms of other named
-      values. Order does not matter, and a value can be used before it is defined, as long as there
-      is no circular dependencies. Redefining predefined values is strongly discouraged.</p>
-
-<h3 id="when-rule-def">Conditional styling: ‘@when’ rule</h3>
-
-<p>Some styling rules need to be applied only under certain conditions (e.g.
-when viewport size is small). This can be achieved by ‘@when’ rule:</p>
-<pre>@when &lt;expression&gt; {
-   CSS rule
-   ....
-   }</pre>
-  
-  <p>"expression" must be a valid "expr" calculation that evaluates to "true" or "false", which determines 
-  whether the contents of the following block are enabled</p>  
-
-<h2 id="page-layout">Page Layout</h2>
-
-<h3 id="page-layout-terms">Flows, regions and page masters</h3>
-
-<p id="flow-term-def">A <em>flow</em> (n.) is a named sequence of elements that should be displayed
-      in that order, for example an article in a magazine or other collection of content. Initially
-      a document is considered to have a single flow named "body" that contains the document's root
-      element. Elements can be placed in other flows by specifying the <a class="prop-ref"
-        href="#flow-name-def">flow-name</a> property. During a rendering operation, elements within
-      a flow may become <i>eligible</i> or <i>ineligible</i> for consideration as they are utilized
-      by the formatting algorithm; an ineligible element behaves as if it was temporariliy removed
-      from its flow.</p>
-
-<p id="region-term-def">A <em>region</em> is an area of the page where content from a particular
-      flow can be displayed. In many cases it takes several regions on a sequence of pages (or on
-      the same page) to display all of the content from a particular flow: content is said to "flow"
-      (v.) from one region to the next. Regions can contain several columns. Regions in can either
-      grow in block progression direction to accomodate content (up to a certain limit) or can be of
-      fixed size. Regions can be of different dimensions, in particular there is <em>no</em>
-      restriction that all regions that accomodate a particular flow should have the same column
-      width. Regions are specified using the <a class="rule-ref" href="#region-rule-def">@region</a>
-      rule.</p>
-
-<p id="page-master-term-def">A <em>page master</em> is a partitioning of a page into a set of
-      regions. Regions always exist in the context of a particular page master. Page masters allow
-      authors to create visually rich presentation of content by controlling the geometry of
-      multiple regions on a page. A stylesheet can specify any number of page masters, a particular
-      page master is selected for every page algorithmically. Page masters are specified using the
-        <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rule.</p>
-
-<h3 id="flow-name-def">Assigning flows: the ‘flow-name’ property</h3>
-<dl>
-<dt><strong>‘flow-name’</strong></dt>
-<dd>
-<table class="propdef">
-    <tr>
-     <th><em>Name:</em></th>
-     <th><dfn>flow-name</dfn></th>
-    </tr>
-    <tr>
-     <td><em>Value:</em></td>
-     <td>&lt;name&gt;</td>
-    </tr>
-    <tr>
-     <td><em>Initial:</em></td>
-     <td>Value of ‘body’ is assumed to be specified on the root of the document.</td>
-    </tr>
-    <tr>
-     <td><em>Applies to:</em></td>
-     <td>block-level and inline elements (including replaced elements and tables)</td>
-    </tr>
-    <tr>
-     <td><em>Inherited:</em></td>
-     <td>no</td>
-    </tr>
-    <tr>
-     <td><em>Percentages:</em></td>
-     <td>N/A</td>
-    </tr>
-    <tr>
-     <td><em>Media:</em></td>
-     <td>visual</td>
-    </tr>
-    <tr>
-     <td><em>Computed&#xA0;value:</em></td>
-     <td>as specified</td>
-    </tr>
-</table>
-</dd>
-</dl>
-<p>The 'flow-name' property is used to assign element to a <a class="term-ref" href="#flow-term-def"
-        >flow</a>. The value is the name of the flow to which this element should be moved. The
-      process of moving the element defined to happen in the following manner:</p>
+<h2 id="s3">3. Page Layout</h2>
+<h3 id="s3.1">3.1. Flows, partition and page masters</h3>
+<h4 id="s3.1.1">3.1.1. Introduction</h4>
+<p class="info">This section is informative</p>
+<p>A <em>flow</em> is a named sequence of elements displayed in the given order, such as an article in a magazine. Initially a document is considered
+ to have a single flow named <span class="val">body</span> that contains the document's root element. Elements can be assigned to other flows by
+ specifying the CSS Regions <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property. Flows are created as needed when content is
+ assigned to them.</p>
+<p>A <em>partition</em> is an area of the page where content from a particular flow can be displayed. In many cases it takes several partitions
+ on a sequence of pages (or on the same page) to display all of the content from a particular flow. Content is said to "flow" from one partition
+ to the next.</p>
+<p>Partitions can contain several columns. Partitions can either grow in block progression direction to accommodate content (up to a certain limit)
+ or can be of fixed size. Partitions can be of different dimensions. There is no restriction that all partitions that accommodate a particular
+ flow should have the same column width. Specify partitions using the <a href="#rule-partition" class="rule">@-epubx-partition</a> rule. Assign
+ flows to partitions using the CSS Regions <a href="#prop-flow-from" class="prop">-epubx-flow-from</a> property.</p>
+<p>Note: The W3C CSS Regions specification defines a more general notion of a <em>region</em> which could be created inside of any element or
+ pseudo-element. In the context of this specification, regions can only be created out of partitions.</p>
+<p>A <em>page master</em> is an allocation of a page into a set of partitions. Partitions exist in the context of a particular page master.
+ Page masters allow authors to create visually rich presentation of content by controlling the geometry of multiple partitions on a page.
+ A stylesheet can specify any number of page masters, and a particular page master is selected for every page algorithmically. Page masters
+ are specified using the <a href="#rule-page-master" class="rule">@-epubx-page-master</a> rule.</p>
+<div class="image-container">
+    <img id="img1" alt="flows, partitions, and page masters" src="pipeline.png"/>
+</div>
+<h3 id="s3.2">3.2. W3C CSS Dependencies</h3>
+<p>This section defines a list of existing W3C CSS properties on which this specification depends. In some cases syntax and semantics will be drawn from
+ different versions of the modules. See individual sections for details on whether to use current or dated drafts for such information.</p>
+<h4 id="s3.2.1">3.2.1. Regions</h4>
+<p>The Adaptive Layout CSS Profile includes <span class="name">-epubx-</span> prefixed versions of the following properties from the 
+ CSS Regions Module using syntax and semantics as defined in the <a href="http://www.w3.org/TR/2012/WD-css3-regions-20120503/">Working Draft 3 May 2012</a>:</p>
 <ul>
-<li>If the element is already in the desired flow (e.g. its ancestor was moved there), nothing
-        happens.</li>
-<li>Otherwise element is removed from its original location (as if its <code class="propname"
-          >display</code> property is set to <code class="propval">none</code>) and placed in the
-        desired flow. NOTE: its order of occurance in the flow is NOT affected by the timing of when
-        such an assignment occurs, but is always based on its order of occurance within the
-        document's content; e.g. if elements A, B, and C occur in that order in the document, and
-        are all assigned to the same flow, then they will always have the order A, B, and C in that
-        flow.</li>
-<li>Cascaded and inherited CSS properties do not change as a result of the move. Elements are always
-        considered to remain in its original place within the tree structure (DOM) of the document
-        for the purposes of styling (except that additional styles can be assigned: see <a
-          class="rule-ref" href="#mode-rule-def">@mode</a> rule). <span class="note">[Note: this is
-          not easy to implement in script]</span></li>
-<li>Enclosing containers are not duplicated in the element's new location. So if without <a
-          class="prop-ref" href="#flow-name-def">flow-name</a> property the element was to be placed
-        at a certain offset from the viewport edge because of its <em>ancestor</em> margin, that
-        margin would would not be applicable in its new place.</li> 
+    <li id="rule-region"><span class="rule">@-epubx-region</span></li>
+    <li id="prop-flow-from"><span class="prop">-epubx-flow-from</span></li>
+    <li id="prop-flow-into"><span class="prop">-epubx-flow-into</span></li>
 </ul>
-
-<h3 id="flow-options-def">Types of content in the flow: ‘flow-options’ property</h3>
-<dl>
-<dt><strong>‘flow-options’</strong></dt>
-<dd>
-<table class="propdef">
-    <tr>
-     <th><em>Name:</em></th>
-     <th><dfn>flow-options</dfn></th>
-    </tr>
-    <tr>
-     <td><em>Value:</em></td>
-     <td>none | [ exclusive || static ]</td>
-    </tr>
-    <tr>
-     <td><em>Initial:</em></td>
-     <td>none</td>
-    </tr>
-    <tr>
-     <td><em>Applies to:</em></td>
-     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified</td>
-    </tr>
-    <tr>
-     <td><em>Inherited:</em></td>
-     <td>no</td>
-    </tr>
-    <tr>
-     <td><em>Percentages:</em></td>
-     <td>N/A</td>
-    </tr>
-    <tr>
-     <td><em>Media:</em></td>
-     <td>visual</td>
-    </tr>
-    <tr>
-     <td><em>Computed&#xA0;value:</em></td>
-     <td>as specified</td>
-    </tr>
-</table>
-</dd>
-</dl>
-<p>The 'flow-options' property affects how an element is processed when it is explicitly assigned to
-      a flow. Several options can be specified at once.</p>
-<dl>
-<dt id="exclusive-value-def">exclusive</dt>
-<dd>When content is selected for a region, elements marked as exclusive are considered first. Only
-        one element is used for a single region and one element is always "used up" (and designated
-        ineligible if it is not also marked as <a class="value-ref" href="#static-value-def"
-          >static</a>). If multiple elements are marked exclusive, the one that comes later is used,
-        but also see <a class="prop-ref" href="#flow-priority-def">flow-priority</a>. If no element
-        is marked exclusive, elements flow into available space in the region one by one, and
-        partially used elements are flowed into the next available region.</dd>
-<dt id="static-value-def">static</dt>
-<dd>When an element is "used up" in a region, it is designated ineligible, unless it is marked as
-        static. Static elements remain eligible when they are used up (and retain their original
-        order in the flow).</dd>
-</dl>
-
-<h3 id="flow-linger-def">Flow content lifetime: ‘flow-linger’ property</h3>
-<dl>
-<dt><strong>‘flow-linger’</strong></dt>
-<dd>
-<table class="propdef">
-    <tr>
-     <th><em>Name:</em></th>
-     <th><dfn>flow-linger</dfn></th>
-    </tr>
-    <tr>
-     <td><em>Value:</em></td>
-     <td>none | &lt;integer&gt;</td>
-    </tr>
-    <tr>
-     <td><em>Initial:</em></td>
-     <td>none</td>
-    </tr>
-    <tr>
-     <td><em>Applies to:</em></td>
-     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified</td>
-    </tr>
-    <tr>
-     <td><em>Inherited:</em></td>
-     <td>no</td>
-    </tr>
-    <tr>
-     <td><em>Percentages:</em></td>
-     <td>N/A</td>
-    </tr>
-    <tr>
-     <td><em>Media:</em></td>
-     <td>visual</td>
-    </tr>
-    <tr>
-     <td><em>Computed&#xA0;value:</em></td>
-     <td>as specified</td>
-    </tr>
-</table>
-</dd>
-</dl>
-<p>The 'flow-linger' property determines for how many pages an element is kept in the flow. None
-      means it is kept forever (but designated ineligible if used if <a class="value-ref"
-        href="#static-value-def">static</a> option is not specified). Integer must be positive and
-      means number of pages. 1 means that it should be used on the same page where it became
-      eligible.</p>
-
-<h3 id="flow-priority-def">Flow content selection: ‘flow-priority’ property</h3>
-<dl>
-<dt><strong>‘flow-priority’</strong></dt>
-<dd>
-<table class="propdef">
-    <tr>
-     <th><em>Name:</em></th>
-     <th><dfn>flow-priority</dfn></th>
-    </tr>
-    <tr>
-     <td><em>Value:</em></td>
-     <td>&lt;integer&gt;</td>
-    </tr>
-    <tr>
-     <td><em>Initial:</em></td>
-     <td>0</td>
-    </tr>
-    <tr>
-     <td><em>Applies to:</em></td>
-     <td>elements for which <a class="prop-ref" href="#flow-name-def">flow-name</a> was specified
-       and <a class="prop-ref" href="#flow-option-def">flow-option</a>
-       <a class="value-ref" href="#exclusive-value-def">exclusive</a> is on</td>
-    </tr>
-    <tr>
-     <td><em>Inherited:</em></td>
-     <td>no</td>
-    </tr>
-    <tr>
-     <td><em>Percentages:</em></td>
-     <td>N/A</td>
-    </tr>
-    <tr>
-     <td><em>Media:</em></td>
-     <td>visual</td>
-    </tr>
-    <tr>
-     <td><em>Computed&#xA0;value:</em></td>
-     <td>as specified</td>
-    </tr>
-</table>
-</dd>
-</dl>
-<p>The 'flow-priority' property defines the priority of selection among  elements in a flow with <a
-        class="prop-ref" href="#flow-option-def">flow-option</a>
-      <a class="value-ref" href="#exclusive-value-def">exclusive</a>. The active (unused) element
-      with <em>highest</em> priority is selected next.</p>
-
-<h3 id="breaking-points">Controlling column/region breaking points</h3>
-<p>Sometimes it is necessary to keep several pieces of content together in the same column or region
-or on the same page. This can be achieved using following properties defined in CSS3 Multi-column Layout
-Module:</p>
+<h4 id="s3.2.2">3.2.2. Exclusions</h4>
+<p>The Adaptive Layout CSS Profile includes <span class="name">-epubx-</span> prefixed versions of the following properties from the CSS
+Exclusions and Shapes Module using syntax and semantics as defined in the <a href="http://www.w3.org/TR/2012/WD-css3-exclusions-20120503/">
+Working Draft 3 May 2012</a>:</p>
 <ul>
-<li>break-inside</li>
-<li>break-before</li>
-<li>break-after</li>
+    <li id="prop-shape-inside"><span class="prop">-epubx-shape-inside</span></li>
+    <li id="prop-shape-outside"><span class="prop">-epubx-shape-outside</span></li>
+    <li id="prop-wrap-flow"><span class="prop">-epubx-wrap-flow</span></li>
 </ul>
-  <p>These properties may be used on flow content whether or not that content is within a
-      multi-column region (if there are no containing columns the inside/before/after values are
-      applied to regions).</p>
+<h4 id="s3.2.3">3.2.3. Multi-column Layout</h4>
+<p>The <a href="http://www.w3.org/TR/css3-multicol/">latest version</a> of this module is used, with no prefixes applied to the properties
+ defined therein.</p>
+<h4 id="s3.2.4">3.2.4. 2D Transforms</h4>
+<p>The following properties are taken from the CSS 2D Transform module with an <span class="name">-epub-</span> prefix with syntax as defined
+ in the <a href="http://www.w3.org/TR/2011/WD-css3-2d-transforms-20111215/">Working Draft 15 December 2011</a> and semantics defined in the
+ <a href="http://www.w3.org/TR/css3-2d-transforms/">latest version of the spacification</a>:</p>
+<ul>
+    <li id="prop-transform"><span class="prop">-epub-transform</span></li>
+    <li id="prop-transform-origin"><span class="prop">-epub-transform-origin</span></li>
+</ul>
+<h4 id="s3.2.5">3.2.5. Backgrounds and Borders</h4>
+<ul>
+    <li><span class="prop">border-color</span></li>
+    <li><span class="prop">border-style</span></li>
+    <li><span class="prop">border-width</span></li>
+    <li><span class="prop">border-radius</span></li>
+    <li><span class="prop">background-color</span></li>
+    <li><span class="prop">background-image</span></li>
+    <li><span class="prop">background-position</span></li>
+    <li><span class="prop">background-size</span></li>
+    <li><span class="prop">background-repeat</span></li>
+    <li><span class="prop">background-origin</span></li>
+    <li><span class="prop">background-clip</span></li>
+    <li><span class="prop">background-attachment</span></li>
+    <li><span class="prop">box-shadow</span></li>
+    <li><span class="prop">box-decoration-break</span></li>
+</ul>
+<h3 id="s3.3">3.3. Content Styling</h3>
+<h4 id="s3.3.1">3.3.1. Flow overview</h4>
+<p class="info">Informative</p>
+<p>Flows represent a logical grouping of one or more elements in the source document into a single stream of content. A flow is created when an element is first associated with a named flow via the <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property. The elements added to a flow do not need to be contiguous, nor does their location in the html DOM change. That is, adding elements to a flow does not alter the structure of the document, and all cascaded style rules applied to the elements remain in effect. </p>
+<p>When you assign elements to multiple flows, a single sequence of content in the document is split into multiple sequences, one for each flow. For each flow, content is then placed one by one into available partitions. These partitions are marked to consume content from that flow with flow-from property. By default, elements from the flow are laid out in the partition (or partition’s column) box in the order they appear in the flow. When content in one element is exhausted, the next element is laid out, as if these elements were siblings in the document tree. When the space in the partition box is exhausted, the remaining content is overflown to the next partition. When an element fits in a partition box only partially, it is broken up in the same way that elements are broken across columns and pages: the portion that does not fit is overflown to the next partition. The default processing can be altered by setting additional properties to the elements that were assigned to the flow.  </p>
+<p>Content that is not explicitly assigned to a particular flow is considered to belong to the flow named <span class="name">body</span>.</p>
+<p>Here is an example of <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> and <a href="#prop-flow-from" class="prop">-epubx-flow-from</a> usage:</p>
+<pre>.sidebar {
+	-epubx-flow-into: leftbox;
+}
 
-<h3 id="region-placement-def">Avoiding blank space: ‘region-placement’ property</h3>
-<dl>
-<dt><strong>‘region-placement’</strong></dt>
-<dd>
-<table class="propdef">
-    <tr>
-     <th><em>Name:</em></th>
-     <th><dfn>region-placement</dfn></th>
-    </tr>
-    <tr>
-     <td><em>Value:</em></td>
-     <td>strict | flexible</td>
-    </tr>
-    <tr>
-     <td><em>Initial:</em></td>
-     <td>strict</td>
-    </tr>
-    <tr>
-     <td><em>Applies to:</em></td>
-     <td>block-level and inline elements, including tables</td>
-    </tr>
-    <tr>
-     <td><em>Inherited:</em></td>
-     <td>no</td>
-    </tr>
-    <tr>
-     <td><em>Percentages:</em></td>
-     <td>N/A</td>
-    </tr>
-    <tr>
-     <td><em>Media:</em></td>
-     <td>visual</td>
-    </tr>
-    <tr>
-     <td><em>Computed&#xA0;value:</em></td>
-     <td>as specified</td>
-    </tr>
-</table>
-</dd>
-</dl>
-<p>When an element that occupies significant area is not breakable (e.g an image) and has to be
-      overflown to a next column/region, it can cause quite a bit of empty space at the end of the
-      column. In some cases it is desireable to overflow the large element, but to continue flowing
-      content that follows it until the space in the column is exhausted. Setting region-placement
-      to "flexible" achieves that effect. I.e. it indicates that the natural order of placement in
-      the column/region of elements having that property will be overridden by the formatting
-      process in such cases where subsequent content in the flow can stil fit in the region.</p>
-
-<h3 id="page-master-rule-def">Defining page layout: ‘@page-master’ rule</h3>
-<p>The 'page-master' rule defines a <a class="term-ref" href="#page-master-term-def">page
-      master</a>. An example:</p>
-<pre>@page-master
-{
-	&lt;propname&gt;: &lt;propvalue&gt;;
-	...
-	
-	@region &lt;name&gt; {
-		...
-	}
-	...
+@-epubx-page-master {
+    @-epubx-partition {
+        -epubx-flow-from: body;column-width: 25em;
+    }
+    @-epubx-partition {
+        -epubx-flow-from: leftbox;
+        height: 6em;
+        width: 6em;
+    }
 }
 </pre>
-<p>Each page-master rule defines a separate <a class="term-ref" href="#page-master-term-def">page master</a>. Note
-that page-master rule can contain both property declarations and other (region) rules. Property declarations
-are optional, but at least one region must be specified. The following Page Template properties are
-applicable:</p>
+<h4 id="s3.3.2">3.3.2. Types of content in the flow: the ‘-epubx-flow-options’ property</h4>
+<table id="prop-flow-options">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-flow-options</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">none | [ exclusive || last || static ]</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p>elements for which <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property was specified</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+		</td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+       </td>
+    </tr>
+</table>
+<p>The <a href="#prop-flow-options" class="prop">-epubx-flow-options</a> property affects how an element is processed in its flow. Several options
+ can be specified at once:</p>
+<dl>
+    <dt>exclusive</dt> <dd>When content is selected for a partition, elements marked as exclusive are considered first. Only one exclusive element
+     is used for a single partition and one element is always consumed (and removed from the flow if it is not also marked as
+     <span class="val">static</span>).</dd>
+    <dt>static</dt> <dd>When an element is consumed in a partition, it is removed from the flow, unless it is marked as <span class="val">static</span>.
+     Static elements are placed in the flow again when they are consumed.</dd>
+    <dt>last</dt> <dd>When this option is applied to elements which are also marked <span class="val">exclusive</span>, the last of them is flowed
+     in the next available partition.</dd>
+</dl>
+<p>The exact content selection process is defined in Page Layout Processing Model.</p>
+    
+<h4 id="s3.3.3">3.3.3. Flow content lifetime: the ‘-epubx-flow-linger’ property</h4>
+<table id="prop-flow-linger">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-flow-linger</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">none | &lt;integer&gt;</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p>elements for which <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property was specified</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>The '<a href="#prop-flow-linger" class="prop">-epubx-flow-linger</a>' property determines how many pages an element is eligible for on a page.
+ <span class="val">None</span> means it stays eligible until consumed. <span class="val">&lt;integer&gt;</span> must be positive and means number
+ of pages. <span class="val">1</span> means that it should be used on the same page it became eligible.</p>
+<h4 id="s3.3.4">3.3.4. Flow content selection: the ‘-epubx-flow-priority’ property</h4>
+<table id="prop-flow-priority">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-flow-priority</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;integer&gt;</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">0</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p>elements for which the <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property was specified and 
+              <a href="#prop-flow-options" class="prop">-epubx-flow-options</a> <span class="val">exclusive</span> is on</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+         </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>The '<a href="#prop-flow-priority" class="prop">-epubx-flow-priority</a>' property defines the priority of selection among elements in a flow
+ with <a href="#prop-flow-options" class="prop">-epubx-flow-options</a> <span class="val">exclusive</span>. The active (unused) element
+ with <em>highest</em> priority is selected next.</p>
+
+<h4 id="s3.3.5">3.3.5. Controlling column/region/page breaking points</h4>
+<p>Sometimes it is necessary to keep several pieces of content together in the same column or partition or on the same page. To do this, use the
+ following properties defined in CSS3 Multi-column Layout Module:</p>
 <ul>
-<li><a class="prop-ref" href="#page-def">page</a></li>
-<li><a class="prop-ref" href="#enabled-def">enabled</a></li>
-<li><a class="prop-ref" href="#min-page-height-def">min-page-height</a></li>
-<li><a class="prop-ref" href="#min-page-width-def">min-page-width</a></li>
-<li><a class="prop-ref" href="#snap-height-def">snap-height</a></li>
+	<li><span class="prop">break-inside</span></li>
+	<li><span class="prop">break-before</span></li>
+	<li><span class="prop">break-after</span></li>
 </ul>
-<h3 id="region-rule-def">Partitioning page area: ‘@region’ rule</h3>
-<p>The 'region' rule defines a <a class="term-ref" href="#region-term-def">region</a> inside a page
-      master. It simply contains property declarations:</p>
-<pre>@region &lt;name&gt;
-{
-	&lt;propname&gt;: &lt;propvalue&gt;;
-	...
+<p>You can use these properties on flow content whether or not that content is within a multi-column partition. If there are no containing columns,
+ the <span class="val">inside/before/after</span> values are applied to partitions.</p>
+<h3 id="s3.4">3.4. Page Masters</h3>
+<h4 id="s3.4.1">3.4.1. Assigning CSS classes to at-rules</h4>
+<p>When creating Adaptive Layout stylesheets, several at-rules create CSS boxes and accept many CSS properties. In particular, these are 
+ <a href="#rule-page-master" class="rule">@-epubx-page-master</a>, <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a>,
+ and <a href="#rule-partition" class="rule">@-epubx-partition</a> rules. You can assign these rules class names (similar to elements) to
+ facilitate reuse of styles, establishing them as targets for CSS class selectors. To do this, assign 
+ <span class="val">class(&lt;name&gt;)</span> to the rule header (before the opening brace).</p>
+<h4 id="s3.4.2">3.4.2. Defining page layout: ‘@-epubx-page-master’ rule</h4>
+<p id="rule-page-master">The <span class="rule">@-epubx-page-master</span> rule defines a separate <em>page master</em>. The page master
+ rule can contain property declarations as well as <a href="#rule-partition" class="rule">@-epubx-partition</a> and 
+ <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a> rules:</p>
+<pre>@-epubx-page-master [ &lt;name&gt; ]? [ class(&lt;name&gt;) ]* {
+	[ &lt;propname&gt;: &lt;propvalue&gt;;
+        | &lt;epubx-partition&gt;
+        | &lt;epubx-partition-group&gt; ]*
 }
 </pre>
-<p>The following standard CSS properties are allowed in region rule (more specific properties are also allowed where
-a shorthand property is listed):</p>
+<p>Property declarations are optional, but at least one <a href="#rule-partition" class="rule">@-epubx-partition</a> or 
+ <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a> must be defined. The following Adaptive
+ Layout properties apply:</p>
 <ul>
-<li>top</li>
-<li>left</li>
-<li>bottom</li>
-<li>right</li>
-<li>width</li>
-<li>height</li>
-<li>margin</li>
-<li>border</li>
-<li>padding</li>
-<li>background</li>
-<li>z-index</li>
-<li>opacity</li>
+    <li><a href="#prop-page" class="prop">-epubx-page</a></li>
+    <li><a href="#prop-enabled" class="prop">-epubx-enabled</a></li>
+    <li><a href="#prop-min-page-height" class="prop">-epubx-min-page-height</a></li>
+    <li><a href="#prop-min-page-width" class="prop">-epubx-min-page-width</a></li>
+    <li><a href="#prop-snap-height" class="prop">-epubx-snap-height</a></li>
+    <li><a href="#prop-snap-width" class="prop">-epubx-snap-width</a></li>
 </ul>
-<p>The following properties defined in CSS3 Multi-column Layout Module can be used
-to use multiple columns in a region (again, more specific properties are allowed where
-a shorthand property is listed):</p>
+<p>In addition, the page master can include <span class="prop">opacity</span> and <span class="prop">background</span> properties. However,
+ <span class="prop">background-attachment</span>, <span class="prop">background-clip</span>, and <span class="prop">background-origin</span>
+ are ignored.</p>
+<h4 id="s3.4.3">3.4.3. Page Master Selection</h4>
+<p>The page master selection algorithm is simple. For each page, the first defined page master which is <em>enabled</em> is used. Thus, all
+ the complexities of page master selection consist of determining whether a page master is enabled or not. The most common conditions
+ that affect page master selection are geometric (<a href="#prop-min-page-width" class="prop">-epubx-min-page-width</a> and
+ <a href="#prop-min-page-height" class="prop">-epubx-min-page-height</a>properties), page position in page sequence
+ (<a href="#prop-page" class="prop">-epubx-page</a> property), and content availability 
+ (<a href="#prop-required" class="prop">-epubx-required</a> property).</p>
+<h4 id="s3.4.4">3.4.4. Allocating the page area: the ‘@-epubx-partition’ rule</h4>
+<p id="rule-partition">The <span class="rule">@-epubx-partition</span> rule defines a <em>partition</em> inside a page master. It simply
+ contains property declarations:</p>
+<pre>@-epubx-partition [ &lt;name&gt; ]? [ class(&lt;name&gt;) ]* {
+    [ &lt;propname&gt;: &lt;propvalue&gt;; ]*
+}
+</pre>
+<p>The following standard CSS2.1, EPUB3 and CSS3 properties are allowed in a partition rule (more specific properties are also allowed
+ where a shorthand property is listed):</p>
 <ul>
-<li>columns</li>
-<li>column-gap</li>
-<li>column-rule</li>
-<li>column-fill</li>
+    <li><a href="#prop-flow-into" class="prop">-epubx-flow-into</a></li>
+    <li><span class="prop">top</span></li>
+    <li><span class="prop">left</span></li>
+    <li><span class="prop">bottom</span></li>
+    <li><span class="prop">right</span></li>
+    <li><span class="prop">width</span></li>
+    <li><span class="prop">height</span></li>
+    <li><span class="prop">margin</span></li>
+    <li><span class="prop">border</span></li>
+    <li><span class="prop">padding</span></li>
+    <li><span class="prop">background</span></li>
+    <li><span class="prop">z-index</span></li>
+    <li><span class="prop">overflow</span></li>
+    <li><span class="prop">opacity</span></li>
+    <li><span class="prop">cursor</span></li>
+    <li><span class="prop">columns</span></li>
+    <li><span class="prop">column-gap</span></li>
+    <li><span class="prop">column-rule</span></li>
+    <li><span class="prop">border-radius</span></li>
+    <li><span class="prop">box-shadow</span></li>
+    <li><span class="prop">-epub-transform</span></li>
+    <li><span class="prop">-epub-transform-origin</span></li>
+    <li><span class="prop">-epub-writing-mode</span></li>
+    <li><a href="#prop-shape-inside" class="prop">-epubx-shape-inside</a></li>
+    <li><a href="#prop-shape-outside" class="prop">-epubx-shape-outside</a></li>
+    <li><a href="#prop-wrap-flow" class="prop">-epubx-wrap-flow</a></li>
 </ul>
-<p>The following Page Template properties are applicable:</p>
+<p>For partitions in horizontal writing mode, the <span class="prop">height</span> property of a partition, if not given or set
+ to <span class="val">auto</span>, is calculated automatically based on the content. First, the maximum possible height that
+ can be used without overflowing the page is determined. Next, content is laid out using the maximum height as a partition
+ height. After the layout is set, partition height is calculated as a minimal possible height of the partition that would still
+ fit all the content that was laid out. In vertical writing mode (as determined by <span class="prop">-epub-writing-mode</span>
+ property), <span class="prop">width</span> property is treated in the similar fashion.</p>
+<p><span class="prop">-epub-writing-mode</span> property on the partition cannot be specified by the
+ <a href="#func-expr" class="func">-epubx-expr</a> syntax.</p>
+<p>The <span class="prop">overflow</span> property of a partition is set by default to <span class="val">hidden</span>. Content authors
+ may overwrite it with the <span class="val">visible</span> value. Other values are not supported, and using any of these values will
+ turn the overflow property into <span class="val">hidden</span>.</p>
+<p>The <a href="#prop-wrap-flow" class="prop">-epubx-wrap-flow</a> property of a partition is set by default to <span class="val">both</span>.
+ This property causes the partition to create exclusions for content in all subsequent partitions. Content authors may overwrite the property
+ with the <span class="val">auto</span> (making this partition overlap content in other partitions) and <span class="val">clear</span> settings.
+ Note that subsequent partitions in the page master always exclude the content in the prior partitions. Content is only excluded in partitions
+ that grow in their block progression direction. More precisely, if a partition has a dimension which is automatically calculated and the
+ position of its <em>before</em> edge depends on the automatically calculated dimension, exclusions are not applied to the content.</p>
+<p>The following Adaptive Layout properties are applicable:</p>
 <ul>
-<li><a class="prop-ref" href="#flow-name-def">flow-name</a></li>
-<li><a class="prop-ref" href="#enabled-def">enabled</a></li>
-<li><a class="prop-ref" href="#required-def">required</a></li>
-<li><a class="prop-ref" href="#required-regions-def">required-regions</a></li>
-<li><a class="prop-ref" href="#conflicting-regions-def">conflicting-regions</a></li>
-<li><a class="prop-ref" href="#min-page-height-def">min-page-height</a></li>
-<li><a class="prop-ref" href="#min-page-width-def">min-page-width</a></li>
-<li><a class="prop-ref" href="#snap-height-def">snap-height</a></li>
-<li><a class="prop-ref" href="#mode-def">mode</a></li>
+    <li><a href="#prop-enabled" class="prop">-epubx-enabled</a></li>
+    <li><a href="#prop-required" class="prop">-epubx-required</a></li>
+    <li><a href="#prop-required-partitions" class="prop">-epubx-required-partitions</a></li>
+    <li><a href="#prop-conflicting-partitions" class="prop">-epubx-conflicting-partitions</a></li>
+    <li><a href="#prop-min-page-height" class="prop">-epubx-min-page-height</a></li>
+    <li><a href="#prop-min-page-width" class="prop">-epubx-min-page-width</a></li>
+    <li><a href="#prop-page" class="prop">-epubx-page</a></li>
+    <li><a href="#prop-snap-width" class="prop">-epubx-snap-width</a></li>
+    <li><a href="#prop-snap-height" class="prop">-epubx-snap-height</a></li>
 </ul>
-<p>Specifying <a class="prop-ref" href="#flow-name-def">flow-name</a> property in the
-region content binds the region to the flow: content from the flow is laid out in that
-region.</p>
-<h3 id="enabled-def">Conditional page master and region usage: ‘enabled’ property</h3>
-<dl>
-  <dt>
-    <strong>‘enabled’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>enabled</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>true | false</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>true</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>true | false, see below for computation rules</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>In many cases a page master or a particular region can only be used under certain conditions.
-      Before a page master (or a region within the selected page master) is used it is first
-      determined if it is <em>enabled</em> or not. This is done by calculating the computed value of
-      the <a class="prop-ref" href="#enabled-def">enabled</a> property. For its value to be ‘true'
-      all of the following conditions mus be met:</p>
+<p>Specifying <a href="#prop-flow-from" class="prop">-epubx-flow-from</a> property in the partition content binds the partition to the flow.
+ Content from the flow is laid out in that partition. By default <a href="#prop-flow-from" class="prop">-epubx-flow-from</a> is set to
+ <span class="val">body</span></p>
+<p>Example of a very simple page master:</p>
+<pre>@-epubx-page-master {
+    @-epubx-partition body {
+        -epubx-flow-from: body;
+        column-width: 20em;
+        padding: 0.5em;
+        margin: 1em;
+        border: 2px solid black;
+    }
+}
+</pre>
+<p>This page master will cause content to be presented on a pages with the given padding, border, and margin and broken into multiple
+ columns when each column can be at least <span class="val">20em</span> wide.</p>
+<p>Slightly more complex page master with the space for the heading on top of the page:</p>
+<pre>@-epubx-page-master {
+    @-epubx-partition body {
+        -epubx-flow-from: body;
+        column-width: 20em;
+        margin: 1em;
+    }
+    @-epubx-partition head {
+        -epubx-flow-from: head;
+        margin: 1em;
+        border-bottom: 1px solid black;
+    }
+}
+</pre>
+<p>If partition <span class="name">head</span> has some content assigned to it, it will exclude the content in the partition
+ <span class="name">body</span>.</p>
+<h4 id="s3.4.5">3.4.5. Styling content in a partition: the ‘@-epubx-region’ rule</h4>
+<p><span class="info">This section is informative</span></p>
+<p>To apply partition-specific styling inside some partitions, you can use the CSS Regions <a href="#rule-region" class="rule">@-epubx-region</a>
+ rule.</p>
+<p>For instance, in the following example content is flowed from the top single-column region into the bottom 2-column region, and
+ <a href="#rule-region" class="rule">@-epubx-region</a> rule increases font size in the top region only.</p>
+<pre>@-epubx-page-master {
+    @-epubx-partition class(top) {
+        -epubx-flow-from: body;
+        height: 6em;
+    }
+    @-epubx-partition class(bottom) {
+        top: 7em;
+        -epubx-flow-from: body;
+        column-count: 2;
+    }
+}
+@-epubx-region .top {
+    p { font-size: 1.1em; }
+}
+</pre>
+<p>Note that partition and content are not considered to have ancestor-descendant relationship, thus this stylesheet <em>does not</em> have 
+ the desired effect:</p>
+<pre>.top p { font-size: 1.1em; }
+</pre>
+<h4 id="s3.4.6">3.4.6. Grouping the partitions: the ‘@-epubx-partition-group’ rule</h4>
+<p>Typically <a href="#rule-partition" class="rule">@-epubx-partition</a> rules are nested directly in the 
+ <a href="#rule-page-master" class="rule">@-epubx-page-master</a> rule. However, it may be necessary to have a common container. Specifying
+ a property on individual subcontainers would have different result. This is the case, for instance, for <span class="prop">z-index</span> and
+ <span class="prop">opacity</span> properties. And in some cases, it is just convenient to have an additional CSS box that can contain
+ several partitions. </p>
+<p id="rule-partition-group">The <span class="rule">@-epubx-partition-group</span> rule can be used for grouping partitions. Grouping does
+ not affect partition scoping, position or excluding behavior (partition-group CSS box size is always the same as the page size). The
+ <span class="rule">@-epubx-partition-group</span> rule can contain <a href="#rule-partition" class="rule">@-epubx-partition</a> and 
+ <span class="rule">@-epubx-partition-group</span> rules and the following properties:</p>
 <ul>
-  <li>
-    either <a class="prop-ref" href="#enabled-def">enabled</a> property is not specified or its value is ‘true',
-  </li>
-  <li>either <a class="prop-ref" href="#min-page-width-def">min-page-width</a> property is not specified
-  or page width is greater or equal to <a class="prop-ref" href="#min-page-width-def">min-page-width</a> computed value,</li>
-  <li>either <a class="prop-ref" href="#min-page-height-def">min-page-height</a> property is not specified or page height
-  is greater or equal to <a class="prop-ref" href="#min-page-height-def">min-page-height</a> computed value.</li>
+    <li><span class="prop">opacity</span></li>
+    <li><span class="prop">-epub-transform</span></li>
+    <li><span class="prop">-epub-transform-origin</span></li>
+    <li><span class="prop">visibility</span></li>
+    <li><span class="prop">overflow</span></li>
+    <li><span class="prop">z-index</span></li>
+    <li><a href="#prop-snap-width" class="prop">-epubx-snap-width</a></li>
+    <li><a href="#prop-snap-height" class="prop">-epubx-snap-height</a></li>
 </ul>
-<p>For regions all of the above conditions must be satisfied, as well as several additional ones:</p>
+<pre>@-epubx-partition-group [ &lt;name&gt; ]? [ class(&lt;name&gt;) ]* {
+    [ &lt;propname&gt;: &lt;propvalue&gt;;
+        | &lt;epubx-partition&gt;
+        | &lt;epubx-partition-group&gt; ]*
+}
+</pre>
+<p>Properties are optional; however, every <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a> must contain at least
+ one <a href="#rule-partition" class="rule">@-epubx-partition</a> or <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a>
+ rule</p>
+<h4 id="s3.4.7">3.4.7. Conditional page master and partition usage: the ‘-epubx-enabled’ property</h4>
+<table id="prop-enabled">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-enabled</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">true | false</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">true</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-page-master" class="rule">@-epubx-page-master</a> and
+             <a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p><span class="val">true | false</span>, see below for computation rules</p>
+        </td>
+    </tr>
+</table>
+<p>In many cases a page master or a particular partition can only be used under certain conditions. Before a page master (or a partition
+ within the selected page master) is used it is first determined if it is <em>enabled</em> or not. This is done by calculating
+ the computed value of the <span class="prop">-epubx-enabled</span> property. The calculation is different for partitions and
+ page masters. In both cases for <span class="prop">-epubx-enabled</span> computed value to be <span class="val">true</span> all
+ of the following conditions must be met:</p>
 <ul>
-  <li>
-    either region height is explicitly set to something other than auto or some content exists
-    in the corresponding flow.
-  </li>
-  <li>
-    all regions referenced by <a class="prop-ref" href="#required-regions-def">required-regions</a>
-    property are enabled,
-  </li>
-  <li>
-    none of the regions referenced by <a class="prop-ref" href="#conflicting-regions-def">conflicting-regions</a>
-    property is enabled.
-  </li>
+    <li>either <a href="#prop-enabled" class="prop">-epubx-enabled</a> property is not specified or its value is <span class="val">true</span>,</li>
+    <li>either <a href="#prop-min-page-width" class="prop">-epubx-min-page-width</a> property is not specified or page width is greater
+     or equal to <a href="#prop-min-page-width" class="prop">-epubx-min-page-width</a> computed value,</li>
+    <li>either <a href="#prop-min-page-height" class="prop">-epubx-min-page-height</a> property is not specified or page height is greater
+     or equal to <a href="#prop-min-page-height" class="prop">-epubx-min-page-height</a> computed value,</li>
+    <li>either <a href="#prop-page" class="prop">-epubx-page</a> property is not specified or one-based page number of the page being
+     produced equals to the computed value of the <a href="#prop-page" class="prop">-epubx-page</a> property.</li>
 </ul>
-<p>Additional conditions for page masters:</p>
+<p>Additional conditions for partitions (all of which must be satisfied) are listed below. The partition is said to have an explicit
+ height when either its <span class="prop">height</span> property is not <span class="val">auto</span> or when both <span class="prop">top</span>
+ and <span class="prop">bottom</span> properties are not <span class="val">auto</span>.</p>
 <ul>
-  <li>
-    either <a class="prop-ref" href="#page-def">page</a> property is not specified or one-based page number of the
-    page being produced equals to the computed value of the <a class="prop-ref" href="#page-def">page</a> property,
-  </li>
-  <li>
-    all of its regions for which <a class="prop-ref" href="#required-def">required</a> property is computed
-    as true are enabled.
-  </li>
+    <li>Either partition should have explicit height and <a href="#prop-required" class="prop">-epubx-required</a> property is not set
+     or some content should be available in the corresponding flow.</li>
+    <li>All partitions referenced by <a href="#prop-required-partitions" class="prop">-epubx-required-partitions</a> property are enabled.</li>
+    <li>None of the partitions referenced by <a href="#prop-conflicting-partitions" class="prop">-epubx-conflicting-partitions</a> property is enabled.</li>
 </ul>
-<h3 id="page-master-selection">Page Master selection</h3>
-<p>The Page master selection algorithm is very simple: for each page the first defined page master
-      which is <em>enabled</em> is used. Thus, all the complexities of page master selection are in
-      determining if a page master is enabled or not. The most common conditions that affect page
-      master selection are geometric (<a class="prop-ref" href="#min-page-width-def"
-        >min-page-width</a> and <a class="prop-ref" href="#min-page-height-def">min-page-height</a>
-      properties), page position in page sequence (<a class="prop-ref" href="#page-def">page</a>
-      property), and content availablity (<a class="prop-ref" href="#required-def">required</a>
-      property). </p>
-<h3 id="page-def">Using page layout for a particular page: ‘page’ property</h3>
-<dl>
-  <dt>
-    <strong>‘page’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>page</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>&lt;integer&gt;</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>not specified</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>Specifies that the page master or the region is only enabled for a particular page.</p>
-<h3 id="page-dims">Selecting page master based on device dimensions: ‘min-page-width’ and ‘min-page-height’ properties</h3>
-<dl>
-  <dt>
-    <strong>‘min-page-width’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn id="min-page-width-def">min-page-width</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>&lt;length&gt;</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>0</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>absolute length</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<dl>
-  <dt>
-    <strong>‘min-page-height’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn id="min-page-height-def">min-page-height</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>&lt;length&gt;</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>0</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>absolute length</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>These properties define minimal page dimensions for which the page master or the region are
-still usable. They participate in calculation of the <a class="prop-ref" href="#enabled-def">enabled</a>
-property computed value.
-</p>
-<h3 id="required-def">Selecting page master based on content: ‘required’ property</h3>
-<dl>
-  <dt>
-    <strong>‘required’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>required</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>true | false</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>true</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>true | false</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property determines if this region has to be present for page master to be usable. It is
-      typically used to select a particular page master based on availability of content in a
-      particular flow. It participates in calculation of the enclosing page master <a
-        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
-<h3 id="conflicting-regions-def">Using only one in a set of regions: ‘conflicting-regions’ property</h3>
-<dl>
-  <dt>
-    <strong>‘conflicting-regions’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>conflicting-regions</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>list of region names</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>empty</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p> This property determines if this region cannot be used together with one or more other regions
-      in the page master (e.g. because their use together would cause overlap or would be visually
-      "conflicting"). It participates in calculation of the enclosing page master <a
-        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
-<h3 id="required-regions-def">Using multiple regions together: ‘required-regions’ property</h3>
-<dl>
-  <dt>
-    <strong>‘required-regions’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>required-regions</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>list of region names</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>empty</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property determines if this region must be only used together with one or more other regions
-      in the page master. It participates in calculation of the enclosing page master <a
-        class="prop-ref" href="#enabled-def">enabled</a> property computed value. </p>
-<h3 id="mode-def">Styling content in a region: ‘mode’ property</h3>
-<dl>
-  <dt>
-    <strong>‘mode’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>mode</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td> Name of one of the <a class="rule-ref" href="#mode-rule-def">@mode</a> rules </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>empty</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property, if specified, determines what additional styling should be applied to the content
-      flowed into the region, as specified in the referenced <a class="rule-ref"
-        href="#mode-rule-def">@mode</a> rule.</p>
-<h3 id="snap-height-def">Snapping to the line grid: ‘snap-height’ property</h3>
-<dl>
-  <dt>
-    <strong>‘snap-height’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>snap-height</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>
-          &lt;length&gt; | none
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>none</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> and
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property snaps region vertical content position and vertical edges of overlapping floated regions to
-the grid with the given interval (typically the same as <code>line-height</code> property for the
-region's content). Region position is always pushed down to the next grid line. Edges of the overlaps
-are moved up for the top edge and down for the bottom edge. Note that overlapping regions themselves
-are not moved, only exclusion areas that they generate for this region are adjusted.</p>
-
-<h3 id="region-overlap-def">Controlling overlap: ‘region-overlap’ property</h3>
-<dl>
-  <dt>
-    <strong>‘region-overlap’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>region-overlap</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>
-          overlap | float | clear
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>float</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property controls how this region overlaps with the regions that follow it in the page
-      master definition. The default value <code>float</code> causes content in all subsequent
-      regions to flow around this region (as it would for a regular CSS float). Setting the value to
-        <code>clear</code> acts as a combination of CSS 'float' and 'clear' properties: content in
-      overlapping regions is pushed down vertically to avoid overlap. Finally, the value
-        <code>overlap</code> allows following regions to simply overlap. Content in a column cannot
-      flow on both sides of a floated region, i.e. each column will go either to the left or the
-      right.</p>
-
-<h3 id="outer-shape-def">Custom region shape: ‘outer-shape’ property</h3>
-<dl>
-  <dt>
-    <strong>‘outer-shape’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>outer-shape</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>
-          [&lt;number&gt; &lt;number&gt;]* | none
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>none</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>
-          <a class="rule-ref" href="#region-rule-def">@region</a> rules
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property defines a region's "outside" boundary. It applies only when <a class="prop-ref"
-        href="#region-overlap-def">region-overlap</a> is set to <code>float</code>. By default, when
-      such a region overlaps other regions content in other regions flows around the rectangle
-      defined by its margin edges; outer-shape allows author to instead specify an arbitrary shape.
-      The value of outer-shape is an even number of numbers, where each number pair defines the x
-      and y vertex of a polygon in a coordinate system where</p>
+<p>For page masters:</p>
 <ul>
-<li>origin is located in the region top left corner,</li>
-<li>x axis goes right and scaled so that 100 corresponds to the width of the region</li>
-<li>y axis goes down and scaled so that 100 corresponds to the height of the region</li>
+    <li> all of its partitions for which <a href="#prop-required" class="prop">-epubx-required</a> property is computed as <span class="val">true</span>
+     are enabled.</li>
 </ul>
-<p>Outer shape does not affect how content is layed out <em>inside</em> the region.</p>
-
-<h3 id="utilization-def">Lookup range: ‘utilization’ property</h3>
-<dl>
-  <dt>
-    <strong>‘utilization’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn>utilization</dfn>
-        </th>
-      </tr>
-      <tr>
+<h4 id="s3.4.8">3.4.8. Using page layout for a particular page: the ‘-epubx-page’ property</h4>
+<table id="prop-page">
+    <tr>
         <td>
-          <em>Value:</em>
+            <p>Name:</p>
         </td>
         <td>
-          &lt;number&gt; | auto
+            <p><span class="prop">-epubx-page</span></p>
         </td>
-      </tr>
-      <tr>
+    </tr>
+    <tr>
         <td>
-          <em>Initial:</em>
-        </td>
-        <td>auto</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
+            <p>Value:</p>
         </td>
         <td>
-          <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rules
+            <p><span class="val">&lt;integer&gt;</span></p>
         </td>
-      </tr>
-      <tr>
+    </tr>
+    <tr>
         <td>
-          <em>Inherited:</em>
+            <p>Initial:</p>
         </td>
-        <td>no</td>
-      </tr>
-      <tr>
         <td>
-          <em>Percentages:</em>
+            <p>not specified</p>
         </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
+    </tr>
+    <tr>
         <td>
-          <em>Media:</em>
+            <p>Applies to:</p>
         </td>
-        <td>visual</td>
-      </tr>
-      <tr>
         <td>
-          <em>Computed&#xA0;value:</em>
+            <p><a href="#rule-page-master" class="rule">@-epubx-page-master</a> and <a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
         </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>This property defines a range of content which is looked up ahead to find the content available
-for various regions. If the value if "auto", user agents can employ custom heuristics or use some fixed
-value (1 is recommended). If value is a number, then lookup size is determined in the following manner: the area of the
-page is measured in square em units (an area of a square with side length equal to 1em), multiplied by
-utilization and rounded. The result is the amount of content to look up forward for this page master.
-<em>Content amount</em> is calculated in this way: 
-</p>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>Specifies that the page master or the partition is only enabled for a particular numbered page.</p>
+<h4 id="s3.4.9">3.4.9. Selecting a page master based on device dimensions: the ‘-epubx-min-page-width’ and ‘-epubx-min-page-height’ properties</h4>
+<table id="prop-min-page-width">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-min-page-width</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;length&gt;</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">0</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-page-master" class="rule">@-epubx-page-master</a>
+              and <a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>absolute length</p>
+        </td>
+    </tr>
+</table>
+<table id="prop-min-page-height">
+    <tr>
+        <td>
+            <p>Name: </p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-min-page-height</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;length&gt;</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">0</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-page-master" class="rule">@-epubx-page-master</a>
+              and <a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>absolute length</p>
+        </td>
+    </tr>
+</table>
+<p>These properties define minimal page dimensions for which the page master or the partition are still usable. They participate
+ in calculation of the <a href="#prop-enabled" class="prop">-epubx-enabled</a> property computed value.</p>
+<h4 id="s3.4.10">3.4.10. Selecting a page master based on content: the ‘-epubx-required’ property</h4>
+<table id="prop-required">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-required</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">true | false</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">true</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p><span class="val">true | false</span></p>
+        </td>
+    </tr>
+</table>
+<p>This property determines if this partition must be present for page master to be usable. The property is typically used
+ to select a particular page master based on availability of content in a particular flow. It participates in calculation
+ of the enclosing page master <a href="#prop-enabled" class="prop">-epubx-enabled</a> property computed value.</p>
+<h4 id="s3.4.11">3.4.11. Using only one in a set of partitions: the ‘-epubx-conflicting-partitions’ property</h4>
+<table id="prop-conflicting-partitions">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-conflicting-partitions</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p>comma-separated list of partition names</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p>empty</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>This property determines if this partition cannot be used together with one or more other partitions in the page master. For example, their use
+ together might cause overlap or visual conflict. The property participates in calculation of the enclosing page master
+ <a href="#prop-enabled" class="prop">-epubx-enabled</a> property computed value.</p>
+<p>This property cannot be specified using <a href="#func-expr" class="func">-epubx-expr</a> syntax.</p>
+<h4 id="s3.4.12">3.4.12. Using multiple partitions together: the ‘-epubx-required-partitions’ property</h4>
+<table id="prop-required-partitions">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-required-partitions</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p>comma-separated list of partition names</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p>empty</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>This property determines if this partition must be only used together with one or more other partitions in the page master. It
+ participates in calculation of the enclosing page master <a href="#prop-enabled" class="prop">-epubx-enabled</a> property computed value.</p>
+<p>This property cannot be specified using <a href="#func-expr" class="func">-epubx-expr</a> syntax.</p>
+<h4 id="s3.4.13">3.4.13. Snapping to the line grid: the ‘-epubx-snap-height’ and ‘-epubx-snap-width’ properties</h4>
+<table id="prop-snap-width">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-snap-width</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;length&gt; | none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>yes</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<table id="prop-snap-height">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-snap-height</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;length&gt; | none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">none</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-partition" class="rule">@-epubx-partition</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>yes</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>These properties have effect only for the <a href="#rule-partition" class="rule">@-epubx-partition</a> rule; however, if they are specified on the
+ <a href="#rule-partition-group" class="rule">@-epubx-partition-group</a> or <a href="#rule-page-master" class="rule">@-epubx-page-master</a> rules,
+ the value is inherited in the enclosed <a href="#rule-partition" class="rule">@-epubx-partition</a> rules.</p>
+<p>In printed layouts, text lines in adjacent columns typically align. This alignment can be achieved in CSS multicolumn layout if special attention
+ is given to paragraph spacing and line height because each column starts at the same position in block progression direction. However, when text
+ is flowing into multiple arbitrarily positioned partitions, lines align only if partitions are positioned a whole number of lines apart in block
+ progression direction. The <a href="#prop-snap-height" class="prop">-epubx-snap-height</a> and
+ <a href="#prop-snap-width" class="prop">-epubx-snap-width</a> properties help to control this automatically.</p>
+<p>Two properties are defined, <a href="#prop-snap-height" class="prop">-epubx-snap-height</a> for vertical and 
+ <a href="#prop-snap-width" class="prop">-epubx-snap-width</a> for horizontal direction. The
+ <a href="#prop-snap-height" class="prop">-epubx-snap-height</a> property is primarily useful for horizontal writing, and
+ <a href="#prop-snap-width" class="prop">-epubx-snap-width</a> - for vertical. However, both of them can be used in the same page master or even
+ for the same partition.</p>
+<p>These properties snap partition content origin position and edges of overlapping floated partitions to the grid with the given interval: typically
+ the same as <span class="prop">line-height</span> property for the partition's content.</p>
+<p>Partition position is pushed in the block or inline progression direction to the next grid line. Edges of the exclusion are moved to make exclusion
+ bigger, such as up for the top edge and down for the bottom edge. Partitions that caused exclusions themselves are not moved; adjustment happens only
+ for the exclusion areas that they generate.</p>
+<h4 id="s3.4.14">3.4.14. Primary flows: the ‘@-epubx-flow’ rule and ‘-epubx-flow-consume’ property.</h4>
+<p id="rule-flow">The <span class="rule">@-epubx-flow</span> rule defines the flow's global properties:</p>
+<pre>@-epubx-flow &lt;name&gt; {
+    [ &lt;propname&gt;: &lt;propvalue&gt;; ]*
+}
+</pre>
+<p>Note that this rule does not create the flow; it merely defines its properties. It is not necessary to declare flow in any way; simply
+ using <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property is sufficient.</p>
+<p>At most one flow rule for each flow name can exist.</p>
+<p>The only property that is defined for the <a href="#rule-flow" class="rule">@-epubx-flow</a> rule is
+ <a href="#prop-flow-consume" class="prop">-epubx-flow-consume</a>:</p>
+<table id="prop-flow-consume">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-flow-consume</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">some | all</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">all</span> for <span class="name">body</span> flow; <span class="val">some</span> for all other flows</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-flow" class="rule">@-epubx-flow</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>If <a href="#prop-flow-consume" class="prop">-epubx-flow-consume</a> is set to <span class="val">all</span> on a particular flow,
+ that flow is considered to be <em>primary</em>. Pages are generated from page masters while at least one primary
+ flow still has content to render. When all primary flows are exhausted, the document is considered fully rendered.</p>
+<h4 id="s3.4.15">3.4.15. Lookup range: the ‘-epubx-utilization’ property</h4>
+<table id="prop-utilization">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-utilization</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">&lt;number&gt;</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">1</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-page-master" class="rule">@-epubx-page-master</a> rules</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>Content-based page master selection (see <a href="#prop-required" class="prop">-epubx-required</a> property) relies on knowledge about
+ which partitions are going to have eligible content for the next page. Content “eligibility” (described in detail in the next section)
+ is based on lookahead in the document to approximate how much content is going to fit on the next page. This lookahead is only
+ a heuristic and in some instances it is desirable to adjust it. For instance, if page master contains partition for the primary
+ flow which only covers a small fraction of the page area, it may be desirable to decrease the lookahead size.</p>
+<p>The <a href="#prop-utilization" class="prop">-epubx-utilization</a> property defines a range of content which is looked up ahead
+ to find the content available for various partitions. The lookup size is determined in the following manner: the area of the page
+ is measured in square <span class="name">em</span> units (an area of a square with side length equal to <span class="val">1em</span>),
+ multiplied by the <a href="#prop-utilization" class="prop">-epubx-utilization</a> value and rounded. The result is the
+ <em>amount of content</em> to look forward for this page master. Lookup position in the content is determined in the following way:</p>
 <ul>
-<li>Each UTF16 code point contributes 1 unit</li>
-<li>Each DOM element contributes 1 unit</li>
+    <li>Start from the current position in the document (see Page Layout Processing Model)</li>
+    <li>Initialize <span class="name">remaining-content</span> variable to the amount of content determined above</li>
+    <li>Iterate through the content forward element-by-element and UTF-16 code-point-by-code-point; elements are considered before their children</li>
+    <li>Skip elements for which <span class="prop">display</span> property is set to none and elements placed in a <em>non-primary</em>
+      flow, as well as their descendants; otherwise,</li>
+    <li>For each UTF16 code point in a text node, subtract 1 from <span class="name">remaining-content</span></li>
+    <li>For each element subtract 1 from <span class="name">remaining-content</span></li>
+    <li>Lookup position is reached when <span class="name">remaining-content</span> becomes zero or end of the document is reached.</li>
 </ul>
-<h3 id="page-master-expr">Expressions inside ‘@page-master’ rule</h3>
-<p>Each <a class="rule-ref" href="#page-master-rule-def">@page-master</a> rule creates a scope for
-      named values defined by <a class="rule-ref" href="#define-def">@define</a> rule. Any value
-      defined inside <a class="rule-ref" href="#page-master-rule-def">@page-master</a> is visible
-      only within its scope. In addition, certain values related to the page master regions can be
-      accessed using region name with the "dot" notation: </p>
-<pre>&lt;region-name&gt;.&lt;value-name&gt;</pre>
+<p>Note that lookup position can occur between two code points of the surrogate pair. This is not a problem because it is never used
+ to split the text content.</p>
+<h4 id="s3.4.16">3.4.16. Expressions inside the ‘@-epubx-page-master’ rule</h4>
+<p>Each <a href="#rule-page-master" class="rule">@-epubx-page-master</a> rule creates a scope for named values. In addition to the names
+ that are defined by <a href="#rule-define" class="rule">@-epubx-define</a> rule, certain values related to the page master partitions
+ can be accessed using partition name with the "dot" notation:</p>
+<pre>&lt;partition-name&gt;.&lt;value-name&gt;</pre>
 <p>or</p>
-<pre>&lt;region-name&gt;.&lt;function-name&gt;(args...)</pre>
+<pre>&lt;partition-name&gt;.&lt;function-name&gt;(args...)</pre>
 <p>The following values are defined:</p>
 <ul>
-  <li>
-    a property name can be used to access the <em>actual</em> value of that property (e.g. for width property,
-    the actual width of the region after all CSS rules to calculate it are applied),
-  </li>
-  <li>names in the form <code>&lt;box-name&gt;&lt;side&gt;-egde</code> where box-name can be one of
-  <ul>
-    <li>&lt;empty&gt;</li>
-    <li>padding-</li>
-    <li>border-</li>
-    <li>margin-</li>
-  </ul>
-  and side can be one of
-  <ul>
-    <li>top-</li>
-    <li>bottom-</li>
-    <li>left-</li>
-    <li>right-</li>
-  </ul>
-  these names correspond to positions of the edges of the corresponding box (empty corresponds to the content area)
-  relative to the page top left corder.
-  </li>
+    <li>A property name can be used to access the <em>actual</em> value of that property (e.g. for <span class="prop">width</span> property, the
+     actual width of the partition after all CSS rules to calculate it are applied),</li>
+    <li><p>Names in the form <span class="val">&lt;box-name&gt;&lt;side&gt;-egde</span> where <span class="val">&lt;box-name&gt;</span> can be one of</p>
+        <ul>
+            <li><span class="name">&lt;empty&gt;</span></li>
+            <li><span class="name">padding-</span></li>
+            <li><span class="name">border-</span></li>
+            <li><span class="name">margin-</span></li>
+        </ul>
+        <p>and <span class="val">&lt;side&gt;</span> can be one of</p>
+	    <ul>
+	        <li><span class="name">top-</span></li>
+            <li><span class="name">bottom-</span></li>
+            <li><span class="name">left-</span></li>
+            <li><span class="name">right-</span></li>
+	    </ul>
+	</li>
 </ul>
-<p>The only currently defined function is</p>
+<p>These names correspond to positions of the edges of the corresponding box relative to the page top left corner. <span class="name">&lt;empty&gt;</span>
+ corresponds to the content area.</p>
+<p>The only defined function is <span class="func">columns(count)</span> defined as</p>
+<pre>min(count,column-count) * (column-width + column-gap) - column-gap</pre>
+<p>As usual, values can be used before they are defined, as long as there are no circular dependencies. Rules for calculating the actual the values of
+ the partition properties are implicitly included in the overall dependency resolution and value calculation. The only constraint is that when
+ the <span class="prop">height</span> of the partition is not specified or set to <span class="val">auto</span> (or <span class="prop">width</span>
+ of the partition in the vertical writing mode), CSS rules prescribe to lay out the content to determine block height. Partitions are always
+ laid out in the reverse order of their appearance in the page master, so partition parameters can depend only on the height of the partitions
+ that follow that partition, or of partitions that explicitly specify a height.</p>
+<p>Example:</p>
+<pre>@-epubx-page-master {
+    @-epubx-partition body {
+        -epubx-flow-from: body;
+        column-width: 20em;
+    }
+    @-epubx-partition pict {
+        -epubx-flow-from: pict;
+        left: -epubx-expr(body.columns(body.column-count - 1) - pict.width/2);
+        top: -epubx-expr((page-height - pict.height)/2);
+        width: -epubx-expr(min(300px,20em));
+    }
+}
+</pre>
+<p>In the example above, the partition pict is positioned horizontally between two right columns in the partition <span class="name">body</span>
+ and centered on the page vertically.</p>
+<h3 id="s3.5">3.5. Page Layout Processing Model</h3>
+<p>Initial steps:</p>
+<ol>
+<li>The <a href="#prop-flow-into" class="prop">-epubx-flow-into</a> property of every element in the document is determined</li>
+<li>Elements that belong to the same flow are collected in sequence</li>
+<li>The <a href="#rule-flow" class="rule">@-epubx-flow</a> rules are examined and flows with 
+ <a href="#prop-flow-consume" class="prop">-epubx-flow-consume</a>: <span class="val">all</span> are marked as <em>primary</em> flows.
+ Flow <span class="name">body</span> is primary by default.</li>
+</ol>
+<p>Note that each element is still aware of its position in the document. In other words, flow sequences contain references
+ to the elements in the document, not the elements themselves.</p>
+<p>Each element used in the pagination algorithm has the following values conceptually associated with them:</p>
+    <ul>
+        <li><span class="name">static</span> (<span class="val">boolean</span>) - true if the element is marked with 
+           <a href="#prop-flow-options" class="prop">-epubx-flow-options</a>: <span class="val">static</span></li>
+        <li><span class="name">exclusive</span> (<span class="val">boolean</span>) - true if the element is marked with
+         <a href="#prop-flow-options" class="prop">-epubx-flow-options</a>: <span class="val">exclusive</span></li>
+        <li><span class="name">last</span> (<span class="val">boolean</span>) - true if the element is marked with
+         <a href="#prop-flow-options" class="prop">-epubx-flow-options</a>: <span class="val">last</span></li>
+        <li><span class="name">priority</span> (<span class="val">integer</span>) - value of the 
+          <a href="#prop-flow-priority" class="prop">-epubx-flow-priority</a> property</li>
+        <li><span class="name">linger-count</span> (<span class="val">integer|infinity</span>) - initially <span class="val">infinity</span></li>
+        <li><span class="name">consumed</span> (<span class="val">fully|partially|not</span>) - initially <span class="val">not</span></li>
+        <li><span class="name">consumed-offset</span> (document position) - initially at the beginning of the element</li>
+    </ul>
+<p>To produce the next page, do these steps:</p>
+<ol>
+    <li>Determine current position in the document: Find the minimal <span class="name">consumed-offset</span> for all elements
+     not fully-consumed in each primary flow. Current position is maximum of the results among all primary flows.</li>
+    <li><p>Page master selection: for each page master:</p>
+        <ol>
+            <li>Calculate lookup position using current position and utilization (see <a href="#prop-utilization" class="prop">-epubx-utilization</a> property)</li>
+            <li>Determine element eligibility. Each element in a flow is considered eligible if it is is not marked as fully consumed
+             and it comes in the document before the lookup position.</li>
+            <li>Determine content availability. Flow has content available if it contains eligible elements.</li>
+            <li>Determine if page master is enabled using rules in <a href="#s3.4.7">Section 3.4.7</a></li>
+            <li>First enabled page master is used for the next page.</li>
+        </ol>
+    </li>
+    <li>For each element that first became eligible on this page, set its <span class="name">linger-count</span> to the value of
+     <a href="#prop-flow-linger" class="prop">-epubx-flow-linger</a> property</li>
+    <li><p>Going through the partitions in the page master in the reverse order, for each partition find its corresponding flow
+     and place content in the partition using the following rules. Only eligible elements are considered.</p>
+        <ol>
+            <li>If there are any <span class="name">exclusive</span> elements in the flow, only consider <span class="name">exclusive</span> elements.
+             Pick the ones with the highest <span class="name">priority</span>. Out of those pick only those that are marked <span class="name">last</span>.
+             If there are any, pick the last of them. If there are no elements marked as <span class="name">last</span>, pick the first element.
+             Place that single element in the partition; it may overflow and overflow should be handled normally using CSS overflow property. Mark
+             that element as fully consumed.</li>
+            <li>If there are no <span class="name">exclusive</span> elements, place the first not <span class="val">fully</span>
+             <span class="name">consumed</span> element starting with its <span class="name">consumed-offest</span>. When content in that element
+             is exhausted, it is marked as <span class="val">fully</span> <span class="name">consumed</span> and the next not <span class="val">fully</span>
+             <span class="name">consumed</span> element in the flow is placed. When the space in the partition is exhausted, last incompletely
+             placed element is broken up in the same way as elements are broken across columns and pages; element is marked as <span class="val">partially</span>
+             <span class="name">consumed</span> and its <span class="name">consumed-offset</span> is set at the break point.</li>
+        </ol>
+    </li>
+    <li>Reset the <span class="name">consumed</span> state of all static elements to <span class="val">not</span> consumed and their
+     <span class="name">consumed-offset</span> to the beginning of the element</li>
+    <li>Subtract 1 from <span class="name">linger-count</span> of all eligible elements (unless <span class="name">linger-count</span> is
+     <span class="val">infinity</span>). Mark elements with negative <span class="name">linger-count</span> as <span class="val">fully</span>
+     <span class="name">consumed</span>.</li>
+</ol>
+<h3 id="s3.6">3.6. Viewport control</h3>
+<h4 id="s3.6.1">3.6.1. The ‘@-epubx-viewport’ rule and ‘-epubx-text-zoom’ property</h4>
+<p id="rule-viewport">Viewport rule contains a set of properties that apply to the overall page layout:</p>
+<pre>@-epubx-viewport {
+    [ &lt;propname&gt;: &lt;propvalue&gt;; ]*
+}
+</pre>
+<p>The following properties are allowed:</p>
 <ul>
-  <li>columns(count) - defined as <pre>min(count,column-count) * (column-width + column-gap) - column-gap</pre>
-</li>
+    <li><span class="prop">width</span></li>
+    <li><span class="prop">height</span></li>
+    <li><a href="#prop-text-zoom" class="prop">-epubx-text-zoom</a></li>
 </ul>
-<p>As usual, values can be used before they are defined, as long as there are no circular
-      dependencies. Rules for calculating the actual the values of the region properties are
-      implicitly included in the overall dependency resolution and value calculation. The only
-      constraint is that when the height of the region is not specified or set to "auto", CSS rules
-      prescribe to lay out the content to determine block height. Regions are always layed out in
-      the order they appear in the page master, so region parameters can depend only on the height
-      of the regions that precede that region, or of regions that explicitly specify a height.</p>
-<h3 id="mode-rule-def">Styling content in a region: ‘@mode’ rule</h3>
-<p>The mode rule defines additional styling that may be applied to content flowed into one or more
-      regions that specify its name via the mode property. Its block must contain one or more
-      styling rules using only class selectors; no descendent/child/siblings, id-based,
-      pseudo-element or attribute-qualified selectors are allowed <b>[NOTE: it may be desirable to
-        allow everything but pseudo-class/element here]</b>:</p>
-<pre>@mode &lt;name&gt;
-{
-  .&lt;class-name&gt; {
-  ...
-  }
-  ...
+<p>Width and height properties should be used together. If both are set to some length value, they define the logical size of the viewport. Each
+ page will have that size as its dimension, and all pages will be scaled up or down to fit completely into the available device viewport.</p>
+<table id="prop-text-zoom">
+    <tr>
+        <td>
+            <p>Name:</p>
+        </td>
+        <td>
+            <p><span class="prop">-epubx-text-zoom</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Value:</p>
+        </td>
+        <td>
+            <p><span class="val">font-size | scale</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Initial:</p>
+        </td>
+        <td>
+            <p><span class="val">font-size</span></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Applies to:</p>
+        </td>
+        <td>
+            <p><a href="#rule-viewport" class="rule">@-epubx-viewport</a> rule</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Inherited:</p>
+        </td>
+        <td>
+            <p>no</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Percentages:</p>
+        </td>
+        <td>
+            <p>N/A</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Media:</p>
+        </td>
+        <td>
+            <p>visual</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Computed value:</p>
+        </td>
+        <td>
+            <p>as specified</p>
+        </td>
+    </tr>
+</table>
+<p>The <a href="#prop-text-zoom" class="prop">-epubx-text-zoom</a> property controls how content is zoomed (or more colloquially
+ "text size increased"). When <a href="#prop-text-zoom" class="prop">-epubx-text-zoom</a> is set to <span class="val">font-size</span> (default),
+ zooming will increase the initial value of the font-size property (and as a result <span class="name">em</span> unit). This will increase the
+ size of everything sized in <span class="name">em</span> or <span class="name">ex</span> units. When
+ <a href="#prop-text-zoom" class="prop">-epubx-text-zoom</a> is set to <span class="val">scale</span>, logical viewport size is decreased
+ by some scale factor and the resulting pages are zoomed by the same factor to keep real viewport size the same.</p>
+<h2 id="s4">4. Compatibility At-Rule: ‘@-epubx-page-template’</h2>
+<p id="rule-page-template">All constructs defined in this specification must occur within a containing <a href="#rule-page-template" class="rule">@-epubx-page-template</a>
+ rule. This ensures compatibility with Reading Systems that do not support Adaptive Layout (since they are required to ignore content inside any
+ unsupported at-rule). Reading Systems supporting this specification may also activate its functionality conditionally. Determination of activation
+ is Reading-System-dependent and not defined here, but this could for example include ignoring Adaptive Layout on a very small screen device unless
+ printing, or when creating an aural rendition.</p>
+<p>Syntax:</p>
+<pre>@-epubx-page-template {
+    [ &lt;css-rule&gt; ]*
 }
 </pre>
-<p>Before elements are flown into a region, any additional styling defined by the @mode rule named
-      by its mode property is applied to each element. Selectors inside an @mode rule are considered
-      to have higher specificity than any other selector (including other rules enclosed in <a
-        class="rule-ref" href="#pgt-rule-def">@pgt</a> rule).</p>
-  
-<h3 id="flow-rule-def">Fitting the text: ‘@flow’ rule</h3>
-<p>At most one flow rule for each flow name may exist, defining that flow's global properties as per
-      the following example: </p>
-<pre>
-@flow &lt;name&gt;
-{
-  &lt;propname&gt;: &lt;propvalue&gt;;
-  ...
+<p>When Adaptive Layout is unsupported or not active, only regular rules are applied. When Adaptive Layout is active,
+ <em>both</em> regular rules and rules inside <a href="#rule-page-template" class="rule">@-epubx-page-template</a> are applied.</p>
+<p>Example:</p>
+<pre>/* by default use floats to display sidebars */
+.sidebar {
+    float: left;
+    width: 20em;
+}
+
+@-epubx-page-template {
+    /* when Adaptive Layout is available, push
+       sidebar in a separate partition */
+    .sidebar {
+        float: none; /* don’t float */
+        width: 100%; /* use partition width */
+        -epubx-flow-into: leftbox;
+    }
+    ...
 }
 </pre>
-<p>Currently two content fitting properties are defined, either or both may be set:</p>
-<dl>
-  <dt>
-    <strong>‘fitting-target’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn id="fitting-target-def">fitting-target</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>none | [[whole | &lt;integer&gt;] [pages|regions|columns]]</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>none</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>@flow rules</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>'fitting-target' defines the target of the content fitting. It can be either a specified number
-      of pages, regions or columns or the value <code>whole</code> to indicate that the content
-      should completely fill some number of them. Value <code>none</code> turns off content fitting. </p>
-<dl>
-  <dt>
-    <strong>‘fitting-properties’</strong>
-  </dt>
-  <dd>
-    <table class="propdef">
-      <tr>
-        <th>
-          <em>Name:</em>
-        </th>
-        <th>
-          <dfn id="fitting-properties-def">fitting-properties</dfn>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <em>Value:</em>
-        </td>
-        <td>letter-spacing || word-spacing || font-size</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Initial:</em>
-        </td>
-        <td>letter-spacing || word-spacing</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Applies to:</em>
-        </td>
-        <td>@flow rules</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Inherited:</em>
-        </td>
-        <td>no</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Percentages:</em>
-        </td>
-        <td>N/A</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Media:</em>
-        </td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>
-          <em>Computed&#xA0;value:</em>
-        </td>
-        <td>as specified</td>
-      </tr>
-    </table>
-  </dd>
-</dl>
-<p>'fitting-properties' defines a list of content properties that can be manipulated to make content
-      fit into the allocated space.</p>
 </body>
 </html>
