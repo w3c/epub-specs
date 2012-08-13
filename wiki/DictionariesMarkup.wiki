@@ -1,0 +1,205 @@
+#summary Analysis of HTML markup choices for dictionaries
+
+This page discusses the HTML5 elements and attributes that can be used to markup the model(s) defined by the Dictionaries WG. It is based on the W3C [http://www.w3.org/TR/html5/ HTML5 specification] (which is still a work in progress and released as a Working Draft from 20 March 2012 at the time of writing).
+
+Note: though not comprehensive and not maintained by the W3C, the simpler [http://developers.whatwg.org/ Web Developer version] of the HTML5 spec has a nice layout for on-screen reading.
+
+<wiki:toc />
+
+= Entries =
+
+This section presents the pros and cons of various approaches that have been discussed for marking-up an "entry" within a dictionary and/or a glossary.
+
+Note: the [http://www.w3.org/TR/html5/the-section-element.html#the-section-element `section`] element has been ruled out on the [https://docs.google.com/document/d/1tENhGOIbHmkCiLqEgTCZeJrvuA0rbvmCIApwxf2-fas/edit Aug 7th concall], since it doesn't offer any advantage over the more specialized [http://www.w3.org/TR/html5/the-section-element.html#the-article-element `article`] element.
+
+== @epub:type ==
+
+It could make sense to define a specific vocabulary term for a dictionary _entry_ (e.g. "dictentry"), to be declared as a semantic inflection with the `@epub:type` attribute. The property can alternatively be implied depending on the markup used to represent the entry and its ancestors. For instance if we decide that a dictionary (section) must have an epub:type="dictionary", it can be implied that all its `article` children are therefore entries in which case an `@epub:type="dictentry"` would be redundant:
+
+{{{
+<body epub:type=”dictionary”>
+	<article><!-- @epub:type="dictentry" is implied because of the body epub:type  -->
+		...
+	</article>
+</body>
+}}}
+
+For glossaries, the [http://idpf.org/epub/vocab/structure/#h_glossaries EPUB 3 Structural Semantics Vocabulary] define the terms _glossary_, _glossterm_ and _glossdef_. It shall be noted that there is no term for the "entry" itself, probably because the typical way of representing a glossary is with a `dl` element where there is no element containers for entries. The WG could either extend the vocabulary with a "glossentry" term or keep status quo.
+
+== Using the `article` element ==
+
+See the specification of the HTML [http://www.w3.org/TR/html5/the-section-element.html#the-article-element `article`] element:
+
+	The article element represents a self-contained composition in a document, page, application, or site and that is, in principle, independently distributable or reusable, e.g. in syndication. This could be a forum post, a magazine or newspaper article, a blog entry, a user-submitted comment, an interactive widget or gadget, or any other independent item of content.
+
+Example (the inner content model is subject to change, it's not the point of this example):
+
+{{{
+<article epub:type="dictentry">
+	<h1><dfn>lie</dfn><sup>2</sup></h1>
+	<p>The act of not sticking to truthiness</p>
+</article>
+}}}
+
+
+Pros:
+ * semantically represents a self-contained piece of content.
+ * in principle distributable or reusable (fits well in the use case where an entry is extracted/isolated from the dictionary, e.g. the result of a lookup).
+ * as a _sectioning content_, it takes part of the [http://www.w3.org/TR/html5/headings-and-sections.html#outlines HTML5 outline]
+ * very open content model (any _flow content_), allowing the representation of complex entries and corner cases.
+ * container element for the entry
+
+Cons:
+ * no particular "term/definition" semantics
+ * takes part of the HTML5 outline (this might be unwanted)
+
+== Using the `dl` element ==
+
+See the specification of the HTML [http://www.w3.org/TR/html5/the-section-element.html#the-dl-element `dl`] element (see also [http://www.w3.org/TR/html5/the-section-element.html#the-dt-element `dt`] and [http://www.w3.org/TR/html5/the-section-element.html#the-dd-element `dd`]):
+
+	The dl element represents an association list consisting of zero or more name-value groups (a description list). (...) Name-value groups may be terms and definitions, metadata topics and values, questions and answers, or any other groups of name-value data.
+
+=== Entry = `dt`/`dd` group ===
+
+Example (adapted from the HTML5 spec):
+
+{{{
+<dl>
+	<dt><dfn>happiness</dfn></dt>
+	<dd epub:type="pronunciation">/'hæ p. nes/</dd>
+	<dd epub:type="part-of-speech"><i><abbr>n.</abbr></i></dd>
+	<dd>The state of being happy.</dd>
+	<dd>Good fortune; success. <q>Oh <b>happiness</b>! It worked!</q></dd>
+	<dt><dfn>rejoice</dfn></dt>
+	<dd epub:type="pronunciation">/ri jois'/</dd>
+	<dd><i epub:type="part-of-speech"><abbr>v.intr.</abbr></i> To be delighted oneself.</dd>
+	<dd><i epub:type="part-of-speech"><abbr>v.tr.</abbr></i> To cause one to be delighted.</dd>
+</dl>
+}}}
+
+Pros:
+ * native "term/definition" semantics
+ * good fit for a simple name/values list
+
+Cons:
+ * not part of the HTML5 outline
+ * no element container for the entry
+ * constrained content model: a `dl` can only contain `dt` or `dt` elements
+
+=== Entry = `dl` ===
+
+Example:
+
+{{{
+<dl epub:type="dictentry">
+	<dt><dfn>lie</dfn><sup>1</sup></dt>
+	<dd>To rotate oneself 90 degrees towards the horizontal plane</dd>
+</dl>
+<dl epub:type="dictentry">
+	<dt><dfn>lie</dfn><sup>2</sup></dt>
+	<dd>The act of not sticking to truthiness</dd>
+</dl>
+}}}
+
+Pros:
+ * native "term/definition" semantics
+ * good fit for a simple name/values list
+ * container element for the entry
+
+Cons:
+ * not part of the HTML5 outline
+ * constrained content model: a `dl` can only contain `dt` or `dt` elements
+
+=== Potential issues with `dl`/`dt`/`dd` ===
+
+==== Structuring and semantics of `dd`s within a `dt`/`dd` group ====
+
+A dictionary entry often cannot be simplified as a term+values group, it usually has a deeper structure. Consider for instance the following structure:
+
+ * headword
+   * pronunciation
+   * etymology
+   * part of speech 1 (e.g. verb)
+     * meaning 1
+     * meaning 2
+   * part of speech 2 (e.g. noun)
+     * meaning 1
+     * meaning 2
+   * phrases
+     * phrase 1
+     * phrase 1
+
+Whether the entry is marked up as a `dl` or a `dt`/`dd` group, each "part" of the entry would need to be marked up with `dd` elements with a custom semantic inflection. Note that nested `dl` could be used within the entry sub-parts.
+
+Example:
+
+{{{
+<dl>
+	<dt><dfn>lie</dfn><sup>1</sup></dt>
+	<dd epub:type="dict:pronunciation">/laɪ̯/</dd>
+	<dd epub:type="dict:etymology">from Old English lēogan (“to lie”)</dd>
+	<dd epub:type="dict:meanings">
+		<dl>
+			<dt>verb</dt>
+			<dd>To give false information intentionally</dd>
+			<dd>To convey a false image or impression</dd>
+			<dt>noun</dt>
+			<dd>An untrue statement.</dd>
+		</dl>
+	</dd>
+	<dd epub:type="dict:phrases">
+		...
+	</dd>
+</dl>
+
+}}}
+
+Note that the semantics of `dd` in the HTML5 spec is slightly ambiguous. In the `dl` element, it is stated that "values within a groups are alternatives; multiple paragraphs forming part of the same value must all be given within the same dd element", which would not really apply to the solution in the example above. Some examples in the spec however use the approach above where `dd`s are used with semantic inflections and not as "alternatives".
+
+==== lack of container element for `dt`/`dd` groups ====
+
+In a `dl`, one or several `dt` elements followed by one or several `dd` elements form an implicit group (named a name/values group) but there is no container element for the group itself. It can be problematic for group-level metadata (e.g. language) or content (e.g. heading text), which would have to be placed either on the `dt` or within a specialized `dd` element. See the specialized "etymology" and "pronunciation" `dd` elements in the example above.
+
+Using a single `dl` element per entry removes this limitation at the entry-level, but the same issue occurs for sub-parts within the entry. The only solution is to use a `dd` as a structuring element as in the example above.
+
+==== the impossibility of using anything other than `dt`/`dd` in a `dl` ====
+
+The content model of the `dl` element is limited to `dt` and `dd` children. It can make it difficult for a publisher to find the appropriate markup when "glue content" is wanted between elements.
+
+For instance the following pseudo-markup:
+
+{{{
+<entry>
+	<headword>color</headword> or (UK) <headword>colour</headword>
+	...
+</entry>
+}}}
+
+Could be translated like this at the cost of pruning the glue text:
+
+{{{
+<dl>
+	<dt lang="en-US">color</dt>
+	<dt lang="en-GB">colour</dt>
+	<dd>...</dd>
+</dl>
+}}}
+
+Or like this at the cost of merging the "two" headwords in a single `dt`:
+
+{{{
+<dl>
+	<dt><dfn lang="en-US">color</dfn> or (UK) <dfn lang="en-GB">colour</dfn></dt>
+	<dd>...</dd>
+</dl>
+}}}
+
+The above solution would work reasonably well, but we might face situations were some "glue content" might not fit well in the constrained content model. To be investigated.
+
+==== default rendering of `dl`/`dt`/`dd` ====
+
+Browsers support the `dl` element with a default rendering that works well for simple name/values list. But for more complex structures, especially when `dd` elements start to be used for sectioning, the default rendering would certainly need to be overridden with custom styling anyway.
+
+= Headwords and search metadata =
+
+_TBD_
