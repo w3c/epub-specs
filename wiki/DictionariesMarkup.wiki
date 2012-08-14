@@ -127,7 +127,7 @@ A dictionary entry often cannot be simplified as a term+values group, it usually
      * meaning 2
    * phrases
      * phrase 1
-     * phrase 1
+     * phrase 2
 
 Whether the entry is marked up as a `dl` or a `dt`/`dd` group, each "part" of the entry would need to be marked up with `dd` elements with a custom semantic inflection. Note that nested `dl` could be used within the entry sub-parts.
 
@@ -155,6 +155,55 @@ Example:
 }}}
 
 Note that the semantics of `dd` in the HTML5 spec is slightly ambiguous. In the `dl` element, it is stated that "values within a groups are alternatives; multiple paragraphs forming part of the same value must all be given within the same dd element", which would not really apply to the solution in the example above. Some examples in the spec however use the approach above where `dd`s are used with semantic inflections and not as "alternatives".
+
+_Alternate perspective on the above issue (Jeff):_
+
+When there are both multiple parts of speech and phrases present, it is more common for the phrases to be grouped with their relevant part of speech:
+
+ * headword
+   * pronunciation
+   * etymology
+   * part of speech 1 (e.g. verb)
+     * meaning 1
+     * meaning 2
+     * phrase 1
+   * part of speech 2 (e.g. noun)
+     * meaning 1
+     * meaning 2
+     * phrase 1
+     * phrase 2
+
+Further, while using "verb" or "noun" as the `<dt>` contents may strictly meet the definition of a name:value pair, it does seem a bit odd. It would be possible instead to have these parts of speech be `<dd>` contents, with the senses structured under each using `<p>`, `<div>`, or `<ol>` with the epub:type attribute. A `<dl>` would then only be needed when a new term occurs; the term would be captured in `<dt>`, and its definition or translation in `<dd>`. 
+
+Here is an example that shows phrases nested under the appropriate part of speech, and shows alternative approaches to marking up the nested senses:
+
+{{{
+<dl>
+	<dt><dfn>lie</dfn><sup>1</sup></dt>
+	<dd epub:type="dict:pronunciation">/laɪ̯/</dd>
+	<dd epub:type="dict:etymology">from Old English lēogan (“to lie”)</dd>
+	<dd><span epub:type="part-of-speech">verb</span>
+		<ol start="1">
+			<li epub:type="dict:sense">To give false information intentionally</li>
+			<li epub:type="dict:sense">To convey a false image or impression</li>
+                </ol>
+                <dl epub:type="dict:phrases">
+                        <dt><dfn>lie through one's teeth</dfn></dt>
+                        <dd epub:type="dict:sense">To violate truthiness flagrantly and shamelessly</dd>
+                </dl>
+        </dd>
+        <dd><span epub:type="part-of-speech">noun</span>
+                <p epub:type="dict:sense">An untrue statement.</p>
+                <dl epub:type="dict:phrases">
+                        <dt><dfn>give the lie to</dfn> <i>(formal)</i></dt>
+                        <dd epub:type="dict:sense">to show that (something) is not true</dd>
+                        <dt><dfn>I tell a lie</dfn> <i>(Brit, informal)</i></dt>
+                        <dd epub:type="dict:sense">used to correct something you have just said</dd>
+		</dl>
+	</dd>
+</dl>
+
+}}}
 
 ==== lack of container element for `dt`/`dd` groups ====
 
