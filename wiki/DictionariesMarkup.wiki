@@ -330,4 +330,84 @@ In the following German example, the publisher uses underlining to indicate that
 
 == Search metadata ==
 
-_to be completed_
+=== Search groups and search terms ===
+
+The headword and all search terms related to it form a _search group_, which we mark up in a `<span>` element with `epub:type`: 
+
+`<span epub:type="search-group">...</span>`
+
+This grouping contains not only the terms that should be matched by a reading system during word lookup, but information on how the match should be presented to the user in search results.
+
+Search terms are marked up with the HTML5 `<data>` element in conjunction with epub:type: 
+
+`<data epub:type="search-term" value="..."/>`
+
+The `<data>` element allows us to embed machine-readable search information in a content document while keeping it separate from content presented to the user. (Note: the `<data>` element is detailed in the [http://www.whatwg.org/specs/web-apps/current-work/multipage/text-level-semantics.html#the-data-element WHATWG HTML5 spec].) 
+
+{{{
+<span epub:type="search-group">
+  <dfn title="...">...</dfn>
+  <data epub:type="search-term" value="..."/>
+</span>
+}}}
+
+A dictionary entry must contain at least one `search-group`. Each search group consists of one `<dfn>` element and at least one `search-term`. 
+
+The following is a simple example of the use of the `search-group`. This entry contains two search groups, each corresponding to a headword with two associated search terms. On a user lookup of a word contained in the `value` of a `<data epub:type=search-term">` element, a reading system must match the `<article>` containing this `search-term` and make it available to the user.
+
+{{{
+<body epub:type="dictionary">
+  <article>
+    <span epub:type="search-group">
+      <dfn title="color">col·or</dfn>
+      <data epub:type="search-term" value="color"/>
+      <data epub:type="search-term" value="colors"/>
+    </span>
+    or (UK)
+    <span epub:type="search-group">
+      <dfn title="colour">col·our</dfn>
+      <data epub:type="search-term" value="colour"/>
+      <data epub:type="search-term" value="colours"/>
+    </span>
+    <p><i>noun</i> : a phenomenon of light (as red, brown, pink,
+    or gray) or visual perception that enables one to differentiate 
+    otherwise identical objects</p>
+  </article>
+</body>
+}}}
+
+=== Search result forms and `title` attribute ===
+
+In a dictionary word lookup implementation, some reading systems may wish to present a list of matching search results to the user before presenting the entry content. While in many cases displaying the headword is sufficient, in other contexts it is not. Hence, we allow for a distinct _search results form_, which lets the publisher make it clear to the user which headword has been matched.  
+
+A search results form for the entire `search-group` may be given via a `title` attribute on the `<span epub:type="search-group">` element. This value applies to the entire group.
+
+A search results form for a particular `<data epub:type="search-term">` element may be given in a `title` attribute. If the parent `<span>` element also bears such an attribute, then the value of the `<data>` element's `title` attribute overrides it.
+
+In the below Japanese example, the two entries have distinct ideographic (ie, _kanji_) headwords with identical phonetic (ie, _hiragana_) spellings. The first entry specifies a search results form in the `title` attribute of `<span>`, while the second shows how the same result can be achieved using the `title` attribute of `<data>`.
+
+{{{
+<article>
+  <span epub:type="search-group" title="橋 (はし)">
+    <dfn>橋</dfn>
+    <data epub:type="search-term" value="橋"/>
+    <data epub:type="search-term" value="はし"/>
+  </span>
+  <p>1. bridge</p>
+</article>
+
+<article>
+  <span epub:type="search-group">
+    <dfn>端</dfn>
+    <data epub:type="search-term" title="端 (はし)" value="端"/>
+    <data epub:type="search-term" title="端 (はし)" value="はし"/>
+  </span>
+  <p>1. edge, end 2. beginning, first</p>
+</article>
+}}}
+
+=== Summary ===
+
+  * The `<span epub:type="search-group">` serves to group together the `<dfn>` and other search data.
+  * The `value` attribute of `<data epub:type="search-term">` provides terms that should be matched by a reading system during user word lookup.
+  * When a word lookup results in a match, the _search results form_  presented to the user in any menu/result list is represented by the contents of the `title` attribute of `<data epub:type="search-term">, if present; otherwise, it is represented by the `title` attribute of `<span epub:type="search-group">.
