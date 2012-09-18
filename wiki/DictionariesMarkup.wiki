@@ -281,7 +281,7 @@ Browsers support the `dl` element with a default rendering that works well for s
 
 The word _headword_ refers to a term defined in a dictionary entry. Typically, a headword is visually set off from other entry content in some manner, for instance, use of boldface or a larger relative type size. 
 
-The headword's presentation in the entry must convey the word's spelling to the reader. In addition, publishers often convey other useful information (such as syllable division, pronunciation, or grammatical features) via special marks on the headword. Hereafter we call the headword as rendered in the content, possibly containing additional information not part of its normal written form, its _entry display form_. We call the headword's normal written form, unadorned by any additional marks, its _orthographic form_. Though the two may be identical, in many cases they are not; our approach to EPUB dictionary markup allows them to be distinguished when necessary.
+The headword's presentation in the entry must convey the word's spelling to the reader. In addition, publishers often convey other useful information (such as syllable division, pronunciation, or grammatical features) via special marks on the headword. Hereafter we call the headword as rendered in the content, possibly containing additional information not part of its normal written form, its _entry display form_. We call the headword's normal written form, unadorned by any additional marks, its canonical form_. Though the two may be identical, in many cases they are not; our approach to EPUB dictionary markup allows them to be distinguished when necessary.
 
 === `<dfn>` element ===
 
@@ -296,8 +296,8 @@ A `<dfn>` may occur anywhere in the entry, as long as it conforms to the HTML5 [
 ==== Semantics of `title` attribute ====
 
 The optional `title` attribute carries special semantics when used with `<dfn>`.
-  * When the text node of `<dfn>` corresponds to the orthographic form, the use of `title` is not required.
-  * When the text node of `<dfn>` does not correspond to the headword's orthographic form, then the orthographic form must be supplied in the `title` attribute.
+  * When the text node of `<dfn>` corresponds to the canonical form, the use of `title` is not required.
+  * When the text node of `<dfn>` does not correspond to the headword's canonical form, then the canonical form must be supplied in the `title` attribute.
 
 In the following example, there are two dfns, neither of which has a title attribute:
 
@@ -305,17 +305,17 @@ In the following example, there are two dfns, neither of which has a title attri
   <dfn>colour</dfn> (<i>US</i> <dfn>color</dfn>)
 }}}
 
-Since each `<dfn>` contains only the orthographic form of the headword and no other content, the `title` attribute is not needed. (Also note that though the above presentation conveys that the first headword given is the standard spelling for the dictionary's audience, both headwords are marked up identically.)
+Since each `<dfn>` contains only the canonical form of the headword and no other content, the `title` attribute is not needed. (Also note that though the above presentation conveys that the first headword given is the standard spelling for the dictionary's audience, both headwords are marked up identically.)
 
-If, however, the text node of `<dfn>` contains any character not part of the headword's normal written form (such as a homograph indicator, syllable divider, pronunciation symbol, or the like), then the `title` attribute must be used to supply the orthographic form. This usage is in line with the [http://www.w3.org/TR/2010/WD-html5-20100624/text-level-semantics.html#the-dfn-element HTML5 spec], which states that "if the dfn element has a title attribute, then the exact value of that attribute is the term being defined", and further restricts the `title` attribute in the dfn context by stating that "it must contain only the term being defined".  
+If, however, the text node of `<dfn>` contains any character not part of the headword's normal written form (such as a homograph indicator, syllable divider, pronunciation symbol, or the like), then the `title` attribute must be used to supply the canonical form. This usage is in line with the [http://www.w3.org/TR/2010/WD-html5-20100624/text-level-semantics.html#the-dfn-element HTML5 spec], which states that "if the dfn element has a title attribute, then the exact value of that attribute is the term being defined", and further restricts the `title` attribute in the dfn context by stating that "it must contain only the term being defined".  
 
-In the following example, the publisher uses the middle dot character (U+00B7) to show a headword's syllable divisions to the reader. As this mark is not actually part of the headword's spelling, the content document's author must provide the orthographic form of each headword in a `title` attribute:
+In the following example, the publisher uses the middle dot character (U+00B7) to show a headword's syllable divisions to the reader. As this mark is not actually part of the headword's spelling, the content document's author must provide the canonical form of each headword in a `title` attribute:
 
 {{{
   <dfn title="color">col·or</dfn> (<i>chiefly British</i> <dfn title="colour">col·our</dfn>)
 }}}
 
-In the following German example, the publisher uses underlining to indicate that a syllable is pronounced with a long vowel, and the | character to indicate the part of the word used in forming compounds. As in the preceding example, the orthographic form of the headword is provided in the `title` attribute:
+In the following German example, the publisher uses underlining to indicate that a syllable is pronounced with a long vowel, and the | character to indicate the part of the word used in forming compounds. As in the preceding example, the canonical form of the headword is provided in the `title` attribute:
 
 {{{
   <dfn title="ausgehen"><u>au</u>s|gehen</dfn> 
@@ -326,50 +326,50 @@ In the following German example, the publisher uses underlining to indicate that
   * Each headword in an entry must be marked up with the `<dfn>` element.
   * At least one `<dfn>` must be present in an entry.
   * The text node of the `<dfn>` element contains the entry display form of the headword, that is, the form the reading system displays to the user in rendering the content document.
-  * The orthographic form of the headword is given in the `title` attribute of `<dfn>`, if present; otherwise, when no `title` attribute is present, the text node of `<dfn>` represents the orthographic form. 
+  * The canonical form of the headword is given in the `title` attribute of `<dfn>`, if present; otherwise, when no `title` attribute is present, the text node of `<dfn>` represents the canonical form. 
 
 == Search metadata ==
 
-=== Search groups and search terms ===
+=== Search groups and search forms ===
 
-The headword and all search terms related to it form a _search group_, which we mark up in a `<span>` element with `epub:type`: 
+The headword and all its search forms related to it form a _search group_, which we mark up in a `<span>` element with `epub:type`: 
 
 `<span epub:type="search-group">...</span>`
 
-This grouping contains not only the terms that should be matched by a reading system during word lookup, but information on how the match should be presented to the user in search results.
+This grouping contains not only the forms that should be matched by a reading system during word lookup, but information on how the match should be presented to the user in search results.
 
-Search terms are marked up with the HTML5 `<data>` element in conjunction with epub:type: 
+Search forms are marked up with the HTML5 `<data>` element in conjunction with epub:type: 
 
-`<data epub:type="search-term" value="..."/>`
+`<data epub:type="search-form" value="..."/>`
 
-Search terms may represent diverse types of words: the headword itself, the headword's inflected forms, the headword written in another writing system (Japanese _hiragana_, for instance), an outdated spelling of the headword not presented in the content, etc. This markup approaches treats these different word types in a uniform manner since their functional importance is the same: they all represent terms that should be matched by a reading system when a user looks them up. 
+Search forms may represent diverse types of words: the headword itself, the headword's inflected forms, the headword written in another writing system (Japanese _hiragana_, for instance), an outdated spelling of the headword not presented in the content, etc. This markup approaches treats these different word types in a uniform manner since their functional importance is the same: they all represent word forms that should be matched by a reading system when a user looks them up. 
 
 The `<data>` element allows us to embed machine-readable search information in a content document while keeping it separate from content presented to the user. (Note: the `<data>` element is detailed in the [http://www.whatwg.org/specs/web-apps/current-work/multipage/text-level-semantics.html#the-data-element WHATWG HTML5 spec].) 
 
 {{{
 <span epub:type="search-group">
   <dfn title="...">...</dfn>
-  <data epub:type="search-term" value="..."/>
+  <data epub:type="search-form" value="..."/>
 </span>
 }}}
 
-A dictionary entry must contain at least one `search-group`. Each search group consists of one `<dfn>` element and at least one `search-term`. 
+A dictionary entry must contain at least one `search-group`. Each search group consists of one `<dfn>` element and at least one `search-form`. 
 
-The following is a simple example of the use of the `search-group`. This entry contains two search groups, each corresponding to a headword with two associated search terms. On a user lookup of a word contained in the `value` of a `<data epub:type=search-term">` element, a reading system must match the `<article>` containing this `search-term` and make it available to the user.
+The following is a simple example of the use of the `search-group`. This entry contains two search groups, each corresponding to a headword with two associated search forms. On a user lookup of a word contained in the `value` of a `<data epub:type=search-form">` element, a reading system must match the `<article>` containing this `search-form` and make it available to the user.
 
 {{{
 <body epub:type="dictionary">
   <article>
     <span epub:type="search-group">
       <dfn title="color">col·or</dfn>
-      <data epub:type="search-term" value="color"/>
-      <data epub:type="search-term" value="colors"/>
+      <data epub:type="search-form" value="color"/>
+      <data epub:type="search-form" value="colors"/>
     </span>
     or (UK)
     <span epub:type="search-group">
       <dfn title="colour">col·our</dfn>
-      <data epub:type="search-term" value="colour"/>
-      <data epub:type="search-term" value="colours"/>
+      <data epub:type="search-form" value="colour"/>
+      <data epub:type="search-form" value="colours"/>
     </span>
     <p><i>noun</i> : a phenomenon of light (as red, brown, pink,
     or gray) or visual perception that enables one to differentiate 
@@ -384,7 +384,7 @@ In a dictionary word lookup implementation, some reading systems may wish to pre
 
 A search results form for the entire `search-group` may be given via a `title` attribute on the `<span epub:type="search-group">` element. This value applies to the entire group.
 
-A search results form for a particular `<data epub:type="search-term">` element may be given in a `title` attribute. If the parent `<span>` element also bears such an attribute, then the value of the `<data>` element's `title` attribute overrides it.
+A search results form for a particular `<data epub:type="search-form">` element may be given in a `title` attribute. If the parent `<span>` element also bears such an attribute, then the value of the `<data>` element's `title` attribute overrides it.
 
 In the following example, we have two homograph entries for the English word "lie". Here, the publisher uses the `title` attribute of `<span>` to add a gloss to the search results form that will help the user disambiguate these two entries. 
 
@@ -392,11 +392,11 @@ In the following example, we have two homograph entries for the English word "li
 <article>
   <span epub:type="search-group" title="lie (verb: recline)">
     <dfn title=”lie”>lie<sup>1</sup></dfn>
-    <data epub:type="search-term" value=”lie”/>
-    <data epub:type="search-term" value=”lies”/>
-    <data epub:type="search-term" value=”lay”/>
-    <data epub:type="search-term" value=”lain”/>
-    <data epub:type="search-term" value=”lying”/>
+    <data epub:type="search-form" value=”lie”/>
+    <data epub:type="search-form" value=”lies”/>
+    <data epub:type="search-form" value=”lay”/>
+    <data epub:type="search-form" value=”lain”/>
+    <data epub:type="search-form" value=”lying”/>
   </span>
   <p>To rotate oneself 90 degrees towards the horizontal plane</p>
 </article>
@@ -404,10 +404,10 @@ In the following example, we have two homograph entries for the English word "li
 <article>
   <span epub:type="search-group" title="lie (verb: not tell the truth)">
     <dfn title=”lie”>lie<sup>2</sup></dfn>
-    <data epub:type="search-term" value=”lie”/>
-    <data epub:type="search-term" value=”lies”/>
-    <data epub:type="search-term" value=”lied”/>
-    <data epub:type="search-term" value=”lying”/>
+    <data epub:type="search-form" value=”lie”/>
+    <data epub:type="search-form" value=”lies”/>
+    <data epub:type="search-form" value=”lied”/>
+    <data epub:type="search-form" value=”lying”/>
   </span>
   <p>The act of not sticking to truthiness</p>
 </article>
@@ -420,7 +420,7 @@ For a reading system that presents a list of results when a lookup has more than
   lie (verb: not tell the truth)
 }}}
 
-In the below Japanese example, the two entries have distinct ideographic (ie, _kanji_) headwords with identical phonetic (ie, _hiragana_) spellings. Both the ideographic and phonetic forms are valid ways of writing the word and need to be  given as `search-term`s that can be matched during lookup or text input searches.
+In the below Japanese example, the two entries have distinct ideographic (ie, _kanji_) headwords with identical phonetic (ie, _hiragana_) spellings. Both the ideographic and phonetic forms are valid ways of writing the word and need to be  given as `search-form`s that can be matched during lookup or text input searches.
 
 The first entry specifies a search results form in the `title` attribute of `<span>` (the same method used in "lie" above), while the second entry shows how the same result can be achieved using the `title` attribute of `<data>`.
 
@@ -428,8 +428,8 @@ The first entry specifies a search results form in the `title` attribute of `<sp
 <article>
   <span epub:type="search-group" title="橋 (はし)"><!--combined ideographic (phonetic) search results form-->
     <dfn>橋</dfn><!--ideographic headword-->
-    <data epub:type="search-term" value="橋"/><!--ideographic search term-->
-    <data epub:type="search-term" value="はし"/><!--phonetic search term-->
+    <data epub:type="search-form" value="橋"/><!--ideographic search form-->
+    <data epub:type="search-form" value="はし"/><!--phonetic search form-->
   </span>
   <p>1. bridge</p>
 </article>
@@ -437,17 +437,17 @@ The first entry specifies a search results form in the `title` attribute of `<sp
 <article>
   <span epub:type="search-group">
     <dfn>端</dfn><!--ideographic headword-->
-    <data epub:type="search-term" title="端 (はし)" value="端"/><!--ideographic search term with search results form-->
-    <data epub:type="search-term" title="端 (はし)" value="はし"/><!--phonetic search term with search results form-->
+    <data epub:type="search-form" title="端 (はし)" value="端"/><!--ideographic search form with search results form-->
+    <data epub:type="search-form" title="端 (はし)" value="はし"/><!--phonetic search form with search results form-->
   </span>
   <p>1. edge, end 2. beginning, first</p>
 </article>
 }}}
 
-Here the two methods are interchangable. The important point to note is that they can be used in conjunction as well: a general `title` attribute can be given on `<span>`, while a search results form specific to a `search-term` can be given in the `title` attribute of a particular `<data>` element.
+Here the two methods are interchangable. The important point to note is that they can be used in conjunction as well: a general `title` attribute can be given on `<span>`, while a search results form specific to a `search-form` can be given in the `title` attribute of a particular `<data>` element.
 
 === Summary ===
 
   * The `<span epub:type="search-group">` serves to group together the `<dfn>` and other search data.
-  * The `value` attribute of `<data epub:type="search-term">` provides terms that should be matched by a reading system during user word lookup.
-  * When a word lookup results in a match, the _search results form_  presented to the user in any menu/result list is represented by the contents of the `title` attribute of `<data epub:type="search-term">, if present; otherwise, it is represented by the `title` attribute of `<span epub:type="search-group">.
+  * The `value` attribute of `<data epub:type="search-form">` provides forms that should be matched by a reading system during user word lookup.
+  * When a word lookup results in a match, the _search results form_  presented to the user in any menu/result list is represented by the contents of the `title` attribute of `<data epub:type="search-form">, if present; otherwise, it is represented by the `title` attribute of `<span epub:type="search-group">.
