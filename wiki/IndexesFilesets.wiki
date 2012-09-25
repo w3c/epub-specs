@@ -14,7 +14,7 @@ Some indexes are expected to be very large documents and may be split across sev
 
 The identification of the index file set can be done in either the [http://idpf.org/epub/30/spec/epub30-publications.html#sec-package-documents Package Document] or the [http://idpf.org/epub/30/spec/epub30-contentdocs.html#sec-xhtml-nav Navigation Document] of the publication.
 
-On the one hand, relying on the Navigation Document allows to kill two birds with a stone, as it would cover both the file set identification and the navigation requirements. On the other hand, the package document is the primary source of information about the publication's file set and other structural metadata and may be a better place to describe indexes' file sets. See the next sections for more thoughts on pros and cons.
+On the one hand, relying on the Navigation Document allows to kill two birds with a stone, as it would cover both the file set identification and the navigation requirements. On the other hand, the package document is the primary source of information about the publication's file set and other structural metadata and is the natural place to describe indexes' file sets. See the next sections for more thoughts on pros and cons.
 
 
 = Approach 1: Using Package Document metadata =
@@ -67,20 +67,19 @@ Rather than relying on the metadata section, the grouping could be added directl
     …
     <manifest>
         …
-        <item id="indexA1" href="indexA1.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
-        <item id="indexA2" href="indexA2.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
-        <item id="indexA3" href="indexA3.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
+        <item id="indexA1" href="indexA1.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexA">
+        <item id="indexA2" href="indexA2.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexA">
+        <item id="indexA3" href="indexA3.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexA">
         …
-        <item id="indexB1" href="indexB1.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
-        <item id="indexB2" href="indexB2.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
-        <item id="indexB3" href="indexB3.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
+        <item id="indexB1" href="indexB1.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexB">
+        <item id="indexB2" href="indexB2.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexB">
+        <item id="indexB3" href="indexB3.xhtml" media-type="application/xhtml+xml" properties="index" groupId="indexB">
     </manifest>
     …
 </package>
 }}}
 
 Pros:
- * dedicated approach  
  * file set metadata stay in the package document
  * less verbose
 Cons:
@@ -88,7 +87,49 @@ Cons:
 
 _Note_: tagging index resources as having the property "index" is also relevant in approach 1 above.
 
-= Approach 3: Using the Navigation Document =
+= Approach 3: Extension element on the Package Document =
+
+This approach introduces a new `components` section in Package Documents that can be used to identify file groups. Each `comp` element can be seen as the dedicated "spine" of a component.
+
+{{{
+
+    <package … prefix="epub: http://idpf.org/epub-components">
+        …
+        <manifest>
+            …
+            <item id="indexA1" href="indexA1.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
+            <item id="indexA2" href="indexA2.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
+            <item id="indexA3" href="indexA3.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexA">
+            …
+            <item id="indexB1" href="indexB1.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
+            <item id="indexB2" href="indexB2.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
+            <item id="indexB3" href="indexB3.xhtml" media-type="application/xhtml+xml" properties="index" idx:id="indexB">
+        </manifest>
+        …
+        <components>
+            <comp type="index" id="indexA">
+                <itemref refid="#indexA1"/>
+                <itemref refid="#indexA2"/>
+                <itemref refid="#indexA3"/>
+            </comp>
+            <comp type="index" id="indexB">
+                <itemref refid="#indexB1"/>
+                <itemref refid="#indexB2"/>
+                <itemref refid="#indexB3"/>
+            </comp>
+        <components>
+    </package>
+    
+}}}
+
+Pros:
+ * file set metadata stay in the package document
+ * groups are explicit
+ * does not "pollute" the `item` elements with a custom attribute
+Cons:
+ * introducing a whole new top-level element is more heavyweight than using an extension attribute on `item`s.
+
+= Approach 4: Using the Navigation Document =
 
 In this approach, the Navigation Document is used to describe the index file sets. Indexes can be descried in a [custom http://idpf.org/epub/30/spec/epub30-contentdocs.html#sec-xhtml-nav-def-types-other `nav` element] with a special `epub:type` coming from the index vocabulary ; it would be required to list each file with composing the index with `a` elements.
 
@@ -135,3 +176,6 @@ Cons:
  * may required a nav doc schema extension
  * requires detailed prose to enforce the specifics of indexes nav elements
  * the way the index are chunked in multiple files may not always match the way or granularity you want to navigate to different sections in the index.
+
+
+*Consensus*: Navigation Documents are really made for human consumption. File-level machine-readable metadata belong to Package Documents. A navigation approach is certainly required, but not for machine-readable identification of physical files.
