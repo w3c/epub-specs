@@ -1,0 +1,82 @@
+# Defines the structure of the index of the dictionary
+
+= EPUB Index document =
+
+Example:
+{{{
+<index>
+    <!- COLOUR ->
+    <article article-id="colour0001">
+		<!- Index to the entry itself ->
+        <search-form-group search-result-form="colour">
+            <search-form value="colour"/>
+            <search-form value="colours"/>
+            <search-form value="color"/>
+            <search-form value="colors"/>
+            <search-form value="school colours"/>
+            <search-form value="school colors"/>
+        </search-form-group>
+
+		<!- Index to idioms. They have relative href within an article. ->
+        <search-form-group                            href="#colour_1_0" >
+            <search-form value="lend colour to"/>
+            <search-form value="give colour to"/>
+        </search-form-group>
+        <search-form value="sail under false colours" href="#colour_1_1"/>
+        <search-form value="show one's true colours"  href="#colour_1_2"/>
+        <search-form value="under colour of"          href="#colour_1_3"/>
+        <search-form value="with flying colours"      href="#colour_1_4" parental-control="1"/>
+    </article>
+
+    <!- Example of a Japanese word, with "yomi" or secondary headword ->
+    <article article-id="akai0005">
+        <search-form-group search-result-form="赤い・紅い" search-result-form-supplement="あかい">
+			<search-form value="あかい"/>
+			<search-form value="赤い"/>
+			<search-form value="紅い"/>
+        </search-form-group>
+    </article>
+</index>
+
+}}}
+
+== EPUB Index document ==
+Markus asked if it might be useful to define a document that aggregates all indexes in the dictionary publication, and possibly making it the only format that we define. After some thought I agree to this direction as it makes scanning of the index at run time much more efficient.
+
+A reading system can use this xml file directly to implement the search, but more commonly reading systems would construct a binary index from this file when the publication is opened. It would take a few seconds to a minutes (needs more concrete numbers here) depending on the size of the index and the machine resource available. Such file can be cached so it is done only once.
+
+== Elements and Attributes ==
+
+=== _index_ element ===
+Non-rendering content. Contains one or more article elements.
+
+Discussion: It could just be an existing HTML5 or other elements used by EPUB3, such as _body_ especially considering the content is article HTML5 element.
+
+=== _article_ element (HTML5) ===
+Each article element corresponds to an article element in the dictionary content documents with the same article-id. It groups search-form-group and search-form elements that points to the corresponding article, or a part within the article. By this grouping all references within can be relative to the article.
+
+It contains zero or more search-form-group, and zero or more search-form.
+
+===== _article-id_ attribute (mandatory) =====
+Uniquely identifies the corresponding article element of the dictionary content documents.
+
+==== _parental-control_ attribute (optional) ====
+When exists indicates that the article might not be appropriate for children. The only possible value is "1" for this version.
+
+
+=== _search-form-group_ element ===
+Groups _search-forms_ that shares the same attributes. It can have the same attributes _search-forms_ allows. Contains _search-forms_ elements.
+
+
+=== _search-form_ element ===
+Defines a search form.
+
+value mandatory attribute indicates a string that can be used to lookup the corresponding article.
+
+search-result-form optional attribute indicates a string that is shown when the article is shown as a match. When missing the value attribute is used.
+
+search-result-form-supplement optional attribute is a secondary string that is shown together with search-result-form to help users to identify an article. An example is Japanese yomi and Chinese Pinyin.
+
+href optional attribute indicates a location within an article to which the search-form corresponds. It can be a range using epubcfi *1 and in such case a reading system can choose to highlight the portion of the content.
+
+parental-control optional attribute when exists indicates that the article might not be appropriate for children. The only possible value is "1" for this version.
