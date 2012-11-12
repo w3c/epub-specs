@@ -9,17 +9,20 @@ Example:
 <!- COLOUR ->
 <index>
     <article canonical-form="colour" href="#epubcfi(/6/2[entry-c-to-d]!/563[colour0001]">
-		<!- Search Index to the entry itself ->
-        <search-form-group>
+        <!- Search Index to the entry itself ->
+        <search-form-group lemma="colour">
             <search-form value="colour"/>
             <search-form value="colours"/>
             <search-form value="color"/>
             <search-form value="colors"/>
+        </search-form-group>
+
+        <search-form-group lemma="school colours">
             <search-form value="school colours"/>
             <search-form value="school colors"/>
         </search-form-group>
 
-		<!- Search Index to idioms. They have relative href within an article. ->
+        <!- Search Index to idioms. They have relative href within an article. ->
         <search-form-group                            href="#colour_1_0" >
             <search-form value="lend colour to"/>
             <search-form value="give colour to"/>
@@ -36,9 +39,9 @@ Example:
 <index>
     <article canonical-form="赤い" href="#epubcfi(/6/1[entry-a]!/235[akai0005]"">
         <search-form-group search-result-form="赤い・紅い" search-result-form-supplement="あかい">
-			<search-form value="あかい"/>
-			<search-form value="赤い"/>
-			<search-form value="紅い"/>
+            <search-form value="あかい"/>
+            <search-form value="赤い"/>
+            <search-form value="紅い"/>
         </search-form-group>
     </article>
 </index>
@@ -83,27 +86,41 @@ Contains one or more _search-form-group_ and/or _search-form_.
 === _search-form-group_ ===
 It groups _search-forms_ elements that share the same attributes.
 
-Contains _search-forms_ elements.
-
-It allows the same set of attributes as _search-forms_.
-
+It contains _search-forms_ elements and allows the same set of attributes as _search-forms_.
 
 
 === _search-form_ ===
-It defines one search string that can be used to lookup the corresponding article or a part of the article.
+It defines a search key that can be used to lookup the corresponding article or a part of the article. When a _search-form-group_ is a direct parent, it inherits all attributes from the parent. (is it useful if it can override attributes defined in the parent?)
 
-*_value_* mandatory attribute indicates the search string.
+*_value_* mandatory attribute indicates the search key string for the _search-form_.
 
-*_search-result-form_* optional attribute is a user visible string that is shown when this _search-form_ is a match. When missing the _value_ attribute is used.
+*_lemma_* optional attribute indicates the lemma of the _search-form_. Typically this attribute is used with _search-form-group_ that groups all inflection forms of the lemma.
+
+*_search-result-form_* optional attribute indicates a user visible string that represents the _search-form_. This is used when the search key string indicated by the _value_ attribute is not appropriate to show matches of a search. For example when the search is done using the pronunciation of the word such as Japanese yomi and Chinese pinyin, the matching entries will be shown by means of the lemma rather than the pronunciation associated with it.
 
 *_search-result-form-supplement_* optional attribute a user visible string that is shown together with the _search-result-form_ to help users to identify an article. The intended use is to store Japanese yomi and Chinese Pinyin.
+
+(describe here how the _value_, _lemma_, _search-result-form_, and _search-result-form-supplement_ iterate each other. These attributes need a bit more polish.)
 
 *_href_* optional attribute indicates a location within the corresponding article. It is used to define a search form that points to a part of the corresponding article. For example it might point to a specific sense, an idiom or a derivative. It can be a regular URL or a epubcfi. In all cases the path will be relative to the article. It can be a range using epubcfi, and in such a case the reading system can choose to highlight the indicated portion of the article rather than just jumping to it. When _href_ is missing the search form points to the beginning of the article.
 
 *_parental-control_* optional attribute if exists indicates that the specific search form is not appropriate for children, and that the reading system can hide this specific search form. The only possible value is "1" for this version.
 
 ----
+== TO DOs ==
+  * Is it ok to use the _article_ html5 element this way??
+  * *More polish on attributes of _search-form_ element.*
+  * Define multiple indexes for bilingual dictionary (or other cases).
+  * Look at proposals from the Index subgroup to see if there are anything we can take advantage of.
+  * Obtain concrete performance numbers of building a binary index. probably with sqlite and with marisa.
+----
 == Change History ==
+Ordered from more recent changes.
+
+====11/12 9:55 PST (kida)====
+Added _lemma_ attribute to the _search-form_ element.
+
+
 ====11/12 9:05 PST (kida)====
 Changed the term "Index" to "Search Index" to avoid confusion with the human readable index that the Index subgroup is working on.
 
@@ -124,10 +141,3 @@ e.g. when a user typed "show" it might have these matches. The reading system ca
 
 
 Removed from the color example "search-result-form" in favor of "canonical-form" as it better describes the entry. The "search-result-form" is still necessary for the case the match itself is very different from what is typed for example for the Japanese and Chinese case.
-
-----
-== TO DOs ==
-  * Look at proposals from the Index subgroup to see if there are anything we can take advantage of.
-  * Obtain concrete performance numbers of building a binary index. probably with sqlite and with marisa.
-  * Define multiple indexes for bilingual dictionary (or other cases).
-  * Rethink attributes of the article element.
