@@ -1257,4 +1257,12 @@
             <xsl:apply-templates/>
         </a>
     </xsl:template>
+	
+	
+	<!-- Fixes ???TITLE??? output when bridgeheads have inline elements -->
+	
+	<xsl:template match="d:bridgehead" mode="title.markup" priority="1">
+		<xsl:apply-templates/>
+	</xsl:template>	
+	
 </xsl:stylesheet>
