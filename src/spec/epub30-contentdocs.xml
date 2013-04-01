@@ -2249,7 +2249,6 @@
                             <code>item</code> element as the authoritative definition of whether an
                             EPUB XHTML Content Document includes embedded SVG.</para>
                     </listitem>
-
                 </itemizedlist>
             </section>
         </section>
@@ -2626,7 +2625,146 @@
             </section>
 
         </section>
-
+		
+		<section xml:id="sec-fixed-layouts">
+			<title>Fixed-Layout Documents</title>
+			
+			<section xml:id="sec-fxl-overview" conformance="informative">
+				<title>Introduction</title>
+				
+				<para>This section defines rules for the expression and interpretation of dimensional
+					properties of <xref linkend="gloss-content-document-epub"/>s and bitmap images
+					marked as pre-paginated in the <xref linkend="gloss-package-document"/>.</para>
+				
+				<para>This specification does not define how the content, and, specifically in the case of XHTML and SVG, the 
+					<link xlink:href="icb">initial containing block</link>, will be placed within the Reading System 
+					content display area.</para>
+				
+				<note>
+					<para>Refer to <olink type="epub-spec" targetdoc="publications" targetptr="sec-package-metadata-fxl"/>
+						for information on how to designate that a Publication, or its individual spine items,
+						are to be rendered in a pre-paginated manner (i.e., with fixed width and height dimensions).</para>
+				</note>
+			</section>
+			
+			<section xml:id="sec-fxl-rs-conf"
+				xreflabel="Fixed Layouts — Reading System Conformance">
+				<title>Reading System Conformance</title>
+				
+				<para>A conformant <xref linkend="gloss-epub-reading-system"/> <literal role="rfc2119">must</literal> meet all of the
+					following criteria for processing <xref linkend="gloss-fixed-layout-document"/>s:</para>
+				
+				<itemizedlist role="conformance-list" xml:id="image-rs-confreqs">
+					<listitem>
+						<para xml:id="confreq-fxl-rs-viewport">It <literal role="rfc2119">should</literal> allocate the full 
+							content rendering area for the document.</para>
+					</listitem>
+					<listitem>
+						<para xml:id="confreq-fxl-rs-xhtml">It <literal role="rfc2119">must</literal> use the dimensions
+							expressed in the <literal>viewport</literal> <code>meta</code> tag to render 
+							<xref linkend="gloss-content-document-epub-xhtml"/>s.</para>
+					</listitem>
+					<listitem>
+						<para xml:id="confreq-fxl-rs-svg">It <literal role="rfc2119">must</literal> use the dimensions
+							expressed in the <code>viewBox</code> attribute to render 
+							<xref linkend="gloss-content-document-epub-svg"/>s.</para>
+					</listitem>
+					<listitem>
+						<para xml:id="confreq-fxl-rs-image">It <literal role="rfc2119">must</literal> use the intrinsic physical
+							dimensions of bitmap images when they are referenced in the spine.</para>
+					</listitem>
+				</itemizedlist>
+			</section>
+			
+			<section xml:id="sec-fxl-synthetic-spreads">
+				<title>Viewport Rendering</title>
+				
+				<para>When rendering Fixed-Layout Documents, the default intent is that the content rendering area
+					<literal role="rfc2119">should</literal> occupy as much of the available application screen area as possible.
+					Reading Systems <literal role="rfc2119">should not</literal> inject additional content such as border, margins,
+					headers or footers into the viewport or the application area surrounding the viewport.</para>
+				
+				<note>
+					<para>The exposure of Reading System control widgets to the <xref linkend="gloss-user"/> is implementation-specific
+						and not included in the above behavioral expectations.</para>
+				</note>
+			</section>
+			
+			<section xml:id="sec-fxl-xhtml-svg-dimensions">
+				<title>Content Dimensions for XHTML and SVG</title>
+				
+				<para>Each <xref linkend="gloss-content-document-epub"/> referenced from a spine item that has the <literal>pre-paginated</literal> 
+					value set <literal role="rfc2119">must</literal> contain the <code>viewport</code> (for XHTML) or <code>viewBox</code> (for SVG) dimension 
+					expressions as defined below, regardless of whether the value is set via the global 
+					<olink type="epub-spec" targetdoc="publications" targetptr="fxl-property-layout">rendition:layout property</olink> 
+					for the Publication or on a 
+					<olink type="epub-spec" targetdoc="publications" targetptr="fxl-property-layout-overrides">spine-level override</olink>.</para>
+				
+				<para>For both XHTML and SVG Content Documents, the dimension expressions define the CSS initial containing block (ICB) expressed in 
+					CSS Pixels <xref linkend="refCSS21"/>.</para>
+				
+				<section xml:id="sec-fxl-icb-xhtml">
+					<title>Expressing ICB Dimensions in XHTML</title>
+					
+					<para>For XHTML Content Documents, 
+						the ICB dimensions <literal role="rfc2119">must</literal> be expressed in 
+						a <literal>viewport</literal> <code>meta</code> tag using the syntax defined in <xref linkend="refMetaTags"/>. 
+						In this version of this specification, only the width and height expressions <literal role="rfc2119">must</literal> be 
+						recognized by Reading Systems.</para>
+					
+					<informalexample>
+						<para>The following example shows a <literal>viewport</literal> <code>meta</code> tag.</para>
+						<synopsis>
+<xi:include href="./examples/contentdocs/fxl-xhtml-01.xml" parse="text"/></synopsis>
+					</informalexample>
+					
+					<para>Reading Systems <literal role="rfc2119">must</literal> clip XHTML content to the ICB dimensions declared 
+						in the <literal>viewport</literal> <code>meta</code> tag; content positioned outside of the initial
+						containing block will not be visible. When the ICB aspect ratio does not match the aspect ratio of the 
+						Reading System content display area, Reading Systems <literal role="rfc2119">may</literal> position the 
+						ICB inside the area to accommodate the user interface; in other words, added letter-boxing space 
+						<literal role="rfc2119">may</literal> appear on either side (or both) of the content.</para>
+				</section>
+				
+				<section xml:id="sec-fxl-icb-svg">
+					<title>Expressing ICB Dimensions in SVG</title>
+					
+					<para>For SVG Content Documents,
+						the ICB dimensions <literal role="rfc2119">must</literal> be expressed using the <link
+							xlink:href="http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute">viewBox
+							attribute</link> <xref linkend="refSVG"/>.</para>
+					
+					<informalexample>
+						<para>The following example shows a <literal>viewBox</literal> attribute declaration.</para>
+						<synopsis>
+<xi:include href="./examples/contentdocs/fxl-svg-01.xml" parse="text"/></synopsis>
+					</informalexample>
+				</section>
+			</section>
+			
+			<section xml:id="sec-image-fixed-layouts">
+				<title>Content Dimensions for Bitmap Images</title>
+				
+				<para>For bitmap images referenced from the spine, Reading Systems <literal role="rfc2119">must</literal> 
+					use the intrinsic physical dimensions of the given bitmap &#8212; the actual physical pixel counts 
+					for width and height &#8212; for the viewport dimensions, not considering "resolution tags" or any 
+					form of transformation.</para>
+				
+				<para>This method of retrieving content dimensions does not apply when bitmap
+					images are embedded in fixed-layout XHTML or SVG Content Documents.</para>
+				
+				<informalexample xml:id="img-fxl-ex">
+					<para>The following example demonstrates a fully fixed-layout publication with bitmap 
+						images as the top-level content representation, using XHTML fallbacks.</para>
+					<synopsis>
+<xi:include href="./examples/contentdocs/fxl-image-01.xml" parse="text"/></synopsis>
+					<para>Note: The fallback XHTML Content Documents would also contain 
+						<link linkend="sec-fxl-icb-xhtml"><literal>viewport</literal> 
+						<code>meta</code> tags</link> specifying the viewport dimensions for 
+						Reading Systems that do not support images in the <code>spine</code>.</para>
+				</informalexample>
+			</section>
+		</section>
     </chapter>
 
     <chapter xml:id="sec-css">
