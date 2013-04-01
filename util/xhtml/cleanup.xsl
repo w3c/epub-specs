@@ -3,7 +3,7 @@
     xmlns:x="http://www.w3.org/1999/xhtml"
     xmlns:db="http://docbook.org/ns/docbook">
 
-    <xsl:output method="xml" encoding="UTF-8" indent="no"/>
+    <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
     
     <!-- cleanup xhtml output by oxygen pretty-printed docbook, run through docbook xslt suite -->  
     
