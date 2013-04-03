@@ -1195,6 +1195,8 @@
                     <xsl:text>ISO/IEC 14977</xsl:text>
                 </a>
                 <xsl:text>)</xsl:text>
+            	<br/>
+            	<xsl:text>All terminal symbols are in the Unicode Block 'Basic Latin' (U+0000 to U+007F).</xsl:text>
             </caption>
             <xsl:apply-templates select="d:production|d:productionrecap"/>
         </table>
