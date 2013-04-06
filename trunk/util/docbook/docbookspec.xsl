@@ -1276,4 +1276,65 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<!-- remove the <a id=""/> in the legal notice that causes constantly 
+		changing ids on all the specs with each build -->
+	
+	<xsl:template match="d:legalnotice" mode="titlepage.mode">
+		<xsl:variable name="id"><xsl:call-template name="object.id"/></xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="$generate.legalnotice.link != 0">
+				
+				<!-- Compute name of legalnotice file -->
+				<xsl:variable name="file">
+					<xsl:call-template name="ln.or.rh.filename"/>
+				</xsl:variable>
+				
+				<xsl:variable name="filename">
+					<xsl:call-template name="make-relative-filename">
+						<xsl:with-param name="base.dir" select="$base.dir"/>
+						<xsl:with-param name="base.name" select="$file"/>
+					</xsl:call-template>
+				</xsl:variable>
+				
+				<xsl:variable name="title">
+					<xsl:apply-templates select="." mode="title.markup"/>
+				</xsl:variable>
+				
+				<a href="{$file}">
+					<xsl:copy-of select="$title"/>
+				</a>
+				
+				<xsl:call-template name="write.chunk">
+					<xsl:with-param name="filename" select="$filename"/>
+					<xsl:with-param name="quiet" select="$chunk.quietly"/>
+					<xsl:with-param name="content">
+						<xsl:call-template name="user.preroot"/>
+						<html>
+							<head>
+								<xsl:call-template name="system.head.content"/>
+								<xsl:call-template name="head.content"/>
+								<xsl:call-template name="user.head.content"/>
+							</head>
+							<body>
+								<xsl:call-template name="body.attributes"/>
+								<div>
+									<xsl:apply-templates select="." mode="common.html.attributes"/>
+									<xsl:apply-templates mode="titlepage.mode"/>
+								</div>
+							</body>
+						</html>
+						<xsl:value-of select="$chunk.append"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<div>
+					<xsl:apply-templates select="." mode="common.html.attributes"/>
+					<xsl:apply-templates mode="titlepage.mode"/>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 </xsl:stylesheet>

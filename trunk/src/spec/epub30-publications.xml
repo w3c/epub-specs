@@ -234,7 +234,7 @@
                                 linkend="gloss-package-document"/> as defined in <xref
                                 linkend="sec-package-rs-conf"/>, and honor all presentation logic
                             expressed through the Package Document (e.g., the reading order,
-                            fallback chains and bindings).</para>
+                            fallback chains, bindings, page progression direction and fixed layouts).</para>
 
                         <para xml:id="confreq-rs-epub3-uid">It <literal role="rfc2119">must not</literal> fail catastrophically if it
                             encounters two distinct EPUB Publications with the same <xref
@@ -260,22 +260,11 @@
                                 type="epub-spec" targetdoc="contentdocs" targetptr="sec-svg-rs-conf"
                             />.</para>
                     	
-                    	<para xml:id="confreq-rs-epub3-fxl"><phrase role="conditional">If it has
-                    		the capability to render <xref linkend="gloss-fixed-layout-document"/>s</phrase>, it 
-                    		<literal role="rfc2119">should</literal> honor all presentation logic expressed in
-                    		<xref linkend="sec-package-metadata-fxl"/> and the content dimension declaration
-                    		mechanisms defined in <olink type="epub-spec" targetdoc="contentdocs" targetptr="sec-fixed-layouts"/>.</para>
-                    	
                         <para xml:id="confreq-rs-epub3-css"><phrase role="conditional">If it has a
                                     <xref linkend="gloss-viewport-css"/></phrase>, it <literal role="rfc2119">must</literal> support
                             visual rendering of <xref linkend="gloss-content-document-epub-xhtml"/>s
                             as defined in <olink type="epub-spec" targetdoc="contentdocs"
                                 targetptr="sec-css-rs-conf"/>.</para>
-                    	
-                    	<para xml:id="confreq-rs-epub3-spreads"><phrase role="conditional">If it has
-                    		the capability to render <xref linkend="gloss-synthetic-spread"/>s</phrase>, it 
-                    		<literal role="rfc2119">should not</literal> include any space between the
-                    		two adjacent content slots.</para>
                     	
                         <para xml:id="confreq-rs-epub3-raster"><phrase role="conditional">If it has
                                 the capability to render raster images</phrase>, it <literal role="rfc2119">must</literal> support the
@@ -487,6 +476,13 @@
                         <para xml:id="confreq-rs-package-def">It <literal role="rfc2119">must</literal> process the Package Document
                             in conformance with all Reading System conformance constraints expressed
                             in <xref linkend="sec-package-def"/>.</para>
+                    	<para xml:id="confreq-rs-epub3-fxl">It <literal role="rfc2119">should</literal> proceess 
+                    		presentational metadata, as expressed in <xref linkend="sec-package-metadata-fxl"/>, and 
+                    		the associated content dimension declaration mechanisms defined in 
+                    		<olink type="epub-spec" targetdoc="contentdocs" targetptr="sec-fixed-layouts"/>.</para>
+                    	<para xml:id="confreq-rs-epub3-fxl-conflicts">It <literal role="rfc2119">must</literal> ignore 
+                    		proprietary metadata properties that pertain to layout expressions if they conflict 
+                    		behaviorally with the property semantics defined in <xref linkend="sec-package-metadata-fxl"/>.</para>
                     </listitem>
                 </varlistentry>
                 <!-- not needed; this is defined in sec-package-def
@@ -3957,6 +3953,35 @@
                 			</row>
                 		</tbody>
                 	</tgroup>
+                	<tgroup cols="2" xml:id="orientation-auto" xreflabel="rendition:orientation-auto property">
+                		<colspec colname="c1"/>
+                		<colspec colname="c2"/>
+                		<spanspec spanname="s1" namest="c1" nameend="c2"/>
+                		<tbody>
+                			<row>
+                				<entry spanname="s1" role="rdfa-property">
+                					<literal>rendition:orientation-auto</literal>
+                				</entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Description:</entry>
+                				<entry role="rdfa-property-desc">
+                					<para>Specifies that the Reading System can determine the orientation to rendered the spine item in.</para>
+                				</entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Cardinality:</entry>
+                				<entry role="rdfa-cardinality"><code>Zero or more</code></entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Usage:</entry>
+                				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
+                					<code>itemref</code> that also specifies the
+                					<literal>rendition:orientation-landscape</literal> or 
+                					<literal>rendition:orientation-portrait</literal> property.</entry>
+                			</row>
+                		</tbody>
+                	</tgroup>
                 	<tgroup cols="2" xml:id="orientation-landscape" xreflabel="rendition:orientation-landscape property">
                 		<colspec colname="c1"/>
                 		<colspec colname="c2"/>
@@ -4012,35 +4037,6 @@
                 					<code>itemref</code> that also specifies the
                 					<literal>rendition:orientation-landscape</literal> or 
                 					<literal>rendition:orientation-auto</literal> property.</entry>
-                			</row>
-                		</tbody>
-                	</tgroup>
-                	<tgroup cols="2" xml:id="orientation-auto" xreflabel="rendition:orientation-auto property">
-                		<colspec colname="c1"/>
-                		<colspec colname="c2"/>
-                		<spanspec spanname="s1" namest="c1" nameend="c2"/>
-                		<tbody>
-                			<row>
-                				<entry spanname="s1" role="rdfa-property">
-                					<literal>rendition:orientation-auto</literal>
-                				</entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Description:</entry>
-                				<entry role="rdfa-property-desc">
-                					<para>Specifies that the Reading System can determine the orientation to rendered the spine item in.</para>
-                				</entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Cardinality:</entry>
-                				<entry role="rdfa-cardinality"><code>Zero or more</code></entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Usage:</entry>
-                				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
-                					<code>itemref</code> that also specifies the
-                					<literal>rendition:orientation-landscape</literal> or 
-                					<literal>rendition:orientation-portrait</literal> property.</entry>
                 			</row>
                 		</tbody>
                 	</tgroup>
@@ -4133,21 +4129,21 @@
                             </row>
                         </tbody>
                     </tgroup>
-                	<tgroup cols="2" xml:id="spread-landscape" xreflabel="rendition:spread-landscape property">
+                	<tgroup cols="2" xml:id="spread-auto" xreflabel="rendition:spread-auto property">
                 		<colspec colname="c1"/>
                 		<colspec colname="c2"/>
                 		<spanspec spanname="s1" namest="c1" nameend="c2"/>
                 		<tbody>
                 			<row>
                 				<entry spanname="s1" role="rdfa-property">
-                					<literal>rendition:spread-landscape</literal>
+                					<literal>rendition:spread-auto</literal>
                 				</entry>
                 			</row>
                 			<row>
                 				<entry role="rdfa-property-header">Description:</entry>
                 				<entry role="rdfa-property-desc">
-                					<para>Specifies the Reading System should render a synthetic spread for the spine item
-                						only when in landscape orientation.</para>
+                					<para>Specifies the Reading System can determine when to render a synthetic spread 
+                						for the spine item.</para>
                 				</entry>
                 			</row>
                 			<row>
@@ -4158,38 +4154,8 @@
                 				<entry role="rdfa-property-header">Usage:</entry>
                 				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
                 					<code>itemref</code> that also specifies the
-                					<literal>rendition:spread-portrait</literal>, <literal>rendition:spread-both</literal>,
-                					<literal>rendition:spread-auto</literal> or <literal>rendition:spread-none</literal> property.</entry>
-                			</row>
-                		</tbody>
-                	</tgroup>
-                	<tgroup cols="2" xml:id="spread-portrait" xreflabel="rendition:spread-portrait property">
-                		<colspec colname="c1"/>
-                		<colspec colname="c2"/>
-                		<spanspec spanname="s1" namest="c1" nameend="c2"/>
-                		<tbody>
-                			<row>
-                				<entry spanname="s1" role="rdfa-property">
-                					<literal>rendition:spread-portrait</literal>
-                				</entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Description:</entry>
-                				<entry role="rdfa-property-desc">
-                					<para>Specifies the Reading System should render a synthetic spread for the spine item
-                						only when in portrait orientation.</para>
-                				</entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Cardinality:</entry>
-                				<entry role="rdfa-cardinality"><code>Zero or more</code></entry>
-                			</row>
-                			<row>
-                				<entry role="rdfa-property-header">Usage:</entry>
-                				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
-                					<code>itemref</code> that also specifies the
-                					<literal>rendition:spread-landscape</literal>, <literal>rendition:spread-both</literal>, 
-                					<literal>rendition:spread-auto</literal> or <literal>rendition:spread-none</literal> property.</entry>
+                					<literal>rendition:spread-portrait</literal>, <literal>rendition:spread-landscape</literal>, 
+                					<literal>rendition:spread-both</literal> or <literal>rendition:spread-none</literal> property.</entry>
                 			</row>
                 		</tbody>
                 	</tgroup>
@@ -4223,21 +4189,21 @@
                 			</row>
                 		</tbody>
                 	</tgroup>
-                	<tgroup cols="2" xml:id="spread-auto" xreflabel="spread-auto property">
+                	<tgroup cols="2" xml:id="spread-landscape" xreflabel="rendition:spread-landscape property">
                 		<colspec colname="c1"/>
                 		<colspec colname="c2"/>
                 		<spanspec spanname="s1" namest="c1" nameend="c2"/>
                 		<tbody>
                 			<row>
                 				<entry spanname="s1" role="rdfa-property">
-                					<literal>spread-auto</literal>
+                					<literal>rendition:spread-landscape</literal>
                 				</entry>
                 			</row>
                 			<row>
                 				<entry role="rdfa-property-header">Description:</entry>
                 				<entry role="rdfa-property-desc">
-                					<para>Specifies the Reading System can determine when to render a synthetic spread 
-                						for the spine item.</para>
+                					<para>Specifies the Reading System should render a synthetic spread for the spine item
+                						only when in landscape orientation.</para>
                 				</entry>
                 			</row>
                 			<row>
@@ -4248,8 +4214,8 @@
                 				<entry role="rdfa-property-header">Usage:</entry>
                 				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
                 					<code>itemref</code> that also specifies the
-                					<literal>rendition:spread-portrait</literal>, <literal>rendition:spread-landscape</literal>, 
-                					<literal>rendition:spread-both</literal> or <literal>rendition:spread-none</literal> property.</entry>
+                					<literal>rendition:spread-portrait</literal>, <literal>rendition:spread-both</literal>,
+                					<literal>rendition:spread-auto</literal> or <literal>rendition:spread-none</literal> property.</entry>
                 			</row>
                 		</tbody>
                 	</tgroup>
@@ -4280,6 +4246,36 @@
                 					<code>itemref</code> that also specifies the
                 					<literal>rendition:spread-portrait</literal>, <literal>rendition:spread-landscape</literal>, 
                 					<literal>rendition:spread-both</literal> or <literal>rendition:spread-auto</literal> property.</entry>
+                			</row>
+                		</tbody>
+                	</tgroup>
+                	<tgroup cols="2" xml:id="spread-portrait" xreflabel="rendition:spread-portrait property">
+                		<colspec colname="c1"/>
+                		<colspec colname="c2"/>
+                		<spanspec spanname="s1" namest="c1" nameend="c2"/>
+                		<tbody>
+                			<row>
+                				<entry spanname="s1" role="rdfa-property">
+                					<literal>rendition:spread-portrait</literal>
+                				</entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Description:</entry>
+                				<entry role="rdfa-property-desc">
+                					<para>Specifies the Reading System should render a synthetic spread for the spine item
+                						only when in portrait orientation.</para>
+                				</entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Cardinality:</entry>
+                				<entry role="rdfa-cardinality"><code>Zero or more</code></entry>
+                			</row>
+                			<row>
+                				<entry role="rdfa-property-header">Usage:</entry>
+                				<entry>Optional. This property <literal role="rfc2119">must not</literal> be specified on an
+                					<code>itemref</code> that also specifies the
+                					<literal>rendition:spread-landscape</literal>, <literal>rendition:spread-both</literal>, 
+                					<literal>rendition:spread-auto</literal> or <literal>rendition:spread-none</literal> property.</entry>
                 			</row>
                 		</tbody>
                 	</tgroup>
@@ -4340,6 +4336,10 @@
     					be assumed by <xref linkend="gloss-epub-reading-system"/>s as the global value if no 
     					<code>meta</code> element carrying this property occurs in the 
     					<link linkend="elemdef-opf-metadata"><code>metadata</code></link> section.</para>
+    				
+    				<para>When the <literal>rendition:layout</literal> property is set to <literal>pre-paginated</literal>, 
+    					Reading Systems <literal role="rfc2119">must not</literal> include space between the adjacent 
+    					content slots when rendering <xref linkend="gloss-synthetic-spread"/>s.</para>
     			</section>
     			
     			<section xml:id="fxl-property-layout-values">
@@ -4400,8 +4400,7 @@
 <xi:include href="./examples/publications/fxl-01b.xml" parse="text"/></synopsis>
     					<para>Note that the Media Queries only affect the style sheet applied to the document.
     						The size of the content area set in the <literal>viewport</literal> <code>meta</code>
-    						tag is static (e.g., the style sheets may position the content into a smaller segment
-    						of the specified area, but do not alter its size).</para>
+    						tag is static.</para>
     				</informalexample>
     			</section>
     			
@@ -4661,13 +4660,6 @@
     					<literal>rendition:page-spread-center</literal> property already specifies
     					semantics that dictates that synthetic spreads be disabled.</para>
     			</informalexample>
-    		</section>
-    		<section xml:id="fxl-conflicts">
-    			<title>Conflict Resolution</title>
-    			<para>Package Documents <literal role="rfc2119">may</literal> include additional proprietary metadata properties 
-    				that pertain to layout expressions (refer to <link linkend="sec-metadata-assoc">Vocabulary Association Mechanisms</link> 
-    				for more information on extensibility). Reading Systems <literal role="rfc2119">must</literal> ignore such expressions 
-    				if they conflict behaviorally with the property semantics defined in this section.</para>
     		</section>
     	</section>
 
