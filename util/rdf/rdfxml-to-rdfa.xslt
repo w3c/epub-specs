@@ -95,15 +95,11 @@
 					
 					<h2>Revision Policy</h2>
 					
-					<p>Changes to this vocabulary will only occur in conjunction with revisions to the 
-						EPUB suite of specifications. Terms in the vocabulary may be deprecated 
-						as the result of a revision, but will not be removed.</p>
+					<p>This document is subject to change at any time. The terms defined in this vocabulary 
+						will never be removed, but may be deprecated.</p>
 					
-					<p>New terms may be introduced at any time for experimental purposes.
-						All such terms will be marked with the label 
-						<strong class="experimental">[experimental]</strong>.
-						Experimental terms are subject to removal at any time, and may remain 
-						designated as experimental across revisions to the EPUB specifications.</p>
+					<p>Requests for additions, modifications and clarifications must be made through the 
+						<a href="https://code.google.com/p/epub-revision/issues/list">EPUB 3 Revision Tracker</a>.</p>
 					
 					<!--  				  				
   				<p class="vocab-date">Document last modified: <xsl:value-of select="//rdf:Description[@rdf:about=$vocab-uri]/dcterms:modified"
