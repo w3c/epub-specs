@@ -97,7 +97,7 @@
                 of this abstract container within a ZIP archive: the "physical container". The rules
                 for ZIP physical containers build upon the ZIP technologies used by <xref
                     linkend="refODF"/>. OCF also defines a standard method for obfuscating embedded
-                fonts for those EPUB Publications that require this functionality.</para>
+                resources, such as fonts, for those EPUB Publications that require this functionality.</para>
             <para>This specification supersedes Open Container Format (OCF) 2.0.1 <xref
                     linkend="refOCF2"/>. Refer to <xref linkend="refEPUB3Changes"/> for information
                 on differences between this specification and its predecessor.</para>
@@ -134,8 +134,8 @@
                 </listitem>
                 <listitem>
                     <para xml:id="confreq-ocf-fobfus">If it has a <xref linkend="gloss-viewport"/>,
-                        it <literal role="rfc2119">must</literal> support deobfuscation of fonts as defined in <xref
-                            linkend="font-obfuscation"/>.</para>
+                        it <literal role="rfc2119">must</literal> support deobfuscation of resources as defined in <xref
+                            linkend="resource-obfuscation"/>.</para>
                 </listitem>
             </itemizedlist>
         </section>
@@ -176,8 +176,8 @@
                         <option>[optional]</option></term>
                     <listitem>
                         <para>Contains information about the encryption of Publication resources.
-                        	(This file is required if <link linkend="font-obfuscation">font
-                                obfuscation</link> is used.)</para>
+                        	(This file is required when <link linkend="resource-obfuscation">obfuscation</link>
+                        	is used.)</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -444,18 +444,16 @@
                 <title>Encryption – META-INF/encryption.xml</title>
                 <para>An optional <filename>encryption.xml</filename> file within the
                         <filename>META-INF</filename> directory at the root level of the container
-                    file system holds all encryption information on the contents of the container.
-                    This file is an XML document whose root element is <code>encryption</code>. The
-                        <code>encryption</code> element contains child elements of type
-                        <code>EncryptedKey</code> and <code>EncryptedData</code> as defined by <xref
-                        linkend="refXMLENCCORE"/>. Each <code>EncryptedData</code> element describes
-                    how one or more files within the container are encrypted. Consequently, if any
+                    file system holds all encryption information on the contents of the container. If any
                     resource within the container is encrypted, <filename>encryption.xml</filename>
                     <literal role="rfc2119">must</literal> be present to indicate that the resource is encrypted and provide
                     information on how it is encrypted.</para>
-                <para>An <code>EncryptedKey</code> element describes each encryption key used in the
-                    container, while an <code>EncryptedData</code> element describes each encrypted
-                    file. Each <code>EncryptedData</code> element refers to an
+            	<para>This file is an XML document whose root element is <code>encryption</code>. The
+            		<code>encryption</code> element contains child elements of type
+            		<code>EncryptedKey</code> and <code>EncryptedData</code> as defined by <xref
+            			linkend="refXMLENCCORE"/>. An <code>EncryptedKey</code> element describes each 
+            		encryption key used in the container, while an <code>EncryptedData</code> element 
+            		describes each encrypted file. Each <code>EncryptedData</code> element refers to an
                         <code>EncryptedKey</code> element, as described in XML Encryption.</para>
                 <para>The schema for <filename>encryption.xml</filename> files is available in <xref
                         linkend="app-schema-encryption"/>; <filename>encryption.xml</filename> files
@@ -484,12 +482,14 @@
                     compressed before they are encrypted and Deflate compression <literal role="rfc2119">must</literal> be used.
                     Within the ZIP directory, encrypted files <literal role="rfc2119">should</literal> be stored rather than
                     Deflate-compressed.</para>
-                <para> Some situations require obfuscating the storage of embedded fonts referenced
-                    by an EPUB Publication to tie them to the "parent" Publication and make them
-                    more difficult to extract for unrestricted use. In these cases,
-                        <filename>encryption.xml</filename> <literal role="rfc2119">should</literal> be used to provide requisite font
-                    decoding information according to <xref linkend="font-obfuscation"/>.</para>
-                <para>The following files <literal role="rfc2119">must</literal> never be encrypted, regardless of whether default or
+            	<para>Note that some situations require obfuscating the storage of embedded resources 
+            		referenced by an EPUB Publication to tie them to the "parent" Publication and make them
+            		more difficult to extract for unrestricted use (e.g., fonts). Although obfuscation
+            		is not encryption, the <filename>encryption.xml</filename> file is used in
+            		conjunction with the <link linkend="resource-obfuscation">IDPF resource 
+            			obfuscation algorithm</link> to identify resources that need to be 
+            		de-obfuscated before they can be used.</para>
+            	<para>The following files <literal role="rfc2119">must not</literal> be encrypted, regardless of whether default or
                     specific encryption is requested:</para>
                 <simplelist>
                     <member><filename>mimetype</filename></member>
@@ -502,7 +502,7 @@
                     <member><filename>EPUB rootfile (the <xref linkend="gloss-package-document"
                             />)</filename></member>
                 </simplelist>
-                <para>Signed resources <literal role="rfc2119">may</literal> subsequently be encrypted using the Decryption Transform
+            	<para>Signed resources <literal role="rfc2119">may</literal> subsequently be encrypted using the Decryption Transform
                     for XML Signature <xref linkend="refXMLSIGDecrypt"/>. This feature enables an
                     application such as an OCF agent to distinguish data that was encrypted before
                     signing from data that was encrypted after signing. Only data that was encrypted
@@ -746,8 +746,8 @@
             <para>The contents of the <filename>mimetype</filename> file <literal role="rfc2119">must not</literal> contain any
                 leading padding or whitespace, <literal role="rfc2119">must not</literal> begin with the Unicode signature (or Byte
                 Order Mark), and the case of the MIME type string <literal role="rfc2119">must</literal> be exactly as presented
-                above. The <filename>mimetype</filename> file additionally <literal role="rfc2119">must</literal> be neither
-                compressed nor encrypted, and there <literal role="rfc2119">must not</literal> be an extra field in its ZIP
+                above. The <filename>mimetype</filename> file additionally <literal role="rfc2119">must not</literal> be 
+                compressed or encrypted, and there <literal role="rfc2119">must not</literal> be an extra field in its ZIP
                 header.</para>
             <note>
                 <para>Refer to <xref linkend="app-media-type"/> for further information about the
@@ -774,40 +774,46 @@
             -->
         </section>
     </chapter>
-    <chapter xml:id="font-obfuscation">
-        <title>Font Obfuscation</title>
+    <chapter xml:id="resource-obfuscation">
+        <title>Resource Obfuscation</title>
         <section xml:id="fobfus-intro" conformance="informative">
             <title>Introduction</title>
             <para>Since an OCF Zip Container is fundamentally a ZIP file, commonly available ZIP
-                tools can be used to extract any unencrypted content stream from the package. On
-                some systems, the contents of the ZIP file may appear like any other native
-                container (e.g., a folder). While the ability to do this is quite useful, it can
-                pose a problem for an <xref linkend="gloss-author"/> who wishes to include a
-                third-party font.</para>
-            <para>Many commercial fonts allow embedding, but embedding a font implies making it an
-                integral part of the Publication, not providing the original font file along with
-                the content. Since integrated ZIP support is so ubiquitous in modern operating
-                systems, simply placing the font in the ZIP archive is insufficient to signify that
-                the font is not intended to be reused in other contexts. This uncertainty can
+                tools can be used to extract any unencrypted content stream from the package. Moreover,
+                the nature of ZIP files means that their contents may appear like any other native
+                container on some systems (e.g., a folder).</para>
+        	<para>While this simplicity of ZIP files is quite useful, it also poses a problem when 
+        		ease of extraction of resources is not a desired side-effect of not encrypting them. An 
+        		<xref linkend="gloss-author"/> who wishes to include a third-party font, for example, 
+        		typically does not want that font extracted and re-used by others. More critically, 
+        		many commercial fonts allow embedding, but embedding a font implies making it an 
+        		integral part of the Publication, not just providing the original font file along 
+        		with the content.</para>
+        	<para>Since integrated ZIP support is so ubiquitous in modern operating
+                systems, simply placing a font in the ZIP archive is insufficient to signify that
+                it is not intended to be reused in other contexts. This uncertainty can
                 undermine the otherwise very useful font embedding capability of EPUB
                 Publications.</para>
-            <para>In order to discourage reuse of the font, some font vendors may allow use of their
+            <para>In order to discourage reuse of the font, some font vendors may only allow use of their
                 fonts in EPUB Publications if those fonts are bound in some way to the Publication.
                 That is, if the font file cannot be installed directly for use on an operating
                 system with the built-in tools of that computing device, and it cannot be directly
                 used by other EPUB Publications. </para>
-            <para>It is beyond the scope of this document to provide a digital rights management or
-                enforcement system for font files. It instead defines a method of obfuscation that
+            <para>It is beyond the scope of this specification to provide a digital rights management or
+                enforcement system for such resources. This section instead defines a method of obfuscation that
                 will require additional work on the part of the final OCF recipient to gain general
-                access to any included fonts. It is the hope of the IDPF that this will meet the
-                requirements of most font vendors. No claim is made in this document or by the IDPF,
-                that this constitutes encryption, nor does it guarantee that the font file will be
-                secure from copyright infringement. The defined mechanism will simply provide a
-                stumbling block for those who are unaware of the license details of the supplied
-                font. It will not prevent a determined user from gaining full access to the font.
+                access to any obfuscated resources.</para>
+        	<para>Note that no claim is made in this specification, or by the IDPF,
+                that this constitutes encryption, nor does it guarantee that the resource will be
+                secure from copyright infringement. It is the hope of the IDPF, however, that this 
+                algorithm will meet the requirements of most vendors who require some assurance that 
+                their resources cannot simply be extracted by unzipping the Container.</para>
+        	<para>In the case of fonts, the primary use case for obfuscation, the defined mechanism will 
+        		simply provide a stumbling block for those who are unaware of the license details. It will not 
+                prevent a determined user from gaining full access to the font.
                 Given an OCF Container, it is possible to apply the algorithms defined to extract
-                the raw font file. Whether this satisfies the requirements of individual font
-                licenses remains a question for the licensor and licensee. </para>
+                the raw font file. Whether this method of obfuscation satisfies the requirements of 
+                individual font licenses remains a question for the licensor and licensee. </para>
         </section>
         <!--
         <section xml:id="fobfus-rsreq">
@@ -817,24 +823,52 @@
                 defined below. </para>
         </section>
         -->
-        <section xml:id="fobfus-algorithm">
+    	<section xml:id="obfus-keygen">
+    		<title>Obfuscation Key</title>
+    		<para>The key used in the obfuscation algorithm is derived from the <xref linkend="gloss-unique-identifier"/> of
+    			the <link linkend="container-default-rendition">default Publication</link>.</para>
+    		
+    		<para>All whitespace characters, as defined by the XML 1.0 specification <xref linkend="refXML"/>, section
+    			2.3, <literal role="rfc2119">must</literal> be removed from this identifier &#8212; specifically, 
+    			the Unicode code points <code>U+0020</code>, <code>U+0009</code>, <code>U+000D</code> and
+    			<code>U+000A</code>.</para>
+    		
+    		<para>A SHA-1 digest of the UTF-8 representation of the resulting string <literal role="rfc2119">should</literal>
+    			be generated as specified by the Secure Hash Standard <xref
+    				linkend="refSHA1"/>. This digest is then directly used as the key for the
+    			algorithm.</para>
+    	</section>
+    	
+    	<section xml:id="obfus-algorithm">
             <title>Obfuscation Algorithm</title>
-            <para>The algorithm employed to obfuscate the font file consists of modifying the first
-                1040 bytes (~1KB) of the font file. In the unlikely event that the file is less than
-                1040 bytes, then the entire file will be modified. The key for the algorithm is
-                generated using the instructions as given in the section <xref
-                    linkend="fobfus-keygen"/>. To obfuscate the original data, the result of
+            <para>The algorithm employed to obfuscate resource consists of modifying the first
+                1040 bytes (~1KB) of the file. In the unlikely event that the file is less than
+                1040 bytes, then the entire file will be modified.</para>
+        	
+        	<para>To obfuscate the original data, the result of
                 performing a logical exclusive or (XOR) on the first byte of the raw file and the
-                first byte of the key is stored as the first byte of the embedded font file. This
-                process is repeated with the next byte of source and key, until all bytes in the key
-                have been used. At this point, the process continues starting with the first byte of
-                the key and 21st byte of the source. Once 1040 bytes have been encoded in this way
-                (or the end of the source is reached), any remaining data in the source is directly
-                copied to the destination. In pseudo-code, this is the algorithm: </para>
-            <programlisting>
-set source to font file
+                first byte of the <link linkend="obfus-keygen">obfuscation key</link> is stored as 
+        		the first byte of the embedded resource.</para>
+    		
+    		<para>This process is repeated with the next byte of source and key, and continues until 
+    			all bytes in the key have been used. At this point, the process continues starting 
+    			with the first byte of the key and 21st byte of the source. Once 1040 bytes have been
+    			encoded in this way (or the end of the source is reached), any remaining data in the 
+    			source is directly copied to the destination.</para>
+    		
+    		<para>Obfuscation of resources <literal role="rfc2119">must</literal> occur before they
+    			are compressed and added to the OCF Container. Note that as obfuscation is not 
+    			encryption, this requirement is not a violation of the one in 
+    			<xref linkend="sec-container-metainf-encryption.xml"/> to compress resources before 
+    			encrypting them.</para>
+    		
+    		<informalexample>
+    			<para>The following pseudo-code exemplifies the obfuscation algorithm.</para>
+    			<programlisting>
+set ocf to OCF container file
+set source to file
 set destination to obfuscated file
-set keyData to key for font
+set keyData to key for file
 set outer to 0
 while outer &lt; 52 and not (source at EOF)
     set inner to 0
@@ -851,49 +885,52 @@ end while
 if not (source at EOF) then
     read source to EOF
     write result of read to destination
-end if 
+end if
+Deflate destination
+store destination as source in ocf
             </programlisting>
-            <para>To get the original font data back, the process is simply reversed. That is, the
-                source file becomes the obfuscated data and the destination file will contain the
-                raw font data.</para>
+    		</informalexample>
+    		
+    		<para>To get the original font data back, the process is simply reversed: the
+    			source file becomes the obfuscated data and the destination file will contain the
+    			raw data.</para>
+        	
+        	<note>
+        		<para>The obfuscation of fonts was allowed prior to EPUB 3.0.1, but the order of 
+        			obfuscation and compression was not specified. As a result, invalid fonts might 
+        			be encountered after decompression and de-obfuscation. In such instances, 
+        			de-obfuscating the data before inflating it may return a valid font. Supporting 
+        			this method of retrieval is optional, as it is not compliant with this version 
+        			of this specification, but needs to be considered when supporting EPUB 3 content 
+        			generally.</para>
+        	</note>
         </section>
-        <section xml:id="fobfus-keygen">
-            <title>Generating the Obfuscation Key</title>
-        	<para>The key used in the obfuscation algorithm is derived from the <olink targetdoc="publications"
-        		targetptr="sec-opf-metadata-identifiers-uid" type="epub-spec">unique identifer</olink> of
-            	the <link linkend="container-default-rendition">default Publication in the Container</link>.
-            	All whitespace characters, as defined by the XML 1.0 specification <xref linkend="refXML"/>, section
-                2.3, <literal role="rfc2119">must</literal> be removed from this identifier &#8212; specifically, 
-            	the Unicode code points <code>U+0020</code>, <code>U+0009</code>, <code>U+000D</code> and
-                    <code>U+000A</code>.
-            	An SHA-1 digest of the UTF-8 representation of the resulting string <literal role="rfc2119">should</literal>
-            	be generated as specified by the Secure Hash Standard <xref
-                    linkend="refSHA1"/>. This digest is then directly used as the key for the
-                algorithm described in <xref linkend="fobfus-algorithm"/>.</para>
-        </section>
-        <section xml:id="fobfus-specifying">
+    	
+        <section xml:id="obfus-specifying">
             <title>Specifying Obfuscated Resources</title>
-            <para>All encrypted data in an OCF Abstract Container <literal role="rfc2119">must</literal> have an entry in the
-                    <filename>encryption.xml</filename> file accompanying the Publication (see <xref
-                    linkend="sec-container-metainf-encryption.xml"/>), which includes fonts
-                obfuscated using the method described here. For such obfuscated fonts, in the
-                    <filename>encryption.xml</filename> file, the <code>EncryptionMethod</code>
-                element child of the <code>EncryptedData</code> <literal role="rfc2119">must</literal> have an <code>Algorithm</code>
-                attribute with the value <code>http://www.idpf.org/2008/embedding</code>. The
-                presence of this attribute signals the use of the algorithm described in this
-                specification. All resources that have been obfuscated using this approach <literal role="rfc2119">must</literal> be
-                listed in the <code>CipherData</code> element.</para>
-            <informalexample>
-                <para>An example <filename>encryption.xml</filename> file might look like
-                    this:</para>
+            
+        	<para>Although not technically encrypted data, all obfuscated resources <literal role="rfc2119">must</literal> 
+        		have an entry in the <filename>encryption.xml</filename> file accompanying the 
+        		Publication (see <xref linkend="sec-container-metainf-encryption.xml"/>).</para>
+        	
+        	<para>An <code>EncryptionMethod</code> element <literal role="rfc2119">must</literal> 
+        		be included for each obfuscated resource. Each <literal role="rfc2119">must</literal>
+        		include a child <code>EncryptedData</code> element whose <code>Algorithm</code> attribute 
+        		is set to the value <literal>http://www.idpf.org/2008/embedding</literal>. The presence 
+        		of this attribute signals the use of the algorithm described in this specification. The 
+        		path to the obfuscated resource <literal role="rfc2119">must</literal> be listed in the
+        		<code>CipherReference</code> child of the <code>CipherData</code> element.</para>
+            
+        	<informalexample>
+                <para>The following example shows an entry for an obfuscated font in the <filename>encryption.xml</filename> file.</para>
                 <synopsis>
 <xi:include parse="text" href="./examples/ocf/fobfus-encryption.xml"/>
                 </synopsis>
             </informalexample>
-            <para>To prevent trivial copying of the embedded font to other Publications, the
-                explicit key <literal role="rfc2119">must not</literal> be provided in the <filename>encryption.xml</filename> file.
-                Reading systems <literal role="rfc2119">must</literal> derive the key from the package's <xref
-                    linkend="gloss-unique-identifier"/>.</para>
+            
+        	<para>To prevent trivial copying of the embedded resource to other Publications, the
+        		<link linkend="obfus-keygen">obfuscation key</link> <literal role="rfc2119">must not</literal> 
+        		be provided in the <filename>encryption.xml</filename> file.</para>
         </section>
 
     </chapter>
