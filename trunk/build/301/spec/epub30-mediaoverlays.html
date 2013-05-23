@@ -1539,28 +1539,44 @@
                      <a class="hidden-reveal" title="Link here" href="#sec-docs-assoc-style">›</a> </span>3.4 Associating Style Information</h3>
                <p>Visual rendering information for the currently-playing <a class="glossterm" href="#gloss-content-document-epub"
                      title="EPUB Content Document">EPUB Content Document</a> element <span class="rfc2119">may</span> be expressed in the <a class="glossterm" href="#gloss-stylesheet"
-                     title="EPUB Style Sheet (or Style Sheet)">EPUB Style Sheet</a> using an author-defined class. This author-defined class name <span class="rfc2119">should</span> be declared in the <a class="glossterm" href="#gloss-package-document" title="Package Document">Package Document</a> metadata, using the metadata property <code class="literal">
+                     title="EPUB Style Sheet (or Style Sheet)">EPUB Style Sheet</a> using author-defined classes. These author-defined class names <span class="rfc2119">should</span> be declared in the <a class="glossterm" href="#gloss-package-document" title="Package Document">Package Document</a> metadata, using the metadata properties <code class="literal">
                      <a class="xref" href="#active-class">active-class</a>
-                  </code>. The class name is then discoverable by Reading Systems. </p>
-               <p>This example demonstrates how authors may associate style information with the currently-playing EPUB Content Document element. </p>
+                  </code> and <code class="literal">
+                     <a class="xref" href="#playback-active-class">playback-active-class</a>
+                  </code>. The class names are then discoverable by Reading Systems. </p>
+               <p>This example demonstrates how authors may associate style information with the currently-playing EPUB Content Document. </p>
                <div class="note" title="note">
                   <h3 class="title">note</h3>
-                  <p>Although this example uses the class name <code class="literal">-epub-media-overlay-active</code>, any class name is permitted.</p>
+                  <p>Although this example uses the class names <code class="literal">-epub-media-overlay-active</code> and <code class="literal">-epub-media-overlay-playing</code>, any class names are permitted. The class names chosen may be used along with any supported CSS features. </p>
                </div>
                <div class="informalexample">
-                  <p>The author-defined CSS class name, declared using the metadata property <a class="xref" href="#active-class">active-class</a> in the Package Document:</p>
-                  <pre class="synopsis">&lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;</pre>
-                  <p>The EPUB Style Sheet containing the author-defined class name:</p>
-                  <pre class="synopsis">.-epub-media-overlay-active
-{
+                  <p>The author-defined CSS class names, declared using the metadata properties <a class="xref" href="#active-class">active-class</a> and <a class="xref" href="#playback-active-class">playback-active-class</a> in the Package Document:</p>
+                  <pre class="synopsis">&lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;
+&lt;meta property="media:playback-active-class"&gt;-epub-media-overlay-playing&lt;/meta&gt;
+                </pre>
+                  <p>The EPUB Style Sheet containing the author-defined class names:</p>
+                  <pre class="synopsis">/* emphasize the active element */
+.-epub-media-overlay-active {
     background-color: yellow;
-}</pre>
+    color: black;
+}
+
+/* fade out the inactive text by default */
+html.-epub-media-overlay-playing * {
+    color: gray !important;
+}
+</pre>
                   <p>The relevant EPUB Content Document excerpt:</p>
-                  <pre class="synopsis">&lt;span id="txt1"&gt;This is the first phrase.&lt;/literal&gt;
-&lt;span id="txt2"&gt;This is the second phrase.&lt;/literal&gt;
-&lt;span id="txt3"&gt;This is the third phrase.&lt;/literal&gt;</pre>
+                  <pre class="synopsis">&lt;html&gt;
+    …
+    &lt;span id="txt1"&gt;This is the first phrase.&lt;/literal&gt;
+    &lt;span id="txt2"&gt;This is the second phrase.&lt;/literal&gt;
+    &lt;span id="txt3"&gt;This is the third phrase.&lt;/literal&gt;
+    …
+&lt;/html&gt;</pre>
                </div>
                <p>In this example, the Reading System would apply the author-defined <code class="literal">-epub-media-overlay-active</code> class to each text element in the EPUB Content Document as it became active during playback. Conversely, the class name is removed when the element is no longer active. The User would see each EPUB Content Document element styled with a yellow background for the duration of that element's playback. </p>
+               <p>The Reading System would also apply the author-defined <code class="literal">-epub-media-overlay-playing</code> class to the document element of the EPUB Content Document when Media Overlays playback begins. The class name is removed when playback stops. In the case of an XHTML Content Document, the class name would be applied to the <code>html</code> element. In the case of an SVG Content Document, it would be applied to the <code>svg</code> element. The User would see all the inactive text elements turn gray during Media Overlays playback. When playback stopped, the elements’ colors would return to their defaults.</p>
             </div>
             <div class="section" title="3.5 Packaging" id="sec-docs-package">
                <h3 class="title">
@@ -1731,9 +1747,46 @@
                            </tr>
                         </tbody>
                      </table>
+                     <table border="1" id="playback-active-class">
+                        <colgroup>
+                           <col class="c1"/>
+                           <col class="c2"/>
+                        </colgroup>
+                        <tbody>
+                           <tr>
+                              <td class="rdfa-property" colspan="2"> 
+                                 <code class="literal">
+                                    <span class="link-marker">
+                                       <a class="hidden-reveal" title="Link here" href="#">›</a> </span>playback-active-class</code> 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Description:</td>
+                              <td class="rdfa-property-desc">Author-defined CSS class name to apply to the EPUB Content Document's document element when playback is active.</td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Allowed value(s):</td>
+                              <td class="entry"> 
+                                 <code class="literal">xsd:string</code> 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Cardinality:</td>
+                              <td class="entry"> 
+                                 <code class="literal">zero or one</code> 
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="rdfa-property-header">Example:</td>
+                              <td class="entry"> 
+                                 <code>&lt;meta property="media:playback-active-class"&gt;-epub-media-overlay-playing&lt;/meta&gt;</code> 
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
                   </div>
                   <p>The Package Document <span class="rfc2119">must</span> include the <code class="literal">duration</code> of each Media Overlay as well as of the entire Publication. The Package Document <span class="rfc2119">may</span> include <code class="literal">narrator</code> information, as well, in particular when each Media Overlay has its own narrator or there is one narrator specified for the entire Publication. The Package Document <span class="rfc2119">may</span> also include an author-defined CSS class name to be applied to the currently-playing EPUB Content Document element.</p>
-                  <p>When a <code class="literal">meta</code> element is specific to a single Media Overlay Document, the <code class="literal">refines</code> attribute is used to reference which one. A <code class="literal">meta</code> element without a <code class="literal">refines</code> attribute is considered to be about the entire Publication. The <code class="literal">active-class</code> property <span class="rfc2119">must not</span> be used in conjunction with a <code class="literal">refines</code> attribute, as it is always considered to apply to the entire Publication.</p>
+                  <p>When a <code class="literal">meta</code> element is specific to a single Media Overlay Document, the <code class="literal">refines</code> attribute is used to reference which one. A <code class="literal">meta</code> element without a <code class="literal">refines</code> attribute is considered to be about the entire Publication. The <code class="literal">active-class</code> and <code class="literal">playback-active-class</code> properties <span class="rfc2119">must not</span> be used in conjunction with a <code class="literal">refines</code> attribute, as it is always considered to apply to the entire Publication.</p>
                   <div class="informalexample">
                      <p>The following example shows a Package Document with metadata about Media Overlays.</p>
                      <pre class="synopsis">&lt;package&gt;
@@ -1745,6 +1798,7 @@
         &lt;meta property="media:duration"&gt;1:36:20&lt;/meta&gt;
         &lt;meta property="media:narrator"&gt;Joe Speaker&lt;/meta&gt;
         &lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;
+        &lt;meta property="media:playback-active-class"&gt;-epub-media-overlay-playing&lt;/meta&gt;
         …
     &lt;/metadata&gt; 
     …
@@ -1821,11 +1875,14 @@
                         <a class="hidden-reveal" title="Link here" href="#sec-rsconf-rendering-text">›</a> </span>4.2.3 Rendering EPUB Content Document Elements</h4>
                   <p>When presented with a Media Overlay <code>
                         <a class="link" href="#elemdef-smil-text">text</a>
-                     </code> element, Reading Systems <span class="rfc2119">should</span> ensure the EPUB Content Document element referenced by the <code>src</code> attribute is visible in the <a class="glossterm" href="#gloss-viewport" title="Viewport">Viewport</a>. Reading Systems with a <a class="glossterm" href="#gloss-viewport-css" title="CSS Viewport">CSS Viewport</a> 
-                     <span class="rfc2119">should</span> add the class name given by the metadata property <code class="literal">
+                     </code> element, Reading Systems <span class="rfc2119">should</span> ensure the EPUB Content Document element referenced by the <code>src</code> attribute is visible in the <a class="glossterm" href="#gloss-viewport" title="Viewport">Viewport</a>. During Media Overlays playback, Reading Systems with a <a class="glossterm" href="#gloss-viewport-css" title="CSS Viewport">CSS Viewport</a> 
+                     <span class="rfc2119">should</span> add the class names given by the metadata properties <code class="literal">
                         <a class="xref" href="#active-class">active-class</a>
-                     </code> to the actively-playing EPUB Content Document element. Conversely, the class name <span class="rfc2119">should</span> be removed when the element is no longer active.</p>
-                  <p>The <code class="literal">active-class</code> metadata property is optional, and if omitted, Reading System behavior is implementation-specific.</p>
+                     </code> and <code class="literal">
+                        <a class="xref" href="#playback-active-class">playback-active-class</a>
+                     </code> to the appropriate elements in the EPUB Content Document. Conversely, the class names <span class="rfc2119">should</span> be removed when the playback state changes, as described in <a class="xref" href="#sec-docs-assoc-style"
+                        title="3.4 Associating Style Information">Associating Style Information</a>. </p>
+                  <p>The <code class="literal">active-class</code> and <code class="literal">playback-active-class</code> metadata properties are optional, and if omitted, Reading System behavior is implementation-specific.</p>
                </div>
             </div>
             <div class="section" title="4.3 Interacting with the EPUB Content Document"
