@@ -721,33 +721,61 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
           in <xref linkend="sec-path-examples"/>.</para>
       </note>
       <section xml:id="sec-path-child-ref">
-        <title>Step Reference to Child Node (<literal>/</literal>)</title>
-        <para>A step with a slash (<literal>/</literal>) followed by an integer refers to a child
-          node or nodes in the following manner:</para>
-        <itemizedlist>
-          <listitem>
-            <para>Each element is assigned an <emphasis>even</emphasis> positive index: the first
-              element is given index <literal>2</literal>, the second element index
-                <literal>4</literal>, etc.</para>
-          </listitem>
-          <listitem>
-            <para>Each (possibly empty) collection of non-element nodes before the first element,
-              between elements, and after the last element are given <emphasis>odd</emphasis>
-              indices according to their position (these typically refer to the text of the
-              Publication).</para>
-          </listitem>
-          <listitem>
-          	<para>Non-element nodes that are not text nodes are always ignored (for the purposes 
-          		of this specification, a text node includes parsed text (PCDATA), CDATA sections, 
-          		and entity references that expand to either CDATA or PCDATA).</para>
-          </listitem>
-        </itemizedlist>
-        <para>This indexing method ensures that node identification is not sensitive to XML parser
-          handling of whitespace text nodes, CDATA sections and entity references (e.g., to avoid
-          the ambiguity that can arise depending on whether a parser collapses whitespace-only text
-          nodes, keeps text, CDATA sections and entity references as distinct nodes or doesn't, or
-          breaks text in multiple nodes).</para>
-        <para>For a <xref linkend="gloss-cfi-pub"/>, the leading step in the CFI <literal role="rfc2119">must</literal> start with a
+        <title>Step Reference to Child Element or Character Data (<literal>/</literal>)</title>
+      	
+      	<para>A step with a slash (<literal>/</literal>) followed by a positive integer refers to either 
+      		a child element or a chunk of character data, as per the rules defined herein:</para> 
+      	
+      	<itemizedlist>
+      		<listitem>
+      			<para><xref linkend="refXML"/> content other than element and character data is ignored. 
+      				Note that as per the <xref linkend="refXML"/> specification, character data inside CDATA 
+      				sections is included, and conversely, XML comments are ignored.</para>
+      		</listitem>
+      		<listitem>
+      			<para><xref linkend="refXML"/> character data that corresponds to insignificant whitespace 
+      				(typically used for markup formatting/indenting) is preserved. Character and entity 
+      				references are considered expanded, and character data is obtained from the 
+      				"included replacement text" (as per the terminology defined in the <xref linkend="refXML"/> 
+      				specification).</para>
+      		</listitem>
+      		<listitem>
+      			<para><xref linkend="refXML"/> character data that is interspersed amongst sibling child 
+      				elements (i.e., "mixed content" context) is logically organised into (potentially-empty) 
+      				chunks of contiguous character data: the first chunk is located before the first child 
+      				element (left sibling), the last chunk is located after the last child element (right sibling), 
+      				and there is one chunk between each pair of child elements. When there are no child elements, 
+      				there is one (potentially-empty) chunk of character data. Consecutive (potentially-empty) chunks 
+      				of character data are each assigned odd indices (i.e., starting at 1, followed by 3, etc.).</para>
+      		</listitem>
+      		<listitem>
+      			<para>Child <xref linkend="refXML"/> elements are assigned even indices (i.e., starting at 2, 
+      				followed by 4, etc.). Additionally, 0 is a valid index that refers to a non-existing element 
+      				which virtually precedes the first potentially-empty chunk of character data within the parent 
+      				element's content. Similarly, <literal>n+2</literal> is a valid index that refers to a non-existing 
+      				element which virtually follows the last potentially-empty chunk of character data, where 
+      				<literal>n</literal> is the even index of the last child element, or 0 if there are no child 
+      				elements. CFI processors (e.g., Reading Systems) <literal role="rfc2119">must</literal> be capable 
+      				of consuming (e.g., parsing and interpreting) CFI expressions containing references to the 0 and 
+      				<literal>n+2</literal> "virtual" elements, even when the first (or last, respectively) chunk of 
+      				character data is empty. Conversely, the *production* of such CFI expressions is governed by the 
+      				following conformance requirement: if the first chunk of character data is empty, a CFI expression 
+      				<literal role="rfc2119">should not</literal> be constructed using a reference to the "virtual" 
+      				element at index 0, instead the "real" first child element (at index 2) 
+      				<literal role="rfc2119">should</literal> be referred to. Similarly, if the last chunk of character 
+      				data is empty, a CFI expression <literal role="rfc2119">should not</literal> be constructed using a 
+      				reference to the "virtual" element at index <literal>n+2</literal>, instead the "real" last child element 
+      				(at index <literal>n</literal>) <literal role="rfc2119">should</literal> be referred to.</para>
+      		</listitem>
+      	</itemizedlist>
+      	
+      	<note>
+      		<para>The "virtual" first / last elements mechanism may facilitate interoperability with certain instances 
+      			of DOM Ranges, whereby non-existing elements are used to span across textual content without relying on 
+      			character offsets at the start/end boundaries.</para>
+      	</note>
+      	
+      	<para>For a <xref linkend="gloss-cfi-pub"/>, the leading step in the CFI <literal role="rfc2119">must</literal> start with a
           slash (<literal>/</literal>) followed by an even number that references the
             <code>spine</code> child element of the Package Document's root <code>package</code>
           element. The Package Document traversed by the CFI <literal role="rfc2119">must</literal> be the one specified as the
@@ -772,10 +800,10 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
       </section>
       <section xml:id="sec-path-indirection">
         <title>Step Indirection (<literal>!</literal>)</title>
-      	<para>If a step, or a sequence of steps, points to an element node that references another document, 
+      	<para>If a step, or a sequence of steps, points to an element that references another document, 
       		the exclamation mark (<literal>!</literal>) <literal role="rfc2119">must</literal> be used whenever that
       		step is immediately followed by an expression that applies to the referenced document ("indirection").
-      		The following expression is then resolved from the root element node of the referenced XML document, 
+      		The following expression is then resolved from the root element of the referenced XML document, 
       		or from the targeted XML fragment (when specified).</para>
       	<para>Only the following references are honored:</para>
         <itemizedlist>
@@ -816,19 +844,19 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
       <section xml:id="sec-path-terminating-char">
         <title>Terminating Step – Character Offset (<literal>:</literal>)</title>
         <para>A terminating step with a leading colon (<literal>:</literal>) followed by an integer
-          refers to a character offset. The given character offset <literal role="rfc2119">may</literal> apply to an element node only
+          refers to a character offset. The given character offset <literal role="rfc2119">may</literal> apply to an element only
           if this element is the <xref linkend="refHTML5"/>
           <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-img-element"
               >img</link></code> element with an <code>alt</code> attribute containing the text to
           which the character offset applies.</para>
-        <para>For text nodes, the offset is zero-based and always refers to a position between
+      	<para>For XML character data, the offset is zero-based and always refers to a position between
           characters, so <literal>0</literal> means before the first character and a number equal to
           the total UTF-16 length means after the last character. A character offset value greater
           than the UTF-16 length of the available text <literal role="rfc2119">must not</literal> be specified.</para>
         <para>A character offset terminating step <literal role="rfc2119">may</literal> be present only following a
             <literal>/N</literal> step. For XHTML Content Documents, <literal>N</literal> would be
           an even number when referencing the <code>alt</code> text of an <code>img</code> element,
-          and <literal>N</literal> would be odd when referencing text in a text node.</para>
+          and <literal>N</literal> would be odd when referencing XML character data within elements.</para>
         <para>No other steps <literal role="rfc2119">may</literal> follow a character offset terminating step.</para>
       </section>
       <section xml:id="sec-path-terminating-temporal">
@@ -949,7 +977,7 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
         <para>refers to the position right after the digit <literal>9</literal> in the paragraph
           with the ID <literal>para05</literal>. When producing CFIs for text locations, unless the
           text is defined by an <code>img</code> element's <code>alt</code> tag, one <literal role="rfc2119">should</literal> always
-          start with the text node or text node collection (even if empty) that corresponds to the
+        	start with the reference to the (possibly-empty) chunk of XML character data that corresponds to the 
           location and then trace the ancestor and reference chain to the Package Document
           root.</para>
         <para>The following examples show how EPUB CFIs can be constructed to reference additional
@@ -988,8 +1016,8 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
           <para>steps that come earlier in the sequence are more important;</para>
         </listitem>
         <listitem>
-          <para>XML child nodes, character offsets and temporal positions are sorted in natural
-            order;</para>
+          <para>XML elements, references to chunks of XML character data, character offsets 
+          	and temporal positions are sorted in natural order;</para>
         </listitem>
         <listitem>
           <para>the <literal>y</literal> position is more important than

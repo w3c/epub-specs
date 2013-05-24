@@ -120,7 +120,7 @@
                         <dl>
                            <dt>
                               <span class="section">
-                                 <a href="#sec-path-child-ref">3.1.1. Step Reference to Child Node (<code class="literal">/</code>)</a>
+                                 <a href="#sec-path-child-ref">3.1.1. Step Reference to Child Element or Character Data (<code class="literal">/</code>)</a>
                               </span>
                            </dt>
                            <dt>
@@ -775,26 +775,42 @@
                   <h3 class="title">note</h3>
                   <p>The EPUB CFI examples in the following subsections are based on the sample documents in <a class="xref" href="#sec-path-examples" title="3.1.10 Examples">Examples</a>. </p>
                </div>
-               <div class="section" title="3.1.1 Step Reference to Child Node (/)"
+               <div class="section"
+                    title="3.1.1 Step Reference to Child Element or Character Data (/)"
                     id="sec-path-child-ref">
                   <h4 class="title">
                      <span class="link-marker">
-                        <a class="hidden-reveal" title="Link here" href="#sec-path-child-ref">›</a> </span>3.1.1 Step Reference to Child Node (<code class="literal">/</code>)</h4>
-                  <p>A step with a slash (<code class="literal">/</code>) followed by an integer refers to a child node or nodes in the following manner:</p>
+                        <a class="hidden-reveal" title="Link here" href="#sec-path-child-ref">›</a> </span>3.1.1 Step Reference to Child Element or Character Data (<code class="literal">/</code>)</h4>
+                  <p>A step with a slash (<code class="literal">/</code>) followed by a positive integer refers to either a child element or a chunk of character data, as per the rules defined herein:</p>
                   <div class="itemizedlist">
                      <ul class="itemizedlist">
                         <li class="listitem">
-                           <p>Each element is assigned an <em>even</em> positive index: the first element is given index <code class="literal">2</code>, the second element index <code class="literal">4</code>, etc.</p>
+                           <p>
+                              <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> content other than element and character data is ignored. Note that as per the <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> specification, character data inside CDATA sections is included, and conversely, XML comments are ignored.</p>
                         </li>
                         <li class="listitem">
-                           <p>Each (possibly empty) collection of non-element nodes before the first element, between elements, and after the last element are given <em>odd</em> indices according to their position (these typically refer to the text of the Publication).</p>
+                           <p>
+                              <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> character data that corresponds to insignificant whitespace (typically used for markup formatting/indenting) is preserved. Character and entity references are considered expanded, and character data is obtained from the "included replacement text" (as per the terminology defined in the <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> specification).</p>
                         </li>
                         <li class="listitem">
-                           <p>Non-element nodes that are not text nodes are always ignored (for the purposes of this specification, a text node includes parsed text (PCDATA), CDATA sections, and entity references that expand to either CDATA or PCDATA).</p>
+                           <p>
+                              <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> character data that is interspersed amongst sibling child elements (i.e., "mixed content" context) is logically organised into (potentially-empty) chunks of contiguous character data: the first chunk is located before the first child element (left sibling), the last chunk is located after the last child element (right sibling), and there is one chunk between each pair of child elements. When there are no child elements, there is one (potentially-empty) chunk of character data. Consecutive (potentially-empty) chunks of character data are each assigned odd indices (i.e., starting at 1, followed by 3, etc.).</p>
+                        </li>
+                        <li class="listitem">
+                           <p>Child <a class="biblioref" href="#refXML"
+                                 title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr>XML</abbr>]</a> elements are assigned even indices (i.e., starting at 2, followed by 4, etc.). Additionally, 0 is a valid index that refers to a non-existing element which virtually precedes the first potentially-empty chunk of character data within the parent element's content. Similarly, <code class="literal">n+2</code> is a valid index that refers to a non-existing element which virtually follows the last potentially-empty chunk of character data, where <code class="literal">n</code> is the even index of the last child element, or 0 if there are no child elements. CFI processors (e.g., Reading Systems) <span class="rfc2119">must</span> be capable of consuming (e.g., parsing and interpreting) CFI expressions containing references to the 0 and <code class="literal">n+2</code> "virtual" elements, even when the first (or last, respectively) chunk of character data is empty. Conversely, the *production* of such CFI expressions is governed by the following conformance requirement: if the first chunk of character data is empty, a CFI expression <span class="rfc2119">should not</span> be constructed using a reference to the "virtual" element at index 0, instead the "real" first child element (at index 2) <span class="rfc2119">should</span> be referred to. Similarly, if the last chunk of character data is empty, a CFI expression <span class="rfc2119">should not</span> be constructed using a reference to the "virtual" element at index <code class="literal">n+2</code>, instead the "real" last child element (at index <code class="literal">n</code>) <span class="rfc2119">should</span> be referred to.</p>
                         </li>
                      </ul>
                   </div>
-                  <p>This indexing method ensures that node identification is not sensitive to XML parser handling of whitespace text nodes, CDATA sections and entity references (e.g., to avoid the ambiguity that can arise depending on whether a parser collapses whitespace-only text nodes, keeps text, CDATA sections and entity references as distinct nodes or doesn't, or breaks text in multiple nodes).</p>
+                  <div class="note" title="note">
+                     <h3 class="title">note</h3>
+                     <p>The "virtual" first / last elements mechanism may facilitate interoperability with certain instances of DOM Ranges, whereby non-existing elements are used to span across textual content without relying on character offsets at the start/end boundaries.</p>
+                  </div>
                   <p>For a <a class="glossterm" href="#gloss-cfi-pub" title="Standard EPUB CFI">Standard EPUB CFI</a>, the leading step in the CFI <span class="rfc2119">must</span> start with a slash (<code class="literal">/</code>) followed by an even number that references the <code>spine</code> child element of the Package Document's root <code>package</code> element. The Package Document traversed by the CFI <span class="rfc2119">must</span> be the one specified as the default rendition in the Publication's <code class="filename">META-INF/container.xml</code> file (i.e., the Package Document referenced by the first <code>rootfile</code> element in <code class="filename">container.xml</code>).</p>
                   <p>For an <a class="glossterm" href="#gloss-cfi-intra-pub"
                         title="Intra-Publication EPUB CFI">Intra-Publication EPUB CFI</a>, the first step <span class="rfc2119">must</span> start with a slash followed by a node number that references a position in Package Document starting from the root <code>package</code> element.</p>
@@ -812,7 +828,7 @@
                   <h4 class="title">
                      <span class="link-marker">
                         <a class="hidden-reveal" title="Link here" href="#sec-path-indirection">›</a> </span>3.1.3 Step Indirection (<code class="literal">!</code>)</h4>
-                  <p>If a step, or a sequence of steps, points to an element node that references another document, the exclamation mark (<code class="literal">!</code>) <span class="rfc2119">must</span> be used whenever that step is immediately followed by an expression that applies to the referenced document ("indirection"). The following expression is then resolved from the root element node of the referenced XML document, or from the targeted XML fragment (when specified).</p>
+                  <p>If a step, or a sequence of steps, points to an element that references another document, the exclamation mark (<code class="literal">!</code>) <span class="rfc2119">must</span> be used whenever that step is immediately followed by an expression that applies to the referenced document ("indirection"). The following expression is then resolved from the root element of the referenced XML document, or from the targeted XML fragment (when specified).</p>
                   <p>Only the following references are honored:</p>
                   <div class="itemizedlist">
                      <ul class="itemizedlist">
@@ -858,13 +874,13 @@
                   <h4 class="title">
                      <span class="link-marker">
                         <a class="hidden-reveal" title="Link here" href="#sec-path-terminating-char">›</a> </span>3.1.4 Terminating Step – Character Offset (<code class="literal">:</code>)</h4>
-                  <p>A terminating step with a leading colon (<code class="literal">:</code>) followed by an integer refers to a character offset. The given character offset <span class="rfc2119">may</span> apply to an element node only if this element is the <a class="biblioref" href="#refHTML5"
+                  <p>A terminating step with a leading colon (<code class="literal">:</code>) followed by an integer refers to a character offset. The given character offset <span class="rfc2119">may</span> apply to an element only if this element is the <a class="biblioref" href="#refHTML5"
                         title="HTML5: A vocabulary and associated APIs for HTML and XHTML">[<abbr>HTML5</abbr>]</a> 
                      <code>
                         <a class="link" href="http://www.w3.org/TR/html5/Overview.html#the-img-element">img</a>
                      </code> element with an <code>alt</code> attribute containing the text to which the character offset applies.</p>
-                  <p>For text nodes, the offset is zero-based and always refers to a position between characters, so <code class="literal">0</code> means before the first character and a number equal to the total UTF-16 length means after the last character. A character offset value greater than the UTF-16 length of the available text <span class="rfc2119">must not</span> be specified.</p>
-                  <p>A character offset terminating step <span class="rfc2119">may</span> be present only following a <code class="literal">/N</code> step. For XHTML Content Documents, <code class="literal">N</code> would be an even number when referencing the <code>alt</code> text of an <code>img</code> element, and <code class="literal">N</code> would be odd when referencing text in a text node.</p>
+                  <p>For XML character data, the offset is zero-based and always refers to a position between characters, so <code class="literal">0</code> means before the first character and a number equal to the total UTF-16 length means after the last character. A character offset value greater than the UTF-16 length of the available text <span class="rfc2119">must not</span> be specified.</p>
+                  <p>A character offset terminating step <span class="rfc2119">may</span> be present only following a <code class="literal">/N</code> step. For XHTML Content Documents, <code class="literal">N</code> would be an even number when referencing the <code>alt</code> text of an <code>img</code> element, and <code class="literal">N</code> would be odd when referencing XML character data within elements.</p>
                   <p>No other steps <span class="rfc2119">may</span> follow a character offset terminating step.</p>
                </div>
                <div class="section" title="3.1.5 Terminating Step – Temporal Offset (~)"
@@ -1030,7 +1046,7 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
                   <div class="informalexample">
                      <pre class="synopsis">epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)</pre>
                   </div>
-                  <p>refers to the position right after the digit <code class="literal">9</code> in the paragraph with the ID <code class="literal">para05</code>. When producing CFIs for text locations, unless the text is defined by an <code>img</code> element's <code>alt</code> tag, one <span class="rfc2119">should</span> always start with the text node or text node collection (even if empty) that corresponds to the location and then trace the ancestor and reference chain to the Package Document root.</p>
+                  <p>refers to the position right after the digit <code class="literal">9</code> in the paragraph with the ID <code class="literal">para05</code>. When producing CFIs for text locations, unless the text is defined by an <code>img</code> element's <code>alt</code> tag, one <span class="rfc2119">should</span> always start with the reference to the (possibly-empty) chunk of XML character data that corresponds to the location and then trace the ancestor and reference chain to the Package Document root.</p>
                   <p>The following examples show how EPUB CFIs can be constructed to reference additional content locations.</p>
                   <div class="informalexample">
                      <p>Reference to the <code>img</code> element.</p>
@@ -1067,7 +1083,7 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
                         <p>steps that come earlier in the sequence are more important;</p>
                      </li>
                      <li class="listitem">
-                        <p>XML child nodes, character offsets and temporal positions are sorted in natural order;</p>
+                        <p>XML elements, references to chunks of XML character data, character offsets and temporal positions are sorted in natural order;</p>
                      </li>
                      <li class="listitem">
                         <p>the <code class="literal">y</code> position is more important than <code class="literal">x</code>;</p>
