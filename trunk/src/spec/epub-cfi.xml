@@ -268,11 +268,11 @@
           <lhs>local_path</lhs>
           <rhs> { <nonterminal def="#epubcfi.ebnf.step">step</nonterminal> } , ( 
           	<nonterminal def="#epubcfi.ebnf.redirected_path">redirected_path</nonterminal> |
-          	[ <nonterminal def="#epubcfi.ebnf.termstep">termstep</nonterminal> ] )</rhs>
+          	[ <nonterminal def="#epubcfi.ebnf.offset">offset</nonterminal> ] )</rhs>
         </production>
       	<production xml:id="epubcfi.ebnf.redirected_path">
       		<lhs>redirected_path</lhs>
-      		<rhs> "!" , ( <nonterminal def="#epubcfi.ebnf.termstep">termstep</nonterminal> |
+      		<rhs> "!" , ( <nonterminal def="#epubcfi.ebnf.offset">offset</nonterminal> |
       			<nonterminal def="#epubcfi.ebnf.path">path</nonterminal> )</rhs>
       	</production>
         <production xml:id="epubcfi.ebnf.step">
@@ -280,20 +280,16 @@
           <rhs> "/" , <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal> , [ "[" ,
               <nonterminal def="#epubcfi.ebnf.assertion">assertion</nonterminal> , "]" ] </rhs>
         </production>
-        <production xml:id="epubcfi.ebnf.termstep">
-          <lhs>termstep</lhs>
+        <production xml:id="epubcfi.ebnf.offset">
+          <lhs>offset</lhs>
           <rhs>
-            <nonterminal def="#epubcfi.ebnf.terminus">terminus</nonterminal> , [ "[" , <nonterminal
+          	( ( ":" , <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal> ) | ( "@" ,
+          	<nonterminal def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
+          	  def="#epubcfi.ebnf.number">number</nonterminal> ) | ( "~" , <nonterminal
+          	  def="#epubcfi.ebnf.number">number</nonterminal> , [ "@" , <nonterminal
+          	  def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
+          	  def="#epubcfi.ebnf.number">number</nonterminal> ] ) )  , [ "[" , <nonterminal
               def="#epubcfi.ebnf.assertion">assertion</nonterminal> , "]" ] </rhs>
-        </production>
-        <production xml:id="epubcfi.ebnf.terminus">
-          <lhs>terminus</lhs>
-          <rhs> ( ":" , <nonterminal def="#epubcfi.ebnf.integer">integer</nonterminal> ) | ( "@" ,
-              <nonterminal def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
-              def="#epubcfi.ebnf.number">number</nonterminal> ) | ( "~" , <nonterminal
-              def="#epubcfi.ebnf.number">number</nonterminal> , [ "@" , <nonterminal
-              def="#epubcfi.ebnf.number">number</nonterminal> , ":" , <nonterminal
-              def="#epubcfi.ebnf.number">number</nonterminal> ] ) </rhs>
         </production>
         <production xml:id="epubcfi.ebnf.number">
           <lhs>number</lhs>
@@ -550,9 +546,12 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
         parenthesized path or range. A path is built up as a sequence of structural steps to
         reference a location. A range is a path followed by two local (or relative) paths that
         identify the start and end of the range.</para>
-      <para>Steps can either be navigational or terminating. Navigational steps <literal role="rfc2119">may</literal> be repeated as
-      	necessary (e.g., to count elements, to process children or to follow references). There <literal role="rfc2119">may</literal>
-        be only one terminating step, which, if present, <literal role="rfc2119">must</literal> be the last step in the sequence. </para>
+      <para>Steps are denoted by the forward slash character (<literal>/</literal>), and are 
+      	used to traverse XML content. The last step in a CFI path represents a location within 
+      	a document, either structural (XML element), textual (character data), or aural-visual 
+      	(image, audio, or video media). Such terminating steps <literal role="rfc2119">may</literal> 
+      	be complemented by an optional "offset", which denotes a particular character position, 
+      	temporal or spatial fragment.</para>
       <para>Substrings in brackets are extensible assertions that improve the robustness of
         traversing paths and migrating them from one revision of the document to another. These
         assertions preserve additional information about traversed elements of the document, which
@@ -842,8 +841,8 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
         </note>
       </section>
       <section xml:id="sec-path-terminating-char">
-        <title>Terminating Step – Character Offset (<literal>:</literal>)</title>
-        <para>A terminating step with a leading colon (<literal>:</literal>) followed by an integer
+        <title>Character Offset (<literal>:</literal>)</title>
+        <para>A path terminating with a leading colon (<literal>:</literal>) followed by an integer
           refers to a character offset. The given character offset <literal role="rfc2119">may</literal> apply to an element only
           if this element is the <xref linkend="refHTML5"/>
           <code><link xlink:href="http://www.w3.org/TR/html5/Overview.html#the-img-element"
@@ -853,42 +852,43 @@ xml_id        = ? xml identifier ? ;]]></programlisting -->
           characters, so <literal>0</literal> means before the first character and a number equal to
           the total UTF-16 length means after the last character. A character offset value greater
           than the UTF-16 length of the available text <literal role="rfc2119">must not</literal> be specified.</para>
-        <para>A character offset terminating step <literal role="rfc2119">may</literal> be present only following a
+        <para>A character offset <literal role="rfc2119">may</literal> follow a
             <literal>/N</literal> step. For XHTML Content Documents, <literal>N</literal> would be
           an even number when referencing the <code>alt</code> text of an <code>img</code> element,
           and <literal>N</literal> would be odd when referencing XML character data within elements.</para>
-        <para>No other steps <literal role="rfc2119">may</literal> follow a character offset terminating step.</para>
+      	<para>CFI expressions that terminate with an odd numbered <literal>/N</literal> step 
+      		<literal role="rfc2119">should</literal> include an explicit character offset. However, 
+      		CFI processors (e.g., Reading Systems) <literal role="rfc2119">must</literal> be capable of 
+      		consuming (i.e., parse + interpret / render) such CFI expressions, by assuming the implicit 
+      		<literal>/N:0</literal> character offset.</para>
       </section>
       <section xml:id="sec-path-terminating-temporal">
-        <title>Terminating Step – Temporal Offset (<literal>~</literal>)</title>
-        <para>A terminating step with a leading tilde (<literal>~</literal>) followed by a number
+        <title>Temporal Offset (<literal>~</literal>)</title>
+        <para>A path terminating with a leading tilde (<literal>~</literal>) followed by a number
           indicates a temporal position for audio or video measured in seconds.</para>
-        <para>No other steps can follow a temporal offset terminating step.</para>
       </section>
       <section xml:id="sec-path-terminating-spatial">
-        <title>Terminating Step – Spatial Offset (<literal>@</literal>)</title>
-        <para>A terminating step with a leading at sign (<literal>@</literal>) followed by two
+        <title>Spatial Offset (<literal>@</literal>)</title>
+        <para>A path terminating with a leading at sign (<literal>@</literal>) followed by two
           colon-separated numbers indicates a 2D spatial position within an image or video. The two
           numbers represent scaled locations in the <literal>x</literal> and <literal>y</literal>
           axes, and <literal role="rfc2119">must</literal> be in the range <literal>0</literal> to <literal>100</literal> regardless
           of the image's native or display dimensions (i.e., the upper left is
             <literal>0:0</literal> and the lower right is <literal>100:100</literal>).</para>
-        <para>No other steps can follow a spatial offset terminating step.</para>
       </section>
       <section xml:id="sec-path-terminating-tempspatial">
-        <title>Terminating Step – Temporal-Spatial Offset (<literal>~</literal> +
+        <title>Temporal-Spatial Offset (<literal>~</literal> +
             <literal>@</literal>)</title>
         <para>A temporal and a spatial position <literal role="rfc2119">may</literal> be used together. In this case, the temporal
           specification <literal role="rfc2119">must</literal> precede the spatial one syntactically (e.g.,
             <literal>~23.5@5.75:97.6</literal> refers to a point 23.5 seconds into a video in the
           lower left of the frame).</para>
-        <para>No other steps can follow a temporal-spatial position terminating step.</para>
       </section>
       <section xml:id="sec-path-text-location">
         <title>Text Location Assertion (<literal>[</literal>)</title>
         <para>An EPUB CFI <literal role="rfc2119">may</literal> specify a substring that is expected to precede and/or follow the encountered
           point, but such assertions <literal role="rfc2119">must</literal> occur only after a <link
-            linkend="sec-path-terminating-char">character offset terminating step</link>.</para>
+            linkend="sec-path-terminating-char">character offset</link>.</para>
         <para>For example, the following expression asserts that <literal>yyy</literal> is expected
           immediately before the encountered point using the <link linkend="sec-path-examples"
             >sample content below</link>:</para>
@@ -954,7 +954,7 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
             <code>em</code> element, not the content following the <code>em</code> element.</para>
         <para>Since side bias is expressed as a parameter, it does not participate in CFI comparison
           (see <xref linkend="sec-sorting"/>).</para>
-        <para>Side is not defined for locations with spatial terminus.</para>
+        <para>Side is not defined for locations with spatial offset.</para>
         <note>
           <para>Side bias is only meaningful when some type of break falls at the location (e.g., a
             page break or line break).</para>
