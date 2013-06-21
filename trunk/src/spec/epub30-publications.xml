@@ -475,10 +475,11 @@
                         <para xml:id="confreq-rs-package-def">It <literal role="rfc2119">must</literal> process the Package Document
                             in conformance with all Reading System conformance constraints expressed
                             in <xref linkend="sec-package-def"/>.</para>
-                    	<para xml:id="confreq-rs-epub3-fxl">It <literal role="rfc2119">should</literal> process 
+                    	<para xml:id="confreq-rs-epub3-presentational-meta">It <literal role="rfc2119">should</literal> process 
                     		presentational metadata, as expressed in <xref linkend="sec-package-metadata-pub-rendering"/></para>
-                        <para>For <link linkend="sec-package-metadata-fxl">fixed layouts</link>, it <literal role="rfc2119">should</literal>
-                    		determine the rendering dimensions from the declaration mechanisms defined in 
+                    	<para xml:id="confreq-rs-epub3-fxl">For <link linkend="sec-package-metadata-fxl">fixed layouts</link> expressed 
+                    		using the <link linkend="fxl-property-viewport"><literal>rendition:layout</literal></link> property, it 
+                    		<literal role="rfc2119">must</literal> determine the rendering dimensions as defined in 
                     		<olink type="epub-spec" targetdoc="contentdocs" targetptr="sec-fixed-layouts"/>.</para>
                     	<para xml:id="confreq-rs-epub3-fxl-conflicts">It <literal role="rfc2119">must</literal> ignore 
                     		proprietary metadata properties that pertain to layout expressions if they conflict 
@@ -3424,6 +3425,50 @@
             					</row>
             				</tbody>
             			</tgroup>
+            			<tgroup cols="2" xml:id="viewport" xreflabel="rendition:viewport property">
+            				<colspec colname="c1"/>
+            				<colspec colname="c2"/>
+            				<spanspec spanname="s1" namest="c1" nameend="c2"/>
+            				<tbody>
+            					<row>
+            						<entry spanname="s1" role="rdfa-property">
+            							<literal>rendition:viewport</literal>
+            						</entry>
+            					</row>
+            					<row>
+            						<entry role="rdfa-property-header">Description:</entry>
+            						<entry role="rdfa-property-desc">Specifies the CSS initial containing block
+            						    <xref linkend="refCSS21"/> dimensions for 
+            						    <link linkend="fxl-property-layout">pre-paginated</link> 
+            							XHTML and SVG Content Documents.</entry>
+            					</row>
+            					<row>
+            						<entry role="rdfa-property-header">Required value:</entry>
+            						<entry><code>width=x, height=y</code></entry>
+            					</row>
+            					<row>
+            						<entry role="rdfa-property-header multi-para">Cardinality:</entry>
+            						<entry role="rdfa-cardinality">
+            							<para><code>Zero or one</code> without a <code>refines</code> attribute 
+            								(<link linkend="property-viewport-global">global setting</link>)</para>
+            							<para><code>Zero or more</code> with a <code>refines</code> attribute 
+            								(<link linkend="fxl-property-viewport-local">spine overrides</link>)</para>
+            						</entry>
+            					</row>
+            					<row>
+            						<entry role="rdfa-property-header">Extends:</entry>
+            						<entry>Applies to the Publication and to individual <code>itemref</code> elements.</entry>
+            					</row>
+            					<row>
+            						<entry role="rdfa-property-header">Example:</entry>
+            						<entry>
+            							<code role="prop-example">
+            								<![CDATA[<meta property="rendition:viewport">width=1200, height=800</meta>]]>
+            							</code>
+            						</entry>
+            					</row>
+            				</tbody>
+            			</tgroup>
             		</informaltable>
             	</section>
             </section>
@@ -4615,7 +4660,7 @@
                             for the given spine item.</para>
                     </section>
                 </section>
-            
+            	
             	<section xml:id="layout-property-align-x-center">
             		<title>The <literal>rendition:align-x-center</literal> Property</title>
             		
@@ -4637,7 +4682,6 @@
             				solutions when effective.</para>
             		</note>
             	</section>
-            	
             </section>
             
             <section xml:id="sec-package-metadata-fxl">
@@ -4686,6 +4730,16 @@
                         <para>When the <literal>rendition:layout</literal> property is set to <literal>pre-paginated</literal>, 
                             Reading Systems <literal role="rfc2119">must not</literal> include space between the adjacent 
                             content slots when rendering <xref linkend="gloss-synthetic-spread"/>s.</para>
+                    	
+                    	<para>When the property is set to <literal>pre-paginated</literal> for a spine item, 
+                    		its content dimensions <literal role="rfc2119">must</literal> be set as defined in 
+                    		<olink targetdoc="contentdocs" targetptr="sec-fixed-layouts" type="epub-spec"/>.</para>
+                    	
+                    	<note>
+                    		<para>Refer to <xref linkend="fxl-property-viewport"/> for how to additionally declare the 
+                    			dimensions within the package metadata to facilitate Reading System optimization of the 
+                    			rendering.</para>
+                    	</note>
                     </section>
                     
                     <section xml:id="fxl-property-layout-values">
@@ -4714,12 +4768,6 @@
                                 </listitem>
                             </varlistentry>
                         </variablelist>
-                        
-                        <note>
-                            <para>Refer to <olink targetdoc="contentdocs" targetptr="sec-fixed-layouts" type="epub-spec"/>
-                                for the rules regarding dimensional declarations in pre-paginated documents
-                                (i.e., setting the width and height of the content area).</para>
-                        </note>
                         
                         <note xml:id="uaag">
                             <para>Reading Systems typically restrict or deny the application of User
@@ -4998,6 +5046,62 @@
                             needed on the center plate item, as the
                             <literal>rendition:page-spread-center</literal> property already specifies
                             semantics that dictates that synthetic spreads be disabled.</para>
+                    </informalexample>
+                </section>
+
+                <section xml:id="fxl-property-viewport" xreflabel="rendition:viewport property">
+                    <title>The <literal>rendition:viewport</literal> Property</title>
+                        
+                    <para>The <link linkend="viewport"><literal>rendition:viewport</literal></link> property allows Authors
+                        to express the CSS initial containing block (ICB) <xref linkend="refCSS21"/> for XHTML and SVG Content 
+                        Documents whose <link linkend="layout"><literal>rendition:layout</literal></link> property has been
+                        set to <literal>pre-paginated</literal>.</para>
+                    
+                    <para>The value of the property <literal role="rfc2119">must</literal> be of the form:</para>
+                    
+                    <informalexample><programlisting>width=x, height=y</programlisting></informalexample>
+                    
+                    <para>where <code>x</code> and <code>y</code> <literal role="rfc2119">must</literal> be the height 
+                        and width of the ICB in CSS pixels <xref linkend="refCSS21"/>, respectively. The order in 
+                        which the values are expressed is not significant.</para>
+                    
+                    <para>The <literal>rendition:viewport</literal> property does not replace the required ICB expression 
+                        mechanisms defined in <olink targetdoc="contentdocs" targetptr="sec-fixed-layouts" type="epub-spec"/>;
+                        the property serves as a complement to facilitate Reading System optimization of the rendering. 
+                        The dimensions expressed in the content and the dimensions expressed in the package metadata 
+                        <literal role="rfc2119">must</literal> match.</para>
+                    
+                    <para xml:id="property-viewport-global">When the <literal>rendition:viewport</literal> 
+                        property is specified on a <code>meta</code> element without a 
+                        <link linkend="attrdef-meta-refines"><code>refines</code></link> attribute,
+                        it defines the ICB globally for the <xref linkend="gloss-epub-publication"/> (i.e.,
+                        for all <literal>pre-paginated</literal> XHTML and SVG Content Documents).</para>
+                    
+                    <para xml:id="fxl-property-viewport-local">When the <code>rendition:viewport</code> property is
+                        specified on a <code>meta</code> element with a <code>refines</code> attribute, it indicates
+                        the content dimensions apply only to the referenced XHTML or SVG Content Document, overriding the 
+                        global value (if set). The <code>refines</code> attribute <literal role="rfc2119">must</literal>
+                        reference the spine <link linkend="elemdef-spine-itemref"><code>itemref</code></link> that points
+                        to the XHTML or SVG Content Document when this property has been set; it 
+                        <literal role="rfc2119">must not</literal> reference manifest <code>item</code> elements
+                        directly.</para>
+                    
+                    <para>Reading Systems <literal role="rfc2119">must</literal> ignore this property when it is applied to
+                        spine items whose <literal>rendition:layout</literal> property has not been set to 
+                        <literal>pre-paginated</literal>. Reading Systems <literal role="rfc2119">must</literal>
+                        also ignore this property on spine items that are not XHTML or SVG Content Documents
+                        (e.g., bitmap images).</para>
+                    
+                    <para>Reading Systems <literal role="rfc2119">may</literal> use the package metadata expressions 
+                        without checking the ICB dimensions expressed in the content, but <literal role="rfc2119">must</literal>
+                        use the dimensions expressed in the content if discrepancies are found.</para>
+                    
+                    <bridgehead>Examples</bridgehead>
+                    
+                    <informalexample xml:id="property-viewport-ex1">
+                        <para>The following example demonstrates how to set the dimensions for all spine items,
+                            overriding only a cover.</para>
+                        <synopsis><xi:include href="./examples/publications/viewport-01.xml" parse="text"/></synopsis>
                     </informalexample>
                 </section>
             </section>
