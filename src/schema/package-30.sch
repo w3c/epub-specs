@@ -13,21 +13,21 @@
     </pattern>
     
     <pattern id="opf.dcterms.modified">
-        <rule context="opf:metadata">            
+        <rule context="opf:metadata[not(ancestor::opf:collection)]">
             <assert test="count(opf:meta[@property='dcterms:modified' and not(@refines)]) = 1"
                 >package dcterms:modified meta element must occur exactly once</assert>            
-        </rule>        
+        </rule>
     </pattern>
     
     <pattern id="opf.dcterms.modified.syntax">
-        <rule context="opf:meta[@property='dcterms:modified']">            
+        <rule context="opf:meta[@property='dcterms:modified'][not(ancestor::opf:collection)]">            
             <assert test="matches(normalize-space(.), '^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z$')"
                 >dcterms:modified illegal syntax (expecting: 'CCYY-MM-DDThh:mm:ssZ')</assert>            
         </rule>
     </pattern>    
     
     <pattern id="opf.refines.relative">
-        <rule context="*[@refines and starts-with(@refines,'#')]">
+        <rule context="*[@refines and starts-with(@refines,'#')][not(ancestor::opf:collection)]">
             <let name="refines-target-id" value="substring(@refines, 2)" />
             <assert test="//*[@id=$refines-target-id]"
                 >@refines missing target id: '<value-of select="$refines-target-id"/>'</assert>
@@ -131,7 +131,14 @@
         </rule> 
     </pattern>
     
+    <pattern id="opf.collection.refines-restriction">
+        <rule context="opf:collection/opf:metadata/*[@refines]">
+            <let name="refines-target-id" value="substring(@refines, 2)" />
+            <assert test="starts-with(@refines,'#') and ancestor::opf:collection[not(ancestor::opf:collection)]//*[@id=$refines-target-id]"
+                >@refines must point to an element within the current collection</assert>
+        </rule>
+    </pattern>
+    
     <include href="./mod/id-unique.sch"/>     
-         
-             
+
 </schema>
