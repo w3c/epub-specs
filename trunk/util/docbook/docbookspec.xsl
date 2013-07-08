@@ -1269,9 +1269,9 @@
 	
 	<!-- convert rfc keywords to spans instead of code -->
 	
-	<xsl:template match="d:literal[@role='rfc2119']">
+	<xsl:template match="d:literal[@role]">
 		<xsl:element name="span">
-			<xsl:attribute name="class">rfc2119</xsl:attribute>
+		    <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
 			<xsl:value-of select="."/>
 		</xsl:element>
 	</xsl:template>
