@@ -1,0 +1,114 @@
+#summary Rendition selection: observations and design choices
+
+= Introduction =
+
+This wiki page is intended to provide some basic principles for the design of the rendition selection procedure.
+
+
+= Use case =
+
+The most common use case is selection from two renditions: one
+reflowable and one fixed-layout.  There are some examples in
+the market already.
+
+Other (more advanced) use cases have been discussed and some of them
+are shown in the charter of AHL.  They include multi-lingual
+documents, multi-writing-modes, adaptation to device characteristics,
+and multi-vocabularly-level.  But there are no or very few examples in
+the market.
+
+Example: 
+
+A user might want to specify:
+ * Basic English is acceptable, but French is preferable
+ * Fixed Layout is better than reflowable Layout
+ * The screen size is 7 inch
+
+Consider three renditions:
+ # Fixed layout for 9.7inch, English
+ # Reflowable layout, French
+ # Reflowable layout, Basic English
+
+Then, the second rendition is the best, and the third is acceptable, while the first is unacceptable.
+
+
+= The same rendition or not =
+
+Should we ensure that two conformant implementations return the same
+rendition?  If two conformant implementations return different
+results, both authors and users will be confused.
+
+Assumption: We ensure that the same selection is selected as long as
+the selection attributes evaluate the same and there are no (or the
+same) manual interventions.
+ 
+= Manual interventions =
+
+There are two approaches in handling manual interventions.
+
+== M1) No manual interventions ==
+
+The selection procedure in our spec does not allow manual
+interventions.  RSs might allow users to choose a rendition from all
+renditions in an EPUB container, but such manual intervention is completely different from the selection procedure in our spec.
+
+This approach is simple: it does not allow any combinations of
+automatic selection and manual interventions.
+
+== M2) Manual interventions after selection ==
+
+The selection procedure in our spec returns a list of renditions, and
+users select one of them.
+
+This approach is more complicated than M1.  It is powerful especially
+when some of the renditions in an EPUB container are unacceptable.
+
+
+
+= What is the result of selection? =
+
+What should the selection procedure return?  There are three
+possibilities.
+
+== S1) A single rendition ==
+
+This option is very simple.  But it is good enough at least for the
+selection from a reflowable rendition and a fixed-layout rendition.
+
+This option easily allows the same result by different conformant
+implementations.
+
+This option cannot be combined with M2 (Manual interventions after
+selection).
+
+== S2) A non-prioritized list of renditions ==
+
+This option is slightly more complicated than S1.
+
+How can this option ensure that the same rendition is selected?
+The first rendition in the returned list?
+
+This option can be easily combined with M2 (Manual interventions
+after selection).
+
+== S3) A prioritized list of renditions ==
+
+This option is more complicated since the selection 
+procedure has to compute priorities.
+
+This option address advanced use cases shown in the beginning of this wiki.
+
+
+= Compatibilities with existing RSs and EPUB containers = 
+
+Some existing EPUB conainers (esp. OMF containers) may contain multiple
+renditions, and some RSs may have custom logic for rendition
+selection.  Meanwhile, some RSs always select the default rendition.
+
+It is just impossible to have complete compatibilities between AHL RS
+readers and other existing readers.  We should not be too worried
+about compatibilities.  However, if inconveniences caused by the
+combination of pre-AHL EPUB containers and AHL RSs are siginificant
+and can be easily avoided, we might want to slightly adjust our
+selection procedure.
+
