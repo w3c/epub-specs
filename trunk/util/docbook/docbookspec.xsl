@@ -807,7 +807,10 @@
     <xsl:template match="d:bridgehead">
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
             <xsl:apply-templates select="." mode="common.html.attributes"/>
-            <xsl:apply-templates/>
+        	<xsl:call-template name="render-link-here-anchor">
+        		<xsl:with-param name="id" select="@xml:id"/>
+        	</xsl:call-template>
+        	<xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
 
