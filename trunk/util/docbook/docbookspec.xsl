@@ -1339,5 +1339,12 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+    
+    <xsl:template match="d:markup">
+        <xsl:element name="code">
+            <xsl:attribute name="class">markup</xsl:attribute>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
 
 </xsl:stylesheet>
