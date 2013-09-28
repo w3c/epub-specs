@@ -79,9 +79,10 @@
         <section xml:id="sec-overview-purpose-and-scope" conformance="informative">
             <title>Purpose and Scope</title>
 
-            <para>This specification, EPUB Publications 3.0, defines publication-level semantics and
-                conformance requirements for EPUB® 3, including the format of the <xref
-                    linkend="gloss-package-document"/> and rules for how this document and other
+            <para>This specification, EPUB Publications 3.0, defines semantics and
+                conformance requirements for EPUB® Publications, including the format of the <xref
+                    linkend="gloss-package-document"/> that describes each <xref linkend="gloss-rendition"/>
+                of the content and rules for how this document and other
                     <xref linkend="gloss-publication-resource-cmt-or-foreign"/>s are associated to
                 create a conforming EPUB Publication.</para>
 
@@ -115,14 +116,15 @@
 
         <para>This section defines conformance requirements for <xref
                 linkend="gloss-epub-publication"/>s and <xref linkend="gloss-epub-reading-system"/>s
-            at the Publication level. Conformance requirements particular to specific <xref
+            at the <xref linkend="gloss-rendition"/> level. Conformance requirements particular to specific <xref
                 linkend="gloss-publication-resource-cmt-or-foreign"/>s and processing contexts are
             located in the specifications referenced herein.</para>
 
         <section xml:id="sec-epub-content-conf" xreflabel="EPUB Publication — Content Conformance">
             <title>Content Conformance</title>
 
-            <para>An <xref linkend="gloss-epub-publication"/> <literal role="rfc2119">must</literal> meet all of the following
+            <para>Each <xref linkend="gloss-rendition"/> of an <xref linkend="gloss-epub-publication"/> 
+                <literal role="rfc2119">must</literal> meet all of the following
                 criteria:</para>
 
             <variablelist role="conformance-list">
@@ -318,7 +320,7 @@
                             Publications as defined in <xref linkend="refOPF2"/>, <xref
                                 linkend="refOPS2"/> and <xref linkend="refOCF2"/>.</para>
                         <para xml:id="confreq-rs-backward-epub">It <literal role="rfc2119">must</literal> attempt to process any
-                            Publication whose Package Document <markup>version</markup> attribute
+                            given Rendition of an EPUB Publication whose Package Document <markup>version</markup> attribute
                             designates a version lower than "<code role="value">3.0</code>" or which omits
                             the <markup>version</markup> attribute.</para>
                     </listitem>
@@ -327,7 +329,7 @@
                     <term>Forward Compatibility</term>
                     <listitem>
                         <para xml:id="confreq-rs-forward-epubn">It <literal role="rfc2119">should</literal> attempt to process any
-                            Publication whose Package Document <markup>version</markup> attribute
+                            given Rendition of an EPUB Publication whose Package Document <markup>version</markup> attribute
                             designates a version higher than "<code role="value">3.0</code>".</para>
                     </listitem>
                 </varlistentry>
@@ -381,8 +383,9 @@
         <section xml:id="sec-package-intro" conformance="informative">
             <title>Introduction</title>
             <para>The <xref linkend="gloss-package-document"/> carries bibliographic and structural
-                metadata about an <xref linkend="gloss-epub-publication"/>, and is thus the primary
-                source of information about how to process and display it.
+                metadata about a <xref linkend="gloss-rendition"/> of an <xref linkend="gloss-epub-publication"/>, 
+                and is thus the primary source of information about how to process and display that
+                Rendition.
                 <!-- It is always identified in the Container file <xref linkend="refOCF30"/>
                     in the META-INF directory, and represents the primary point of entry into a
                     Publication. -->
@@ -390,33 +393,35 @@
 
             <para>The Package Document is an XML document <!-- <xref linkend="refXML"/> -->
                 consisting of a set of container elements, each dedicated to housing information
-                about a particular aspect of the Publication. These containers effectively
-                centralize metadata for the Publication, detail the individual resources that
-                compose it and provide reading order and other information for rendering the
-                Publication to a <xref linkend="gloss-user"/>.</para>
+                about a particular aspect of the Rendition. These containers effectively
+                centralize metadata, detail the individual resources that
+                compose the Rendition and provide reading order and other information for rendering the
+                EPUB Publication is represents to a <xref linkend="gloss-user"/>.</para>
 
             <para>The following list summarizes the information a Package Document contains:</para>
 
             <itemizedlist>
                 <listitem>
-                    <para>Publication <link linkend="sec-metadata-elem">metadata</link> — mechanisms
-                        for including and/or referencing metadata applicable to the entire
-                        Publication and particular resources within it.</para>
+                    <para>Rendition <link linkend="sec-metadata-elem">metadata</link>
+                        — mechanisms for including and/or referencing metadata applicable to the
+                        EPUB Publication and/or the specific Rendition of it, including for particular 
+                        resources within the Rendition.</para>
                 </listitem>
                 <listitem>
-                    <para>A <link linkend="sec-manifest-elem">Publication manifest</link> —
+                    <para>A <link linkend="sec-manifest-elem">manifest</link> —
                         identifies (via IRI) and describes (via MIME media type) the set of
-                        resources that collectively compose the Publication.</para>
+                        resources that collectively compose the given Rendition of the EPUB
+                        Publication.</para>
                 </listitem>
                 <listitem>
                     <para>A <link linkend="sec-spine-elem">spine</link> — an ordered sequence of ID
                         references to top-level resources in the manifest from which all other
                         resources in the set can be reached or utilized. The spine defines the
-                        default reading order of the Publication.</para>
+                        default reading order of the given Rendition.</para>
                 </listitem>
                 <listitem>
                     <para><link linkend="sec-fallback-processing-flow-manifest">Fallback
-                            chains</link> — an optional means for Publications to define an ordered
+                            chains</link> — an optional means for defining an ordered
                         list of top-level resources that can be considered content equivalents that
                         a Reading System can choose between for rendering.</para>
                 </listitem>
@@ -516,9 +521,8 @@
                 <title>The <markup>package</markup> Element</title>
 
                 <para>The <markup>package</markup> element is the root container of the <xref
-                        linkend="gloss-package-document"/> and encapsulates <link
-                        linkend="gloss-epub-publication">Publication</link> metadata and resource
-                    information.</para>
+                        linkend="gloss-package-document"/> and encapsulates metadata and resource
+                    information for a <xref linkend="gloss-rendition"/>.</para>
 
                 <variablelist xreflabel="package" role="elem-synopsis" xml:id="elemdef-opf-package">
                     <varlistentry>
@@ -543,7 +547,7 @@
                                         <option>[required]</option></term>
                                     <listitem>
                                         <para>Specifies the EPUB specification version to which the
-                                            Publication conforms.</para>
+                                            given Rendition conforms.</para>
                                         <para>The attribute <literal role="rfc2119">must</literal> have the value
                                                 <code role="value">3.0</code> to indicate compliance with
                                             this version of the specification.</para>
@@ -623,8 +627,8 @@
             <section xml:id="sec-metadata-elem" xreflabel="metadata">
                 <title>The <markup>metadata</markup> Element</title>
 
-                <para>The <markup>metadata</markup> element encapsulates <link
-                        linkend="gloss-epub-publication">Publication</link> meta information.</para>
+                <para>The <markup>metadata</markup> element encapsulates meta information
+                    for the given <xref linkend="gloss-rendition"/>.</para>
 
                 <variablelist xreflabel="metadata" role="elem-synopsis"
                     xml:id="elemdef-opf-metadata">
@@ -670,7 +674,8 @@
                     </varlistentry>
                 </variablelist>
 
-            	<para>The minimal required metadata that Publications <literal role="rfc2119">must</literal> include consists of three
+            	<para>The minimal required metadata that each Rendition of an <xref linkend="gloss-epub-publication"/> 
+            	    <literal role="rfc2119">must</literal> include consists of three
                     elements from the Dublin Core Metadata Element Set <xref linkend="refDCMES"/> —
             	    <markup linkend="sec-opf-dcidentifier">title</markup>, 
             	    <markup linkend="elemdef-opf-dcidentifier">identifier</markup> and 
@@ -726,7 +731,7 @@
 
                 <informalexample>
                     <para>The following example represents the minimal set of metadata that all
-                        Publications <literal role="rfc2119">must</literal> contain.</para>
+                        Renditions have to contain.</para>
                     <synopsis><xi:include href="examples/publications/metadata-min-complete.xml" parse="text"/></synopsis>
                 </informalexample>
 
@@ -737,8 +742,8 @@
 
                 <para>The <xref linkend="refDCMES"/>
                     <markup>identifier</markup> element contains a single identifier associated with the
-                        <xref linkend="gloss-epub-publication"/>, such as a UUID, DOI, ISBN or
-                    ISSN.</para>
+                        given <xref linkend="gloss-rendition"/> of the <xref linkend="gloss-epub-publication"/>, 
+                    such as a UUID, DOI, ISBN or ISSN.</para>
                 <variablelist xreflabel="dc:identifier" role="elem-synopsis"
                     xml:id="elemdef-opf-dcidentifier">
                     <varlistentry>
@@ -793,9 +798,9 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>Every <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least one
+                <para>Every Rendition's <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least one
                         <markup>identifier</markup> element containing an unambiguous identifier
-                    for the Publication. Multiple <markup>identifier</markup> elements are
+                    for the EPUB Publication. Multiple <markup>identifier</markup> elements are
                     permitted, but only one can be marked as the <xref
                         linkend="gloss-unique-identifier"/> via the <markup>package</markup> element
                             <markup><link linkend="attrdef-package-unique-identifier"
@@ -803,28 +808,28 @@
 
                 <informalexample>
                     <para>The following example shows the unique <markup>identifier</markup>
-                        element for a Publication.</para>
+                        element for an EPUB Publication.</para>
                     <synopsis><xi:include parse="text" href="examples/publications/identifier.xml"/></synopsis>
                 </informalexample>
 
                 <para>This specification makes a distinction between the <xref
                         linkend="gloss-unique-identifier"/> for an EPUB Publication and the
                     identifier that uniquely identifies a specific version of it (i.e., to be able
-                    to differentiate EPUB Publications containing different versions of the same
-                        <xref linkend="gloss-manifestation"/>). Two copies of an EPUB that are
-                    bit-for-bit identical are the same version and <literal role="rfc2119">must</literal> retain the same <link
-                        linkend="elemdef-meta">last modified date</link>. If they are not
-                    bit-for-bit identical, they represent different versions, and <literal role="rfc2119">must</literal> have
-                    different last modified dates.</para>
+                    to differentiate different versions of the same EPUB Publication). Whenever a
+                    Rendition is modified, it <literal role="rfc2119">must</literal> include a new <link
+                        linkend="elemdef-meta">last modified date</link>.</para>
 
-                <para>To identify a specific version of a packaged Publication, a <xref
-                        linkend="gloss-package-identifier"/> can be constructed by combining the
-                    Unique Identifier with the last modified date of the Publication. Changes
+                <para>To identify a specific version of a packaged EPUB Publication, a <xref
+                        linkend="gloss-release-identifier"/> can be constructed by combining the
+                    Unique Identifier with the last modified date of the Rendition. Changes
                     between versions may include minor typographic or markup corrections, without
-                    affecting the Unique Identifier. Significant revisions to the content that
-                    result in a new edition require a change of the Unique Identifier. For more
+                    affecting the Unique Identifier. A new Unique Identifier is <literal role="rfc2119">required</literal>
+                    whenever significant revisions to the content result in a new edition. For more
                     information on the semantics and requirements of the Package Identifier, refer
                     to <xref linkend="sec-opf-metadata-identifiers-pid"/>.</para>
+                
+                <para>Identifiers <literal role="rfc2119">may</literal> differ from <xref linkend="gloss-rendition"/>
+                    to Rendition.</para>
 
                 <para> This specification imposes no additional restrictions or requirements on
                     identifiers except that they <literal role="rfc2119">must</literal> be at least one character in length. It is
@@ -856,7 +861,7 @@
                     property definition. </para>
 
                 <para>When an EPUB Publication is derived from another publication, the identifier
-                    for that source publication <literal role="rfc2119">may</literal> be included in the Publication metadata, and
+                    for that source publication <literal role="rfc2119">may</literal> be included in the EPUB Publication metadata, and
                     <literal role="rfc2119">must</literal> be represented using the <link linkend="sec-opf-dcsource">DCMES
                             <markup>source</markup> element</link>.</para>
             </section>
@@ -931,7 +936,7 @@
                 </variablelist>
 
                 <para>Every <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least one
-                        <markup>title</markup> element containing the title for the Publication.
+                        <markup>title</markup> element containing the title for the EPUB Publication.
                     Multiple <markup>title</markup> elements are permitted, but the <property
                             linkend="title-type">title-type</property> property <literal role="rfc2119">should</literal> be
                         <link linkend="attrdef-meta-refines">attached</link> to indicate the type of
@@ -958,7 +963,10 @@
                     <para>The following example shows how to indicate display sequence.</para>
                     <synopsis><xi:include parse="text" href="examples/publications/title-2.xml"/></synopsis>
                 </informalexample>
-
+                
+                <para>Titles <literal role="rfc2119">may</literal> differ from <xref linkend="gloss-rendition"/> 
+                    to Rendition.</para>
+                
                 <para> This specification imposes no additional restrictions or requirements on
                     titles except that they <literal role="rfc2119">must</literal> be at least one character in length. </para>
 
@@ -1007,8 +1015,8 @@
                 <title>The DCMES <markup>language</markup> Element</title>
 
                 <para>The <xref linkend="refDCMES"/>
-                    <markup>language</markup> element specifies the language of the Publication
-                    content.</para>
+                    <markup>language</markup> element specifies the language of the content of the given
+                    <xref linkend="gloss-rendition"/>.</para>
 
                 <variablelist xreflabel="dc:language" role="elem-synopsis"
                     xml:id="elemdef-opf-dclanguage">
@@ -1062,19 +1070,22 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>Every <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least one
+                <para>Each Rendition's <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least one
                         <markup>language</markup> element with a value conforming to <xref
                         linkend="refRFC5646"/>.</para>
 
                 <informalexample>
-                    <para>The following example shows a Publication is in U.S. English.</para>
+                    <para>The following example shows an <xref linkend="gloss-epub-publication"/> is in U.S. English.</para>
                     <synopsis><xi:include parse="text" href="examples/publications/language.xml"/></synopsis>
                 </informalexample>
 
                 <para>Additional <markup>language</markup> elements <literal role="rfc2119">may</literal> be included for multilingual
                     Publications, but each element's value <literal role="rfc2119">must</literal> conform to <xref
                         linkend="refRFC5646"/>.</para>
-
+                
+                <para>Languages <literal role="rfc2119">may</literal> differ from <xref linkend="gloss-rendition"/> 
+                    to Rendition.</para>
+                
                 <xi:include href="share/whitespace.xml"/>
 
                 <!--
@@ -1183,7 +1194,10 @@
                     on the following elements: <markup>contributor</markup>, <markup>coverage</markup>,
                         <markup>creator</markup>, <markup>description</markup>, <markup>publisher</markup>,
                         <markup>relation</markup>, <markup>rights</markup> and <markup>subject</markup>.</para>
-
+                
+                <para>Optional metadata <literal role="rfc2119">may</literal> differ from <xref linkend="gloss-rendition"/>
+                    to Rendition.</para>
+                
                 <para> The value of all optional <xref linkend="refDCMES"/> elements <literal role="rfc2119">must</literal> be at
                     least one character in length. </para>
 
@@ -1197,7 +1211,7 @@
 
                 <para>The <markup>contributor</markup> element is used to represent the name of a
                     person, organization, etc. that played a secondary role in the creation of the
-                    content of a Publication.</para>
+                    content of an EPUB Publication.</para>
 
                 <para>The use of the <markup>contributor</markup> element is identical to the use of the
                         <markup>creator</markup> element in all other respects, as detailed in the next
@@ -1207,7 +1221,7 @@
                         <markup>creator</markup> Element</bridgehead>
 
                 <para>The <markup>creator</markup> element represents the name of a person,
-                    organization, etc. responsible for the creation of the content of a Publication.
+                    organization, etc. responsible for the creation of the content of an EPUB Publication.
                     The <markup linkend="role">role</markup> property can be <link
                         linkend="attrdef-meta-refines">attached</link> to the element to indicate
                     the function the creator played in the creation of the content.</para>
@@ -1231,7 +1245,7 @@
                     <synopsis><xi:include parse="text" href="examples/publications/creator-1.xml"/></synopsis>
                 </informalexample>
 
-                <para>If a Publication has more than one creator, each <literal role="rfc2119">should</literal> be included in a
+                <para>If an EPUB Publication has more than one creator, each <literal role="rfc2119">should</literal> be included in a
                     separate <markup>creator</markup> element. The order in which to render the
                         <markup>creator</markup> names <literal role="rfc2119">should</literal> be specified using the 
                             <property linkend="display-seq">display-seq</property> property.</para>
@@ -1258,7 +1272,7 @@
                 <para>The <markup>date</markup> element <literal role="rfc2119">must</literal> only be used to define the publication date
                     of the <xref linkend="gloss-epub-publication"/>. The publication date is not the
                     same as the <link linkend="last-modified-date">last modified date</link> (the
-                    last time the content was changed), which <literal role="rfc2119">must</literal> be included using the <xref
+                    last time the <xref linkend="gloss-rendition"/> was changed), which <literal role="rfc2119">must</literal> be included using the <xref
                         linkend="refDCTERMS"/>
                     <property>modified</property> property.</para>
 
@@ -1274,9 +1288,9 @@
                 <para>Additional dates <literal role="rfc2119">should</literal> be expressed using the specialized date properties
                     available in the <xref linkend="refDCTERMS"/> vocabulary, or similar.</para>
 
-            	<para>The publication date <literal role="rfc2119">may</literal> be common to all instances of a Publication or <literal role="rfc2119">may</literal>
-                    change from instance to instance (if the Publication gets generated on demand,
-                    for example).</para>
+            	<para>The publication date <literal role="rfc2119">may</literal> be common to all instances of an EPUB Publication 
+            	    or <literal role="rfc2119">may</literal> change from instance to instance (e.g., if the EPUB Publication gets 
+            	    generated on demand).</para>
 
                 <para>Only one <markup>date</markup> element is allowed.</para>
 
@@ -1286,14 +1300,14 @@
                 <para>The <markup>source</markup> element identifies the related resource(s) from which 
                 	this <xref linkend="gloss-epub-publication"/> is derived.</para>
 
-            	<para>When a Publication includes page identifiers, using the 
+            	<para>When a <xref linkend="gloss-rendition"/> includes page identifiers, using the 
             	    <property xlink:href="../../vocab/structure/epub30-vocab-structure.html#pagebreak">pagebreak</property> 
             		property from the EPUB Structural Semantics Vocabulary, a <property><link linkend="source-of">source-of</link></property>
             		refinement property <literal role="rfc2119">should</literal> be attached to the <markup>source</markup>
             		element that identifies the source of the pagination.</para>
             	
             	<informalexample>
-            		<para>The following example shows the ISBN identifier for a Publication together
+            		<para>The following example shows the ISBN identifier for an EPUB Publication together
             			with the source ISBN identifier for the print work it was derived
             			from.</para>
             		<synopsis><xi:include parse="text" href="examples/publications/source.xml"/></synopsis>
@@ -1301,11 +1315,11 @@
 
                 <bridgehead xml:id="sec-opf-dctype" xreflabel="dc:type">The DCMES <markup>type</markup> Element</bridgehead>
 
-                <para>The <markup>type</markup> element is used to indicate that the given Publication
+                <para>The <markup>type</markup> element is used to indicate that the given EPUB Publication
                     is of a specialized type (e.g., annotations packaged in EPUB format or a
                     dictionary).</para>
 
-                <para>The IDPF maintains an informative registry of specialized Publication types 
+                <para>The IDPF maintains an informative registry of specialized EPUB Publication types 
                 	for use with this element at 
                     <uri xlink:href="../../vocab/package/types/index.html">http://www.idpf.org/vocab/package/types</uri>.</para>
 
@@ -1457,10 +1471,10 @@
                     Reading System <literal role="rfc2119">must not</literal> fail when encountering unknown expressions.</para>
 
                 <para xml:id="last-modified-date">In order to ensure that a <xref
-                        linkend="gloss-package-identifier"/> can be constructed, the
+                        linkend="gloss-release-identifier"/> can be constructed, the
                         <markup>metadata</markup> element <literal role="rfc2119">must</literal> contain exactly one <markup>meta</markup>
                     element defining a <xref linkend="refDCTERMS"/>
-                    <property>modified</property> property for the Publication. Additional
+                    <property>modified</property> property for the given Rendition. Additional
                         <markup>modified</markup> properties <literal role="rfc2119">may</literal> be included, but they <literal role="rfc2119">must</literal> have a
                     different subject (i.e., they <literal role="rfc2119">must</literal> include a <markup>refines</markup> attribute
                     pointing to an element or resource).</para>
@@ -1478,7 +1492,7 @@
 
                 <informalexample>
                     <para>The following example represents a more complete set of metadata that
-                        typical Publications will contain.</para>
+                        a Rendition will typically contain.</para>
                     <synopsis><xi:include href="examples/publications/meta-example-full.xml" parse="text"/></synopsis>
                 </informalexample>
 
@@ -1506,8 +1520,9 @@
             <section xml:id="sec-link-elem" xreflabel="link">
                 <title>The <markup>link</markup> Element</title>
 
-                <para>The <markup>link</markup> element is used to associate resources with a
-                    Publication, such as metadata records.</para>
+                <para>The <markup>link</markup> element is used to associate resources with the
+                    given <xref linkend="gloss-rendition"/> of the <xref linkend="gloss-epub-publication"/>,
+                    such as metadata records.</para>
 
                 <variablelist xreflabel="link" role="elem-synopsis" xml:id="elemdef-opf-link">
                     <varlistentry>
@@ -1595,7 +1610,7 @@
                 <para> The <markup>href</markup> attribute of the <markup>link</markup> element identifies
                     the location of the resource — inclusion of which is optional in the container
                     file — and the <markup>rel</markup> attribute defines the nature of the resource
-                    (i.e., its relation to the Publication or property specified in the
+                    (i.e., its relation to the given Rensition of the EPUB Publication or property specified in the
                 	<markup>refines</markup> attribute). Reading Systems are <literal role="rfc2119">not required</literal> to
                     dereference these resources. Refer to <xref linkend="sec-link-rel-values"/> for
                     the list of resource types that are recognized by this specification.</para>
@@ -1611,15 +1626,14 @@
                 <para>The optional <markup>refines</markup> attribute can be attached when the
                     referenced resource applies to another metadata item (e.g., to tie an XML
                     Signature <xref linkend="refXMLDSIGCORE"/> to a metadata authority). The
-                    resource applies to the Publication as a whole when the attribute is not
-                    present.</para>
+                    resource applies to the Rendition when the attribute is not present.</para>
                 <para>If a Reading System does not recognize the relationship of the resource as
                     defined in the <markup>rel</markup> attribute, it <literal role="rfc2119">should</literal> ignore the
                         <markup>link</markup> element.</para>
                 <bridgehead>Examples</bridgehead>
                 <informalexample>
                     <para>The following example shows the <markup>link</markup> element used to
-                        associate three metadata resources with the Publication: an ONIX record, an
+                        associate three metadata resources with the Rendition: an ONIX record, an
                         XMP record, and a link to an informational web page. Note that as
                             <property>foaf</property> is not a <link
                             linkend="sec-metadata-reserved-vocabs">predefined prefix</link>, the
@@ -1634,7 +1648,7 @@
 
                 <para>The <markup>manifest</markup> element provides an exhaustive list of the <xref
                         linkend="gloss-publication-resource-cmt-or-foreign"/>s that constitute the
-                        <xref linkend="gloss-epub-publication"/>, each represented by an <markup><xref
+                        given <xref linkend="gloss-rendition"/>, each represented by an <markup><xref
                             role="codelink" linkend="sec-item-elem"/></markup> element.</para>
 
                 <variablelist xreflabel="manifest" role="elem-synopsis"
@@ -1853,7 +1867,8 @@
             <section xml:id="sec-spine-elem" xreflabel="spine">
                 <title>The <markup>spine</markup> Element</title>
 
-                <para>The <markup>spine</markup> element defines the default reading order of the <xref
+                <para>The <markup>spine</markup> element defines the default reading order of the given
+                        <xref linkend="gloss-rendition"/> of the <xref
                         linkend="gloss-epub-publication"/> content by defining an ordered list of
                         <link linkend="sec-itemref-elem">manifest <markup>item</markup>
                         references</link>.</para>
@@ -1902,7 +1917,7 @@
                                     <term><markup>page-progression-direction</markup>
                                         <option>[optional]</option></term>
                                     <listitem>
-                                        <para>The global direction in which the Publication content
+                                        <para>The global direction in which the content
                                             flows.</para>
                                         <para>Allowed values are <code role="value">ltr</code>
                                             (left-to-right), <code role="value">rtl</code> (right-to-left)
@@ -1929,10 +1944,10 @@
 
                 <para>The <markup>spine</markup> represents an ordered subset of the Publication
                     Resources listed in the <markup>manifest</markup>, providing the default
-                    reading order for the Publication.</para>
+                    reading order for the given Rendition.</para>
 
                 <para>Reading Systems <literal role="rfc2119">must</literal> provide a means 
-                    of rendering a Publication in the order defined in the <markup>spine</markup>, which 
+                    of rendering the Rendition in the order defined in the <markup>spine</markup>, which 
                     includes: 1) recognizing the first primary <markup>itemref</markup>
                     as the beginning of the default reading order; and,
                     2) rendering successive primary items in the order given in
@@ -1951,7 +1966,7 @@
                     Documents also have to be listed, and so on.).</para>
                 
                 <para>Although the <markup>page-progression-direction</markup> attribute sets the
-                      global flow direction for a Publication, individual Content Documents and
+                      global flow direction, individual Content Documents and
                       parts of Content Documents <literal role="rfc2119">may</literal> override this setting (e.g., via the
                         <property>writing-mode</property> CSS
                       property). Reading Systems <literal role="rfc2119">may</literal> also provide mechanisms to override the
@@ -1991,7 +2006,7 @@
                         (<link linkend="confreq-spine-itemtypes">typically</link>
                     <xref linkend="gloss-content-document-epub"/>s). The order of the
                         <markup>itemref</markup> elements defines the default reading order of the
-                    Publication.</para>
+                    given <xref linkend="gloss-rendition"/> of the <xref linkend="gloss-epub-publication"/>.</para>
 
                 <variablelist xreflabel="itemref" role="elem-synopsis"
                     xml:id="elemdef-spine-itemref">
@@ -2084,14 +2099,14 @@
 
                 <para>The <markup>itemref</markup> element <markup>linear</markup> attribute indicates
                     whether referenced item is considered primary (<code role="value">yes</code>) or
-                    auxiliary (<code role="value">no</code>) in the <markup>spine</markup>. Every Publication 
+                    auxiliary (<code role="value">no</code>) in the <markup>spine</markup>. Each Rendition 
                     <literal role="rfc2119">must</literal> include at least one primary 
                     <markup>itemref</markup>.</para>
                 
                 <para>The <markup>linear</markup> attribute <literal role="rfc2119">may</literal>
                     be used to enable Reading Systems to distinguish presentation of body content
                     from supplementary content which might be, for example, presented in a popup
-                    window or omitted from an aural rendition. Reading Systems 
+                    window or omitted from an aural rendering. Reading Systems 
                     <literal role="rfc2119">should</literal> provide Users the ability to control
                     whether non-linear content is rendered in the default reading order.</para>
 
@@ -2185,7 +2200,7 @@
                 <para>Each of the <markup>bindings</markup> element's child <markup><link
                             linkend="sec-mediaType-elem">mediaType</link></markup> elements defines a
                     unique handler for one of the foreign media types referenced in the
-                    Publication's <xref linkend="gloss-content-document-epub-xhtml"/>s.</para>
+                    <xref linkend="gloss-rendition"/>'s <xref linkend="gloss-content-document-epub-xhtml"/>s.</para>
 
                 <para>When an unsupported media type is encountered during processing of a document,
                     the Reading System <literal role="rfc2119">must</literal> look up the handler in the <markup>bindings</markup> element
@@ -2261,7 +2276,7 @@
                 <para>The following partial example illustrates how bindings can be used to provide
                     a slideshow.</para>
 
-                <para>Consider a Publication with the following Package Document:</para>
+                <para>Consider a Rendition of an EPUB Publication with the following Package Document:</para>
 
                 <informalexample>
                     <synopsis><xi:include href="examples/publications/bindings-2.xml" parse="text"/></synopsis>
@@ -2282,7 +2297,7 @@
                 </informalexample>
 
                 <para>Depending on the capabilities of the <xref linkend="gloss-user"/>'s Reading
-                    System, they will see one of the following renditions of the slideshow:</para>
+                    System, they will see one of the following renderings of the slideshow:</para>
 
                 <itemizedlist>
                     <listitem>
@@ -2454,12 +2469,12 @@
                     potential uses: enabling content that has been split across multiple <xref linkend="gloss-content-document-epub"/>s
                     to be reassembled back into a meaningful unit (e.g., an index split across multiple documents), identifying 
                     resources for specialized purposes (e.g., preview content), or collecting together resources that present 
-                    additional information about the Publication.</para>
+                    additional information about the given <xref linkend="gloss-rendition"/>.</para>
                 
                 <para>The <markup>collection</markup> element, as defined in this section, represents a generic framework from which 
                     specific implementations are intended to be derived (e.g., through IDPF sub-specifications). Such 
                     implementations <literal role="rfc2119">must</literal> define the purpose of the <markup>collection</markup>
-                    element within a Publication, as well as all requirements for its valid production and use (specifically
+                    element within a Rendition, as well as all requirements for its valid production and use (specifically
                     any requirements that differ from the general framework presented below).</para>
                 
                 <para>Each implementation <literal role="rfc2119">must</literal> define a role value that uniquely identifies all 
@@ -2548,7 +2563,7 @@
                     <literal role="rfc2119">optional</literal>. Reading Systems <literal role="rfc2119">must</literal> ignore 
                     <markup>collection</markup> elements that define unrecognized roles.</para>
                 
-                <para>The rendering of a Publication <literal role="rfc2119">must not</literal> be dependent on the recognition 
+                <para>The rendering of a Rendition <literal role="rfc2119">must not</literal> be dependent on the recognition 
                     of <markup>collection</markup> elements. The content <literal role="rfc2119">must</literal> remain consumable 
                     by a User without any information loss or other significant deterioration.</para>
                 
@@ -2572,47 +2587,48 @@
             <section xml:id="sec-opf-metadata-identifiers-uid">
                 <title>Unique Identifier</title>
 
-                <para>The Package Document's author is responsible for including a primary
-                    identifier that is unique to one and only one particular <xref
+                <para>The <xref linkend="gloss-author"/> is responsible for including a primary
+                    identifier in the <xref linkend="gloss-package-document"/> metadata
+                    that is unique to one and only one <xref
                         linkend="gloss-epub-publication"/>. This <xref
                         linkend="gloss-unique-identifier"/>, whether chosen or assigned, <literal role="rfc2119">must</literal> be
-                    stored in a <markup linkend="sec-opf-dcidentifier">dc:identifier</markup> element in the Package metadata
+                    stored in a <markup linkend="sec-opf-dcidentifier">dc:identifier</markup> element 
                     and be referenced as the Unique Identifier in the <markup
                             linkend="elemdef-opf-package">package</markup> element 
                     <markup linkend="attrdef-package-unique-identifier">unique-identifier</markup> attribute. </para>
 
-            	<para>Although not static, changes to the Unique Identifier for a Publication <literal role="rfc2119">should</literal>
+            	<para>Although not static, changes to the Unique Identifier for an EPUB Publication <literal role="rfc2119">should</literal>
                     be made as infrequently as possible. New identifiers <literal role="rfc2119">should not</literal> be issued when
                     updating metadata, fixing errata or making other minor changes to the
-                    Publication.</para>
+                    EPUB Publication.</para>
 
             </section>
 
             <section xml:id="sec-opf-metadata-identifiers-pid">
-                <title>Package Identifier</title>
+                <title>Release Identifier</title>
 
                 <para>The <xref linkend="gloss-unique-identifier"/> of an <xref
                         linkend="gloss-epub-publication"/> typically <literal role="rfc2119">should not</literal> change with each
                     minor revision to the package or its contents, as Unique Identifiers are
                     intended to have maximal persistence both for referencing and distribution
-                    purposes. Each release of a Publication normally requires that the new version
+                    purposes. Each release of an EPUB Publication normally requires that the new version
                     be uniquely identifiable, however, which results in the contradictory need for
                     reliable Unique Identifiers that are changeable.</para>
 
                 <para>To redress this problem of identifying minor modifications and releases
                     without changing the Unique Identifier, this specification defines the semantics
-                    for a Package Identifier, or means of distinguishing and sequentially ordering
-                    Publications with the same Unique Identifier. The Package Identifier is not an
+                    for a <emphasis>Release Identifier</emphasis>, or means of distinguishing and sequentially ordering
+                    EPUB Publications with the same Unique Identifier. The Release Identifier is not an
                     actual property in the package <markup>metadata</markup> section, but is a
                 	value that can be obtained from two required pieces of metadata: the Unique
-                    Identifier and the last modification date of the Publication.</para>
+                    Identifier and the last modification date of the Rendition.</para>
 
                 <para>When the taken together, the combined value represents a unique identity that
-                    can be used to distinguish any particular version of an EPUB <xref
-                        linkend="gloss-manifestation"/> from another. To ensure that a Package
-                    Identifier can be constructed, the Publication <literal role="rfc2119">must</literal> include exactly one <xref
-                        linkend="refDCTERMS"/>
-                    <property>modified</property> property containing the last modification date (see
+                    can be used to distinguish any particular version of an EPUB Publication
+                    from another. To ensure that a Release
+                    Identifier can be constructed, each <xref linkend="gloss-rendition"/> 
+                    <literal role="rfc2119">must</literal> include exactly one <xref linkend="refDCTERMS"/>
+                    <property>modified</property> property containing its last modification date (see
                         <xref linkend="elemdef-meta"/>). The value of this property <literal role="rfc2119">must</literal> be an XML
                     Schema <xref linkend="refXSDDatatypes"/> dateTime conformant date of the
                     form:</para>
@@ -2621,7 +2637,7 @@
                     <synopsis>CCYY-MM-DDThh:mm:ssZ</synopsis>
                 </informalexample>
 
-                <para>The modification date <literal role="rfc2119">must</literal> be expressed in Coordinated Universal Time (UTC)
+                <para>The last modification date <literal role="rfc2119">must</literal> be expressed in Coordinated Universal Time (UTC)
                     and <literal role="rfc2119">must</literal> be terminated by the <literal role="literal">Z</literal> time zone indicator.</para>
 
                 <para>Although not a part of the package metadata, for referencing and other
@@ -2637,33 +2653,30 @@
                 </informalexample>
 
                 <para>Note that it is possible that the separator character <literal role="rfc2119">may</literal> occur in the Unique
-                    Identifier, as these identifiers <literal role="rfc2119">may</literal> be any string value. The Package Identifier
+                    Identifier, as these identifiers <literal role="rfc2119">may</literal> be any string value. The Release Identifier
                     consequently <literal role="rfc2119">must</literal> be split on the last instance of the at sign when decomposing
                     it into its component parts.</para>
 
-                <para>The Package Identifier does not supersede the Unique Identifier, but
-                    represents the means by which different versions of the same Publication can be
+                <para>The Release Identifier does not supersede the Unique Identifier, but
+                    represents the means by which different versions of the same EPUB Publication can be
                     distinguished and identified in distribution channels and by Reading Systems.
                     The sequential, chronological order inherent in the required format of the
-                    timestamp also places Publications in order without requiring knowledge of the
+                    timestamp also places EPUB Publications in order without requiring knowledge of the
                     exact identifier that came before.</para>
 
-                <para>The Package Identifier consequently allows a set of Publications to be
+                <para>The Release Identifier consequently allows a set of EPUB Publications to be
                     inspected to determine if they represent the same version of the same
-                    Publication, different versions of a single Publication, or any combination of
-                    differing and similar Publications.</para>
-
-                <!-- 
-                    <note>
-                    <para>Although it is possible in some instances that the most recent version of
-                        a Publication might not be the authoritative version, or that parallel
-                        branches of the same Publication <literal role="rfc2119">may</literal> exist, production control problems such
-                        as these are outside the scope of this specification and <literal role="rfc2119">should</literal> be expressed
-                        in other metadata profiles.</para>
-                        </note>-->
-
-                <para/>
-
+                    Publication, different versions of a single EPUB Publication, or any combination of
+                    differing and similar EPUB Publications.</para>
+                
+                <note>
+                    <para>If an <xref linkend="gloss-container"/> includes more than one 
+                        <xref linkend="gloss-rendition"/> of an EPUB Publication, best practice is to
+                        update the last modified date of the <xref linkend="gloss-rendition-default"/>
+                        for each release, even if it has not been updated. As Reading Systems are only 
+                        required to process the Default Rendition, this practice will help ensure 
+                        that the EPUB Publication does not appear to be the same version as earlier release.</para>
+                </note>
             </section>
         </section>
 
@@ -2994,7 +3007,7 @@
             <section xml:id="sec-meta-property-values">
                 <title>Metadata <markup>meta</markup> Properties</title>
 
-                <para>The <markup>meta</markup> element properties enhance Publication metadata by
+                <para>The <markup>meta</markup> element properties enhance <xref linkend="gloss-rendition"/> metadata by
                     providing additional level(s) of detail. </para>
 
                 <para>These properties <literal role="rfc2119">must</literal> reference the expression or resource they augment in the
@@ -3289,15 +3302,15 @@
 	                                <entry role="rdfa-property-header multi-para">Description:</entry>
 	                                <entry role="rdfa-property-desc">
 	                                    <para>The <property>group-position</property> property indicates
-	                                        the numeric position in which the Publication is ordered
+	                                        the numeric position in which the EPUB Publication is ordered
 	                                        relative to other works belonging to the same group (whether
-	                                        all EPUBs or not).</para>
+	                                        all EPUB Publications or not).</para>
 	                                    <para>The <property>group-position</property> property can be
 	                                        attached to any metadata property that establishes the group, but is
 	                                        typically associated with the 
 	                                    	<property><link linkend="belongs-to-collection">belongs-to-collection</link></property>
 	                                    	property.</para>
-	                                    <para>A Publication can belong to more than one group.</para>
+	                                    <para>An EPUB Publication can belong to more than one group.</para>
 	                                </entry>
 	                            </row>
 	                            <row>
@@ -3486,7 +3499,7 @@
 	                				<entry role="rdfa-property-desc"><para>The
 	                				    <property>source-of</property> property indicates a unique
 	                					aspect of an adapted source resource that has been retained in the
-	                					Publication. </para>
+	                					given <xref linkend="gloss-rendition"/> of the EPUB Publication. </para>
 	                					<para>This specification defines the <code role="value">pagination</code>
 	                						value to indicate that the referenced 
 	                						<link linkend="sec-opf-dcsource">source element</link>
@@ -3618,7 +3631,7 @@
             		            </row>
             		            <row>
             		                <entry role="rdfa-property-header">Extends:</entry>
-            		                <entry>Only applies to the Publication. 
+            		                <entry>Sets the global value for the given Rendition. 
             		                    <literal role="rfc2119">Must not</literal> be set on a
             		                    <markup>meta</markup> tag with a 
             		                    <markup><link role="codelink"
@@ -3647,7 +3660,7 @@
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Description:</entry>
-            						<entry role="rdfa-property-desc">Specifies whether the Publication is 
+            						<entry role="rdfa-property-desc">Specifies whether the given Rendition is 
             							reflowable or pre-paginated.</entry>
             					</row>
             					<row>
@@ -3663,7 +3676,7 @@
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Extends:</entry>
-            					    <entry>Only applies to the Publication. 
+            					    <entry>Sets the global value for the given Rendition.
             					        <literal role="rfc2119">Must not</literal> be set on a
             					        <markup>meta</markup> tag with a 
             					        <markup><link role="codelink"
@@ -3693,7 +3706,7 @@
             					<row>
             						<entry role="rdfa-property-header">Description:</entry>
             						<entry role="rdfa-property-desc">Specifies which orientation the Author 
-            							intends the Publication to be rendered in.</entry>
+            							intends the given Rendition to be rendered in.</entry>
             					</row>
             					
             					<row>
@@ -3710,7 +3723,7 @@
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Extends:</entry>
-            					    <entry>Only applies to the Publication. 
+            					    <entry>Sets the global value for the given Rendition. 
             					        <literal role="rfc2119">Must not</literal> be set on a
             					        <markup>meta</markup> tag with a 
             					        <markup><link role="codelink"
@@ -3740,7 +3753,7 @@
             					<row>
             						<entry role="rdfa-property-header">Description:</entry>
             						<entry role="rdfa-property-desc">Specifies the intended Reading System synthetic spread
-            							behavior for the Publication.</entry>
+            							behavior for the given Rendition.</entry>
             					</row>
             					<row>
             					    <entry role="rdfa-property-header multi-para">Allowed value(s):</entry>
@@ -3757,7 +3770,7 @@
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Extends:</entry>
-            					    <entry>Only applies to the Publication. 
+            					    <entry>Sets the global value for the given Rendition.
             					        <literal role="rfc2119">Must not</literal> be set on a
             					        <markup>meta</markup> tag with a 
             					        <markup><link role="codelink"
@@ -3806,7 +3819,9 @@
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Extends:</entry>
-            						<entry>Applies to the Publication and to individual <markup>itemref</markup> elements.</entry>
+            						<entry>Applies globally for the given Rendition when no <markup>refines</markup>
+            						    attribute set, otherwise applies to the <markup>itemref</markup> element
+            						    referenced from the <markup>refines</markup> attribute.</entry>
             					</row>
             					<row>
             						<entry role="rdfa-property-header">Example:</entry>
@@ -3928,7 +3943,7 @@
                                 <entry role="rdfa-property-desc">The <property>nav</property> property
                                     indicates that the described Publication Resource constitutes
                                     the <xref linkend="gloss-content-document-epub-nav"/> of the
-                                    Publication.</entry>
+                                    given <xref linkend="gloss-rendition"/>.</entry>
                             </row>
                             <row>
                                 <entry role="rdfa-property-header">Applies to:</entry>
@@ -4105,15 +4120,13 @@
                 <informalexample xml:id="example-item-properties-nav">
                     <para>The following example shows a <markup>manifest</markup>
                         <markup><xref role="codelink" linkend="sec-item-elem"/></markup> element that
-                        represents the <xref linkend="gloss-content-document-epub-nav"/> of a
-                        Publication.</para>
+                        represents the <xref linkend="gloss-content-document-epub-nav"/>.</para>
                     <synopsis><xi:include href="./examples/publications/manifest-item-nav.xml" parse="text"/></synopsis>
                 </informalexample>
 
                 <informalexample xml:id="example-item-properties-cover-image">
                     <para>The following example shows a <markup>manifest</markup>
-                        <markup>item</markup> element that represents the cover image of a
-                        Publication.</para>
+                        <markup>item</markup> element that represents the cover image.</para>
                     <synopsis><xi:include href="./examples/publications/manifest-item-cover-image.xml" parse="text"/></synopsis>
                 </informalexample>
 
@@ -4757,7 +4770,8 @@
                                 <listitem>
                                     <para>The Reading System <literal role="rfc2119">should</literal> 
                                         render all Content Documents such that overflow content 
-                                        is scrollable, and the Publication <literal role="rfc2119">should</literal>
+                                        is scrollable, and the EPUB Publication represented by the given
+                                        <xref linkend="gloss-rendition"/> <literal role="rfc2119">should</literal>
                                         be presented as one continuous scroll from spine item to spine item 
                                         (except where <link linkend="layout-property-flow-overrides">locally 
                                             overridden</link>).</para>
@@ -4787,7 +4801,7 @@
                         
                         <informalexample xml:id="property-flow-ex1">
                             <para>The following example demonstrates an Author's intent to have a paginated 
-                                Publication with a scrollable table of contents.</para>
+                                Rendition with a scrollable table of contents.</para>
                             <synopsis><xi:include href="./examples/publications/flow-01.xml" parse="text"/></synopsis>
                         </informalexample>
                     </section>
@@ -4899,7 +4913,7 @@
                             <varlistentry>
                                 <term xml:id="def-layout-reflowable">reflowable</term>
                                 <listitem>
-                                    <para>The given Publication is not pre-paginated. 
+                                    <para>The given Rendition is not pre-paginated. 
                                         Reading Systems <literal role="rfc2119">may</literal>
                                         apply dynamic pagination when rendering.</para>
                                 </listitem>
@@ -4907,7 +4921,7 @@
                             <varlistentry>
                                 <term xml:id="def-layout-pre-paginated">pre-paginated</term>
                                 <listitem>
-                                    <para>The given Publication is pre-paginated. 
+                                    <para>The given Rendition is pre-paginated. 
                                         Reading Systems <literal role="rfc2119">must</literal>
                                         produce exactly one page per spine
                                         <markup linkend="elemdef-spine-itemref">itemref</markup>
@@ -4964,7 +4978,7 @@
                         
                         <para xml:id="property-orientation-global">When the <property linkend="layout">rendition:orientation</property>
                             property is specified on a <markup>meta</markup> element, it indicates that the 
-                            intended orientation applies globally for the Publication (i.e., for all spine items). </para>
+                            intended orientation applies globally for the given Rendition (i.e., for all spine items). </para>
                         
                         <para>The default value <code role="value">auto</code> <literal role="rfc2119">must</literal> 
                             be assumed by Reading Systems as the global value if no <markup>meta</markup> element 
@@ -4981,19 +4995,19 @@
                             <varlistentry>
                                 <term>landscape</term>
                                 <listitem>
-                                    <para>The given Publication is intended for landscape rendering. </para>
+                                    <para>The given Rendition is intended for landscape rendering. </para>
                                 </listitem>
                             </varlistentry>
                             <varlistentry>
                                 <term>portrait</term>
                                 <listitem>
-                                    <para> The given Publication is intended for portrait rendering. </para>
+                                    <para> The given Rendition is intended for portrait rendering. </para>
                                 </listitem>
                             </varlistentry>
                             <varlistentry>
                                 <term>auto</term>
                                 <listitem>
-                                    <para> The given Publication is not orientation constrained. </para>
+                                    <para> The given Rendition is not orientation constrained. </para>
                                 </listitem>
                             </varlistentry>
                         </variablelist>
@@ -5037,7 +5051,7 @@
                         <para xml:id="property-spread-global">When the <property>rendition:spread</property>
                             property is specified on a <markup>meta</markup> element, it
                             indicates that the intended <xref linkend="gloss-synthetic-spread"/> behavior applies globally for the
-                            Publication (i.e., for all spine items).</para>
+                            given Rendition (i.e., for all spine items).</para>
                         
                         <para>The default value <code role="value">auto</code> <literal role="rfc2119">must</literal>
                             be assumed by Reading Systems as the global value if no <markup>meta</markup> element 
@@ -5199,8 +5213,9 @@
                             orientation.</para>
                         <synopsis><xi:include href="./examples/publications/fxl-05a.xml" parse="text"/></synopsis>
                         <para>Note that the author has left spread behavior for the other (reflowable) parts of the
-                            publication undefined, since the global value of <property>rendition:spread</property> 
-                            is initialized to <code role="value">auto</code> by default. </para>
+                            <xref linkend="gloss-rendition"/> undefined, since the global value of 
+                            <property>rendition:spread</property> is initialized to <code role="value">auto</code> 
+                            by default.</para>
                     </informalexample>
                     
                     <informalexample xml:id="fxl-ex6">
@@ -5281,7 +5296,7 @@
                     Media Types</link>. When a <xref
                     linkend="gloss-publication-resource-cmt-or-foreign"/> conforms to a Core Media
                 Type specification, it is a <xref linkend="gloss-publication-resource-cmt"/> and can
-                be included in the Publication without the provision of fallbacks (refer to <xref
+                be included in the EPUB Publication without the provision of fallbacks (refer to <xref
                     linkend="sec-fallback-processing-flow"/> for more information).</para>
 
             <para>The columns in the table represent the following information:</para>
@@ -5741,8 +5756,8 @@
             <code role="media-type">application/oebps-package+xml</code> for the EPUB Package Document. This
             registration supersedes <xref linkend="refRFC4839"/>.</para>
 
-        <para>The Package Document is an XML file that describes an EPUB Publication <xref
-                linkend="refPublications3"/>. It identifies the resources in the Publication and
+        <para>The Package Document is an XML file that describes a Rendition of an EPUB Publication <xref
+                linkend="refPublications3"/>. It identifies the resources in the Rendition and
             provides metadata information. The Package Document and its related standards are
             maintained and defined by the International Digital Publishing Forum (IDPF).</para>
 
