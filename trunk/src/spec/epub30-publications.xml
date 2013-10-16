@@ -5525,8 +5525,8 @@
                         linkend="gloss-epub-publication"/> <literal role="rfc2119">must</literal> be <xref
                         linkend="gloss-publication-resource-cmt"/>s or <literal role="rfc2119">must</literal> provide a Core Media
                     Type fallback. The cases in which <xref
-                        linkend="gloss-publication-resource-foreign"/> <literal role="rfc2119">may</literal> be used, and the
-                    requirement and rules for Core Media Type fallback provision in such cases, are
+                        linkend="gloss-publication-resource-foreign"/>s <literal role="rfc2119">may</literal> be used, and the
+                    requirements and rules for Core Media Type fallback provision in such cases, are
                     detailed below.</para>
 
                 <variablelist role="conformance-list">
@@ -5535,11 +5535,13 @@
                         <listitem>
                             <para xml:id="confreq-resources-cd-fallback">Foreign Resources <literal role="rfc2119">may</literal> be
                                 referenced from EPUB Content Document elements that have explicit
-                                intrinsic fallback mechanisms (e.g., the <xref linkend="refHTML5"/>
+                                intrinsic fallback mechanisms (e.g., fallback content in the <xref linkend="refHTML5"/>
                                 <markup xlink:href="http://www.w3.org/TR/html5/Overview.html#the-object-element"
-                                    >object</markup>, <markup
+                                    >object</markup> and <markup
                                         xlink:href="http://www.w3.org/TR/html5/Overview.html#the-canvas-element"
-                                        >canvas</markup>, <markup
+                                        >canvas</markup> elements, and the <markup
+                                            xlink:href="http://www.w3.org/TR/html5/Overview.html#the-source-element"
+                                            >source</markup> element for the <markup
                                         xlink:href="http://www.w3.org/TR/html5/Overview.html#audio"
                                             >audio</markup> and <markup
                                         xlink:href="http://www.w3.org/TR/html5/Overview.html#video"
@@ -5551,7 +5553,7 @@
                                 <xref linkend="refHTML5"/> <markup
                                    xlink:href="http://www.w3.org/TR/html5/Overview.html#audio">audio</markup> and
                                 <markup xlink:href="http://www.w3.org/TR/html5/Overview.html#video">video</markup>
-                            	elements, content embedded within the elements does not represent a Core Media Type fallback, 
+                            	elements, flow content embedded within the elements does not represent a Core Media Type fallback, 
                             	but <literal role="rfc2119">may</literal> be included for rendering in older Reading Systems 
                             	that do not recognize these elements (e.g., EPUB 2 Reading Systems).</para>
 
@@ -5566,16 +5568,6 @@
 
                         </listitem>
                     </varlistentry>
-                	<varlistentry xml:id="sec-cmt-fallback-cd-manifest">
-                		<term>Manifest Fallback in EPUB Content Documents</term>
-                		<listitem>
-                			<para>Foreign Resources <literal role="rfc2119">may</literal> be referenced from 
-                				<markup>img</markup> and <markup>iframe</markup> elements. 
-                				<link linkend="sec-fallback-processing-flow-manifest">Manifest
-                					fallbacks</link> <literal role="rfc2119">must</literal> be provided
-                					in such cases.</para>
-                		</listitem>
-                	</varlistentry>
                 	<varlistentry xml:id="sec-cmt-fallback-css">
                         <term>Intrinsic Fallback in EPUB Style Sheets</term>
                         <listitem>
@@ -5591,15 +5583,17 @@
                                 an unsupported font type.</para>
                         </listitem>
                     </varlistentry>
-                    <varlistentry xml:id="sec-cmt-fallback-spine">
-                        <term>Spine Resources</term>
+                    <varlistentry xml:id="sec-cmt-fallback-manifest-no-intrinsic">
+                        <term>Manifest Fallbacks when No Intrinsic Fallbacks</term>
                         <listitem>
-                            <para xml:id="confreq-resource-types-spine">Foreign Resources <literal role="rfc2119">may</literal> be
-                                referenced directly from <xref linkend="gloss-spine"/>
+                            <para>Foreign Resources <literal role="rfc2119">may</literal> be referenced in contexts in which an 
+                                intrinsic fallback cannot be provided (e.g., directly from <xref linkend="gloss-spine"/>
                                 <markup><xref role="codelink" linkend="elemdef-spine-itemref"/></markup>
-                                elements. <link linkend="sec-fallback-processing-flow-manifest">Manifest
-                                    fallbacks</link> <literal role="rfc2119">must</literal> be provided
-                            		in such cases.</para>
+                                elements; from <xref linkend="refHTML5"/> <markup>img</markup>, <markup>iframe</markup> 
+                                and <markup>link</markup> elements in <xref linkend="gloss-content-document-epub-xhtml"/>s; 
+                                and from <property>@import</property> rules in <xref linkend="gloss-stylesheet"/>s). 
+                                <link linkend="sec-fallback-processing-flow-manifest">Manifest fallbacks</link> 
+                                <literal role="rfc2119">must</literal> be provided in such cases.</para>
                         </listitem>
                     </varlistentry>
                 </variablelist>
@@ -5608,15 +5602,7 @@
             <section xml:id="sec-fallback-processing-flow-manifest">
                 <title>Manifest Fallbacks</title>
 
-                <para>Fallbacks <literal role="rfc2119">must</literal> be provided for each Publication Resource referenced in a <xref
-                        linkend="gloss-spine"/>
-                    <markup><xref role="codelink" linkend="elemdef-spine-itemref"/></markup> element
-                	that is not an <xref linkend="gloss-content-document-epub"/>, and for each 
-                	<xref linkend="gloss-publication-resource-foreign"/> referenced 
-                	from an <markup>img</markup> or <markup>iframe</markup> element in an 
-                	<xref linkend="gloss-content-document-epub-xhtml"/>.</para>
-
-                <para>Fallbacks are provided using the <markup><xref role="codelink"
+                <para>Manifest fallbacks are provided using the <markup><xref role="codelink"
                             linkend="attrdef-item-fallback"/></markup> attribute on the <link
                         linkend="gloss-manifest">manifest</link>
                     <markup><xref role="codelink" linkend="elemdef-package-item"/></markup> element that
@@ -5643,14 +5629,15 @@
             	
             	<itemizedlist>
             		<listitem>
-            			<para>For Foreign Resources referenced from the <markup>spine</markup>, the chain 
+            			<para>For Foreign Resources referenced directly from <markup>spine</markup> 
+            			    <markup linkend="elemdef-spine-itemref">itemref</markup> elements, the chain 
             				<literal role="rfc2119">must</literal> contain at least one 
             				<xref linkend="gloss-content-document-epub"/>.</para>
             		</listitem>
             		<listitem>
-            			<para>For Foreign Resources referenced from <markup>img</markup> and <markup>iframe</markup>
-            				elements, the chain <literal role="rfc2119">must</literal> contain at least one 
-            				<xref linkend="gloss-core-media-type"/>.</para>
+            		    <para>For Foreign Resources for which an intrinsic fallback cannot be provided, the chain 
+            		        <literal role="rfc2119">must</literal> contain at least one 
+            		        <xref linkend="gloss-core-media-type"/>.</para>
             		</listitem>
             	</itemizedlist>
             	
