@@ -139,6 +139,15 @@
             </xsl:call-template>
         </xsl:if>
         -->
+    	<xsl:if test="$topinfo/db:abstract[@role='informative-label']">
+    		<xsl:element name="div">
+    			<xsl:attribute name="class">doc-label</xsl:attribute>
+    			<xsl:element name="p">
+    				<xsl:attribute name="class">informative</xsl:attribute>
+    				<xsl:text>This document is informative</xsl:text>
+    			</xsl:element>
+    		</xsl:element>
+    	</xsl:if>
     </xsl:template>
 
     <xsl:template name="render-authorgroup">
@@ -168,7 +177,7 @@
                 </xsl:element>
             </xsl:for-each>
         </xsl:element>
-    </xsl:template>
+   </xsl:template>
 
     <!-- ============================================================================= -->
     <!-- overrides in html.xsl to get @id on elements instead of in child anchor -->
