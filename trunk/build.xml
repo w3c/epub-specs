@@ -12,6 +12,7 @@
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css"/>
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples"/>
 	<property name="dir.src.vocab" value="${dir.src}/vocab"/>
+	<property name="dir.src.idx" value="${dir.src}/idx"/>
 	<property name="dir.src.linking" value="${dir.src}/linking"/>
 	<property name="dir.src.errata" value="${dir.src}/errata"/>
 
@@ -39,6 +40,7 @@
 	<property name="dir.build.spec" value="${dir.build.epub}/spec"/>
 	<property name="dir.temp" value="${basedir}/temp"/>
 	<property name="dir.temp.spec" value="${dir.temp}/spec"/>
+	<property name="dir.build.idx" value="${dir.build}/idx"/>
 	<property name="dir.build.linking" value="${dir.build}/linking"/>
 	<property name="dir.build.cfi" value="${dir.build.linking}/cfi"/>
 	<property name="dir.build.switch" value="${dir.build}/switch"/>
@@ -124,6 +126,12 @@
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="linking"/>
 		</saxon-xslt>
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-indexes.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="indexes"/>
+		</saxon-xslt>
 		<!-- no olinks in altsstags but run anyway to get xincludes dereferenced -->
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
 			includes="altss-tags.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
@@ -166,7 +174,8 @@
 		<mkdir dir="${dir.temp.spec}/60"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50/"
 			includes="**/*.xml" destdir="${dir.temp.spec}/60/" extension=".html"
-			style="${xslt.docbook2xhtml}">
+			style="${xslt.docbook2xhtml}"
+			excludes="**/*indexes.xml">
 
 			<param name="section.autolabel" expression="1"/>
 			<param name="part.autolabel" expression="1"/>
@@ -178,6 +187,23 @@
 			<param name="user.print.css" expression="../../css/epub-print.css"/>
 
 		</saxon-xslt>
+		
+		<!-- hack to deal with hardcoded css locations -->
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50/"
+			includes="**/*indexes.xml" destdir="${dir.temp.spec}/60/" extension=".html"
+			style="${xslt.docbook2xhtml}">
+			
+			<param name="section.autolabel" expression="1"/>
+			<param name="part.autolabel" expression="1"/>
+			<param name="chapter.autolabel" expression="1"/>
+			<param name="toc.section.depth" expression="6"/>
+			<param name="section.label.includes.component.label" expression="1"/>
+			<param name="section.autolabel.max.depth" expression="8"/>
+			<param name="html.stylesheet" expression="../css/epub-spec.css"/>
+			<param name="user.print.css" expression="../css/epub-print.css"/>
+			
+		</saxon-xslt>
+		
 
 		<!-- run cleanup -->
 		<xslt classpathref="build.classpath" basedir="${dir.temp.spec}/60/"
@@ -204,6 +230,11 @@
 		<delete file="${dir.build.spec}/altss-tags.html"/>
 		<build-htaccess dest-dir="${dir.build.altss-tags}" index-name="altss-tags.html"/>
 
+		<!-- move the indexes spec -->
+		<mkdir dir="${dir.build.idx}"/>
+		<move file="${dir.build.spec}/epub-indexes.html" todir="${dir.build.idx}"/>
+		<build-htaccess dest-dir="${dir.build.idx}" index-name="epub-indexes.html"/>
+		
 		<!-- move the linking spec -->
 		<mkdir dir="${dir.build.cfi}"/>
 		<move file="${dir.build.spec}/epub-cfi.html" todir="${dir.build.cfi}"/>
@@ -606,6 +637,7 @@
 
 	<target name="clean-build-dir">
 		<clean-dir dir="${dir.build.epub}"/>
+		<clean-dir dir="${dir.build.idx}"/>
 		<clean-dir dir="${dir.build.linking}"/>
 		<clean-dir dir="${dir.build.vocab}"/>
 		<delete failonerror="false">
@@ -746,6 +778,8 @@
 			<copy file="${sd}-ocf.html" tofile="${sd}-ocf-@{date}.html" overwrite="true" failonerror="true"/>
 			<copy file="${sd}-overview.html" tofile="${sd}-overview-@{date}.html" overwrite="true" failonerror="true"/>
 			<copy file="${sd}-publications.html" tofile="${sd}-publications-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- indexes -->
+			<copy file="${dir.build.idx}/epub-indexes.html" tofile="${dir.build.idx}/epub-indexes-@{date}.html" overwrite="true" failonerror="true"/>
 			<!-- cfi -->
 			<copy file="${dir.build.linking}/cfi/epub-cfi.html" tofile="${dir.build.linking}/cfi/epub-cfi-@{date}.html" overwrite="true" failonerror="true"/>
 			<!-- altsstags -->
