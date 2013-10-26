@@ -142,10 +142,7 @@
     	<xsl:if test="$topinfo/db:abstract[@role='informative-label']">
     		<xsl:element name="div">
     			<xsl:attribute name="class">doc-label</xsl:attribute>
-    			<xsl:element name="p">
-    				<xsl:attribute name="class">informative</xsl:attribute>
-    				<xsl:text>This document is informative</xsl:text>
-    			</xsl:element>
+    		    <xsl:apply-templates select="$topinfo/db:abstract[@role='informative-label']/*"/>
     		</xsl:element>
     	</xsl:if>
     </xsl:template>

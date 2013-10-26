@@ -95,7 +95,7 @@
                 support.</para>
         </abstract>
     	<abstract role="informative-label">
-    		<para><!-- do not remove - generates informatve label --></para>
+    		<para role="informative">This document is informative</para>
     	</abstract>
     </info>
 	
@@ -183,8 +183,7 @@
 
             <para>The preceding components of an EPUB Publication are not new to EPUB 3, and will be
                 familiar to anyone who has worked with EPUB Publications before, although they have been
-                changed and enhanced in this version (the distinction between the EPUB Publication and its
-                Renditions is new terminology, but not new ). A new core addition to EPUB 3, however, is the
+                changed and enhanced in this version. A new core addition to EPUB 3, however, is the
                     <xref linkend="gloss-media-overlay-document"/>, which defines a means of
                 synchronizing text and audio playback for a given Rendition. The Overlay Document is introduced in <xref
                     linkend="sec-multimedia"/> and defined in <xref linkend="refOverlays3"/>.</para>
@@ -223,20 +222,27 @@ Content/HelloWorld.xhtml
 
             <para>Each <xref linkend="gloss-rendition"/> of an EPUB Publication includes a single 
                 <xref linkend="gloss-package-document"/>,
-                which specifies all the constituent content documents and their
-                required resources necessary for that unique renderie Document also defines a 
-                reading order for linear consumption, and associates
-                metadata and navigation information.</para>
+                which specifies all the resources required to render that Rendition. The Package 
+                Document also defines a reading order for linear consumption, and associates
+                metadata and navigation information for the Rendition.</para>
 
             <para>The Package Document represents a significant improvement on a typical Web site. A
                 Web site, for example, embeds references to its resources within its content, which,
                 while a simple and flexible means of identifying resources, makes it difficult to
                 enumerate all the resources required to render it. In addition, there is no standard
                 way for a Web site to define that a sequence of pages make up a larger publication,
-                which is precisely what EPUB's <markup>spine</markup> element does (i.e., it provides an
+                which is precisely what EPUB's <markup><olink targetdoc="publications" targetptr="sec-spine-elem"
+                    type="epub-spec">spine</olink></markup> element does (i.e., it provides an
                 external declarative means to explicitly specify navigation through a collection of
                 documents). Finally, the Package Document defines a standard way to represent
                 metadata globally applicable to a collection of pages.</para>
+            
+            <para>The Package Document also includes a <markup><olink targetdoc="publications" 
+                targetptr="sec-collection-elem" type="epub-spec">collection</olink></markup> element, which
+                allows grouping of logically-related <xref linkend="gloss-publication-resource-cmt-or-foreign"/>s.
+                This element exists to enable the development of specialized content identification, processing
+                and rendering features, such as the ability to define embedded preview content, or assemble an index
+                or dictionary from its constituent XHTML Content Documents.</para>
 
             <para>The Package Document and other Rendition-specific constructs are specified in <xref
                     linkend="refPublications3"/>.</para>
@@ -344,7 +350,10 @@ Content/HelloWorld.xhtml
             <para>XHTML Content Documents also include the means of annotating document markup with
                 rich metadata, making them more semantically meaningful and useful both for
                 processing and accessibility purposes (<olink targetdoc="contentdocs"
-                    targetptr="sec-xhtml-semantic-inflection" type="epub-spec"/>).</para>
+                    targetptr="sec-xhtml-semantic-inflection" type="epub-spec"/>).
+                Both RDFa and Microdata attributes can also be used in XHTML Content Documents, 
+                enabling content-level metadata expressions
+                (<olink targetdoc="contentdocs" targetptr="sec-xhtml-semantic-enrichment" type="epub-spec"/>).</para>
 
         </section>
 
@@ -371,6 +380,30 @@ Content/HelloWorld.xhtml
                     linkend="refHTML5"/> to render XHTML Content Documents, but EPUB Publications
                 might not render identically in all User Agents depending on their support.</para>
 
+        </section>
+        
+        <section xml:id="sec-fxl">
+            <title>Fixed Layouts</title>
+            
+            <para>Although EPUB's history is steeped in enabling reflowable content, not all publications
+                lend themselves easily to reflowing. Children's books, comics and manga, magazines and
+                many other content forms require the ability to create page-precise layouts to be 
+                represented in a meaningful fashion.</para>
+            
+            <para>EPUB 3 includes metadata that allows the creation of
+                <olink targetdoc="publications" targetptr="sec-package-metadata-fxl" type="epub-spec">fixed-layout 
+                    XHTML Content Documents</olink>, in addition to existing capabilities for fixed layouts in
+                SVG. This metadata enables the <olink targetdoc="contentdocs" targetptr="sec-fxl-xhtml-svg-dimensions"
+                    type="epub-spec">dimensions of the page</olink> to be controlled, creating a canvas on which 
+                elements can be absolutely positioned.</para>
+            
+            <para>The metadata does not just flag whether content is to be fixed or reflowed, but also allows Authors 
+                to specify the desired <olink targetdoc="publications" targetptr="fxl-property-orientation" 
+                    type="epub-spec">orientation of pages</olink>, when to <olink targetdoc="publications" 
+                    targetptr="fxl-property-spread" type="epub-spec">create synthetic spreads</olink>,
+                and <olink targetdoc="publications" targetptr="fxl-properties-page-spread" type="epub-spec">how to 
+                    position pages</olink> within those spreads, providing a broad range of control over the presentation
+                of EPUB Publications.</para>
         </section>
 
         <section xml:id="sec-rendering">
@@ -517,7 +550,7 @@ Content/HelloWorld.xhtml
                     <listitem>
                         <para> The inclusion of a select set of features from the CSS 3 Speech
                             Module <xref linkend="refCSS3Speech"/> (previously known as CSS 2.1
-                            Aural Stylesheets <xref linkend="refCSS21"/>) enables Authors to control
+                            Aural Style Sheets <xref linkend="refCSS21"/>) enables Authors to control
                             further speech synthesis characteristics. Refer to <olink
                                 type="epub-spec" targetdoc="contentdocs"
                                 targetptr="sec-css-voice-characteristics"/> for more
@@ -677,21 +710,23 @@ Content/HelloWorld.xhtml
 
             <para>EPUB 3 improves on NCX documents with the addition of <xref
                     linkend="gloss-content-document-epub-nav"/>s. As noted in <xref
-                    linkend="sec-content-docs"/> above, the new features these provide represent a
+                    linkend="sec-nav-nav-doc"/> above, the new navigation features represent a
                 more universal and flexible navigation system.</para>
 
-            <para>The need to navigate a document is not exclusively an accessibility issue, but a
-                complete Navigation Document is key for all Users to be able to easily and fully
-                access the contents of a document. The primary <property>toc</property>
-                <markup>nav</markup> element (as defined in <olink targetdoc="contentdocs"
-                    targetptr="sec-xhtml-nav-def-types-toc" type="epub-spec"/>) needs to fully reflect
-                the structure of the EPUB Publication, as a result.</para>
+            <para>Navigation by table of contents is not exclusively an accessibility issue, but a
+                complete table of contents ensures all Users can easily and fully access the contents 
+                of an EPUB Publication. The primary <olink targetdoc="contentdocs"
+                    targetptr="sec-xhtml-nav-def-types-toc" type="epub-spec">toc nav element</olink>
+                has to fully reflect the structure of the EPUB Publication to provide this functionality,
+                otherwise navigation gets compromised for some Users.</para>
 
-            <para>For highly structured documents where it might not be desirable to display the
-                complete table of contents to Users, the display level can be modified using the
-                    <xref linkend="refHTML5"/>
-                <property>hidden</property> attribute without minimizing the information that is
-                available for accessible Reading Systems.</para>
+            <para>The Navigation Document can also be reused in the body of an EPUB Publication by
+                including it in the <markup>spine</markup>. To avoid the situation in highly structured 
+                documents where it might not be desirable to display the complete table of contents to Users
+                in the body, the display level can be modified using the <xref linkend="refHTML5"/>
+                <property>hidden</property> attribute. This attribute is ignored by Reading Systems
+                when they render the table of contents outside the <markup>spine</markup> (e.g., in their
+                own specialized views), which avoids minimizing the information that is available.</para>
 
             <para>Authors are also encouraged to supply additional <markup>nav</markup> elements if
                 their EPUB Publications contain non-structural points of interest, such as figures,
@@ -701,7 +736,7 @@ Content/HelloWorld.xhtml
         <section xml:id="sec-access-semantic-markup">
             <title>Semantic Markup</title>
             <para>HTML5 supports a number of new elements intended to make markup more semantically
-                meaningful (e.g., <markup>section</markup>, <markup>nav</markup>, <markup>aside</markup>) and
+                meaningful (e.g., <markup>section</markup>, <markup>nav</markup> and <markup>aside</markup>) and
                 introduces more clearly defined semantics for some HTML4 elements. Make use of these elements,
                 in conjunction with best practices for authoring well-structured Web content, when 
                 creating EPUB XHTML Content Documents. These additions allow
@@ -735,14 +770,29 @@ Content/HelloWorld.xhtml
                 Reading Systems render content in a paginated manner rather than creating a single
                 scrolling <xref linkend="gloss-viewport"/> and since each Reading System might define
                 its own pagination algorithm. If these techniques are necessary to convey the content
-                of the publication (for example, for graphic novels), consider including <olink
+                of the publication, consider including <olink
                     targetdoc="publications" targetptr="sec-fallback-processing-flow"
-                    type="epub-spec">fallbacks</olink>.</para>
+                    type="epub-spec">fallbacks</olink> (e.g., for graphic novels).</para>
 
             <para>In general, it is preferable to achieve visual richness by using <xref
                     linkend="gloss-stylesheet"/>s without absolute sizing or positioning.</para>
         </section>
-
+        
+        <section xml:id="sec-access-aria-describedat">
+            <title>Content Descriptions</title>
+            
+            <para>Although descriptions are commonly associated with image-based content, the ability
+                to describe any complex structure in a document is a necessary requirement to make the 
+                content more accessible. Describing complex tabular data can be beneficial to all readers,
+                for example.</para>
+            
+            <para>EPUB 3 includes two mechanisms for attaching descriptions to structures in XHTML Content
+                Documents. The <xref linkend="refARIA"/> <markup>aria-describedby</markup> attribute was 
+                allows enables linking to descriptions within the same page, and the <xref linkend="refARIA11"/>
+                <markup>aria-describedat</markup> attribute can be used to reference descriptions in another
+                file (which can be located inside or outside the EPUB Container).</para>
+        </section>
+        
         <section xml:id="sec-access-overlays">
             <title>Aural Renditions and Media Overlays</title>
 
@@ -829,7 +879,7 @@ Content/HelloWorld.xhtml
                 </listitem>
                 <listitem>
                     <para> The <olink targetdoc="contentdocs" targetptr="sec-xhtml-epub-switch"
-                            type="epub-spec">switch element</olink> provides a declaractive means
+                            type="epub-spec">switch element</olink> provides a declarative means
                         for Authors to tailor the content displayed to Users without having to
                         resort to scripted solutions.</para>
                 </listitem>
