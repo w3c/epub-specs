@@ -174,8 +174,7 @@
 		<mkdir dir="${dir.temp.spec}/60"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50/"
 			includes="**/*.xml" destdir="${dir.temp.spec}/60/" extension=".html"
-			style="${xslt.docbook2xhtml}"
-			excludes="**/*indexes.xml">
+			style="${xslt.docbook2xhtml}">
 
 			<param name="section.autolabel" expression="1"/>
 			<param name="part.autolabel" expression="1"/>
@@ -187,23 +186,6 @@
 			<param name="user.print.css" expression="../../css/epub-print.css"/>
 
 		</saxon-xslt>
-		
-		<!-- hack to deal with hardcoded css locations -->
-		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/50/"
-			includes="**/*indexes.xml" destdir="${dir.temp.spec}/60/" extension=".html"
-			style="${xslt.docbook2xhtml}">
-			
-			<param name="section.autolabel" expression="1"/>
-			<param name="part.autolabel" expression="1"/>
-			<param name="chapter.autolabel" expression="1"/>
-			<param name="toc.section.depth" expression="6"/>
-			<param name="section.label.includes.component.label" expression="1"/>
-			<param name="section.autolabel.max.depth" expression="8"/>
-			<param name="html.stylesheet" expression="../css/epub-spec.css"/>
-			<param name="user.print.css" expression="../css/epub-print.css"/>
-			
-		</saxon-xslt>
-		
 
 		<!-- run cleanup -->
 		<xslt classpathref="build.classpath" basedir="${dir.temp.spec}/60/"
@@ -230,9 +212,14 @@
 		<delete file="${dir.build.spec}/altss-tags.html"/>
 		<build-htaccess dest-dir="${dir.build.altss-tags}" index-name="altss-tags.html"/>
 
-		<!-- move the indexes spec -->
+		<!-- move the indexes spec and fix the css link -->
 		<mkdir dir="${dir.build.idx}"/>
-		<move file="${dir.build.spec}/epub-indexes.html" todir="${dir.build.idx}"/>
+		<saxon-xslt in="${dir.build.spec}/epub-indexes.html"
+			out="${dir.build.idx}/epub-indexes.html" classpathref="build.classpath"
+			style="${xslt.css.link.replacer}">
+			<param name="css.link" expression="reduce-depth"/>
+		</saxon-xslt>
+		<delete file="${dir.build.spec}/epub-indexes.html"/>
 		<build-htaccess dest-dir="${dir.build.idx}" index-name="epub-indexes.html"/>
 		
 		<!-- move the linking spec -->
