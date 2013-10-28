@@ -131,6 +131,14 @@
                     select="$topinfo/db:authorgroup[not(@role) or @role='current']"/>
             </xsl:call-template>
         </xsl:if>
+        <!-- authors -->
+        <xsl:if test="$topinfo/db:authorgroup[@role='authors']">
+            <xsl:call-template name="render-authorgroup">
+                <xsl:with-param name="title">Authors</xsl:with-param>
+                <xsl:with-param name="node"
+                    select="$topinfo/db:authorgroup[@role='authors']"/>
+            </xsl:call-template>
+        </xsl:if>
         <!--
         <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
             <xsl:call-template name="render-authorgroup">
@@ -156,7 +164,7 @@
                 <xsl:attribute name="class">bridgehead</xsl:attribute>
                 <xsl:value-of select="$title"/>
             </xsl:element>
-            <xsl:for-each select="$node/db:editor">
+            <xsl:for-each select="$node/db:editor|$node/db:author">
                 <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
                     <xsl:apply-templates select="." mode="class.attribute"/>
                     <xsl:choose>
