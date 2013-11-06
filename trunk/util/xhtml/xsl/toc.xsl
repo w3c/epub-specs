@@ -31,8 +31,13 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
+		<xsl:if test="following-sibling::xhtml:div[@class='printhistory']">
+			<xsl:copy-of select="following-sibling::xhtml:div[@class='printhistory']"/>
+		</xsl:if>
 		<xsl:call-template name="toc"/>
 	</xsl:template>
+	
+	<xsl:template match="xhtml:body/xhtml:div[@class='printhistory']"/>
 
 	<xsl:template name="toc">
 		<h2 id="tocxsl">Table of Contents</h2>

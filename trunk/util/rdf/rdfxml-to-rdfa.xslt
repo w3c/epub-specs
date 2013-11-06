@@ -28,7 +28,10 @@
 
 	<!-- whether to output a leading blurb on the nature of htu:usage (for epub structure vocab only) -->
 	<xsl:param name="output-htu-expl" required="no" select="0"/>
-
+	
+	<!-- whether to output version links  -->
+	<xsl:param name="output-version-links" required="no" select="0"/>
+	
 	<!-- URI of xhtml vocab -->
 	<xsl:variable name="xhv-uri">http://www.w3.org/1999/xhtml/vocab/#</xsl:variable>
 
@@ -69,6 +72,29 @@
 							select="$vocab-rdf-description/dcterms:title/text()"/>
 					</xsl:call-template>
 				</h1>
+				
+				<xsl:if test="$output-version-links eq '1'">
+					<div class="printhistory">
+						<dl class="printhistory">
+							<dt>This version</dt>
+							<dd>
+								<a class="link"
+									href="http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20131108.html">http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20131108.html</a>
+							</dd>
+							<dt>Latest version</dt>
+							<dd>
+								<a class="link" href="http://www.idpf.org/epub/vocab/structure">http://www.idpf.org/epub/vocab/structure</a>
+							</dd>
+							<dt>Previous version</dt>
+							<dd>
+								<a class="link"
+									href="http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html">http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html</a>
+							</dd>
+						</dl>
+						<p class="diff"> A <a class="link"
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4843&amp;old=4469&amp;r=4843&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure%2Fepub30-vocab-structure.html">diff of changes</a> from the previous version is also available. </p>
+					</div>
+				</xsl:if>
 
 				<div>
 					<h2>About this vocabulary</h2>
