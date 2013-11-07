@@ -91,8 +91,8 @@
 									href="http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html">http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html</a>
 							</dd>
 						</dl>
-						<p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4843&amp;old=4469&amp;r=4843&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure%2Fepub30-vocab-structure.html">diff of changes</a> from the previous version is also available. </p>
+						<!-- <p class="diff"> A <a class="link"
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4854&amp;old=4469&amp;r=4854&amp;format=side&amp;path=%2Fbuild%2Fvocab%2Fstructure%2Fepub-vocab-structure.html">diff of changes</a> from the previous version is also available. </p> -->
 					</div>
 				</xsl:if>
 
