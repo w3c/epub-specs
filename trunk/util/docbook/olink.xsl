@@ -27,18 +27,18 @@
 
     <!-- load all spec docs -->
     <xsl:variable name="doc-changes"
-        select="doc(concat($db-spec-base-uri-safe, 'epub30-changes.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub-changes.xml'))" as="document-node()"/>
     <xsl:variable name="doc-contentdocs"
-        select="doc(concat($db-spec-base-uri-safe, 'epub30-contentdocs.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub-contentdocs.xml'))" as="document-node()"/>
     <xsl:variable name="doc-mediaoverlays"
-        select="doc(concat($db-spec-base-uri-safe, 'epub30-mediaoverlays.xml'))"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-mediaoverlays.xml'))"
         as="document-node()"/>
-    <xsl:variable name="doc-ocf" select="doc(concat($db-spec-base-uri-safe, 'epub30-ocf.xml'))"
+    <xsl:variable name="doc-ocf" select="doc(concat($db-spec-base-uri-safe, 'epub-ocf.xml'))"
         as="document-node()"/>
     <xsl:variable name="doc-overview"
-        select="doc(concat($db-spec-base-uri-safe, 'epub30-overview.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub-overview.xml'))" as="document-node()"/>
     <xsl:variable name="doc-publications"
-        select="doc(concat($db-spec-base-uri-safe, 'epub30-publications.xml'))" as="document-node()"/>
+        select="doc(concat($db-spec-base-uri-safe, 'epub-publications.xml'))" as="document-node()"/>
     <xsl:variable name="doc-cfi"
         select="doc(concat($db-spec-base-uri-safe, 'epub-cfi.xml'))" as="document-node()"/>
     
@@ -167,17 +167,17 @@
                      <xsl:if test="matches($targetdoc, 'cfi')">../../linking/</xsl:if>
                 </xsl:when>
                 <xsl:when test="$spec-group='linking'">
-                    <xsl:if test="not(matches($targetdoc, 'cfi'))">../../30/spec/</xsl:if>
+                    <xsl:if test="not(matches($targetdoc, 'cfi'))">../../301/spec/</xsl:if>
                 </xsl:when>
             </xsl:choose>
             <xsl:choose>
-                <xsl:when test="matches($targetdoc, 'changes')">epub30-changes.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'contentdocs')">epub30-contentdocs.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'changes')">epub-changes.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'contentdocs')">epub-contentdocs.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'mediaoverlays')"
-                    >epub30-mediaoverlays.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'ocf')">epub30-ocf.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'overview')">epub30-overview.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'publications')">epub30-publications.html</xsl:when>
+                    >epub-mediaoverlays.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'ocf')">epub-ocf.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'overview')">epub-overview.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'publications')">epub-publications.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'cfi')">cfi/epub-cfi.html</xsl:when>
                 <xsl:otherwise>
                     <xsl:message terminate="yes">no match for $targetdoc in
@@ -191,10 +191,10 @@
     <xsl:function name="fn:getBiblioRef" as="text()">
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:choose>
-            <xsl:when test="matches($targetdoc, 'changes')">refChanges30</xsl:when>
+            <xsl:when test="matches($targetdoc, 'changes')">refChanges3</xsl:when>
             <xsl:when test="matches($targetdoc, 'contentdocs')">refContentDocs3</xsl:when>
             <xsl:when test="matches($targetdoc, 'mediaoverlays')">refOverlays3</xsl:when>
-            <xsl:when test="matches($targetdoc, 'ocf')">refOCF30</xsl:when>
+            <xsl:when test="matches($targetdoc, 'ocf')">refOCF3</xsl:when>
             <xsl:when test="matches($targetdoc, 'overview')">refEPUB3Overview</xsl:when>
             <xsl:when test="matches($targetdoc, 'publications')">refPublications3</xsl:when>
             <xsl:when test="matches($targetdoc, 'cfi')">refEPUBCFI</xsl:when>
