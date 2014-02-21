@@ -64,6 +64,15 @@
 					</xsl:choose>
 				</xsl:for-each>
 				<link rel="stylesheet" type="text/css" href="../../css/epub-spec.css"/>
+				<style type="text/css">
+					p.identity {
+						margin-top: -3em;
+						font-size: 75%;
+					}
+					span.pubdate { 
+						color: rgb(0,0,0);
+					}	
+				</style>
 			</head>
 			<body>
 				<h1 property="dcterms:title">
@@ -75,6 +84,10 @@
 				
 				<xsl:if test="$output-version-links eq '1'">
 					<div class="printhistory">
+						<p class="identity">
+							<span class="pubdate">8 November 2013</span>
+						</p>
+						
 						<dl class="printhistory">
 							<dt>This version</dt>
 							<dd>
