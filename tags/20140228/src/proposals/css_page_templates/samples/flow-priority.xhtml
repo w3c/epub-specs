@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Flow-priority property</title>
+</head>
+<style>
+p {
+	text-align: justify;
+	margin: 0px;
+	text-indent: 1.5em;
+	line-height: 1.333;
+}
+
+@pgt
+{
+	h1 { 
+		flow-name: T;
+		font-size: 1.7em;
+		font-family: sans-serif;
+		text-align: center;
+	}
+	.pq {
+		text-indent: 0px;
+		font-variant: small-caps;
+		font-size: 1.5em;
+		flow-name: PQ;
+		margin: 0px;
+		text-align: center;
+		flow-options: exclusive;
+		flow-linger: 0;
+		line-height: 1.1;
+	}
+	.best {
+		flow-priority: 3;
+	}
+	.good {
+		flow-priority: 2;
+	}
+	.lame {
+		flow-priority: 1;
+	}
+	
+	@page-master
+	{
+		@region title
+		{
+			flow-name: T;
+			margin: 1em 0.5em;
+		}
+		
+		@region pull-quote
+		{
+			flow-name: PQ;
+			width: expr(max(20em,40%));
+			left: expr(50% - pull-quote.width/2);
+			top: expr(title.bottom-edge + 30%);
+			margin: 1.2em 1em 0.5em 1em;
+		}
+			
+		@region body
+		{
+			column-count: 2;
+			column-gap: 1.5em;
+			margin: 1em;
+		}
+	}
+}
+</style>
+<body>
+<h1>Producing pull quotes using Page Templates</h1>
+<p>To create pull quotes, three Page Template properties can be
+used together: <em>flow-options</em>, <em>flow-priority</em> and <em>flow-linger</em>.
+<em>Flow-options</em> should be simply set to <em>exclusive</em>. This ensures
+that only one pull quote is used per region. <em>Flow-priority</em> should be set
+to an integer which corresponds to the quality of the pull quote, the better the
+quote is, the higher the priority should be. <em>Flow-linger</em> typically should be
+set to <em>0</em> or <em>1</em>, it corresponds to the relevance of the pull quote.</p>
+<p class="pq lame"><em>Flow-options</em> should be simply set to <em>exclusive.</em></p>
+<p>In the simplest case, we want to present only one pull quote per page. This
+means that when page size is small (or the font size is large), we will need lots of
+pull quotes and when the page size is large (or the font size is small), we will
+need only a few. This means that we need to have a lot of possible pull quotes
+in our content and allow for the selection of the pull quotes that will be used
+at rendering time. Without <em>flow-priority</em> property, the layout system will simply
+pick the last pull quote that it have seen. That is not desireable, as it may be
+not the best one. Additional information needs to be provided that would allow
+the layout system to know which pull quotes are best. <em>Flow-priority</em>
+property serves that need.</p>
+<p class="pq good">Without <em>flow-priority</em> property, the system will simply
+pick the last pull quote that it have seen.</p>
+<p>It is convenient to define a CSS class for the pull quote itself, adding all the
+necessary styling information there: font properties, text alignment, perhaps color.
+<em>Flow-options</em> can be set to <em>exclusive</em> there as well. In addition to that
+class, several other CSS classes can be defined that would convey the <em>flow-priority</em>.
+For instance, in this example, I have defined three classes: "best", "good", and "lame"
+with <em>flow-priority</em> set to 3, 2, and 1, respectively.</p>
+<p class="pq lame">Each pull quote is represented by a p element</p>
+<p>Each pull quote is represented by a p element. While you may think that pull quote
+content could be simply marked up as such and used both in the article flow and
+for the pull quote, in reality it does not quite work this way. Pull quotes are
+presented in sligtly different way in many cases; some words can be dropped or inserted,
+styling can be somewhat changed, etc. Not all of these modifications are possible or
+convenient to do using CSS alone, so it is more flexible to just accept that pull quote
+content is different from the corresponding content in the article itself.</p>
+<p>Getting back to the CSS classes that we defined, styling a pull quote
+element always requires two classes: one to designate the element as a pull quote
+and the other to assign its priority. So a pull quote in this sample looks like this:</p>
+<pre>&lt;p class="pq good"&gt;
+A good pull quote
+&lt;p&gt;</pre>
+<p>We mostly think of pull quotes as text, but any content can be presented in the
+similar way: an image, a chart, some sort of decoration, etc. The rules are exactly the
+same. If some content makes sense on every page, additional value should be
+specified in <em>flow-options</em> property: <em>static</em>. It can be used together
+with <em>exclusive</em> and it means that the content should be eligible to be presented
+multiple times</p> 
+<p class="pq best"><em>Flow-linger</em> property takes an integer value</p>
+<p>Now, let's drill down into <em>flow-linger</em> property. That property takes an
+integer value which determines how long the content can be used after it is encountered.
+The number means how many times the content can be moved to the next page (by default
+it is not limited).</p>
+<p>Why do we need to worry about it? Remember that we'd typically have more pull quotes than the slots
+for them and we'd have a bunch of unused pull quotes at the end of the page. Should
+they be cleared or reused? Most pull quotes are fairly content-specific and it does
+not make much sense to present them several pages after they are encountered. In
+that case <em>flow-linger</em> should be set to 0. However, some pull quotes may make sense
+in the context of the whole article. <em>Flow-linger</em> should not be set for
+those (or it should be set to a larger number). In general, the more relevant a
+piece of content is the higher its <em>flow-linger</em> should be set.</p>
+<p>Finally, one more thing that we should worry about is the "last page problem". Unless
+text fitting is employed, the last page would, in most cases, have a lot of blank space
+on it. Pull quotes look wierd in that situation. Fortunately, they can be turned off
+by this trick: specify empty highest-priority pull quote somewhere close to the
+end of the document. Layout engine will pick that pull quote up as the most appropriate,
+but since it is empty, it won't have any visual effect.</p>
+<p class="pq best"/>
+</body>
+</html>
