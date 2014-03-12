@@ -8,6 +8,7 @@
 	xmlns:zt="http://www.daisy.org/ns/rdf/property#"
 	xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#"
 	xmlns:mou="http://www.daisy.org/ns/rdf/usage/media-overlays/#"
+	xmlns:epub="http://www.idpf.org/epub/vocab#"
 	exclude-result-prefixes="zf xsl rdfs rdf dcterms owl xsd role htu zt mou">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" omit-xml-declaration="no" indent="yes"/>
@@ -85,14 +86,14 @@
 				<xsl:if test="$output-version-links eq '1'">
 					<div class="printhistory">
 						<p class="identity">
-							<span class="pubdate">8 November 2013</span>
+							<span class="pubdate">28 February 2014</span>
 						</p>
 						
 						<dl class="printhistory">
 							<dt>This version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html</a>
 							</dd>
 							<dt>Latest version</dt>
 							<dd>
@@ -101,13 +102,44 @@
 							<dt>Previous version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html">http://www.idpf.org/epub/vocab/structure/epub30-vocab-structure-20111011.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html</a>
 							</dd>
 						</dl>
 						<p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4858&amp;old=3218&amp;r=4858&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4907&amp;old=4858&amp;r=4907&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 					</div>
 				</xsl:if>
+				
+				<div>
+					<h2>Status of this Document</h2>
+					
+					<p>This document contains the following terms introduced during the ongoing <a href="http://www.idpf.org/epub/301">EPUB 
+						3.0.1 revision</a>:</p>
+					
+					<ul>
+						<li>assessment</li>
+						<li>figure</li>
+						<li>heading-label</li>
+						<li>heading-number</li>
+						<li>learning-objective</li>
+						<li>learning-resource</li>
+						<li>loa</li>
+						<li>lov</li>
+						<li>outcome</li>
+						<li>qna</li>
+						<li>revision-history</li>
+						<li>standard</li>
+					</ul>
+					
+					<p>All terms in the <a href="#h_indexes">Indexes</a> section, with the exception of the <code>index</code> term, are 
+						new in the <a href="http://www.idpf.org/epub/idx">EPUB Indexes specification</a>, which is now a Proposed
+						Specification.</p>
+					
+					<p>Until these specifications reach final Recommended Specification status, any use of the associated terms should 
+						be considered experimental.</p>
+					
+					<p>All other terms in this document are stable.</p>
+				</div>
 
 				<div>
 					<h2>About this vocabulary</h2>
@@ -265,6 +297,13 @@
 				<xsl:with-param name="members" select="htu:usage"/>
 			</xsl:call-template>
 		</xsl:if>
+		<xsl:if test="epub:usage">
+			<!-- output without rdfa properties kept -->
+			<xsl:call-template name="render-sub-dl-plain">
+				<xsl:with-param name="label">Usage details: </xsl:with-param>
+				<xsl:with-param name="members" select="epub:usage"/>
+			</xsl:call-template>
+		</xsl:if>
 		<xsl:if test="mou:usage">
 			<!-- output without rdfa properties kept -->
 			<xsl:call-template name="render-sub-dl-plain">
@@ -366,7 +405,7 @@
 					<xsl:choose>
 						<xsl:when test="position() eq last()"/>
 						<xsl:when test="position() eq last() - 1">
-							<xsl:text> and </xsl:text>
+							<xsl:text> or </xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:text>, </xsl:text>
