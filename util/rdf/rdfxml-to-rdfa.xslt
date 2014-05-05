@@ -70,9 +70,19 @@
 						margin-top: -3em;
 						font-size: 75%;
 					}
+					p.noindent {
+						margin-left: -2.4em;
+					}
 					span.pubdate { 
 						color: rgb(0,0,0);
-					}	
+					}
+					span.status {
+						color: rgb(190,0,0);
+						font-size: 80%;
+						font-weight: bold;
+						text-transform: uppercase;
+						margin-left: 0.3em;
+					}
 				</style>
 			</head>
 			<body>
@@ -113,32 +123,20 @@
 				<div>
 					<h2>Status of this Document</h2>
 					
-					<p>This document contains the following terms introduced during the ongoing <a href="http://www.idpf.org/epub/301">EPUB 
-						3.0.1 revision</a>:</p>
-					
-					<ul>
-						<li>assessment</li>
-						<li>figure</li>
-						<li>heading-label</li>
-						<li>heading-number</li>
-						<li>learning-objective</li>
-						<li>learning-resource</li>
-						<li>loa</li>
-						<li>lov</li>
-						<li>outcome</li>
-						<li>qna</li>
-						<li>revision-history</li>
-						<li>standard</li>
-					</ul>
+					<p>This document contains draft terms introduced during the <a href="http://www.idpf.org/epub/301">EPUB 
+						3.0.1 revision</a> and from the <a href="http://www.idpf.org/epub/profiles/edu/10">EDUPUB profile</a>.</p>
 					
 					<p>All terms in the <a href="#h_indexes">Indexes</a> section, with the exception of the <code>index</code> term, are 
 						new in the <a href="http://www.idpf.org/epub/idx">EPUB Indexes specification</a>, which is now a Proposed
 						Specification.</p>
 					
-					<p>Until these specifications reach final Recommended Specification status, any use of the associated terms should 
-						be considered experimental.</p>
+					<p>Until these specifications reach final Recommended Specification status, any use of the terms marked <span class="status">[draft]</span>
+						should be considered experimental.</p>
 					
-					<p>All other terms in this document are stable.</p>
+					<p>Deprecated term are identified by the label <span class="status">[deprecated]</span>. These terms are no longer recommended
+						for use.</p>
+					
+					<p>All unlabled terms are considered stable.</p>
 				</div>
 
 				<div>
@@ -209,9 +207,11 @@
 					</p>
 				</xsl:for-each>
 			</xsl:if>
-			<dl about="#{$id}" rev="rdfs:member">
-				<xsl:apply-templates select="./rdf:Description"/>
-			</dl>
+			<xsl:if test="./rdf:Description">
+				<dl about="#{$id}" rev="rdfs:member">
+					<xsl:apply-templates select="./rdf:Description"/>
+				</dl>
+			</xsl:if>
 			<xsl:apply-templates select="./rdf:Bag"/>
 		</div>
 	</xsl:template>
@@ -220,6 +220,9 @@
 		<xsl:variable name="about" select="@rdf:ID"/>
 		<dt id="{$about}" about="#{$about}" typeof="{zf:get-type(rdf:type/@rdf:resource)}">
 			<xsl:value-of select="rdfs:label"/>
+			<xsl:if test="epub:status">
+				<span class="status"> [<xsl:value-of select="epub:status"/>]</span>
+			</xsl:if>
 		</dt>
 		<!-- create a datatype variable -->
 		<xsl:variable name="datatype">
@@ -236,7 +239,7 @@
 
 		<!-- first a generic loop -->
 		<xsl:for-each
-			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|epub:usage|mou:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
+			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|epub:status|epub:usage|mou:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
 			<dd about="#{$about}" property="{name(.)}" datatype="{$datatype}">
 				<p>
 					<xsl:call-template name="wiki-links-to-xhtml">
