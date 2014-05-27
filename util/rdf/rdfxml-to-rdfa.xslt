@@ -96,14 +96,14 @@
 				<xsl:if test="$output-version-links eq '1'">
 					<div class="printhistory">
 						<p class="identity">
-							<span class="pubdate">28 February 2014</span>
+							<span class="pubdate">28 May 2014</span>
 						</p>
 						
 						<dl class="printhistory">
 							<dt>This version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html</a>
 							</dd>
 							<dt>Latest version</dt>
 							<dd>
@@ -112,11 +112,11 @@
 							<dt>Previous version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20131108.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html</a>
 							</dd>
 						</dl>
 						<p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4907&amp;old=4858&amp;r=4907&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4917&amp;old=4907&amp;r=4917&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 					</div>
 				</xsl:if>
 				
@@ -130,8 +130,8 @@
 						new in the <a href="http://www.idpf.org/epub/idx">EPUB Indexes specification</a>, which is now a Proposed
 						Specification.</p>
 					
-					<p>Until these specifications reach final Recommended Specification status, any use of the terms marked <span class="status">[draft]</span>
-						should be considered experimental.</p>
+					<p>Any use of the terms marked <span class="status">[draft]</span> should be considered experimental
+						until their respective specifications reach final Recommended Specification status.</p>
 					
 					<p>Deprecated term are identified by the label <span class="status">[deprecated]</span>. These terms are no longer recommended
 						for use.</p>
@@ -151,8 +151,8 @@
 								</p>
 							</xsl:for-each>
 							<xsl:if test="$output-htu-expl eq '1'">
-								<p class="output-htu-expl" id="htu-expl">The <em>HTML usage 
-										context</em> fields indicate contexts in HTML5 documents 
+								<p class="output-htu-expl" id="htu-expl">The <i>HTML usage 
+										context</i> fields indicate contexts in HTML5 documents 
 									where the given property is considered relevant. Authors may 
 									use the properties on HTML5 markup elements not specifically 
 									listed, but must ensure that the semantics they express represent 
@@ -162,6 +162,8 @@
 									Systems may ignore such non-compliant properties, unless their 
 									usage context is explicitly overridden or extended by the host 
 									specification.</p>
+								<p>The <i>Usage Details</i> sections identify IDPF specifications
+									that define or utilize the specified properties.</p>
 							</xsl:if>
 						</div>
 					</xsl:if>
