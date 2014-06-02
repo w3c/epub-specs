@@ -116,7 +116,7 @@
 							</dd>
 						</dl>
 						<p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4917&amp;old=4907&amp;r=4917&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4918&amp;old=4907&amp;r=4918&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 					</div>
 				</xsl:if>
 				
@@ -225,6 +225,9 @@
 			<xsl:if test="epub:status">
 				<span class="status"> [<xsl:value-of select="epub:status"/>]</span>
 			</xsl:if>
+			<xsl:if test="owl:deprecated">
+				<span class="status" property="owl:deprecated" content="true"> [deprecated]</span>
+			</xsl:if>
 		</dt>
 		<!-- create a datatype variable -->
 		<xsl:variable name="datatype">
@@ -241,7 +244,7 @@
 
 		<!-- first a generic loop -->
 		<xsl:for-each
-			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|epub:status|epub:usage|mou:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
+			select="./*[not(matches(name(.),'rdfs:label|rdf:type|rdfs:subPropertyOf|rdfs:subClassOf|rdfs:seeAlso|owl:sameAs|owl:equivalentProperty|rdfs:datatype|role:scope|htu:usage|epub:status|epub:usage|owl:deprecated|dcterms:isReplacedBy|mou:usage|zt:ex|zt:extends|zt:for|zt:value'))]">
 			<dd about="#{$about}" property="{name(.)}" datatype="{$datatype}">
 				<p>
 					<xsl:call-template name="wiki-links-to-xhtml">
@@ -314,6 +317,13 @@
 			<xsl:call-template name="render-sub-dl-plain">
 				<xsl:with-param name="label">Media Overlays usage context: </xsl:with-param>
 				<xsl:with-param name="members" select="mou:usage"/>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:if test="dcterms:isReplacedBy">
+			<xsl:call-template name="render-sub-dl">
+				<xsl:with-param name="label">Replaced by:</xsl:with-param>
+				<xsl:with-param name="about" select="$about"/>
+				<xsl:with-param name="members" select="dcterms:isReplacedBy"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
