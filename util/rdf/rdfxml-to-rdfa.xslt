@@ -96,14 +96,14 @@
 				<xsl:if test="$output-version-links eq '1'">
 					<div class="printhistory">
 						<p class="identity">
-							<span class="pubdate">28 May 2014</span>
+							<span class="pubdate">26 June 2014</span>
 						</p>
 						
 						<dl class="printhistory">
 							<dt>This version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140626.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140626.html</a>
 							</dd>
 							<dt>Latest version</dt>
 							<dd>
@@ -112,19 +112,18 @@
 							<dt>Previous version</dt>
 							<dd>
 								<a class="link"
-									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140228.html</a>
+									href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140528.html</a>
 							</dd>
 						</dl>
 						<p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4918&amp;old=4907&amp;r=4918&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4922&amp;old=4918&amp;r=4922&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 					</div>
 				</xsl:if>
 				
 				<div>
 					<h2>Status of this Document</h2>
 					
-					<p>This document contains draft terms introduced during the <a href="http://www.idpf.org/epub/301">EPUB 
-						3.0.1 revision</a> and from the <a href="http://www.idpf.org/epub/profiles/edu/10">EDUPUB profile</a>.</p>
+					<p>This document contains draft terms from the <a href="http://www.idpf.org/epub/profiles/edu/10">EDUPUB profile</a>.</p>
 					
 					<p>All terms in the <a href="#h_indexes">Indexes</a> section, with the exception of the <code>index</code> term, are 
 						new in the <a href="http://www.idpf.org/epub/idx">EPUB Indexes specification</a>, which is now a Proposed
