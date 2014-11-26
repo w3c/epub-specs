@@ -138,7 +138,7 @@
 									<dt>This version</dt>
 									<dd>
 										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141119.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141119.html</a>
+											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141125.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141125.html</a>
 									</dd>
 									<dt>Latest version</dt>
 									<dd>
@@ -147,11 +147,11 @@
 									<dt>Previous version</dt>
 									<dd>
 										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140902.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20140902.html</a>
+											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141119.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141119.html</a>
 									</dd>
 								</dl>
 								<p class="diff"> A <a class="link"
-									href="http://code.google.com/p/epub-revision/source/diff?spec=svn4941&amp;old=4924&amp;r=4941&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+									href="http://code.google.com/p/epub-revision/source/diff?spec=svn4943&amp;old=4941&amp;r=4943&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 							</div>
 						</xsl:otherwise>
 					</xsl:choose>
