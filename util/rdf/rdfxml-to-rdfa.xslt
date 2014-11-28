@@ -151,7 +151,7 @@
 									</dd>
 								</dl>
 								<p class="diff"> A <a class="link"
-									href="http://code.google.com/p/epub-revision/source/diff?spec=svn4945&amp;old=4943&amp;r=4945&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
+									href="http://code.google.com/p/epub-revision/source/diff?spec=svn4946&amp;old=4943&amp;r=4946&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fstructure.n3">diff of changes</a> from the previous version is also available. </p>
 							</div>
 						</xsl:otherwise>
 					</xsl:choose>
