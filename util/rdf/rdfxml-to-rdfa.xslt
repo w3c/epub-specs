@@ -131,14 +131,14 @@
 						<xsl:otherwise>
 							<div class="printhistory">
 								<p class="identity">
-									<span class="pubdate">17 July 2015</span>
+									<span class="pubdate">26 August 2015</span>
 								</p>
 								
 								<dl class="printhistory">
 									<dt>This version</dt>
 									<dd>
 										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
+											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150826.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150826.html</a>
 									</dd>
 									<dt>Latest version</dt>
 									<dd>
@@ -147,11 +147,11 @@
 									<dt>Previous version</dt>
 									<dd>
 										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html</a>
+										   href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
 									</dd>
 								</dl>
 								<p class="diff"> A <a class="link"
-									href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3">history of changes</a> is also available. </p>
+									href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3">history of changes</a> to this document is available for review. </p>
 							</div>
 						</xsl:otherwise>
 					</xsl:choose>
