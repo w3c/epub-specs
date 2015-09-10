@@ -139,6 +139,13 @@
                     select="$topinfo/db:authorgroup[@role='authors']"/>
             </xsl:call-template>
         </xsl:if>
+        <xsl:if test="db:preface[@role='sotd']">
+            <xsl:element name="div">
+                <xsl:attribute name="id">sotd</xsl:attribute>
+                <xsl:element name="h2">Status of this Document</xsl:element>
+                <xsl:apply-templates select="db:preface[@role='sotd']/*[not(self::db:title)]"/>
+            </xsl:element>
+        </xsl:if>
         <!--
         <xsl:if test="$topinfo/db:authorgroup[@role='previous']">
             <xsl:call-template name="render-authorgroup">
@@ -154,6 +161,8 @@
     		</xsl:element>
     	</xsl:if>
     </xsl:template>
+    
+    <xsl:template match="db:preface[@role='sotd']"/>
 
     <xsl:template name="render-authorgroup">
         <xsl:param name="title"/>
