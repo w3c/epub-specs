@@ -41,7 +41,7 @@
 		select="//rdf:Description[@rdf:about=$vocab-uri]|//rdf:Description[@rdf:about='']|//rdf:Description[@rdf:about='.']"/>
 
 	<xsl:template match="rdf:RDF">
-		<html xml:lang="en-US" version="XHTML+RDFa 1.0"
+		<html xml:lang="en-US"
 			xmlns:dcterms="http://purl.org/dc/terms/" 
   			xmlns:owl="http://www.w3.org/2002/07/owl#"
   			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -50,7 +50,7 @@
   			xmlns:role="http://www.w3.org/1999/xhtml/vocab#"
   			xmlns:htu="http://www.daisy.org/ns/rdf/usage/html/#">
 			<head>
-				<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+				<meta charset="utf-8"/>
 				<xsl:for-each select="$vocab-rdf-description/*">
 					<xsl:choose>
 						<xsl:when test="name(.) eq 'dcterms:title'">

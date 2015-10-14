@@ -15,7 +15,7 @@
 	</xsl:template>
 	
 	<xsl:template match="xhtml:html">
-		<html xml:lang="en-US" version="XHTML+RDFa 1.0"
+		<html xml:lang="en-US"
 			xmlns:dcterms="http://purl.org/dc/terms/" 
   			xmlns:owl="http://www.w3.org/2002/07/owl#"
   			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

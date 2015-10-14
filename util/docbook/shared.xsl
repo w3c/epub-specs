@@ -1228,7 +1228,7 @@
 
     <!-- override, to avoid nested table layout -->
     <xsl:template match="productionset">
-        <table border="0">
+        <table>
             <xsl:attribute name="style">
                 <xsl:text>width: 100%; border-spacing: 0; border-collapse: collapse;</xsl:text>
                 <xsl:if test="$ebnf.table.bgcolor != ''">
