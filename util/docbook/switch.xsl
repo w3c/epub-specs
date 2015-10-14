@@ -6,6 +6,7 @@
      
     <xsl:variable name="current-spec-token">           
         <xsl:choose>
+            <xsl:when test="ends-with(document-uri(/), 'spec.xml')">spec</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'changes.xml')">changes</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'contentdocs.xml')">contentdocs</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'mediaoverlays.xml')">mediaoverlays</xsl:when>
@@ -14,6 +15,7 @@
             <xsl:when test="ends-with(document-uri(/), 'publications.xml')">publications</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'cfi.xml')">cfi</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'indexes.xml')">indexes</xsl:when>
+            <xsl:when test="ends-with(document-uri(/), 'terminology.xml')">terminology</xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $current-spec-token in match.xsl</xsl:message>
             </xsl:otherwise>

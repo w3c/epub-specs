@@ -84,11 +84,16 @@
 						color: rgb(0,0,0);
 					}
 					span.status {
-						color: rgb(190,0,0);
 						font-size: 80%;
 						font-weight: bold;
 						text-transform: uppercase;
 						margin-left: 0.3em;
+					}
+					span.deprecated {
+						color: rgb(190,0,0);
+					}
+					span.draft {
+					color: rgb(240,144,48);
 					}
 				</style>
 			</head>
@@ -131,14 +136,14 @@
 						<xsl:otherwise>
 							<div class="printhistory">
 								<p class="identity">
-									<span class="pubdate">26 August 2015</span>
+									<span class="pubdate">17 July 2015</span>
 								</p>
 								
 								<dl class="printhistory">
 									<dt>This version</dt>
 									<dd>
 										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150826.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150826.html</a>
+											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
 									</dd>
 									<dt>Latest version</dt>
 									<dd>
@@ -147,11 +152,11 @@
 									<dt>Previous version</dt>
 									<dd>
 										<a class="link"
-										   href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
+											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html</a>
 									</dd>
 								</dl>
 								<p class="diff"> A <a class="link"
-									href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3">history of changes</a> to this document is available for review. </p>
+									href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3">history of changes</a> is also available. </p>
 							</div>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -171,10 +176,10 @@
 								Specification.</p>
 						</xsl:otherwise>
 					</xsl:choose>
-					<p>Any use of the terms marked <span class="status">[draft]</span> should be considered experimental
+					<p>Any use of the terms marked <span class="status draft">[draft]</span> should be considered experimental
 						until their respective specifications reach final Recommended Specification status.</p>
 					
-					<p>Deprecated term are identified by the label <span class="status">[deprecated]</span>. These terms are no longer recommended
+					<p>Deprecated term are identified by the label <span class="status deprecated">[deprecated]</span>. These terms are no longer recommended
 						for use.</p>
 					
 					<p>All unlabled terms are considered stable.</p>
@@ -288,10 +293,10 @@
 		<dt id="{$about}" about="#{$about}" typeof="{zf:get-type(rdf:type/@rdf:resource)}">
 			<xsl:value-of select="rdfs:label"/>
 			<xsl:if test="epub:status">
-				<span class="status"> [<xsl:value-of select="epub:status"/>]</span>
+				<span class="status draft"> [<xsl:value-of select="epub:status"/>]</span>
 			</xsl:if>
 			<xsl:if test="owl:deprecated">
-				<span class="status" property="owl:deprecated" content="true"> [deprecated]</span>
+				<span class="status deprecated" property="owl:deprecated" content="true"> [deprecated]</span>
 			</xsl:if>
 		</dt>
 		<!-- create a datatype variable -->

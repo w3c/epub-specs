@@ -28,17 +28,18 @@
     <!-- load all spec docs -->
     <xsl:variable name="doc-changes"
         select="doc(concat($db-spec-base-uri-safe, 'epub-changes.xml'))" as="document-node()"/>
-    <xsl:variable name="doc-contentdocs"
-        select="doc(concat($db-spec-base-uri-safe, 'epub-contentdocs.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-spec"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-spec.xml'))"
+        as="document-node()"/>
+    <xsl:variable name="doc-publications"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-publications.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-ocf"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-ocf.xml'))" as="document-node()"/>
     <xsl:variable name="doc-mediaoverlays"
         select="doc(concat($db-spec-base-uri-safe, 'epub-mediaoverlays.xml'))"
         as="document-node()"/>
-    <xsl:variable name="doc-ocf" select="doc(concat($db-spec-base-uri-safe, 'epub-ocf.xml'))"
-        as="document-node()"/>
     <xsl:variable name="doc-overview"
         select="doc(concat($db-spec-base-uri-safe, 'epub-overview.xml'))" as="document-node()"/>
-    <xsl:variable name="doc-publications"
-        select="doc(concat($db-spec-base-uri-safe, 'epub-publications.xml'))" as="document-node()"/>
     <xsl:variable name="doc-cfi"
         select="doc(concat($db-spec-base-uri-safe, 'epub-cfi.xml'))" as="document-node()"/>
     
@@ -68,13 +69,16 @@
             <xsl:copy-of select="@*[namespace-uri() eq 'http://www.idpf.org/2011/epub']"/>
 
             <xsl:element name="link" namespace="http://docbook.org/ns/docbook">
+                <xsl:if test="contains($targetptr,'gloss-')">
+                    <xsl:attribute name="role">glossterm</xsl:attribute>
+                </xsl:if>
                 <xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
                     <xsl:value-of select="$dest-doc-uri"/>#<xsl:value-of select="$targetptr"/>
                 </xsl:attribute>
                 <xsl:copy-of select="$link-label"/>
             </xsl:element>
                         
-            <xsl:if test="not(@epub:specref-exclude)">
+            <xsl:if test="not(@epub:specref-exclude) and not(contains($targetptr,'gloss-'))">
                 <xsl:text> </xsl:text>
                 <xsl:element name="xref" namespace="http://docbook.org/ns/docbook">
                     <xsl:attribute name="linkend">
@@ -131,23 +135,23 @@
     <xsl:function name="fn:getDestDoc" as="document-node()">
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:choose>
-            <xsl:when test="matches($targetdoc, 'changes')">
-                <xsl:sequence select="$doc-changes"/>
+            <xsl:when test="matches($targetdoc, 'spec')">
+                <xsl:sequence select="$doc-spec"/>
             </xsl:when>
-            <xsl:when test="matches($targetdoc, 'contentdocs')">
-                <xsl:sequence select="$doc-contentdocs"/>
-            </xsl:when>
-            <xsl:when test="matches($targetdoc, 'mediaoverlays')">
-                <xsl:sequence select="$doc-mediaoverlays"/>
+            <xsl:when test="matches($targetdoc, 'publications')">
+                <xsl:sequence select="$doc-publications"/>
             </xsl:when>
             <xsl:when test="matches($targetdoc, 'ocf')">
                 <xsl:sequence select="$doc-ocf"/>
             </xsl:when>
+            <xsl:when test="matches($targetdoc, 'changes')">
+                <xsl:sequence select="$doc-changes"/>
+            </xsl:when>
+            <xsl:when test="matches($targetdoc, 'mediaoverlays')">
+                <xsl:sequence select="$doc-mediaoverlays"/>
+            </xsl:when>
             <xsl:when test="matches($targetdoc, 'overview')">
                 <xsl:sequence select="$doc-overview"/>
-            </xsl:when>
-            <xsl:when test="matches($targetdoc, 'publications')">
-                <xsl:sequence select="$doc-publications"/>
             </xsl:when>
             <xsl:when test="matches($targetdoc, 'cfi')">
                 <xsl:sequence select="$doc-cfi"/>
@@ -171,6 +175,7 @@
                 </xsl:when>
             </xsl:choose>
             <xsl:choose>
+                <xsl:when test="matches($targetdoc, 'spec')">epub-spec.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'changes')">epub-changes.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'contentdocs')">epub-contentdocs.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'mediaoverlays')"
@@ -179,6 +184,7 @@
                 <xsl:when test="matches($targetdoc, 'overview')">epub-overview.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'publications')">epub-publications.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'cfi')">cfi/epub-cfi.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'terminology')">epub-terminology.html</xsl:when>
                 <xsl:otherwise>
                     <xsl:message terminate="yes">no match for $targetdoc in
                         olink.xsl#fn:getDestDocHTMLURI (<xsl:value-of select="$targetdoc"
@@ -191,6 +197,7 @@
     <xsl:function name="fn:getBiblioRef" as="text()">
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:choose>
+            <xsl:when test="matches($targetdoc, 'spec')">refEPUB3</xsl:when>
             <xsl:when test="matches($targetdoc, 'changes')">refChanges3</xsl:when>
             <xsl:when test="matches($targetdoc, 'contentdocs')">refContentDocs3</xsl:when>
             <xsl:when test="matches($targetdoc, 'mediaoverlays')">refOverlays3</xsl:when>
@@ -198,6 +205,7 @@
             <xsl:when test="matches($targetdoc, 'overview')">refEPUB3Overview</xsl:when>
             <xsl:when test="matches($targetdoc, 'publications')">refPublications3</xsl:when>
             <xsl:when test="matches($targetdoc, 'cfi')">refEPUBCFI</xsl:when>
+            <xsl:when test="matches($targetdoc, 'terminology')">refEPUBTERMS</xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $targetdoc in olink.xsl#fn:getBiblioRef
                         (<xsl:value-of select="$targetdoc"/>)</xsl:message>

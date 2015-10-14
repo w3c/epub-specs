@@ -38,11 +38,13 @@ public class GlosslistHandler {
 			if(file.getCanonicalPath().endsWith(".xml")) {				
 				Builder builder = new Builder();
 				Document doc = builder.build(file);
+				if (!file.getCanonicalPath().contains("terminology")) {
 				try{
 					doc = process(doc);
 				}catch (Exception e) {
 					System.err.println("Error processing " + file.getName());
 					throw e;
+				}
 				}
 				serialize(doc, new File(outDir, file.getName()));
 			}
