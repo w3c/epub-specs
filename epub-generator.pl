@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use File::Copy;
 use File::Copy::Recursive qw(dircopy);
 use File::Find;
 use File::Path;
@@ -21,17 +22,17 @@ my %core_media = (
 );
 
 my %alt_media = (
-    'rnc' => 'application/rnc',
-    'rng' => 'application/xml',
-    'sch' => 'application/xml',
-    'nvdl' => 'application/xml',
-    'xml' => 'application/xml',
     'txt' => 'text/plain'
 );
 
 my %strip = (
     'gz' => 'application/gzip',
-    'zip' => 'application/zip'
+    'zip' => 'application/zip',
+    'nvdl' => 'application/xml',
+    'rnc' => 'application/rnc',
+    'rng' => 'application/xml',
+    'sch' => 'application/xml',
+    'xml' => 'application/xml'
 );
 
 my @spec_order = (
@@ -85,11 +86,11 @@ sub prep {
     }
     dircopy($skeleton_dir,$epub_dir) or die("$!\n");
     dircopy($build_dir,$content_dir) or die("$!\n");
-#    rmtree($content_dir . $epub_version . '/schema');
-#    rmtree($content_dir . 'renditions/multiple/schema');
-#    rmtree($content_dir . 'renditions/region-nav/schema');
-#    rmtree($content_dir . 'dict/schema');
-#    rmtree($content_dir . 'idx/schema');
+    rmtree($content_dir . $epub_version . '/schema');
+    rmtree($content_dir . 'renditions/multiple/schema');
+    rmtree($content_dir . 'renditions/region-nav/schema');
+    rmtree($content_dir . 'dict/schema');
+    rmtree($content_dir . 'idx/schema');
 }
 
 sub specs {
@@ -344,4 +345,8 @@ HTML
 sub pack_epub {
     print "Generating epub...\n";
     `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -f $epub_dir -mode exp -save`;
+    
+    my $from = './temp/epub'.$epub_version.'.epub';
+    my $to = './build/'.$epub_version.'/epub'.$epub_version.'.epub';
+    copy($from, $to) or die "Could not copy $from to $to: $!\n";
 }
