@@ -11,6 +11,8 @@ set EPUB_SPEC=epub%EPUB_VER%
 
 "%JAVA_HOME%\bin\java.exe" %JAVA_OPTS% -classpath "%EPUB_HOME%\lib\ant-launcher.jar" "-Dant.home=%EPUB_HOME%" "-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl" "-Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" "-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration" org.apache.tools.ant.launch.Launcher -buildfile "%EPUB_HOME%\build.xml" %*
 
+perl epub-generator.pl
+
 REM mkdir temp\%EPUB_SPEC%
 REM "%JAVA_HOME%\bin\java.exe" %JAVA_OPTS% -jar lib/saxon.jar temp/spec/50/epub-spec.xml util/docbook/docbookspec-epub3.xsl user.print.css=epub-print.css html.stylesheet=epub-spec.css base.dir=temp/%EPUB_SPEC%/EPUB/
 

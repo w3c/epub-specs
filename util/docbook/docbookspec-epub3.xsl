@@ -19,6 +19,7 @@
     <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
     <xsl:param name="ebnf.table.border" select="0"/>
 
+    <xsl:param name="docbook.css.link" select="0"/>
     <xsl:param name="user.print.css"/>
     <xsl:param name="use.id.as.filename" select="1"/>
     

@@ -167,11 +167,37 @@
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:value-of>
             <xsl:choose>
-                <xsl:when test="$spec-group='epub30'">
-                     <xsl:if test="matches($targetdoc, 'cfi')">../../linking/</xsl:if>
+                <xsl:when test="$spec-group='epub'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'package')">../../vocab/package/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:when test="$spec-group='linking'">
-                    <xsl:if test="not(matches($targetdoc, 'cfi'))">../../301/spec/</xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'package')">../../vocab/package/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'cfi'))">../../31/spec/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='vocab'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'package'))">../../31/spec/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='indexes'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../linking/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'package')">../vocab/package/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'indexes'))">../31/spec/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
                 </xsl:when>
             </xsl:choose>
             <xsl:choose>

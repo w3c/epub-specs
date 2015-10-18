@@ -50,7 +50,7 @@
 
 	<xsl:template match="xhtml:h1" mode="toc">
 		<xsl:if test="following::xhtml:h2[1][preceding::xhtml:h1[1] = current-group()]">
-			<ul>
+			<ul class="toc">
 				<xsl:for-each-group select="current-group() except ." group-starting-with="xhtml:h2">
 					<xsl:apply-templates select="." mode="toc"/>
 				</xsl:for-each-group>

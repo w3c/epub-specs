@@ -11,8 +11,12 @@
 	<property name="dir.src.spec" value="${dir.src}/spec"/>
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css"/>
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples"/>
+	<property name="dir.src.images" value="${dir.src}/spec/images"/>
 	<property name="dir.src.vocab" value="${dir.src}/vocab"/>
 	<property name="dir.src.idx" value="${dir.src.spec}/idx"/>
+	<property name="dir.src.dict" value="${dir.src.spec}/dict"/>
+	<property name="dir.src.renditions" value="${dir.src.spec}/renditions"/>
+	<property name="dir.src.previews" value="${dir.src.spec}/previews"/>
 	<property name="dir.src.linking" value="${dir.src}/linking"/>
 	<property name="dir.src.errata" value="${dir.src}/errata"/>
 	<property name="dir.src.extensions" value="${dir.src}/extensions"/>
@@ -32,6 +36,7 @@
 	<property name="dir.lib" value="${basedir}/lib"/>
 	<property name="dir.build" value="${basedir}/build/"/>
 	<property name="dir.build.css" value="${dir.build}/css"/>
+	<property name="dir.build.images" value="${dir.build}/images"/>
 	<property name="dir.build.epub" value="${dir.build}/31"/>
 	<property name="dir.build.schema" value="${dir.build.epub}/schema"/>
 	<property name="dir.build.schemadoc" value="${dir.build.epub}/schemadoc"/>
@@ -43,6 +48,9 @@
 	<property name="dir.temp" value="${basedir}/temp"/>
 	<property name="dir.temp.spec" value="${dir.temp}/spec"/>
 	<property name="dir.build.idx" value="${dir.build}/idx"/>
+	<property name="dir.build.dict" value="${dir.build}/dict"/>
+	<property name="dir.build.renditions" value="${dir.build}/renditions"/>
+	<property name="dir.build.previews" value="${dir.build}/previews"/>
 	<property name="dir.build.linking" value="${dir.build}/linking"/>
 	<property name="dir.build.cfi" value="${dir.build.linking}/cfi"/>
 	<property name="dir.build.switch" value="${dir.build}/switch"/>
@@ -66,6 +74,7 @@
 	
 	<property name="xslt.docbook2xhtml" value="${dir.util.docbook}/docbookspec.xsl"/>
 	<property name="xslt.biblio-cleaner" value="${dir.util.docbook}/biblio-cleaner.xsl"/>
+	<property name="xslt.biblio-path-fix" value="${dir.util.docbook}/biblio-path-fix.xsl"/>
 	<property name="xslt.terminology-cleaner" value="${dir.util.docbook}/terminology-cleaner.xsl"/>
 	<property name="xslt.switch" value="${dir.util.docbook}/switch.xsl"/>
 	<property name="xslt.olink" value="${dir.util.docbook}/olink.xsl"/>
@@ -108,10 +117,14 @@
 		build-schema-catalog,		
 		build-archives, 
 		copy-css,
+		copy-images,
 		validate-html-output,
-		move-idx-files"/>
+		move-idx-files,
+		move-dict-files,
+		move-renditions-files,
+		move-previews-files"/>
 
-	<target name="build-specs" depends="clean, copy-css, compile">
+	<target name="build-specs" depends="clean, copy-css, copy-images, compile">
 
 		<mkdir dir="${dir.temp.spec}/00"/>
 		<copy todir="${dir.temp.spec}/00">
@@ -121,7 +134,7 @@
 		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-*.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml epub-package-metadata.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="epub"/>
@@ -131,6 +144,12 @@
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="linking"/>
+		</saxon-xslt>
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-package-metadata.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="vocab"/>
 		</saxon-xslt>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
 			includes="epub-indexes.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
@@ -152,6 +171,25 @@
 			basedir="${dir.temp.spec}/10" destdir="${dir.temp.spec}/30/" extension=".xml"
 			style="${xslt.biblio-cleaner}" includes="*.xml"/>
 
+		<mkdir dir="${dir.temp.spec}/35"/>
+		<copydir src="${dir.temp.spec}/30" dest="${dir.temp.spec}/35" excludes="epub-indexes.xml epub-cfi.xml epub-package-metadata.xml" forceoverwrite="true"/>
+		<!-- run the biblio link correction -->
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-indexes.xml">
+			<param name="spec-name" expression="idx"/>
+		</saxon-xslt>
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-cfi.xml">
+			<param name="spec-name" expression="cfi"/>
+		</saxon-xslt>
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-package-metadata.xml">
+			<param name="spec-name" expression="pkg"/>
+		</saxon-xslt>
+		
 		
 		<!-- run the terminology preprocess class 
 		<java classname="org.idpf.docbook.GlosslistHandler" fork="true" failonerror="true"
@@ -164,7 +202,7 @@
 		<!-- run the switch preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/40"/>
 		<saxon-xslt description="conditional exclude/include" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/30/" destdir="${dir.temp.spec}/40/" extension=".xml"
+			basedir="${dir.temp.spec}/35/" destdir="${dir.temp.spec}/40/" extension=".xml"
 			style="${xslt.switch}"/>
 
 		<!-- run the link decorator xslt -->
@@ -233,7 +271,32 @@
 			<fileset dir="${dir.src.idx}"/>
 		</copy>
 	</target>
-
+	
+	<target name="move-dict-files">
+		<mkdir dir="${dir.build.dict}"/>
+		<build-htaccess dest-dir="${dir.build.dict}" index-name="epub-dict.html"/>
+		<copy todir="${dir.build.dict}">
+			<fileset dir="${dir.src.dict}"/>
+		</copy>
+	</target>
+	
+	<target name="move-renditions-files">
+		<mkdir dir="${dir.build.renditions}"/>
+		<build-htaccess dest-dir="${dir.build.renditions}/multiple" index-name="epub-multiple-renditions.html"/>
+		<build-htaccess dest-dir="${dir.build.renditions}/region-nav" index-name="epub-region-nav.html"/>
+		<copy todir="${dir.build.renditions}">
+			<fileset dir="${dir.src.renditions}"/>
+		</copy>
+	</target>
+	
+	<target name="move-previews-files">
+		<mkdir dir="${dir.build.previews}"/>
+		<build-htaccess dest-dir="${dir.build.previews}" index-name="epub-previews.html"/>
+		<copy todir="${dir.build.previews}">
+			<fileset dir="${dir.src.previews}"/>
+		</copy>
+	</target>
+	
 	<target name="compile">
 		<javac srcdir="${dir.util.java}" destdir="${dir.util.java}" debug="on" source="1.5">
 			<classpath refid="build.classpath"/>
@@ -252,7 +315,7 @@
 		<build-htaccess-dirlist dest-dir="${dir.build.schema}"/>
 	</target>
 
-	<target name="build-vocabs" depends="clean, copy-css, compile, build-specs">
+	<target name="build-vocabs" depends="clean, copy-css, copy-images, compile, build-specs">
 
 		<!-- structure vocab -->
 		<echo>building structure vocab...</echo>
@@ -363,6 +426,10 @@
 		<copy file="${css.print}" overwrite="true" todir="${dir.build.css}"/>
 	</target>
 
+	<target name="copy-images">
+		<copydir src="${dir.src.images}" dest="${dir.build.images}" forceoverwrite="true"/>
+	</target>
+	
 	<macrodef name="build-xhtml-vocab" description="builds an xhtml+rdfa vocab from an n3 source">
 
 		<attribute name="in-n3"/>
@@ -640,6 +707,9 @@
 	<target name="clean-build-dir">
 		<clean-dir dir="${dir.build.epub}"/>
 		<clean-dir dir="${dir.build.idx}"/>
+		<clean-dir dir="${dir.build.dict}"/>
+		<clean-dir dir="${dir.build.renditions}"/>
+		<clean-dir dir="${dir.build.previews}"/>
 		<clean-dir dir="${dir.build.linking}"/>
 		<clean-dir dir="${dir.build.vocab}"/>
 		<delete failonerror="false">
@@ -754,6 +824,18 @@
 		<generate-errata-impl
 			output-dir="${dir.build.idx}/epub-indexes-errata/"
 			input-file="${dir.src.errata}/epub-indexes.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.dict}/epub-dict-errata/"
+			input-file="${dir.src.errata}/epub-dict.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.renditions}/multiple/epub-multiple-renditions-errata/"
+			input-file="${dir.src.errata}/epub-multiple-renditions.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.renditions}/region-nav/epub-region-nav-errata/"
+			input-file="${dir.src.errata}/epub-region-nav.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.previews}/epub-previews-errata/"
+			input-file="${dir.src.errata}/epub-previews.html" />
 	</target>
 	
 	<macrodef name="generate-errata-impl">
@@ -777,6 +859,13 @@
 			<copy file="${sd}-spec.html" tofile="${sd}-spec-@{date}.html" overwrite="true" failonerror="true"/>
 			<!-- indexes -->
 			<copy file="${dir.build.idx}/epub-indexes.html" tofile="${dir.build.idx}/epub-indexes-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- dictionaries -->
+			<copy file="${dir.build.dict}/epub-dict.html" tofile="${dir.build.dict}/epub-dict-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- renditions -->
+			<copy file="${dir.build.renditions}/multiple/epub-multiple-renditions.html" tofile="${dir.build.renditions}/multiple/epub-multiple-renditions-@{date}.html" overwrite="true" failonerror="true"/>
+			<copy file="${dir.build.renditions}/region-nav/epub-region-nav.html" tofile="${dir.build.renditions}/region-nav/epub-region-nav-@{date}.html" overwrite="true" failonerror="true"/>
+			<!-- previews -->
+			<copy file="${dir.build.previews}/epub-previews.html" tofile="${dir.build.previews}/epub-previews-@{date}.html" overwrite="true" failonerror="true"/>
 			<!-- cfi -->
 			<copy file="${dir.build.linking}/cfi/epub-cfi.html" tofile="${dir.build.linking}/cfi/epub-cfi-@{date}.html" overwrite="true" failonerror="true"/>
 			<!-- altsstags -->
