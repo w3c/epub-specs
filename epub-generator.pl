@@ -26,7 +26,10 @@ my %alt_media = (
     'sch' => 'application/xml',
     'nvdl' => 'application/xml',
     'xml' => 'application/xml',
-    'txt' => 'text/plain',
+    'txt' => 'text/plain'
+);
+
+my %strip = (
     'gz' => 'application/gzip',
     'zip' => 'application/zip'
 );
@@ -96,15 +99,22 @@ sub specs {
     }
     
     return if $_ eq 'unsupported.xhtml';
+    
+    # return if no dots in path - for some reason -d and -f aren't detecting directories - but allow LICENSE file
     return if $_ !~ /\./ and $_ ne 'LICENSE';
+    
+    # don't pick up root directory
     return if $_ =~ /^\.+$/;
-    # return if $File::Find::name =~ m#/schema#i;
     
-    # (my $ext = $_) =~ s/^.*\.//;
-    # $ext = lc($ext);
-    # unless ($media{$ext}) { print "Removing unwanted media type $File::Find::name.\n"; unlink $_; return; }
+    # remove the various gz/zips that get generated
+    (my $ext = $_) =~ s/^.*\.//;
+    $ext = lc($ext);
+    if ($strip{$ext}) { print "Removing unwanted media type $File::Find::name.\n"; unlink $_; return; }
     
-    push @files, $File::Find::name;
+    # have to strip ./ from start of paths for the manifest otherwise linking fails
+    (my $fixed_path = $File::Find::name) =~ s#^\./##;
+    
+    push @files, $fixed_path;
     
     (my $spec_id = $_) =~ s#(.*)\.x?html#$1#is;
     $spec_id = lc($spec_id);
@@ -122,15 +132,17 @@ sub specs {
 
 sub fix_errata {
 
+	# point errata links out to the web so people don't see stale info
+	
 	my ($spec, $path, $id) = @_;
 	$path =~ s#^\.?/##;
 	
 	my $c = read_file($spec);
 	
-	$c =~  s#<a( class="link")? href="(./)?([^"]+)">errata</a>#<a$1 href="http://www.idpf.org/epub/$path/$3">errata</a>#is;
+	$c =~ s#<a( class="link")? href="(./)?([^"]+)">errata</a>#<a$1 href="http://www.idpf.org/epub/$path/$3">errata</a>#is;
 	
     # have to manually fix references to old specs 
-    $c =~  s#href="(../)+(301?/[^"]+)"#href="http://www.idpf.org/epub/$2"#gis;
+    $c =~ s#href="(../)+(301?/[^"]+)"#href="http://www.idpf.org/epub/$2"#gis;
 	
 	write_file($spec, $c);
 
@@ -156,9 +168,9 @@ sub write_file {
 
 
 sub strip_css_bg {
+    # strips the first body rule containing the scrolled bg image
     my $css = $_[0];
     my $c = read_file($css);
-    # strip the first body rule containing the scrolled bg image
     $c =~ s/body\s*{[^}]+}//is;
     write_file($css, $c);
 }
@@ -188,8 +200,8 @@ sub generate_opf {
 		<dc:rights>Copyright © 2010-2016 IDPF</dc:rights>
 	</metadata>
 	<manifest>
-		<item id="nav" href="./nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
-		<item id="fb" href="./unsupported.xhtml" media-type="application/xhtml+xml"/>
+		<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+		<item id="fb" href="unsupported.xhtml" media-type="application/xhtml+xml"/>
 PKG
     
     my %spine;
