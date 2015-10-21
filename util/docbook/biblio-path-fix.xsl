@@ -21,7 +21,7 @@
                             <xsl:otherwise>../31/spec/</xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
-                    <xsl:when test="$spec-name eq 'pkg'">
+                    <xsl:when test="$spec-name eq 'vocab'">
                         <xsl:choose>
                             <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../../linking/cfi/</xsl:when>
                             <xsl:otherwise>../../31/spec/</xsl:otherwise>

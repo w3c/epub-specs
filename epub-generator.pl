@@ -49,7 +49,8 @@ my @spec_order = (
     'epub-multiple-renditions',
     'epub-region-nav',
     'epub-previews',
-    'epub-package-metadata',
+    'epub-vocab-package',
+    'epub-vocab-overlays',
     'epub-vocab-structure',
     'epub-vocab-magazine'
 );
