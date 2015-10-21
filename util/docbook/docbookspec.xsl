@@ -25,7 +25,8 @@
     <!-- ==================================================================== -->
     <!-- toc settings                                                         -->
     <xsl:param name="generate.toc"> book toc,title part nop chapter nop </xsl:param>
-
+    <xsl:param name="toc.list.type">ol</xsl:param>
+    
     <!-- ==================================================================== -->
     <!-- override gentext to get "Chapter" etc out of link labels             -->
 

@@ -311,7 +311,7 @@ HTML
         
         my $toc = '';
         
-        if ($c =~ m#(<ul class="toc">.*?</ul>)\s*</?div>#gis) {
+        if ($c =~ m#(<ol class="toc">.*?</ol>)\s*</?div>#gis) {
             $toc = $1;
             $toc =~ s#(</?)ul#$1ol#gis;
             $toc =~ s#</?span[^>]*>##gis;
