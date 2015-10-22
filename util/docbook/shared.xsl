@@ -1080,7 +1080,7 @@
     </xsl:template>
     
     <xsl:template mode="htmlTableAtt" match="@id">
-        <xsl:if test="not(parent::table) and not(parent::informaltable)">
+        <xsl:if test="not(parent::informaltable)">
             <xsl:copy-of select="."/>
         </xsl:if>
     </xsl:template>
