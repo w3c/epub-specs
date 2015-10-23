@@ -807,7 +807,7 @@
     <!-- ==================================================================== -->
     <!-- fix bug that allows h7+ for bridgeheads -->
     <xsl:template match="bridgehead" priority="1">
-        <xsl:variable name="container" select="(ancestor::appendix                         |ancestor::article                         |ancestor::bibliography                         |ancestor::chapter                         |ancestor::glossary                         |ancestor::glossdiv                         |ancestor::index                         |ancestor::partintro                         |ancestor::preface                         |ancestor::refsect1                         |ancestor::refsect2                         |ancestor::refsect3                         |ancestor::sect1                         |ancestor::sect2                         |ancestor::sect3                         |ancestor::sect4                         |ancestor::sect5                         |ancestor::section                         |ancestor::setindex                         |ancestor::simplesect)[last()]"/>
+        <xsl:variable name="container" select="(ancestor::acknowledgements                         |ancestor::appendix                         |ancestor::article                         |ancestor::bibliography                         |ancestor::chapter                         |ancestor::glossary                         |ancestor::glossdiv                         |ancestor::index                         |ancestor::partintro                         |ancestor::preface                         |ancestor::refsect1                         |ancestor::refsect2                         |ancestor::refsect3                         |ancestor::sect1                         |ancestor::sect2                         |ancestor::sect3                         |ancestor::sect4                         |ancestor::sect5                         |ancestor::section                         |ancestor::setindex                         |ancestor::simplesect)[last()]"/>
         
         <xsl:variable name="clevel">
             <xsl:choose>
@@ -822,6 +822,12 @@
                         </xsl:call-template>
                     </xsl:variable>
                     <xsl:value-of select="$slevel + 1"/>
+                </xsl:when>
+                <xsl:when test="local-name($container) = 'acknowledgements'">
+                    <xsl:choose>
+                        <xsl:when test="@role='lvl3'">3</xsl:when>
+                        <xsl:otherwise>2</xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>1</xsl:otherwise>
             </xsl:choose>
@@ -1150,6 +1156,124 @@
                 </xsl:if>
             </section>
         </xsl:if>
+    </xsl:template>
+    
+    
+    <!-- stop ack from appearing at top of document -->
+    
+    <xsl:template match="book">
+        <xsl:call-template name="id.warning"/>
+        
+        <div>
+            <xsl:apply-templates select="." mode="common.html.attributes"/>
+            <xsl:call-template name="id.attribute">
+                <xsl:with-param name="conditional" select="0"/>
+            </xsl:call-template>
+            
+            <xsl:call-template name="book.titlepage"/>
+            
+            <xsl:apply-templates select="dedication" mode="dedication"/>
+    <!--        <xsl:apply-templates select="acknowledgements" mode="acknowledgements"/> -->
+            
+            <xsl:variable name="toc.params">
+                <xsl:call-template name="find.path.params">
+                    <xsl:with-param name="table" select="normalize-space($generate.toc)"/>
+                </xsl:call-template>
+            </xsl:variable>
+            
+            <xsl:call-template name="make.lots">
+                <xsl:with-param name="toc.params" select="$toc.params"/>
+                <xsl:with-param name="toc">
+                    <xsl:call-template name="division.toc">
+                        <xsl:with-param name="toc.title.p" select="contains($toc.params, 'title')"/>
+                    </xsl:call-template>
+                </xsl:with-param>
+            </xsl:call-template>
+            
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="acknowledgements" priority="1">
+        <xsl:apply-templates select="." mode="acknowledgements"/>
+    </xsl:template>
+    
+    <xsl:template match="acknowledgements" mode="acknowledgements">
+        <xsl:call-template name="id.warning"/>
+        
+        <section>
+            <xsl:call-template name="common.html.attributes">
+                <xsl:with-param name="inherit" select="1"/>
+            </xsl:call-template>
+            <xsl:call-template name="id.attribute">
+                <xsl:with-param name="conditional" select="0"/>
+            </xsl:call-template>
+            <xsl:call-template name="acknowledgements.titlepage"/>
+            <xsl:apply-templates/>
+            <xsl:call-template name="process.footnotes"/>
+        </section>
+    </xsl:template>
+    
+    <xsl:template name="acknowledgements.titlepage">
+        <div class="titlepage">
+            <xsl:variable name="recto.content">
+                <xsl:call-template name="acknowledgements.titlepage.before.recto"/>
+                <xsl:call-template name="acknowledgements.titlepage.recto"/>
+            </xsl:variable>
+            <xsl:variable name="recto.elements.count">
+                <xsl:choose>
+                    <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
+                    <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                        <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($recto.content)/*)"/></xsl:when>
+                    <xsl:otherwise>1</xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
+            <xsl:if test="(normalize-space($recto.content) != '') or ($recto.elements.count &gt; 0)">
+                <div><xsl:copy-of select="$recto.content"/></div>
+            </xsl:if>
+            <xsl:variable name="verso.content">
+                <xsl:call-template name="acknowledgements.titlepage.before.verso"/>
+                <xsl:call-template name="acknowledgements.titlepage.verso"/>
+            </xsl:variable>
+            <xsl:variable name="verso.elements.count">
+                <xsl:choose>
+                    <xsl:when test="function-available('exsl:node-set')"><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
+                    <xsl:when test="contains(system-property('xsl:vendor'), 'Apache Software Foundation')">
+                        <!--Xalan quirk--><xsl:value-of select="count(exsl:node-set($verso.content)/*)"/></xsl:when>
+                    <xsl:otherwise>1</xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
+            <xsl:if test="(normalize-space($verso.content) != '') or ($verso.elements.count &gt; 0)">
+                <div><xsl:copy-of select="$verso.content"/></div>
+            </xsl:if>
+            <xsl:call-template name="acknowledgements.titlepage.separator"/>
+        </div>
+        <xsl:variable name="conformanceLevel" select="@conformance"/>
+        <xsl:if test="$conformanceLevel != ''">
+            <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class">
+                    <xsl:value-of select="$conformanceLevel"/>
+                </xsl:attribute> This section is <xsl:value-of select="$conformanceLevel"/>
+            </xsl:element>
+        </xsl:if>
+    </xsl:template>
+    
+    
+    <xsl:template match="acknowledgements" mode="toc">
+        <xsl:element name="li" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:call-template name="toc.line"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template name="division.toc">
+        <xsl:param name="toc-context" select="."/>
+        <xsl:param name="toc.title.p" select="true()"/>
+        
+        <xsl:call-template name="make.toc">
+            <xsl:with-param name="toc-context" select="$toc-context"/>
+            <xsl:with-param name="toc.title.p" select="$toc.title.p"/>
+            <xsl:with-param name="nodes" select="part|reference|preface|chapter|appendix|article|topic|bibliography|glossary|index|refentry|bridgehead[$bridgehead.in.toc != 0]|acknowledgements"/>
+        </xsl:call-template>
     </xsl:template>
     
 </xsl:stylesheet>

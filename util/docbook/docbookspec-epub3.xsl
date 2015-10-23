@@ -25,7 +25,9 @@
     
     <!-- ==================================================================== -->
     <!-- toc settings                                                         -->
-    <xsl:param name="generate.toc"> book toc,title part nop chapter nop </xsl:param>
+    <xsl:param name="generate.toc">
+        book toc,title
+    </xsl:param>
     <xsl:param name="toc.list.type">ol</xsl:param>
     
     <!-- ==================================================================== -->
