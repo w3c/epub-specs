@@ -18,6 +18,7 @@
     <xsl:param name="ebnf.statement.terminator">;</xsl:param>
     <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
     <xsl:param name="ebnf.table.border" select="0"/>
+    <xsl:param name="formal.object.break.after">0</xsl:param>
 
     <xsl:param name="docbook.css.link" select="0"/>
     <xsl:param name="user.print.css"/>
@@ -45,6 +46,7 @@
                 <l:template name="note" text="note"/>
                 <l:template name="caution" text="caution"/>
                 <l:template name="chapter" text="%t"/>
+                <l:template name="example" text="%t"/>
                 <l:template name="table" text="%t"/>
             </l:context>
             <l:context name="title-unnumbered">
@@ -57,7 +59,7 @@
             </l:context>
         </l:l10n>
     </l:i18n>
-
+    
     <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
     <xsl:param name="table.borders.with.css">0</xsl:param>

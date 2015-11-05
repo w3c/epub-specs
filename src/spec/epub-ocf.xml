@@ -3,7 +3,7 @@
 <?xml-model href="../../util/docbook/schema/docbookspec.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <?xml-model href="../../util/docbook/schema/docbook.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns:epub="http://www.idpf.org/2011/epub" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.1">
+    xmlns:epub="http://www.idpf.org/2011/epub" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.1" xml:lang="en">
     <title>EPUB Open Container Format (OCF) 3.1</title>
     <info>
         <releaseinfo>Editor's Draft</releaseinfo>
@@ -21,12 +21,16 @@
                 <title>Previous version</title>
                 <para><link xlink:href="http://www.idpf.org/epub/301/spec/epub-ocf-20140626.html"/></para>
             </formalpara>
+            <formalpara>
+                <title>Previous recommendation</title>
+                <para><link xlink:href="http://www.idpf.org/epub/301/spec/epub-ocf-20140626.html"/></para>
+            </formalpara>
         </printhistory>
         <releaseinfo role="errata"> Please refer to the <link xlink:href="./epub-ocf-errata/">errata</link> for this
             document, which may include some normative corrections. </releaseinfo>
-        <releaseinfo role="diff">A <link
-                xlink:href="https://github.com/IDPF/epub-revision/commits/master/src/spec/epub-ocf.xml">history of
-                changes</link> to this document is available for review.</releaseinfo>
+        <releaseinfo role="history"><link
+                xlink:href="https://github.com/IDPF/epub-revision/commits/master/src/spec/epub-ocf.xml">changes to this
+                document</link></releaseinfo>
         <xi:include href="./share/copyright.xml"/>
         <xi:include href="./share/legalnotice.xml"/>
         <authorgroup role="current">
@@ -54,6 +58,9 @@
             </para>
         </abstract>
     </info>
+
+    <xi:include href="share/status.xml"/>
+
     <chapter xml:id="sec-overview">
         <title>Overview</title>
         <section xml:id="sec-overview-purpose-and-scope" conformance="informative">
@@ -62,12 +69,9 @@
                 encapsulating the set of related resources that comprise an <olink targetdoc="spec"
                     targetptr="gloss-epub-publication" type="epub-spec">EPUB® Publication</olink> into a single-file
                 container.</para>
-            <xi:include href="./share/specdesc-prepara.xml"/>
-            <itemizedlist xml:id="epub-specs-listing">
-                <xi:include href="./share/specdesc-overview.xml"/>
-                <xi:include href="./share/specdesc-publications.xml"/>
-                <xi:include href="./share/specdesc-overlays.xml"/>
-            </itemizedlist>
+
+            <xi:include href="share/specdesc-all.xml"/>
+
             <para>OCF is the required container technology for EPUB Publications. OCF may play a role in the following
                 workflows:</para>
             <itemizedlist>
@@ -95,7 +99,25 @@
                     linkend="refEPUB3Changes"/> for information on differences between this specification and its
                 predecessor.</para>
         </section>
-        <xi:include href="./share/terminology.xml"/>
+        <section xml:id="sec-terminology">
+            <title>Terminology</title>
+            <para>Terms with meanings specific to EPUB 3 are capitalized in this document (e.g., "Author", "Reading System").
+                A complete list of these <olink targetdoc="spec" targetptr="sec-terminology" type="epub-spec"
+                    epub:specref-exclude="true">terms and definitions</olink> is provided in <xref linkend="refEPUB3"
+                />.</para>
+            <para>The following terminology is additionally defined specifically for this specification:</para>
+            <glosslist>
+                <glossentry xml:id="gloss-ocf-root-directory" xreflabel="Root Directory">
+                    <glossterm>Root Directory</glossterm>
+                    <glossdef>
+                        <para>The root directory represents the base of the Abstract Container file system. This directory is
+                            virtual in nature: a Reading System might or might not generate a physical root directory for the
+                            contents of the Abstract Container if the contents are unzipped. </para>
+                    </glossdef>
+                </glossentry>
+            </glosslist>
+            <para>Only the first instance of a term in a section is linked to its definition.</para>
+        </section>
         <xi:include href="./share/typography.xml"/>
         <xi:include href="./share/conformancestatements.xml"/>
         <section xml:id="ocf-conformance-content">
@@ -134,15 +156,15 @@
 
     <chapter xml:id="sec-container-abstract">
         <title>OCF Abstract Container</title>
-        <section xml:id="sec-container-abstract-overview" conformance="informative">
-            <title>Overview</title>
+        <section xml:id="sec-container-abstract-intro" conformance="informative">
+            <title>Introduction</title>
             <para>An OCF Abstract Container defines a file system model for the contents of the container. The file system
-                model uses a single common <olink targetdoc="spec" targetptr="gloss-ocf-root-directory" type="epub-spec"/>
-                for all of the contents of the container. All (non-remote) resources for embedded <olink targetdoc="spec"
-                    targetptr="gloss-rendition" type="epub-spec"/>s are located within the directory tree headed by the
-                container’s root directory, although no specific file system structure is mandated for this. The file system
-                model also includes a mandatory directory named <filename>META-INF</filename> that is a direct child of the
-                container's root directory and is used to store the following special files:</para>
+                model uses a single common <xref linkend="gloss-ocf-root-directory"/> for all of the contents of the
+                container. All (non-remote) resources for embedded <olink targetdoc="spec" targetptr="gloss-rendition"
+                    type="epub-spec"/>s are located within the directory tree headed by the container’s root directory,
+                although no specific file system structure is mandated for this. The file system model also includes a
+                mandatory directory named <filename>META-INF</filename> that is a direct child of the container's root
+                directory and is used to store the following special files:</para>
             <variablelist>
                 <varlistentry>
                     <term><filename>container.xml</filename>
@@ -200,8 +222,7 @@
         <section xml:id="sec-container-file-and-dir-structure">
             <title>File and Directory Structure</title>
             <para>The virtual file system for the OCF Abstract Container <literal role="rfc2119">must</literal> have a single
-                common <olink targetdoc="spec" targetptr="gloss-ocf-root-directory" type="epub-spec"/> for all of the
-                contents of the container.</para>
+                common <xref linkend="gloss-ocf-root-directory"/> for all of the contents of the container.</para>
             <para> The OCF Abstract Container <literal role="rfc2119">must</literal> include a directory named
                     <filename>META-INF</filename> that is a direct child of the container's root directory. Requirements for
                 the contents of this directory are described in <xref linkend="sec-container-metainf"/>.</para>
@@ -231,9 +252,8 @@
                 specifications reference RFCs that preceded RFC3987, in which case the earlier RFC applies for content in
                 that particular language.</para>
             <para>Unlike most language specifications, the Base IRIs for all files within the <filename>META-INF</filename>
-                directory use the <olink targetdoc="spec" targetptr="gloss-ocf-root-directory" type="epub-spec"/> for the
-                Abstract Container as the default Base IRI. For example, if <filename>META-INF/container.xml</filename> has
-                the following content:</para>
+                directory use the <xref linkend="gloss-ocf-root-directory"/> for the Abstract Container as the default Base
+                IRI. For example, if <filename>META-INF/container.xml</filename> has the following content:</para>
             <informalexample>
                 <synopsis>
 <xi:include parse="text" href="./examples/ocf/container-2.xml"/>
@@ -377,11 +397,12 @@
                         linkend="app-schema-container"/>; <filename>container.xml</filename> files <literal role="rfc2119"
                         >must</literal> be valid according to this schema after removing all elements and attributes from
                     other namespaces (including all attributes and contents of such elements).</para>
-                <para>The <markup xml:id="elemdef-container-rootfiles">rootfiles</markup> element <literal role="rfc2119">must</literal> contain one or more
-                        <markup xml:id="elemdef-container-rootfile">rootfile</markup> elements, each of which <literal role="rfc2119">must</literal> uniquely
-                    reference a Package Document representing a single <olink targetdoc="spec" targetptr="gloss-rendition"
-                        type="epub-spec"/> of an EPUB Publication. If more than one Rendition is stored in an OCF, each
-                        <literal role="rfc2119">must</literal> be a different rendering of the same EPUB Publication.</para>
+                <para>The <markup xml:id="elemdef-container-rootfiles">rootfiles</markup> element <literal role="rfc2119"
+                        >must</literal> contain one or more <markup xml:id="elemdef-container-rootfile">rootfile</markup>
+                    elements, each of which <literal role="rfc2119">must</literal> uniquely reference a Package Document
+                    representing a single <olink targetdoc="spec" targetptr="gloss-rendition" type="epub-spec"/> of an EPUB
+                    Publication. If more than one Rendition is stored in an OCF, each <literal role="rfc2119">must</literal>
+                    be a different rendering of the same EPUB Publication.</para>
                 <para xml:id="container-default-rendition">An OCF Processor <literal role="rfc2119">must</literal> consider
                     the first <markup>rootfile</markup> element within the <markup>rootfiles</markup> element to represent
                     the Default Rendition for the contained EPUB Publication. Reading Systems are <literal role="rfc2119">not
@@ -408,12 +429,13 @@
                     be used in the processing of the Rendition (i.e., files within the ZIP archive that are not listed within
                     the Package Document's <markup>manifest</markup> element, such as <filename>META-INF</filename> files or
                     or resources specific to other Renditions of the EPUB Publication).</para>
-                <para>The <filename>container.xml</filename> file <literal role="rfc2119">may</literal> include a
-                        <markup xml:id="elemdef-container-links">links</markup> element following the <markup>rootfiles</markup> element, which, when present,
-                        <literal role="rfc2119">must</literal> contain one or more <markup>link</markup> elements. Each
-                        <markup xml:id="elemdef-container-link">link</markup> element <literal role="rfc2119">must</literal> include an <markup>href</markup>
-                    attribute whose value identifies the location of a resource necessary for the processing of the EPUB
-                    Container. Each <markup>link</markup> element also <literal role="rfc2119">must</literal> include a
+                <para>The <filename>container.xml</filename> file <literal role="rfc2119">may</literal> include a <markup
+                        xml:id="elemdef-container-links">links</markup> element following the <markup>rootfiles</markup>
+                    element, which, when present, <literal role="rfc2119">must</literal> contain one or more
+                        <markup>link</markup> elements. Each <markup xml:id="elemdef-container-link">link</markup> element
+                        <literal role="rfc2119">must</literal> include an <markup>href</markup> attribute whose value
+                    identifies the location of a resource necessary for the processing of the EPUB Container. Each
+                        <markup>link</markup> element also <literal role="rfc2119">must</literal> include a
                         <markup>rel</markup> attribute whose value identifies the relationship of the resource, and <literal
                         role="rfc2119">may</literal> include a <markup>media-type</markup> attribute whose value <literal
                         role="rfc2119">must</literal> be a media type <xref linkend="refRFC2046"/> that specifies the type
@@ -435,12 +457,13 @@
                     container. If any resource within the container is encrypted, <filename>encryption.xml</filename>
                     <literal role="rfc2119">must</literal> be present to indicate that the resource is encrypted and provide
                     information on how it is encrypted.</para>
-                <para>This file is an XML document whose root element is <markup xml:id="elemdef-encryption-encryption">encryption</markup>. The
-                        <markup>encryption</markup> element contains child elements of type <markup>EncryptedKey</markup> and
-                        <markup>EncryptedData</markup> as defined by <xref linkend="refXMLENCCORE"/>. An
-                        <markup xml:id="elemdef-encryption-EncryptedKey">EncryptedKey</markup> element describes each encryption key used in the container, while an
-                    <markup xml:id="elemdef-encryption-EncryptedData">EncryptedData</markup> element describes each encrypted file. Each
-                        <markup>EncryptedData</markup> element refers to an <markup>EncryptedKey</markup> element, as
+                <para>This file is an XML document whose root element is <markup xml:id="elemdef-encryption-encryption"
+                        >encryption</markup>. The <markup>encryption</markup> element contains child elements of type
+                        <markup>EncryptedKey</markup> and <markup>EncryptedData</markup> as defined by <xref
+                        linkend="refXMLENCCORE"/>. An <markup xml:id="elemdef-encryption-EncryptedKey">EncryptedKey</markup>
+                    element describes each encryption key used in the container, while an <markup
+                        xml:id="elemdef-encryption-EncryptedData">EncryptedData</markup> element describes each encrypted
+                    file. Each <markup>EncryptedData</markup> element refers to an <markup>EncryptedKey</markup> element, as
                     described in XML Encryption.</para>
                 <para>The schema for <filename>encryption.xml</filename> files is available in <xref
                         linkend="app-schema-encryption"/>; <filename>encryption.xml</filename> files <literal role="rfc2119"
@@ -473,8 +496,8 @@
                     obfuscation is not encryption, the <filename>encryption.xml</filename> file is used in conjunction with
                     the <link linkend="resource-obfuscation">IDPF resource obfuscation algorithm</link> to identify resources
                     that need to be de-obfuscated before they can be used.</para>
-                <para xml:id="encryption-restrictions">The following files <literal role="rfc2119">must not</literal> be encrypted, regardless of whether
-                    default or specific encryption is requested:</para>
+                <para xml:id="encryption-restrictions">The following files <literal role="rfc2119">must not</literal> be
+                    encrypted, regardless of whether default or specific encryption is requested:</para>
                 <simplelist>
                     <member><filename>mimetype</filename></member>
                     <member><filename>META-INF/container.xml</filename></member>
@@ -612,8 +635,8 @@
     </chapter>
     <chapter xml:id="physical-container-zip">
         <title>OCF ZIP Container</title>
-        <section conformance="informative" xml:id="sec-container-zip-overview">
-            <title>Overview</title>
+        <section conformance="informative" xml:id="sec-container-zip-intro">
+            <title>Introduction</title>
             <para>An OCF ZIP Container is a physical single-file manifestation of an <link linkend="sec-container-abstract"
                     >abstract container</link>.</para>
         </section>
@@ -899,7 +922,7 @@ store destination as source in ocf
         <section xml:id="app-schema-container">
             <title>Schema for <filename>container.xml</filename></title>
             <para>The schema for <filename>container.xml</filename> files is available at <uri
-                xlink:href="http://www.idpf.org/epub/31/schema/ocf-container-30.rnc"
+                    xlink:href="http://www.idpf.org/epub/31/schema/ocf-container-30.rnc"
                     >http://www.idpf.org/epub/31/schema/ocf-container-30.rnc</uri>.</para>
             <para>Validation using this schema requires a processor that supports <xref linkend="refRelaxNG"/> and <xref
                     linkend="refXSDDatatypes"/>.</para>

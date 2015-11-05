@@ -31,8 +31,10 @@
     <xsl:variable name="doc-spec"
         select="doc(concat($db-spec-base-uri-safe, 'epub-spec.xml'))"
         as="document-node()"/>
-    <xsl:variable name="doc-publications"
-        select="doc(concat($db-spec-base-uri-safe, 'epub-publications.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-packages"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-packages.xml'))" as="document-node()"/>
+    <xsl:variable name="doc-contentdocs"
+        select="doc(concat($db-spec-base-uri-safe, 'epub-contentdocs.xml'))" as="document-node()"/>
     <xsl:variable name="doc-ocf"
         select="doc(concat($db-spec-base-uri-safe, 'epub-ocf.xml'))" as="document-node()"/>
     <xsl:variable name="doc-mediaoverlays"
@@ -138,8 +140,11 @@
             <xsl:when test="matches($targetdoc, 'spec')">
                 <xsl:sequence select="$doc-spec"/>
             </xsl:when>
-            <xsl:when test="matches($targetdoc, 'publications')">
-                <xsl:sequence select="$doc-publications"/>
+            <xsl:when test="matches($targetdoc, 'packages')">
+                <xsl:sequence select="$doc-packages"/>
+            </xsl:when>
+            <xsl:when test="matches($targetdoc, 'contentdocs')">
+                <xsl:sequence select="$doc-contentdocs"/>
             </xsl:when>
             <xsl:when test="matches($targetdoc, 'ocf')">
                 <xsl:sequence select="$doc-ocf"/>
@@ -171,14 +176,14 @@
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
-                        <xsl:when test="matches($targetdoc, 'package')">../../vocab/package/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'vocab-package')">../../vocab/package/</xsl:when>
                         <xsl:otherwise/>
                     </xsl:choose>
                 </xsl:when>
                 <xsl:when test="$spec-group='linking'">
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
-                        <xsl:when test="matches($targetdoc, 'package')">../../vocab/package/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'vocab-package')">../../vocab/package/</xsl:when>
                         <xsl:when test="not(matches($targetdoc, 'cfi'))">../../31/spec/</xsl:when>
                         <xsl:otherwise/>
                     </xsl:choose>
@@ -187,14 +192,14 @@
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
-                        <xsl:when test="not(matches($targetdoc, 'package'))">../../31/spec/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'vocab-package'))">../../31/spec/</xsl:when>
                         <xsl:otherwise/>
                     </xsl:choose>
                 </xsl:when>
                 <xsl:when test="$spec-group='indexes'">
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'cfi')">../linking/</xsl:when>
-                        <xsl:when test="matches($targetdoc, 'package')">../vocab/package/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'vocab-package')">../vocab/package/</xsl:when>
                         <xsl:when test="not(matches($targetdoc, 'indexes'))">../31/spec/</xsl:when>
                         <xsl:otherwise/>
                     </xsl:choose>
@@ -208,7 +213,7 @@
                     >epub-mediaoverlays.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'ocf')">epub-ocf.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'overview')">epub-overview.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'publications')">epub-publications.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'packages')">epub-packages.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'cfi')">cfi/epub-cfi.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'terminology')">epub-terminology.html</xsl:when>
                 <xsl:otherwise>
@@ -229,7 +234,7 @@
             <xsl:when test="matches($targetdoc, 'mediaoverlays')">refOverlays3</xsl:when>
             <xsl:when test="matches($targetdoc, 'ocf')">refOCF3</xsl:when>
             <xsl:when test="matches($targetdoc, 'overview')">refEPUB3Overview</xsl:when>
-            <xsl:when test="matches($targetdoc, 'publications')">refPublications3</xsl:when>
+            <xsl:when test="matches($targetdoc, 'packages')">refPackages3</xsl:when>
             <xsl:when test="matches($targetdoc, 'cfi')">refEPUBCFI</xsl:when>
             <xsl:when test="matches($targetdoc, 'terminology')">refEPUBTERMS</xsl:when>
             <xsl:otherwise>

@@ -18,7 +18,20 @@
             </xsl:if>
         </xsl:element>        
     </xsl:template>
-
+    
+    <!-- piggyback fix for the idpf logo --> 
+    
+    <xsl:template match="img[@class='logo']">
+        <xsl:element name="img">
+            <xsl:copy-of select="@*"/>
+            <xsl:if test="$css.link eq 'reduce-depth'">
+                <xsl:attribute name="src">
+                    <xsl:value-of select="replace(@src,'\.\./\.\./','../')"/>
+                </xsl:attribute>
+            </xsl:if>
+        </xsl:element>        
+    </xsl:template>
+    
     <xsl:template match="*">
         <xsl:copy>
             <xsl:copy-of select="@*"/>

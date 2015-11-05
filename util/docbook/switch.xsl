@@ -12,7 +12,7 @@
             <xsl:when test="ends-with(document-uri(/), 'mediaoverlays.xml')">mediaoverlays</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'ocf.xml')">ocf</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'overview.xml')">overview</xsl:when>
-            <xsl:when test="ends-with(document-uri(/), 'publications.xml')">publications</xsl:when>
+            <xsl:when test="ends-with(document-uri(/), 'packages.xml')">packages</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'cfi.xml')">cfi</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'indexes.xml')">indexes</xsl:when>
             <xsl:when test="ends-with(document-uri(/), 'terminology.xml')">terminology</xsl:when>

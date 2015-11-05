@@ -38,7 +38,7 @@ my %strip = (
 my @spec_order = (
     'epub-spec',
     'epub-overview',
-    'epub-publications',
+    'epub-packages',
     'epub-mediaoverlays',
     'epub-ocf',
     'epub-changes',
@@ -125,10 +125,6 @@ sub specs {
         print "Fixing errata for $File::Find::name.\n";
         fix_errata($_, $File::Find::dir, $spec_id);
     }
-    
-    if ($_ eq 'epub-spec.css') {
-        strip_css_bg($_);
-    }
 }
 
 
@@ -166,15 +162,6 @@ sub write_file {
 	open(my $fh_out, '>', $file) or die "Could not open $file to write: $!\n";
 	print $fh_out $c;
 	close($fh_out);
-}
-
-
-sub strip_css_bg {
-    # strips the first body rule containing the scrolled bg image
-    my $css = $_[0];
-    my $c = read_file($css);
-    $c =~ s/body\s*{[^}]+}//is;
-    write_file($css, $c);
 }
 
 
@@ -312,7 +299,7 @@ HTML
         
         my $toc = '';
         
-        if ($c =~ m#(<ol class="toc">.*?</ol>)\s*</?div>#gis) {
+        if ($c =~ m#(<ol class="toc">.*?</ol>)\s*</?(section|div)>#gis) {
             $toc = $1;
             $toc =~ s#(</?)ul#$1ol#gis;
             $toc =~ s#</?span[^>]*>##gis;
@@ -344,10 +331,14 @@ HTML
 
 
 sub pack_epub {
+    
     print "Generating epub...\n";
-    `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -f $epub_dir -mode exp -save`;
+    
+    my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -f $epub_dir -mode exp -save`;
+    print $epubcheck;
     
     my $from = './temp/epub'.$epub_version.'.epub';
     my $to = './build/'.$epub_version.'/epub'.$epub_version.'.epub';
     copy($from, $to) or die "Could not copy $from to $to: $!\n";
+
 }

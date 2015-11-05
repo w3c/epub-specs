@@ -18,7 +18,8 @@
     <xsl:param name="ebnf.statement.terminator">;</xsl:param>
     <xsl:param name="ebnf.table.bgcolor">#EEE</xsl:param>
     <xsl:param name="ebnf.table.border" select="0"/>
-
+    <xsl:param name="formal.object.break.after">0</xsl:param>
+    
     <xsl:param name="docbook.css.link" select="0"/>
     <xsl:param name="user.print.css"/>
     <xsl:param name="use.id.as.filename" select="1"/>
@@ -29,10 +30,10 @@
         book toc,title
     </xsl:param>
     <xsl:param name="toc.list.type">ol</xsl:param>
-    
+
     <!-- ==================================================================== -->
     <!-- override gentext to get "Chapter" etc out of link labels             -->
-
+    
     <xsl:param name="local.l10n.xml" select="document('')"/>
     <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
         <l:l10n language="en">
@@ -46,6 +47,7 @@
                 <l:template name="note" text="note"/>
                 <l:template name="caution" text="caution"/>
                 <l:template name="chapter" text="%t"/>
+                <l:template name="example" text="%t"/>
                 <l:template name="table" text="%t"/>
             </l:context>
             <l:context name="title-unnumbered">
@@ -58,7 +60,7 @@
             </l:context>
         </l:l10n>
     </l:i18n>
-
+    
     <xsl:param name="admon.style"/>
     <xsl:param name="admon.textlabel">1</xsl:param>
     <xsl:param name="table.borders.with.css">1</xsl:param>
