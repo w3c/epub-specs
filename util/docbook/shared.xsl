@@ -99,33 +99,29 @@
             
             <!-- diff -->
             
-            <xsl:if test="$topinfo/db:releaseinfo[@role='history']">
-                <xsl:element name="div">
-                    <xsl:attribute name="class">history</xsl:attribute>
-                    <xsl:element name="span">
-                        <xsl:attribute name="class">history-title</xsl:attribute>
-                        <xsl:text>Document history:</xsl:text>
+            <xsl:element name="div">
+                <xsl:attribute name="class">history</xsl:attribute>
+                <xsl:element name="span">
+                    <xsl:attribute name="class">history-title</xsl:attribute>
+                    <xsl:text>Document history</xsl:text>
+                </xsl:element>
+                <xsl:element name="ul">
+                    <xsl:element name="li">
+                        <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='history']/node()"/>
                     </xsl:element>
-                    <xsl:element name="ul">
-                        <xsl:element name="li">
-                            <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='history']/node()"/>
-                        </xsl:element>
-                        <xsl:element name="li">
-                            <xsl:element name="a">
-                                <xsl:attribute name="href">https://github.com/IDPF/epub-revision/issues?q=milestone%3A%22EPUB+3.1%22+is%3Aclosed</xsl:attribute>
-                                <xsl:text>issues addressed in the last revision</xsl:text>
-                            </xsl:element>
+                    <xsl:element name="li">
+                        <xsl:element name="a">
+                            <xsl:attribute name="href">https://github.com/IDPF/epub-revision/issues?q=milestone%3A%22EPUB+3.1%22+is%3Aclosed</xsl:attribute>
+                            <xsl:text>Issues addressed in this revision</xsl:text>
                         </xsl:element>
                     </xsl:element>
+                    <xsl:if test="$topinfo/db:releaseinfo[@role='errata']">
+                        <xsl:element name="li">
+                            <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='errata']/node()"/>
+                        </xsl:element>
+                    </xsl:if>
                 </xsl:element>
-            </xsl:if>
-            
-            <xsl:if test="$topinfo/db:releaseinfo[@role='errata']">
-                <xsl:element name="p">
-                    <xsl:attribute name="class">errata</xsl:attribute>
-                    <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='errata']/node()"/>
-                </xsl:element>
-            </xsl:if>
+            </xsl:element>
             
             <xsl:if test="$topinfo/db:releaseinfo[@role='formats']">
                 <xsl:element name="p">
