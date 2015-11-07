@@ -123,22 +123,6 @@
                 </xsl:element>
             </xsl:element>
             
-            <xsl:if test="$topinfo/db:releaseinfo[@role='formats']">
-                <xsl:element name="p">
-                    <xsl:attribute name="class">formats</xsl:attribute>
-                    <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='formats']/node()"/>
-                </xsl:element>
-            </xsl:if>
-            
-            <!-- copyright -->
-            <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
-                <xsl:attribute name="class">legal</xsl:attribute>
-                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
-                    <xsl:value-of select="$topinfo/db:copyright"/>
-                </xsl:element>
-                <xsl:apply-templates mode="book.titlepage.recto.mode" select="$topinfo/db:legalnotice"/>
-            </xsl:element>
-            
             <!-- editors -->
             <xsl:if test="$topinfo/db:authorgroup[not(@role) or @role='current']">
                 <xsl:call-template name="render-authorgroup">
@@ -155,6 +139,22 @@
                         select="$topinfo/db:authorgroup[@role='authors']"/>
                 </xsl:call-template>
             </xsl:if>
+            
+            <xsl:if test="$topinfo/db:releaseinfo[@role='formats']">
+                <xsl:element name="p">
+                    <xsl:attribute name="class">formats</xsl:attribute>
+                    <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='formats']/node()"/>
+                </xsl:element>
+            </xsl:if>
+            
+            <!-- copyright -->
+            <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class">legal</xsl:attribute>
+                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:value-of select="$topinfo/db:copyright"/>
+                </xsl:element>
+                <xsl:apply-templates mode="book.titlepage.recto.mode" select="$topinfo/db:legalnotice"/>
+            </xsl:element>
         </xsl:element>
 
         <!-- status -->
