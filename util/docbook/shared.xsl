@@ -149,8 +149,9 @@
             
             <!-- copyright -->
             <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
-                <xsl:attribute name="class">legal</xsl:attribute>
+                <xsl:attribute name="class">legalnotice</xsl:attribute>
                 <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:text>Copyright © </xsl:text>
                     <xsl:value-of select="$topinfo/db:copyright"/>
                 </xsl:element>
                 <xsl:apply-templates mode="book.titlepage.recto.mode" select="$topinfo/db:legalnotice"/>
