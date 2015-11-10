@@ -1430,4 +1430,46 @@
         </xsl:element>
     </xsl:template>
     
+    <!-- override chapter to add conformance -->
+    <xsl:template match="chapter">
+        <xsl:call-template name="id.warning"/>
+        
+        <xsl:element name="{$div.element}" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:call-template name="common.html.attributes">
+                <xsl:with-param name="inherit" select="1"/>
+            </xsl:call-template>
+            <xsl:call-template name="id.attribute">
+                <xsl:with-param name="conditional" select="0"/>
+            </xsl:call-template>
+            
+            <xsl:call-template name="component.separator"/>
+            <xsl:call-template name="chapter.titlepage"/>
+            
+            <xsl:variable name="toc.params">
+                <xsl:call-template name="find.path.params">
+                    <xsl:with-param name="table" select="normalize-space($generate.toc)"/>
+                </xsl:call-template>
+            </xsl:variable>
+            <xsl:if test="contains($toc.params, 'toc')">
+                <xsl:call-template name="component.toc">
+                    <xsl:with-param name="toc.title.p" select="contains($toc.params, 'title')"/>
+                </xsl:call-template>
+                <xsl:call-template name="component.toc.separator"/>
+            </xsl:if>
+            
+            <xsl:variable name="conformanceLevel" select="@conformance"/>
+            <xsl:if test="$conformanceLevel != ''">
+                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:attribute name="class">
+                        <xsl:value-of select="$conformanceLevel"/>
+                    </xsl:attribute> This section is <xsl:value-of select="$conformanceLevel"/>
+                </xsl:element>
+            </xsl:if>
+            
+            <xsl:apply-templates/>
+            <xsl:call-template name="process.footnotes"/>
+        </xsl:element>
+    </xsl:template>
+    
+
 </xsl:stylesheet>
