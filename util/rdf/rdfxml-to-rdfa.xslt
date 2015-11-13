@@ -74,7 +74,6 @@
 				</xsl:choose>
 				<style type="text/css">
 					p.identity {
-						margin-top: -3em;
 						font-size: 75%;
 					}
 					p.noindent {
@@ -98,71 +97,96 @@
 				</style>
 			</head>
 			<body>
-				<h1 property="dcterms:title">
-					<xsl:call-template name="wiki-links-to-xhtml">
-						<xsl:with-param name="text"
-							select="$vocab-rdf-description/dcterms:title/text()"/>
-					</xsl:call-template>
-				</h1>
+				<header>
+					<p>
+						<xsl:choose>
+							<xsl:when test="contains($vocab-uri,'magazine')">
+								<a href="http://www.idpf.org"><img src="../../../images/idpflogo_web_125.jpg" alt="IDPF" class="logo"/></a>
+							</xsl:when>
+							<xsl:otherwise>
+								<a href="http://www.idpf.org"><img src="../../images/idpflogo_web_125.jpg" alt="IDPF" class="logo"/></a>
+							</xsl:otherwise>
+						</xsl:choose>
+					</p>
+					
+					<h1 class="title" property="dcterms:title">
+						<xsl:call-template name="wiki-links-to-xhtml">
+							<xsl:with-param name="text"
+								select="$vocab-rdf-description/dcterms:title/text()"/>
+						</xsl:call-template>
+					</h1>
+					
+					<xsl:if test="$output-version-links eq '1'">
+						<xsl:choose>
+							<xsl:when test="contains($vocab-uri,'magazine')">
+								<div class="printhistory">
+									<p class="identity">
+										<span class="pubdate">19 November 2014</span>
+									</p>
+									
+									<dl class="printhistory">
+										<dt>This version</dt>
+										<dd>
+											<a class="link"
+												href="http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20141119.html">http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20141119.html</a>
+										</dd>
+										<dt>Latest version</dt>
+										<dd>
+											<a class="link" href="http://www.idpf.org/epub/vocab/structure/magazine">http://www.idpf.org/epub/vocab/structure/magazine</a>
+										</dd>
+										<dt>Previous version</dt>
+										<dd>
+											<a class="link"
+												href="http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20131209.html">http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20131209.html</a>
+										</dd>
+									</dl>
+									<div class="history">
+										<span class="history-title">Document history</span>
+										<ul>
+											<li><a
+												href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/magazine.n3"
+												>Changes to this document</a></li>					
+										</ul>
+									</div>
+								</div>
+							</xsl:when>
+							<xsl:otherwise>
+								<div class="printhistory">
+									<p class="identity">
+										<span class="pubdate">17 July 2015</span>
+									</p>
+									
+									<dl class="printhistory">
+										<dt>This version</dt>
+										<dd>
+											<a class="link"
+												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
+										</dd>
+										<dt>Latest version</dt>
+										<dd>
+											<a class="link" href="http://www.idpf.org/epub/vocab/structure">http://www.idpf.org/epub/vocab/structure</a>
+										</dd>
+										<dt>Previous version</dt>
+										<dd>
+											<a class="link"
+												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html</a>
+										</dd>
+									</dl>
+									<div class="history">
+										<span class="history-title">Document history</span>
+										<ul>
+											<li><a
+												href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3"
+												>Changes to this document</a></li>					
+										</ul>
+									</div>
+								</div>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+				</header>
 				
-				<xsl:if test="$output-version-links eq '1'">
-					<xsl:choose>
-						<xsl:when test="contains($vocab-uri,'magazine')">
-							<div class="printhistory">
-								<p class="identity">
-									<span class="pubdate">19 November 2014</span>
-								</p>
-								
-								<dl class="printhistory">
-									<dt>This version</dt>
-									<dd>
-										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20141119.html">http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20141119.html</a>
-									</dd>
-									<dt>Latest version</dt>
-									<dd>
-										<a class="link" href="http://www.idpf.org/epub/vocab/structure/magazine">http://www.idpf.org/epub/vocab/structure/magazine</a>
-									</dd>
-									<dt>Previous version</dt>
-									<dd>
-										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20131209.html">http://www.idpf.org/epub/vocab/structure/magazine/epub-vocab-magazine-20131209.html</a>
-									</dd>
-								</dl>
-								<!-- <p class="diff"> A <a class="link"
-							href="http://code.google.com/p/epub-revision/source/diff?spec=svn4924&amp;old=4922&amp;r=4924&amp;format=side&amp;path=%2Ftrunk%2Fsrc%2Fvocab%2Fmagazine.n3">diff of changes</a> from the previous version is also available. </p> -->
-							</div>
-						</xsl:when>
-						<xsl:otherwise>
-							<div class="printhistory">
-								<p class="identity">
-									<span class="pubdate">17 July 2015</span>
-								</p>
-								
-								<dl class="printhistory">
-									<dt>This version</dt>
-									<dd>
-										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
-									</dd>
-									<dt>Latest version</dt>
-									<dd>
-										<a class="link" href="http://www.idpf.org/epub/vocab/structure">http://www.idpf.org/epub/vocab/structure</a>
-									</dd>
-									<dt>Previous version</dt>
-									<dd>
-										<a class="link"
-											href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20141127.html</a>
-									</dd>
-								</dl>
-								<p class="diff"> A <a class="link"
-									href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3">history of changes</a> is also available. </p>
-							</div>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				
-				<div>
+				<section id="sotd">
 					<h2>Status of this Document</h2>
 					<xsl:choose>
 						<xsl:when test="contains($vocab-uri,'magazine')">
@@ -183,9 +207,9 @@
 						for use.</p>
 					
 					<p>All unlabled terms are considered stable.</p>
-				</div>
+				</section>
 
-				<div>
+				<section id="about">
 					<h2>About this vocabulary</h2>
 					<xsl:if test="$vocab-rdf-description/dcterms:description">
 						<div property="dcterms:description">
@@ -226,35 +250,37 @@
   				<p class="vocab-date">Document last modified: <xsl:value-of select="//rdf:Description[@rdf:about=$vocab-uri]/dcterms:modified"
   				/>. Refer to the <a href="{$vocab-revision-history}">revision history</a> for details.</p>
   				-->
-				</div>
+				</section>
 
 				<xsl:if test="contains($vocab-uri,'magazine')">
-					<h2>PRISM Controlled Vocabularies</h2>
-					<p>The <a href="http://www.idealliance.org/specifications/prism-metadata-initiative/prism/specifications/controlled-vocabularies">PRISM
-						Controlled Vocabularies</a> should be used to provide industry-standard magazine semantics to aid
-						in region-based navigation.</p>
-					<p>In particular, the following subset of terms from the <a
-						href="http://www.prismstandard.org/specifications/3.0/PRISM_CV_Spec_3.0.htm#_Toc337191589">PAM 
-						Content Class Vocabulary</a> are recommended for their use in magazine navigation:</p>
-					<ul>
-						<li>title</li>
-						<li>deck</li>
-						<li>subtitle</li>
-						<li>byline</li>
-						<li>contributors</li>
-						<li>caption</li>
-						<li>credit</li>
-						<li>box</li>
-						<li>advertisement</li>
-						<li>pullQuote</li>
-					</ul>
-					<p>When using these terms for EPUB region-based navigation, the predefined prefix "<code>prism:</code>"
-						is required.</p>
+					<section id="prism">
+						<h2>PRISM Controlled Vocabularies</h2>
+						<p>The <a href="http://www.idealliance.org/specifications/prism-metadata-initiative/prism/specifications/controlled-vocabularies">PRISM
+							Controlled Vocabularies</a> should be used to provide industry-standard magazine semantics to aid
+							in region-based navigation.</p>
+						<p>In particular, the following subset of terms from the <a
+							href="http://www.prismstandard.org/specifications/3.0/PRISM_CV_Spec_3.0.htm#_Toc337191589">PAM 
+							Content Class Vocabulary</a> are recommended for their use in magazine navigation:</p>
+						<ul>
+							<li>title</li>
+							<li>deck</li>
+							<li>subtitle</li>
+							<li>byline</li>
+							<li>contributors</li>
+							<li>caption</li>
+							<li>credit</li>
+							<li>box</li>
+							<li>advertisement</li>
+							<li>pullQuote</li>
+						</ul>
+						<p>When using these terms for EPUB region-based navigation, the predefined prefix "<code>prism:</code>"
+							is required.</p>
+					</section>
 				</xsl:if>
 				
-				<div id="vocab" class="vocabulary">
+				<section id="vocab" class="vocabulary">
 					<xsl:apply-templates/>
-				</div>
+				</section>
 			</body>
 		</html>
 	</xsl:template>

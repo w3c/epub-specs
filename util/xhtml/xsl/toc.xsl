@@ -27,25 +27,22 @@
 		</html>
 	</xsl:template>
 
-	<xsl:template match="xhtml:body/xhtml:h1[1]">
+	<xsl:template match="xhtml:body/xhtml:section[@id='sotd']">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()"/>
 		</xsl:copy>
-		<xsl:if test="following-sibling::xhtml:div[@class='printhistory']">
-			<xsl:copy-of select="following-sibling::xhtml:div[@class='printhistory']"/>
-		</xsl:if>
 		<xsl:call-template name="toc"/>
 	</xsl:template>
-	
-	<xsl:template match="xhtml:body/xhtml:div[@class='printhistory']"/>
 
 	<xsl:template name="toc">
-		<h2 id="tocxsl">Table of Contents</h2>
-		<xsl:for-each-group
-			select="//xhtml:h1|//xhtml:h2|//xhtml:h3|//xhtml:h4|//xhtml:h5|//xhtml:h6"
-			group-starting-with="xhtml:h1">
-			<xsl:apply-templates select="." mode="toc"/>
-		</xsl:for-each-group>
+		<section id="toc">
+			<h2 id="tocxsl">Table of Contents</h2>
+			<xsl:for-each-group
+				select="//xhtml:h1|//xhtml:h2[not(parent::xhtml:section[@id='sotd'])]|//xhtml:h3|//xhtml:h4|//xhtml:h5|//xhtml:h6"
+				group-starting-with="xhtml:h1">
+				<xsl:apply-templates select="." mode="toc"/>
+			</xsl:for-each-group>
+		</section>
 	</xsl:template>
 
 	<xsl:template match="xhtml:h1" mode="toc">
@@ -65,7 +62,7 @@
 			select="concat('h_',lower-case(replace(replace(replace(replace(normalize-space($source),' ',''),'/',''),'—',''),':','')))"/>
 	</xsl:function>
 	
-	<xsl:template match="xhtml:h2" mode="toc">
+	<xsl:template match="xhtml:h2[not(parent::xhtml:section[@id='sotd'])]" mode="toc">
 		<xsl:variable name="target">
 			<xsl:choose>
 				<xsl:when test="./@id">
