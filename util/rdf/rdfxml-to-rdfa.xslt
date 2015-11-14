@@ -72,29 +72,6 @@
 						<link rel="stylesheet" type="text/css" href="../../css/epub-spec.css"/>
 					</xsl:otherwise>
 				</xsl:choose>
-				<style type="text/css">
-					p.identity {
-						font-size: 75%;
-					}
-					p.noindent {
-						margin-left: -2.4em;
-					}
-					span.pubdate { 
-						color: rgb(0,0,0);
-					}
-					span.status {
-						font-size: 80%;
-						font-weight: bold;
-						text-transform: uppercase;
-						margin-left: 0.3em;
-					}
-					span.deprecated {
-						color: rgb(190,0,0);
-					}
-					span.draft {
-					color: rgb(240,144,48);
-					}
-				</style>
 			</head>
 			<body>
 				<header>
