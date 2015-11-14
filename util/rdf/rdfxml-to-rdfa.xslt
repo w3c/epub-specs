@@ -123,6 +123,7 @@
 											<li><a
 												href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/magazine.n3"
 												>Changes to this document</a></li>					
+											<li><a href="https://github.com/IDPF/epub-revision/issues">Report an issue</a></li>
 										</ul>
 									</div>
 								</div>
@@ -155,6 +156,7 @@
 											<li><a
 												href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/structure.n3"
 												>Changes to this document</a></li>					
+											<li><a href="https://github.com/IDPF/epub-revision/issues">Report an issue</a></li>
 										</ul>
 									</div>
 								</div>

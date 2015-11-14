@@ -115,6 +115,12 @@
                             <xsl:text>Issues addressed in this revision</xsl:text>
                         </xsl:element>
                     </xsl:element>
+                    <xsl:element name="li">
+                        <xsl:element name="a">
+                            <xsl:attribute name="href">https://github.com/IDPF/epub-revision/issues</xsl:attribute>
+                            <xsl:text>Report an issue</xsl:text>
+                        </xsl:element>
+                    </xsl:element>
                     <xsl:if test="$topinfo/db:releaseinfo[@role='errata']">
                         <xsl:element name="li">
                             <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='errata']/node()"/>
