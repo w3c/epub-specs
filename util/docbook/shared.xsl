@@ -1071,10 +1071,12 @@
         <table>
             <xsl:attribute name="style">
                 <xsl:text>width: 100%; border-spacing: 0; border-collapse: collapse;</xsl:text>
+<!--
                 <xsl:if test="$ebnf.table.bgcolor != ''">
                     <xsl:text>background-color: </xsl:text>
                     <xsl:value-of select="$ebnf.table.bgcolor"/>
                 </xsl:if>
+-->
             </xsl:attribute>
             <xsl:attribute name="class">
                 <xsl:value-of select="local-name(.)"/>
