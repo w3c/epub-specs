@@ -31,6 +31,9 @@
         </xsl:if>
     </xsl:template>
     
+    <!-- remove status from table of contents -->
+    <xsl:template match="preface[@id='sotd']"  mode="toc" />
+    
     <!-- ============================================================================= -->
     <!-- crude rearrange of the leading info element to structure as an IDPF spec document  -->
     <xsl:template name="book.titlepage">
@@ -1242,7 +1245,7 @@
     </xsl:template>
     
     <xsl:template mode="htmlTableAtt" match="@id" priority="1">
-        <xsl:if test="not(parent::informaltable)">
+        <xsl:if test="not(parent::informaltable) and not(parent::table)">
             <xsl:copy-of select="."/>
         </xsl:if>
     </xsl:template>

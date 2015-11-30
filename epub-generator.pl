@@ -39,6 +39,7 @@ my @spec_order = (
     'epub-spec',
     'epub-overview',
     'epub-packages',
+    'epub-contentdocs',
     'epub-mediaoverlays',
     'epub-ocf',
     'epub-changes',
@@ -137,10 +138,10 @@ sub fix_errata {
 	
 	my $c = read_file($spec);
 	
-	$c =~ s#<a( class="link")? href="(./)?([^"]+)">errata</a>#<a$1 href="http://www.idpf.org/epub/$path/$3">errata</a>#is;
+	$c =~ s#<a\s+href="(\./)?([^"]+)">Errata</a>#<a href="http://www.idpf.org/epub/$path/$2">Errata</a>#is;
 	
     # have to manually fix references to old specs 
-    $c =~ s#href="(../)+(301?/[^"]+)"#href="http://www.idpf.org/epub/$2"#gis;
+    $c =~ s#href="(\.\./)+(301?/[^"]+)"#href="http://www.idpf.org/epub/$2"#gis;
 	
 	write_file($spec, $c);
 
@@ -334,7 +335,7 @@ sub pack_epub {
     
     print "Generating epub...\n";
     
-    my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -f $epub_dir -mode exp -save`;
+    my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -e $epub_dir -mode exp -save`;
     print $epubcheck;
     
     my $from = './temp/epub'.$epub_version.'.epub';

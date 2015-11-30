@@ -11,7 +11,7 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="db:biblioentry[matches('refEPUB3refOverview3refPublications3refOCF3refOverlays3refContentDocs3',@xml:id)]/db:title/db:link">
+    <xsl:template match="db:biblioentry[matches('refEPUB3refOverview3refPackages3refOCF3refOverlays3refContentDocs3',@xml:id)]/db:title/db:link">
         <xsl:copy>
             <xsl:attribute name="xlink:href">
                 <xsl:choose>

@@ -35,8 +35,8 @@
 	</xsl:template>
 
 	<xsl:template name="toc">
-		<section id="toc">
-			<h2 id="tocxsl">Table of Contents</h2>
+		<section id="sec-toc">
+			<h2 class="toc-title">Table of Contents</h2>
 			<xsl:for-each-group
 				select="//xhtml:h1|//xhtml:h2[not(parent::xhtml:section[@id='sotd'])]|//xhtml:h3|//xhtml:h4|//xhtml:h5|//xhtml:h6"
 				group-starting-with="xhtml:h1">
