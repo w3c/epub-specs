@@ -97,11 +97,11 @@
         <xi:include href="./share/terminology.xml"/>
 
         <xi:include href="./share/typography.xml"/>
-        
+
         <xi:include href="./share/conformancestatements.xml"/>
-        
+
         <xi:include href="./share/deprecated.xml"/>
-        
+
         <section xml:id="sec-overview-pfx">
             <title>Prefix mappings</title>
             <para>For convenience, the following prefix mappings are used in this specification.</para>
@@ -556,14 +556,17 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>The minimal required metadata that each Rendition of an EPUB Publication <literal role="rfc2119"
-                        >must</literal> include consists of three elements from the Dublin Core Metadata Element Set <xref
-                        linkend="refDCMES"/> — <markup linkend="sec-opf-dcidentifier">title</markup>, <markup
-                        linkend="elemdef-opf-dcidentifier">identifier</markup> and <markup linkend="elemdef-opf-dclanguage"
-                        >language</markup> — together with the <markup linkend="last-modified-date">modified</markup>
-                    property from DCMI Metadata Terms <xref linkend="refDCTERMS"/>. Refer to the <link
-                        linkend="sec-metadata-elem-examples">example</link> at the end of this section for an instance of a
-                    complete minimal metadata set.</para>
+                <para>The minimal required metadata that the Package Document <literal role="rfc2119">must</literal> include
+                    consists of three elements from the Dublin Core Metadata Element Set <xref linkend="refDCMES"/> — <markup
+                        linkend="sec-opf-dcidentifier">title</markup>, <markup linkend="elemdef-opf-dcidentifier"
+                        >identifier</markup> and <markup linkend="elemdef-opf-dclanguage">language</markup> — together with
+                    the <markup linkend="last-modified-date">modified</markup> property from DCMI Metadata Terms <xref
+                        linkend="refDCTERMS"/>.</para>
+
+                <informalexample>
+                    <para>The following example represents the minimal set of metadata that has to be present.</para>
+                    <synopsis><xi:include href="examples/publications/metadata-min-complete.xml" parse="text"/></synopsis>
+                </informalexample>
 
                 <para>Additional optional metadata is expressed using the <link linkend="sec-opf-dcmes-optional">DCMES
                         optional elements</link> and the <markup linkend="sec-meta-elem">meta</markup> element. </para>
@@ -608,14 +611,6 @@
                 </informalexample>
 
                 <xi:include href="./share/rdfa-prefix-reqs.xml"/>-->
-
-                <bridgehead xml:id="sec-metadata-elem-examples">Examples</bridgehead>
-
-                <informalexample>
-                    <para>The following example represents the minimal set of metadata that has to be present in the
-                            <markup>metadata</markup>.</para>
-                    <synopsis><xi:include href="examples/publications/metadata-min-complete.xml" parse="text"/></synopsis>
-                </informalexample>
 
             </section>
 
@@ -1438,6 +1433,7 @@
                                         <option>[required]</option>
                                     </term>
                                     <listitem>
+                                        <para>Establishes the relationship of the linked resource.</para>
                                         <xi:include href="./share/curies-resolve-para.xml"/>
                                     </listitem>
                                 </varlistentry>
@@ -1471,6 +1467,14 @@
                                             the resource referenced by this <markup>link</markup>.</para>
                                     </listitem>
                                 </varlistentry>
+                                <varlistentry xreflabel="properties" xml:id="attrdef-link-properties">
+                                    <term><markup>properties</markup>
+                                        <option>[optional]</option></term>
+                                    <listitem>
+                                        <para>Identifies properties of the linked resource.</para>
+                                        <xi:include href="./share/curies-resolve-para.xml"/>
+                                    </listitem>
+                                </varlistentry>
                             </variablelist>
                         </listitem>
                     </varlistentry>
@@ -1481,36 +1485,74 @@
                         </listitem>
                     </varlistentry>
                 </variablelist>
+
                 <para>The <markup>metadata</markup> element <literal role="rfc2119">may</literal> contain zero or more
-                        <markup>link</markup> elements.</para>
-                <para> The <markup>href</markup> attribute of the <markup>link</markup> element identifies the location of
-                    the resource — inclusion of which is optional in the container file — and the <markup>rel</markup>
-                    attribute defines the nature of the resource (i.e., its relation to the given Rensition of the EPUB
-                    Publication or property specified in the <markup>refines</markup> attribute). Reading Systems are
-                        <literal role="rfc2119">not required</literal> to dereference these resources. Refer to the <link
-                        xlink:href="http://www.idpf.org/epub/vocab/package/link/">EPUB Link Relationships
-                    Vocabulary</link>for the list of resource types that are recognized by this specification.</para>
-                <para>Resources identified by the <markup>link</markup> element <markup>href</markup> attribute <literal
-                        role="rfc2119">must not</literal> be listed in the <link linkend="sec-manifest-elem"
-                    >manifest</link>.</para>
-                <para>When the <markup>link</markup> element references a metadata record, precedence <literal role="rfc2119"
-                        >must</literal> be given to metadata defined inline in the Package Document <markup>metadata</markup>
-                    element in the case of conflicts.</para>
-                <para>The optional <markup>refines</markup> attribute can be attached when the referenced resource applies to
-                    another metadata item (e.g., to tie an XML Signature <xref linkend="refXMLDSIGCORE"/> to a metadata
-                    authority). The resource applies to the Rendition when the attribute is not present.</para>
-                <para>If a Reading System does not recognize the relationship of the resource as defined in the
-                        <markup>rel</markup> attribute, it <literal role="rfc2119">should</literal> ignore the
-                        <markup>link</markup> element.</para>
-                <bridgehead>Examples</bridgehead>
+                        <markup>link</markup> elements. The <literal role="rfc2119">required</literal>
+                    <markup>href</markup> attribute identifies the location of the linked resource, which <literal
+                        role="rfc2119">may</literal> be <olink targetdoc="spec" targetptr="sec-resource-locations"
+                        type="epub-spec">inside or outside</olink> the <olink targetdoc="spec" targetptr="gloss-container"
+                        type="epub-spec"/>. The <literal role="rfc2119">required</literal>
+                    <markup>rel</markup> attribute establishes the relationship the resource has with the Rendition (or with
+                    another metadata property if the <markup>refines</markup> attribute is present).</para>
+
                 <informalexample>
-                    <para>The following example shows the <markup>link</markup> element used to associate three metadata
-                        resources with the Rendition: an ONIX record, an XMP record, and a link to an informational web page.
-                        Note that as <property>foaf</property> is not a <link linkend="sec-metadata-reserved-vocabs"
-                            >predefined prefix</link>, the <link linkend="attrdef-package-prefix">metadata extensibility
-                            mechanism</link> is employed to associate the vocabulary. </para>
+                    <para>The following example shows the <markup>link</markup> element used to associate a MARC XML
+                        record.</para>
+                    <synopsis><xi:include parse="text" href="examples/publications/link-4.xml"/></synopsis>
+                </informalexample>
+
+                <para>In the preceding example, the value of the <markup>media-type</markup> attribute is sufficient to uniquely
+                    identify the type of linked resource, but not all resources are readily identifiable by their media type
+                    alone. To facilitate the identification of such generic resources by Reading Systems, the
+                        <markup>properties</markup> attribute can be attached with a semantic identifier.</para>
+
+                <informalexample>
+                    <para>The following example shows the <markup>properties</markup> attribute used to identify an XMP
+                        record.</para>
+                    <synopsis><xi:include parse="text" href="examples/publications/link-3.xml"/></synopsis>
+                </informalexample>
+
+                <note>
+                    <para>Refer to the <link xlink:href="http://www.idpf.org/epub/vocab/package/link/">EPUB Metadata Link
+                            Vocabulary</link> for the list of relationships and properties recognized by this
+                        specification.</para>
+                </note>
+
+                <para>Authors <literal role="rfc2119">may</literal> define new values for either the <markup>rel</markup> or
+                        <markup>properties</markup> attribue provided the values are prefixed. Refer to <xref
+                        linkend="sec-metadata-assoc"/> for more information.</para>
+
+                <informalexample>
+                    <para>The following example shows the <markup>link</markup> element used to associate an informational
+                        web page. Note that as <property>foaf</property> is not a <link
+                            linkend="sec-metadata-reserved-vocabs">predefined prefix</link>, the <link
+                            linkend="attrdef-package-prefix">metadata extensibility mechanism</link> is employed to associate
+                        the vocabulary. </para>
                     <synopsis><xi:include parse="text" href="examples/publications/link-2.xml"/></synopsis>
                 </informalexample>
+
+                <para>Resources identified by the <markup>link</markup> element <markup>href</markup> attribute do not have
+                    to be listed in the <link linkend="sec-manifest-elem">manifest</link> if they are not included in the
+                        <olink targetdoc="spec" targetptr="gloss-spine" type="epub-spec">spine</olink> and not hyperlinked to
+                    from a resource in the spine.</para>
+
+                <para>When the <markup>link</markup> element references a metadata record format that is recognized and
+                    retrievable by a Reading System, precedence <literal role="rfc2119">must</literal> be given to the
+                    bibliographic metadata defined in that record. If <link linkend="sec-package-metadata-rendering"
+                        >rendering metadata</link> is defined in a record, it <literal role="rfc2119">must</literal> be
+                    ignored and not used in the processing of the <olink targetdoc="spec" targetptr="gloss-epub-package"
+                        type="epub-spec"/>.</para>
+
+                <para>If a Reading System does not recognize the relationship of the resource as defined in the
+                        <markup>rel</markup> attribute, it <literal role="rfc2119">should</literal> ignore the
+                        <markup>link</markup> element. Retrieval of remote resources referenced from the
+                        <markup>link</markup> element is <literal role="rfc2119">optional</literal>.</para>
+
+                <para>The <literal role="rfc2119">optional</literal>
+                    <markup>refines</markup> attribute indicates that the referenced resource applies to another metadata
+                    item (e.g., to link an XML Signature <xref linkend="refXMLDSIGCORE"/> to a metadata authority). The
+                    relationship created by the <markup>link</markup> element is to the Rendition when the attribute is not
+                    present.</para>
             </section>
 
             <section xml:id="sec-manifest-elem" xreflabel="manifest">
@@ -2383,6 +2425,12 @@
                         <para>The <markup>rel</markup> attribute is <literal role="rfc2119">optional</literal>.</para>
                     </listitem>
                     <listitem>
+                        <para>The <markup>properties</markup> attribute also accepts <link
+                                xlink:href="../../vocab/package/epub-vocab-package.html#sec-item-property-values">manifest
+                                item properties</link>
+                            <xref linkend="refEPUBPackageVocab"/> without a prefix.</para>
+                    </listitem>
+                    <listitem>
                         <para>The <markup>refines</markup> attribute <literal role="rfc2119">must not</literal> be
                             attached.</para>
                     </listitem>
@@ -2643,7 +2691,7 @@
                             <literal role="rfc2119">must</literal> be used to generate the resulting IRI.</para>
                     </listitem>
                     <listitem>
-                        <para>The <link xlink:href="../../vocab/package/link/rel-vocab.html">Link Relationships
+                        <para>The <link xlink:href="../../vocab/package/link/link-vocab.html">Link Relationships
                                 Vocabulary</link> is defined to be the default vocabulary for the <markup>link</markup>
                             <markup>rel</markup> attribute.</para>
                         <para>If a property value in this attribute does not include a prefix, the IRI <xref

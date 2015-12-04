@@ -72,6 +72,9 @@
 						<link rel="stylesheet" type="text/css" href="../../css/epub-spec.css"/>
 					</xsl:otherwise>
 				</xsl:choose>
+				<style>
+					dt { font-weight: bold; }
+				</style>
 			</head>
 			<body>
 				<header>
@@ -179,13 +182,12 @@
 								Specification.</p>
 						</xsl:otherwise>
 					</xsl:choose>
-					<p>Any use of the terms marked <span class="status draft">[draft]</span> should be considered experimental
-						until their respective specifications reach final Recommended Specification status.</p>
+					<p>Any use of the terms marked <span class="status draft">[draft]</span> should be considered experimental.</p>
 					
 					<p>Deprecated term are identified by the label <span class="status deprecated">[deprecated]</span>. These terms are no longer recommended
 						for use.</p>
 					
-					<p>All unlabled terms are considered stable.</p>
+					<p>Terms without a label are considered stable.</p>
 				</section>
 
 				<section id="about">
