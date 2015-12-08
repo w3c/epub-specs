@@ -1447,17 +1447,6 @@
                                         <xi:include href="share/id-prose-para.xml"/>
                                     </listitem>
                                 </varlistentry>
-                                <varlistentry xml:id="attrdef-link-refines">
-                                    <term>
-                                        <markup>refines</markup>
-                                        <option>[optional]</option>
-                                    </term>
-                                    <listitem>
-                                        <xi:include href="./share/refines-prose-para.xml"/>
-                                        <para>When the <markup>refines</markup> attribute is omitted, the expression applies
-                                            to the EPUB Publication as a whole.</para>
-                                    </listitem>
-                                </varlistentry>
                                 <varlistentry xml:id="attrdef-link-media-type">
                                     <term>
                                         <markup>media-type</markup>
@@ -1477,6 +1466,17 @@
                                             for more information.</para>
                                     </listitem>
                                 </varlistentry>
+                                <varlistentry xml:id="attrdef-link-refines">
+                                    <term>
+                                        <markup>refines</markup>
+                                        <option>[optional]</option>
+                                    </term>
+                                    <listitem>
+                                        <xi:include href="./share/refines-prose-para.xml"/>
+                                        <para>When the <markup>refines</markup> attribute is omitted, the expression applies
+                                            to the EPUB Publication as a whole.</para>
+                                    </listitem>
+                                </varlistentry>
                             </variablelist>
                         </listitem>
                     </varlistentry>
@@ -1488,8 +1488,9 @@
                     </varlistentry>
                 </variablelist>
 
-                <para>The <markup>metadata</markup> element <literal role="rfc2119">may</literal> contain zero or more
-                        <markup>link</markup> elements. The <literal role="rfc2119">required</literal>
+                <para>The <link linkend="sec-metadata-elem"><markup>metadata</markup> element</link>
+                    <literal role="rfc2119">may</literal> contain zero or more <markup>link</markup> elements. The <literal
+                        role="rfc2119">required</literal>
                     <markup>href</markup> attribute identifies the location of the linked resource, which <literal
                         role="rfc2119">may</literal> be <olink targetdoc="spec" targetptr="sec-resource-locations"
                         type="epub-spec">inside or outside</olink> the <olink targetdoc="spec" targetptr="gloss-container"
@@ -1515,11 +1516,11 @@
                 </informalexample>
 
                 <para>The list of relationships and properties recognized by this specifiction is defined in the <link
-                        xlink:href="http://www.idpf.org/epub/vocab/package/link/">EPUB Metadata Link
-                    Vocabulary</link>.</para>
+                        xlink:href="../../vocab/package/link/link-vocab.html">EPUB Metadata Link Vocabulary</link>.</para>
 
-                <para>Authors <literal role="rfc2119">may</literal> add relationships and properties from other vocabularies
-                    via the <link linkend="attrdef-package-prefix">metadata extensibility mechanism</link> defined in this
+                <para><olink targetdoc="spec" targetptr="gloss-author" type="epub-spec">Authors</olink>
+                    <literal role="rfc2119">may</literal> add relationships and properties from other vocabularies via the
+                        <link linkend="attrdef-package-prefix">metadata extensibility mechanism</link> defined in this
                     specification. Authors <literal role="rfc2119">may</literal> also create new values by defining their own
                     prefixes. Refer to <xref linkend="sec-metadata-assoc"/> for more information.</para>
 
@@ -1532,21 +1533,39 @@
                 </informalexample>
 
                 <para>Resources identified by the <markup>link</markup> element <markup>href</markup> attribute do not have
-                    to be listed in the <link linkend="sec-manifest-elem">manifest</link> provided they are not <olink
-                        targetdoc="spec" targetptr="gloss-publication-resource-cmt-or-foreign">Publication
-                    Resources</olink>.</para>
+                    to be listed in the <link linkend="sec-manifest-elem">manifest</link> as linked resources are not <olink
+                        targetdoc="spec" targetptr="gloss-publication-resource-cmt-or-foreign">Publication Resources</olink>
+                    and are not subject to <olink targetdoc="spec" targetptr="sec-core-media-types" type="epub-spec">Core
+                        Media Type requirements</olink>. If a <markup>link</markup> element references a resource that is
+                    also a Publication Resource used in the rendering of the Rendition (e.g., a metadata record serialized in
+                    an <olink targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"/>), that resource
+                    does not become exempt from the requirements for Publication Resources.</para>
+
+                <para>In the case of linked <link xlink:href="../../vocab/package/link/link-vocab.html#record">metadata
+                        records</link>, the document order of <markup>link</markup> elements in the Package Document defines
+                    the Author's preferred precedence for their use (i.e., metadata in the first record encountered has the
+                    highest precedence).</para>
+
+                <informalexample>
+                    <para>The following example shows that a remotely-hosted record that has higher precendence than a local
+                        one. </para>
+                    <synopsis><xi:include parse="text" href="examples/publications/link-5.xml"/></synopsis>
+                </informalexample>
 
                 <para>When the <markup>link</markup> element references a metadata record format that is recognized and
                     retrievable by a Reading System, precedence <literal role="rfc2119">must</literal> be given to the
-                    bibliographic metadata defined in that record. If <link linkend="sec-package-metadata-rendering"
-                        >rendering metadata</link> is defined in a record, it <literal role="rfc2119">must</literal> be
-                    ignored and not used in the processing of the <olink targetdoc="spec" targetptr="gloss-epub-package"
-                        type="epub-spec"/>.</para>
+                    bibliographic metadata defined in that record (i.e., bibliographic metadata in the Package Document has
+                    the lowest priority). If a Reading Systems recognizes more than one format, it <literal role="rfc2119"
+                        >must</literal> give precedence to them based on the document order of <markup>link</markup>
+                    elements, as defined above.</para>
 
                 <para>If a Reading System does not recognize the relationship of the resource as defined in the
                         <markup>rel</markup> attribute, it <literal role="rfc2119">should</literal> ignore the
                         <markup>link</markup> element. Retrieval of remote resources referenced from the
                         <markup>link</markup> element is <literal role="rfc2119">optional</literal>.</para>
+
+                <para>Reading Systems <literal role="rfc2119">must</literal> ignore any instructions contained in linked
+                    resources related to the layout and rendering of the EPUB Publication.</para>
 
                 <para>The <literal role="rfc2119">optional</literal>
                     <markup>refines</markup> attribute indicates that the referenced resource applies to another metadata
