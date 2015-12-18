@@ -300,7 +300,7 @@ HTML
         
         my $toc = '';
         
-        if ($c =~ m#(<ol class="toc">.*?</ol>)\s*</?(section|div)>#gis) {
+        if ($c =~ m#(<ol class="toc">.*?</ol>)\s*</?(nav|div)>#gis) {
             $toc = $1;
             $toc =~ s#(</?)ul#$1ol#gis;
             $toc =~ s#</?span[^>]*>##gis;

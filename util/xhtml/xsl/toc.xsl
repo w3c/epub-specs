@@ -35,14 +35,14 @@
 	</xsl:template>
 
 	<xsl:template name="toc">
-		<section id="sec-toc">
+		<nav id="sec-toc" class="toc">
 			<h2 class="toc-title">Table of Contents</h2>
 			<xsl:for-each-group
 				select="//xhtml:h1|//xhtml:h2[not(parent::xhtml:section[@id='sotd'])]|//xhtml:h3|//xhtml:h4|//xhtml:h5|//xhtml:h6"
 				group-starting-with="xhtml:h1">
 				<xsl:apply-templates select="." mode="toc"/>
 			</xsl:for-each-group>
-		</section>
+		</nav>
 	</xsl:template>
 
 	<xsl:template match="xhtml:h1" mode="toc">

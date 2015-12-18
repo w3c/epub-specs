@@ -565,7 +565,7 @@
     <xsl:template name="section.titlepage.separator"/>
 
 
-    <!-- change div to section and add id to toc -->
+    <!-- change div to nav and add id to toc -->
     <xsl:template name="make.toc">
         <xsl:param name="toc-context" select="."/>
         <xsl:param name="toc.title.p" select="true()"/>
@@ -640,7 +640,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:if test="$nodes">
-                            <section class="toc" id="toc">
+                            <nav class="toc" id="toc">
                                 <xsl:copy-of select="$toc.title"/>
                                 <xsl:element name="{$toc.list.type}" namespace="http://www.w3.org/1999/xhtml">
                                     <xsl:call-template name="toc.list.attributes">
@@ -652,7 +652,7 @@
                                         <xsl:with-param name="toc-context" select="$toc-context"/>
                                     </xsl:apply-templates>
                                 </xsl:element>
-                            </section>
+                            </nav>
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
