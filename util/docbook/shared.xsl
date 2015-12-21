@@ -1431,11 +1431,13 @@
     
     <!-- format annotations as issues -->
     <xsl:template match="annotation" priority="1">
+        <xsl:variable name="iCount" select="count(preceding::annotation)+1"/>
         <xsl:element name="div">
             <xsl:attribute name="class">issue</xsl:attribute>
             <xsl:element name="h6">
+                <xsl:attribute name="id">issue-<xsl:value-of select="$iCount"/></xsl:attribute>
                 OPEN ISSUE
-                <xsl:value-of select="count(preceding::annotation)+1"/>
+                <xsl:value-of select="$iCount"/>
             </xsl:element>
             <xsl:apply-templates/>
         </xsl:element>
