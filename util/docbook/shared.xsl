@@ -6,6 +6,7 @@
     xmlns:xtbl="xalan://com.nwalsh.xalan.Table" xmlns:lxslt="http://xml.apache.org/xslt"
     xmlns:ptbl="http://nwalsh.com/xslt/ext/xsltproc/python/Table"
     xmlns:stbl="http://nwalsh.com/xslt/ext/com.nwalsh.saxon.Table"
+    xmlns:spec="http://www.idpf.org/2016/epub/spec"
     xmlns="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="doc stbl xtbl lxslt ptbl d saxon db exsl xlink">
     
@@ -793,6 +794,14 @@
                     <xsl:value-of select="$conformanceLevel"/>
                 </xsl:attribute> This <xsl:value-of select="$structureName"/> is <xsl:value-of
                     select="$conformanceLevel"/>
+            </xsl:element>
+        </xsl:if>
+        
+        <xsl:variable name="scope" select="../@spec:scope"/>
+        <xsl:if test="$scope != ''">
+            <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                <xsl:attribute name="class">scope</xsl:attribute>
+                <xsl:text>This feature is only available in the XHTML syntax.</xsl:text>
             </xsl:element>
         </xsl:if>
     </xsl:template>
