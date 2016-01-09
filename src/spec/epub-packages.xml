@@ -274,7 +274,7 @@
                     <para xml:id="confreq-rendition-rs-package">It <literal role="rfc2119">must</literal> process the <olink
                             targetdoc="spec" targetptr="gloss-package-document" type="epub-spec"/> as defined in <xref
                             linkend="sec-package-rs-conf"/>, and honor all presentation logic expressed through the Package
-                        Document (e.g., the reading order, fallback chains, bindings, page progression direction and fixed
+                        Document (e.g., the reading order, fallback chains, page progression direction and fixed
                         layouts).</para>
                 </listitem>
                 <listitem>
@@ -327,17 +327,13 @@
                         spine defines the default reading order of the given Rendition.</para>
                 </listitem>
                 <listitem>
-                    <para><link linkend="sec-bindings-elem">Collections</link> — a method of encapsulating and identifying
+                    <para><link linkend="sec-collection-elem">Collections</link> — a method of encapsulating and identifying
                         subcomponents within the Package.</para>
                 </listitem>
                 <listitem>
                     <para><link linkend="sec-foreign-restrictions-manifest">Manifest fallback chains</link> — an optional
                         mechanism that defines an ordered list of top-level resources as content equivalents. A Reading
                         System can then choose between the resources based on which it is capable of rendering.</para>
-                </listitem>
-                <listitem>
-                    <para><link linkend="sec-bindings-elem">Bindings</link> — an optional mechanism that associates
-                        script-based implementations with custom media types.</para>
                 </listitem>
             </itemizedlist>
 
@@ -499,8 +495,7 @@
                                 <option>[required]</option>, <markup><xref linkend="elemdef-opf-spine"/></markup>
                                 <option>[required]</option>, <markup><link role="codelink" linkend="sec-guide-elem"
                                         >guide</link></markup>
-                                <option>[optional/deprecated]</option>, <markup><xref linkend="elemdef-bindings"/></markup>
-                                <option>[optional]</option>, <markup><xref linkend="elemdef-collection"/></markup>
+                                <option>[optional/deprecated]</option>, <markup><xref linkend="elemdef-collection"/></markup>
                                 <option>[0 or more]</option></para>
                         </listitem>
                     </varlistentry>
@@ -2033,243 +2028,6 @@
 
             </section>
 
-            <section xml:id="sec-bindings-elem" xreflabel="bindings">
-                <title>The <markup>bindings</markup> Element</title>
-
-                <para>The <markup>bindings</markup> element defines a set of custom handlers for media types not supported by
-                    this specification.</para>
-
-                <variablelist xreflabel="bindings" role="elem-synopsis" xml:id="elemdef-bindings">
-                    <varlistentry>
-                        <term>Element Name</term>
-                        <listitem>
-                            <para><markup>bindings</markup></para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Usage</term>
-                        <listitem>
-                            <para>Optional fourth or fifth child of <markup><xref role="codelink"
-                                        linkend="elemdef-opf-package"/></markup>, following <markup><xref role="codelink"
-                                        linkend="elemdef-opf-spine"/></markup> or <markup><link role="codelink"
-                                        linkend="sec-guide-elem">guide</link></markup>.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Attributes</term>
-                        <listitem>
-                            <para>None.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Content Model</term>
-                        <listitem>
-                            <para>One or more <markup><xref role="codelink" linkend="elemdef-mediaType"/></markup> elements
-                                    <option>[required]</option></para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-                <para>The <markup><xref role="codelink" linkend="elemdef-opf-package"/></markup> element <literal
-                        role="rfc2119">may</literal> contain at most one <markup>bindings</markup> element. </para>
-
-                <para>The <markup>bindings</markup> element provides a means for Authors to include more sophisticated
-                    fallbacks than would otherwise be possible with the <xref linkend="refHTML5"/>
-                    <markup xlink:href="http://www.w3.org/TR/html5/Overview.html#the-object-element">object</markup>
-                    element's intrinsic fallback mechanisms. When present, Reading Systems that support scripting <literal
-                        role="rfc2119">must</literal> utilize the <markup>bindings</markup> element to handle
-                        <markup>object</markup> elements that reference unsupported media types.</para>
-
-                <para>Each of the <markup>bindings</markup> element's child <markup><link linkend="sec-mediaType-elem"
-                            >mediaType</link></markup> elements defines a unique handler for one of the foreign media types
-                    referenced in the <olink targetdoc="spec" targetptr="gloss-rendition" type="epub-spec"/>'s <olink
-                        targetdoc="spec" targetptr="gloss-content-document-epub-html" type="epub-spec">HTML Content
-                        Documents</olink>.</para>
-
-                <para>When an unsupported media type is encountered during processing of a document, the Reading System
-                        <literal role="rfc2119">must</literal> look up the handler in the <markup>bindings</markup> element
-                    by checking the <markup><link linkend="attrdef-mediaType-media-type">media-type</link></markup> attribute
-                    of each <markup>mediaType</markup> element for a match (and before attempting any other type of <link
-                        linkend="sec-foreign-restrictions-manifest">fallback processing</link>). If a match is found, the
-                    HTML Content Document referenced in the element's <markup><link linkend="attrdef-mediaType-handler"
-                            >handler</link></markup> attribute <literal role="rfc2119">must</literal> be instantiated instead
-                    of the referenced resource. If no match is found, the Reading System <literal role="rfc2119"
-                        >should</literal> continue with normal fallback processing (i.e., check for an intrinsic fallback for
-                    the <markup>object</markup>).</para>
-
-                <para>The Reading System <literal role="rfc2119">must</literal> instantiate the designated handler as if it
-                    had been referenced from the <markup>object</markup> element's <markup>data</markup> attribute with the
-                    following parameters:</para>
-
-                <variablelist>
-                    <varlistentry>
-                        <term><markup>src</markup></term>
-                        <listitem>
-                            <para>the value of which <literal role="rfc2119">must</literal> be an IRI <xref
-                                    linkend="refRFC3987"/> to the resource (i.e., the value of the <markup>object</markup>
-                                element's <markup>data</markup> attribute).</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term><markup>type</markup></term>
-                        <listitem>
-                            <para>the value of which <literal role="rfc2119">must</literal> be the resource media type (i.e.,
-                                the value of the <markup>object</markup> element's <markup>type</markup> attribute).</para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-                <para>Any additional <markup>param</markup> children of the <markup>object</markup> element <literal
-                        role="rfc2119">must</literal> be similarly added as parameters using the <markup>param</markup>
-                    element's <markup>name</markup> attribute as the new parameter name and its <markup>value</markup>
-                    attribute as the new value.</para>
-
-                <para>For example, the following <markup>object</markup> element containing a foreign media type:</para>
-
-                <informalexample>
-                    <synopsis><xi:include href="examples/publications/bindings-1.xml" parse="text"/></synopsis>
-                </informalexample>
-
-                <para>would result in the following query string being sent to the handler HTML Content Document after
-                    processing:</para>
-
-                <informalexample>
-                    <synopsis>src=horse.ogg&amp;type=audio/ogg&amp;autoplay=false</synopsis>
-                </informalexample>
-
-                <para>All IRI reserved characters, plus the characters <literal>&lt;</literal>, <literal>&gt;</literal>,
-                        <literal>"</literal>, <literal>space</literal>, <literal>{</literal>, <literal>}</literal>,
-                        <literal>|</literal>, <literal>\</literal>, <literal>^</literal> and <literal>`</literal>, in the
-                    generated query string <literal role="rfc2119">must</literal> be encoded and decoded as per <xref
-                        linkend="refRFC3987"/>.</para>
-
-                <para><markup>object</markup> elements that reference media types handled by the <markup>bindings</markup>
-                    element are only processed in <olink targetdoc="spec" targetptr="gloss-spine" type="epub-spec"
-                    />-referenced HTML Content Documents (i.e., they are ignored in <olink targetdoc="contentdocs"
-                        targetptr="sec-scripted-content-models" type="epub-spec">container-constrained scripting
-                        contexts</olink>).</para>
-
-                <bridgehead>Example</bridgehead>
-
-                <para>The following partial example illustrates how bindings can be used to provide a slideshow.</para>
-
-                <para>Consider a Rendition of an EPUB Publication with the following Package Document:</para>
-
-                <informalexample>
-                    <synopsis><xi:include href="examples/publications/bindings-2.xml" parse="text"/></synopsis>
-                </informalexample>
-
-                <para>and the following content in the file <filename>content.xhtml</filename>:</para>
-
-                <informalexample>
-                    <synopsis><xi:include href="examples/publications/bindings-3.xml" parse="text"/></synopsis>
-                </informalexample>
-
-                <para>and the following content in the file <filename>slideshow.xml</filename>:</para>
-
-                <informalexample>
-                    <synopsis><xi:include href="examples/publications/bindings-4.xml" parse="text"/></synopsis>
-                </informalexample>
-
-                <para>Depending on the capabilities of the <olink targetdoc="spec" targetptr="gloss-user" type="epub-spec"
-                    />'s Reading System, they will see one of the following renderings of the slideshow:</para>
-
-                <itemizedlist>
-                    <listitem>
-                        <para>If the Reading System supports the native slideshow format, it will render a rotating set of
-                            images as specified in <filename>slideshow.xml</filename>.</para>
-                    </listitem>
-                    <listitem>
-                        <para>If the Reading System cannot support the slideshow media type but supports scripting, it can
-                            check the <markup>bindings</markup> element in the Package Document for a scripted fallback.
-                            There it will find a reference to the <markup>item</markup> element containing the handler
-                            document (<filename>impl.xhtml</filename>). The Reading System can now load this document to
-                            render a JavaScripted equivalent of the slideshow (source not shown).</para>
-                    </listitem>
-                    <listitem>
-                        <para>If the Reading System does not support the slideshow media type and also does not support
-                            scripting, it will use the fallback images specified in the <markup>object</markup> element to
-                            show a static set of all the images.</para>
-                    </listitem>
-                </itemizedlist>
-
-            </section>
-
-            <section xml:id="sec-mediaType-elem" xreflabel="mediaType">
-                <title>The <markup>mediaType</markup> Element</title>
-
-                <para>The <markup>mediaType</markup> element associates a <olink targetdoc="spec"
-                        targetptr="gloss-publication-resource-foreign" type="epub-spec"/> media type with a handler <olink
-                        targetdoc="spec" targetptr="gloss-content-document-epub-html" type="epub-spec"/>.</para>
-
-                <variablelist xreflabel="mediaType" role="elem-synopsis" xml:id="elemdef-mediaType">
-                    <varlistentry>
-                        <term>Element Name</term>
-                        <listitem>
-                            <para><markup>mediaType</markup></para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Usage</term>
-                        <listitem>
-                            <para>As a child of <markup><xref role="codelink" linkend="elemdef-bindings"/></markup>.
-                                Repeatable.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Attributes</term>
-                        <listitem>
-                            <variablelist role="elem-synopsis-attlist">
-
-                                <varlistentry xml:id="attrdef-mediaType-media-type" xreflabel="media-type">
-                                    <term><markup>media-type</markup>
-                                        <option>[required]</option></term>
-                                    <listitem>
-                                        <para>A media type <xref linkend="refRFC2046"/> that specifies the type and format of
-                                            the resource to be handled.</para>
-                                    </listitem>
-                                </varlistentry>
-                                <varlistentry xml:id="attrdef-mediaType-handler" xreflabel="handler">
-                                    <term><markup>handler</markup>
-                                        <option>[required]</option></term>
-                                    <listitem>
-                                        <para>An IDREF <xref linkend="refXML"/> that identifies the manifest HTML Content
-                                            Document to be invoked to handle content of the type specified in this
-                                            element</para>
-                                    </listitem>
-                                </varlistentry>
-                            </variablelist>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Content Model</term>
-                        <listitem>
-                            <para>Empty</para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-                <para>Each child <markup>mediaType</markup> of a <markup>bindings</markup> element <literal role="rfc2119"
-                        >must</literal> define a unique content type in its <markup>media-type</markup> attribute, and the
-                    media type specified <literal role="rfc2119">must not</literal> be a Core Media Type.</para>
-
-                <para>The required <markup>handler</markup> attribute <literal role="rfc2119">must</literal> reference the ID
-                        <xref linkend="refXML"/> of an <markup><link role="codelink" linkend="elemdef-package-item"
-                            >item</link></markup> in the <markup><link role="codelink" linkend="elemdef-opf-manifest"
-                            >manifest</link></markup> of the default implementation for this media type. The referenced
-                        <markup>item</markup>
-                    <literal role="rfc2119">must</literal> be an HTML Content Document.</para>
-
-                <para>All HTML Content Documents designated as handlers <literal role="rfc2119">must</literal> have the <link
-                        xlink:href="http://www.idpf.org/epub/vocab/package/#scripted"><property>scripted</property>
-                        property</link>
-                    <xref linkend="refEPUBPackageVocab"/> set in their <olink targetdoc="spec" targetptr="gloss-manifest"
-                        type="epub-spec"/>
-                    <markup><link linkend="sec-item-elem">item</link></markup> element's <markup><link
-                            linkend="attrdef-item-properties">properties</link></markup> attribute.</para>
-
-            </section>
-
             <section xml:id="sec-collection-elem" xreflabel="collection">
                 <title>The <markup>collection</markup> Element</title>
 
@@ -3656,7 +3414,7 @@
 
                 <para>IDPF specifications <literal role="rfc2119">may</literal> introduce further restrictions on the content
                     model defined above for <markup>nav</markup> elements in the EPUB Navigation Document.</para>
-                
+
                 <para xml:id="confreq-nav-ol-style">In the context of this specification, the default display style of list
                     items within <markup>nav</markup> elements <literal role="rfc2119">must</literal> be equivalent to the
                         <xref linkend="refCSS21"/>
@@ -3674,7 +3432,7 @@
                         <xref linkend="refHTML5"/> for the EPUB Navigation Document and include an <markup>epub:type</markup>
                         attribute on each <markup>nav</markup> element with the corresponding property.</para>
                 </note>
-                
+
                 <informalexample>
                     <para>The following example shows the basic patterns of a navigation element.</para>
                     <synopsis><xi:include href="./examples/contentdocs-nav/basic.xml" parse="text"/></synopsis>
@@ -3785,7 +3543,7 @@
                     <para>The <property>pagelist</property>
                         <markup>nav</markup> element <literal role="rfc2119">should</literal> contain only a single
                             <markup>ol</markup> descendant (i.e., no nested sublists). </para>
-                    
+
                     <note>
                         <para>The <olink targetdoc="packages" targetptr="sec-opf-dcsource" type="epub-spec"/> element
                             provides a means of identifying the source publication to which the given pagination information
@@ -3860,7 +3618,7 @@
                         elements: they <literal role="rfc2119">may</literal> be used to represent navigational semantics for
                         any information domain, and they <literal role="rfc2119">may</literal> contain link targets with
                         homogeneous or heterogeneous semantics.</para>
-                    
+
                     <informalexample>
                         <para>The following example shows a partial list of tables (<property>lot</property>
                             <markup>nav</markup> element), with <markup>span</markup> elements used as link-less headings for
