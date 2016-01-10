@@ -1444,7 +1444,16 @@
         <xsl:element name="div">
             <xsl:attribute name="class">issue</xsl:attribute>
             <xsl:element name="h6">
-                <xsl:attribute name="id">issue-<xsl:value-of select="$iCount"/></xsl:attribute>
+                <xsl:attribute name="id">
+                    <xsl:choose>
+                        <xsl:when test="@id">
+                            <xsl:value-of select="@id"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>issue-</xsl:text><xsl:value-of select="$iCount"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
                 OPEN ISSUE
                 <xsl:value-of select="$iCount"/>
             </xsl:element>
