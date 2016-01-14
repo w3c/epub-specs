@@ -91,23 +91,6 @@
         </rule>            
     </pattern>
           
-    <pattern id="opf.toc.ncx"> 
-        <rule context="opf:spine[@toc]">
-            <let name="ref" value="./@toc" />            
-            <let name="item" value="/opf:package/opf:manifest/opf:item[@id = $ref]"/>
-            <let name="item-media-type" value="$item/@media-type" />
-            <assert test="$item-media-type = 'application/x-dtbncx+xml'"
-                >spine element toc attribute must reference the NCX manifest item (referenced media type was '<value-of select="$item-media-type"/>')</assert>
-        </rule>            
-    </pattern>    
-    
-    <pattern id="opf.toc.ncx.2">     
-        <rule context="opf:item[@media-type='application/x-dtbncx+xml']">
-            <assert test="//opf:spine[@toc]"
-                >spine element toc attribute must be set when an NCX is included in the publication</assert>
-        </rule>    
-    </pattern>    
-        
     <pattern id="opf.nav.prop"> 
         <rule context="opf:manifest">            
             <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]" />            
