@@ -45,11 +45,6 @@ my @spec_order = (
     'epub-changes',
     'epub-cfi',
     'altss-tags',
-    'epub-indexes',
-    'epub-dict',
-    'epub-multiple-renditions',
-    'epub-region-nav',
-    'epub-previews',
     'epub-vocab-package',
     'epub-vocab-overlays',
     'epub-vocab-structure',
@@ -89,10 +84,10 @@ sub prep {
     dircopy($skeleton_dir,$epub_dir) or die("$!\n");
     dircopy($build_dir,$content_dir) or die("$!\n");
     rmtree($content_dir . $epub_version . '/schema');
-    rmtree($content_dir . 'renditions/multiple/schema');
-    rmtree($content_dir . 'renditions/region-nav/schema');
-    rmtree($content_dir . 'dict/schema');
-    rmtree($content_dir . 'idx/schema');
+    rmtree($content_dir . 'dict');
+    rmtree($content_dir . 'idx');
+    rmtree($content_dir . 'previews');
+    rmtree($content_dir . 'renditions');
 }
 
 sub specs {
@@ -118,7 +113,7 @@ sub specs {
     (my $fixed_path = $File::Find::name) =~ s#^\./##;
     
     push @files, $fixed_path;
-    
+
     (my $spec_id = $_) =~ s#(.*)\.x?html#$1#is;
     $spec_id = lc($spec_id);
     
