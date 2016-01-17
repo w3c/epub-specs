@@ -26,14 +26,6 @@
         </rule>
     </pattern>    
     
-    <pattern id="opf.refines.relative">
-        <rule context="*[@refines and starts-with(@refines,'#')][not(ancestor::opf:collection)]">
-            <let name="refines-target-id" value="substring(@refines, 2)" />
-            <assert test="//*[@id=$refines-target-id]"
-                >@refines missing target id: '<value-of select="$refines-target-id"/>'</assert>
-        </rule>
-    </pattern>
-    
     <pattern id="opf.itemref">        
         <rule context="opf:spine/opf:itemref[@idref]">    
             <let name="ref" value="./@idref" />            
@@ -65,32 +57,25 @@
     
     <pattern id="opf.media.overlay.metadata.global"> 
         <rule context="opf:manifest[opf:item[@media-overlay]]">
-            <assert test="//opf:meta[@property='media:duration' and not (@refines)]"
+            <assert test="//opf:meta[@property='media:duration']"
                 >global media:duration meta element not set</assert>
-        </rule>        
+        </rule>
+    </pattern>
+    
+    <pattern id="opf.media.overlay.metadata.global.duration">
+        <rule context="opf:metadata/opf:meta[@property='media:duration']">
+            <assert test="matches(normalize-space(.), '^([0-9]+:)?[0-5][0-9]:[0-5][0-9](\.[0-9]+)?$') or matches(normalize-space(.), '^[0-9]+(\.[0-9]+)?(h|min|s|ms)?$')">
+                The value of the media:duration property must be a valid SMIL clock value.
+            </assert>
+        </rule>
     </pattern>
     
     <pattern id="opf.media.overlay.metadata.item">
-        <rule context="opf:manifest/opf:item[@media-overlay]">
-            <let name="mo-idref" value="@media-overlay"/>
-            <let name="mo-item" value="//opf:item[@id = $mo-idref]"/>
-            <let name="mo-item-id" value="$mo-item/@id"/>
-            <let name="mo-item-uri" value="concat('#', $mo-item-id)"/>
-            <assert test="//opf:meta[@property='media:duration' and @refines = $mo-item-uri ]"
-                >item media:duration meta element not set (expecting: meta property='media:duration' refines='<value-of select="$mo-item-uri"/>')</assert>
+        <rule context="opf:manifest/opf:item[@media-type='application/smil+xml']">
+            <assert test="@duration">Manifest items for Media Overlay documents require a duration attribute.</assert>
         </rule>
     </pattern>
-          
-    <pattern id="opf.bindings.handler"> 
-        <rule context="opf:bindings/opf:mediaType">
-            <let name="ref" value="./@handler" />
-            <let name="item" value="//opf:manifest/opf:item[@id = $ref]" />
-            <let name="item-media-type" value="$item/@media-type" />
-            <assert test="$item-media-type = 'application/xhtml+xml'"
-                >manifest items referenced from the handler attribute of a bindings mediaType element must be of the 'application/xhtml+xml' type (given type was '<value-of select="$item-media-type"/>')</assert>
-        </rule>            
-    </pattern>
-          
+    
     <pattern id="opf.nav.prop"> 
         <rule context="opf:manifest">            
             <let name="item" value="//opf:manifest/opf:item[@properties and (some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'nav'))]" />            
@@ -112,14 +97,6 @@
             <assert test="count($item) &lt; 2"
                 >Multiple occurrences of the 'cover-image' property (number of 'cover-image' items: <value-of select="count($item)"/>).</assert>                            
         </rule> 
-    </pattern>
-    
-    <pattern id="opf.collection.refines-restriction">
-        <rule context="opf:collection/opf:metadata/*[@refines]">
-            <let name="refines-target-id" value="substring(@refines, 2)" />
-            <assert test="starts-with(@refines,'#') and ancestor::opf:collection[not(ancestor::opf:collection)]//*[@id=$refines-target-id]"
-                >@refines must point to an element within the current collection</assert>
-        </rule>
     </pattern>
     
     <include href="./mod/id-unique.sch"/>     
