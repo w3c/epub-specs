@@ -74,6 +74,12 @@
                 </xsl:element>
             </xsl:element>
             
+            <!-- top-level annotations -->
+            
+            <xsl:if test="$topinfo/db:annotation">
+                <xsl:apply-templates select="$topinfo/db:annotation"/>
+            </xsl:if>
+            
             <!-- history -->
             <xsl:if test="$topinfo/db:printhistory">
                 <xsl:element name="dl" namespace="http://www.w3.org/1999/xhtml">
@@ -1439,15 +1445,15 @@
     
     
     <!-- format annotations as issues -->
-    <xsl:template match="annotation" priority="1">
-        <xsl:variable name="iCount" select="count(preceding::annotation)+1"/>
+    <xsl:template match="annotation|db:annotation" priority="1">
+        <xsl:variable name="iCount" select="count(preceding::annotation)+count(preceding::db:annotation)+1"/>
         <xsl:element name="div">
             <xsl:attribute name="class">issue</xsl:attribute>
             <xsl:element name="h6">
                 <xsl:attribute name="id">
                     <xsl:choose>
-                        <xsl:when test="@id">
-                            <xsl:value-of select="@id"/>
+                        <xsl:when test="@id or @xml:id">
+                            <xsl:value-of select="@id|@xml:id"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:text>issue-</xsl:text><xsl:value-of select="$iCount"/>
