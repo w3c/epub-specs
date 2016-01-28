@@ -1460,12 +1460,22 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
-                OPEN ISSUE
-                <xsl:value-of select="$iCount"/>
+                <xsl:choose>
+                    <xsl:when test="db:title or title">
+                        <xsl:attribute name="class">custom-title</xsl:attribute>
+                        <xsl:value-of select="db:title|title"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        OPEN ISSUE
+                        <xsl:value-of select="$iCount"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:element>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+    
+    <xsl:template match="db:title[parent::db:annotation]|title[parent::annotation]"/>
     
     <!-- override chapter to add conformance -->
     <xsl:template match="chapter">

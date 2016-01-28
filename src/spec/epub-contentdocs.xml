@@ -135,11 +135,9 @@
 
             <section xml:id="sec-overview-relations-css">
                 <title>Relationship to CSS</title>
-                <para>The <link linkend="sec-css">CSS profile</link> defined in this specification has CSS 2.1 <xref
-                        linkend="refCSS21"/> as its baseline. Any CSS Style Sheet that conforms to CSS 2.1 may be used in the
-                    context of an EPUB Publication, except as noted in <xref linkend="sec-css-2.1"/>.</para>
-                <para>This specification also incorporates features defined by CSS3 Modules and introduces EPUB-specific CSS
-                    constructs.</para>
+                <para>EPUB 3.1 supports CSS as defined by the CSS Working Group Snapshot <xref linkend="refCSSSNAP"/>, based
+                    on CSS 2.1 <xref linkend="refCSS21"/> plus many newer modules. EPUB 3.1 also maintains some prefixed CSS
+                    properties, to ensure consistent support for global languages.</para>
             </section>
 
             <section xml:id="sec-overview-versioning">
@@ -988,7 +986,7 @@
                             <para xml:id="confreq-html-unicode-pua">Any included characters that map to a code point within
                                 one of the Private Use Area (PUA) ranges as defined in <xref linkend="refUnicode5"/>
                                 <literal role="rfc2119">must</literal> occur within a string that is styled or attributed in
-                                a manner that includes a reference to an <link linkend="sec-css-fonts">embedded font</link>
+                                a manner that includes a reference to an embedded font <xref linkend="refCSS3FontsModule"/>
                                 that contains an appropriate glyph for that code point.</para>
                         </listitem>
                     </varlistentry>
@@ -1447,13 +1445,16 @@
                             >fixed-layout documents</link>.</para>
                 </listitem>
                 <listitem>
-                    <para xml:id="confreq-rs-scripted-scrolled">If it supports spine-level scripting in reflowable EPUB
-                        Content Documents, it <literal role="rfc2119">must</literal> implement the <link
-                            xlink:href="epub-packages.html#flow-scrolled-doc">"<property>scrolled-doc</property>"</link>
-                        interface defined by <olink targetdoc="packages" targetptr="layout-property-flow" type="epub-spec"/>
-                        and <literal role="rfc2119">should</literal> implement the <link
+                    <para xml:id="confreq-rs-scripted-scrolled">It <literal role="rfc2119">should</literal> support
+                        spine-level scripting of the <link xlink:href="epub-packages.html#flow-scrolled-doc"
+                                >"<property>scrolled-doc</property>"</link> and <link
                             xlink:href="epub-packages.html#flow-scrolled-continuous"
-                                >"<property>scrolled-continuous</property>"</link> interface.</para>
+                                >"<property>scrolled-continuous</property>"</link> interfaces defined by <olink
+                            targetdoc="packages" targetptr="layout-property-flow" type="epub-spec"/>. Similarly, if it
+                        supports spine-level scripting in reflowable EPUB Content Documents, it <literal role="rfc2119"
+                            >must</literal> implement the "<property>scrolled-doc</property>" interface and <literal
+                            role="rfc2119">should</literal> implement the "<property>scrolled-continuous</property>"
+                        interface.</para>
                 </listitem>
                 <listitem>
                     <para xml:id="confreq-rs-scripted-optional-support">It <literal role="rfc2119">may</literal> support
@@ -1745,559 +1746,317 @@
     </chapter>
 
     <chapter xml:id="sec-css">
-        <title>Cascading Style Sheets</title>
+        <title>CSS Style Sheets</title>
 
-        <para>This section defines a profile for Cascading Style Sheets (CSS) intended to be used for styling of <olink
-                targetdoc="spec" targetptr="gloss-content-document-epub-html" type="epub-spec">HTML Content
-            Documents</olink>. An instance of a CSS Style Sheet that conforms to this profile is a <olink targetdoc="spec"
-                targetptr="gloss-core-media-type" type="epub-spec"/>.</para>
+        <section xml:id="sec-css-intro" conformance="informative">
+            <title>Introduction</title>
 
-        <caution xml:id="caution-css">
-            <para>The EPUB 3.1 CSS Profile references CSS specifications that are still works in progress and may change in
-                incompatible ways. When utilizing features from such specifications, authors should consider the inherent
-                risks in terms of the potential impact on interoperability and document longevity.</para>
-        </caution>
+            <para>CSS has been an integral part of the Open Web Platform for nearly two decades—readers, publishers, and
+                document authors expect CSS to "just work," as they expect HTML to just work.</para>
 
-        <note xml:id="note-css-unprefixed-authoring">
-            <para>The EPUB 3.1 CSS Profile employs the usage of the <property>-epub-</property>
-                <link xlink:href="http://www.w3.org/TR/CSS21/syndata.html#vendor-keywords">prefix</link> for a number of CSS3
-                <!-- keywords and --> property names, as detailed below. As the CSS3 modules that define these properties
-                mature and stabilize, EPUB authoring guidelines may encourage authors to also include unprefixed equivalents
-                of these properties in EPUB 3.1 Style Sheets.</para>
-        </note>
+            <para>In the past, EPUB defined a profile of CSS that mandated support for certain properties and provided
+                prefixed versions of numerous other properties. Although prefixed properties are no longer recommended by the
+                CSS Working Group, this specification has to maintain some prefixed properties to avoid breaking existing
+                content. But with the minor exceptions defined in this section, EPUB defers to the W3C to define CSS.</para>
+        </section>
 
-        <section xml:id="sec-css-content-conf" xreflabel="Cascading Style Sheets — Content Conformance">
-            <title>Content Conformance</title>
+        <section xml:id="sec-css-content-conf" xreflabel="CSS Style Sheets—Content Conformance">
+            <title>Content Coformance</title>
 
-            <para>A conformant CSS Style Sheet <literal role="rfc2119">must</literal> meet all of the following
+            <para>A conformant CSS style sheet <literal role="rfc2119">must</literal> meet all of the following
                 criteria:</para>
 
-            <itemizedlist role="conformance-list">
-                <listitem xml:id="confreq-content-css-support">
-                    <para>It <literal role="rfc2119">must</literal> adhere to all content restrictions given in <xref
-                            linkend="sec-css-profile"/>.</para>
-                </listitem>
-                <listitem xml:id="confreq-content-css-unsupport">
-                    <para>It <literal role="rfc2119">may</literal> include constructs not explicitly identified in the EPUB
-                        3.1 CSS Profile, but <literal role="rfc2119">should</literal> be authored so that rendering fidelity
-                        does not depend on such additional constructs.</para>
-                </listitem>
-                <listitem xml:id="confreq-content-css-encoding">
-                    <para>It <literal role="rfc2119">must</literal> be UTF-8 or UTF-16 encoded.</para>
-                </listitem>
-            </itemizedlist>
-
-            <note xml:id="note-css-refprops-pkg">
-                <!-- note similar statement for xhtml, svg and css-->
-                <para>All <olink targetdoc="spec" targetptr="gloss-publication-resource-cmt-or-foreign" type="epub-spec"/>s
-                    referenced from a CSS Style Sheet must conform to the constraints for Publication Resources defined in
-                        <olink targetdoc="spec" targetptr="sec-epub-pub-conf" type="epub-spec"/></para>
-            </note>
-
-        </section>
-
-        <section xml:id="sec-css-rs-conf" xreflabel="Cascading Style Sheets — Reading System Conformance">
-            <title>Reading System Conformance</title>
-
-            <itemizedlist role="conformance-list">
-                <listitem xml:id="confreq-rs-css-support">
-                    <para>Reading Systems with a <olink targetdoc="spec" targetptr="gloss-viewport-css" type="epub-spec"/>
-                        <literal role="rfc2119">should</literal> support — render as defined by the corresponding
-                        specification in the Viewport — all CSS constructs included in this profile unless detailed otherwise
-                        in <xref linkend="sec-css-profile"/>.</para>
+            <itemizedlist>
+                <listitem>
+                    <para>It <literal role="rfc2119">may</literal> include any CSS properties, with the following
+                        exceptions:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>It <literal role="rfc2119">must not</literal> use the <link
+                                    xlink:href="https://www.w3.org/TR/css3-writing-modes/#direction"
+                                        ><property>direction</property> property</link>
+                                <xref linkend="refCSS3WritingModesModule"/>. Use the <xref linkend="refHTML5"/>
+                                <link xlink:href="https://www.w3.org/TR/html5/dom.html#the-dir-attribute"
+                                        ><markup>dir</markup> attribute</link> to set the inline base direction.</para>
+                        </listitem>
+                        <listitem>
+                            <para>It <literal role="rfc2119">must not</literal> use the <link
+                                    xlink:href="https://www.w3.org/TR/css3-writing-modes/#unicode-bidi"
+                                        ><property>unicode-bidi</property> property</link>
+                                <xref linkend="refCSS3WritingModesModule"/>. Use <xref linkend="refHTML5"/>
+                                <link xlink:href="https://www.w3.org/TR/html5/text-level-semantics.html#the-bdo-element"
+                                        ><markup>bdo</markup> elements</link> and <link
+                                    xlink:href="https://www.w3.org/TR/html5/dom.html#the-dir-attribute"><markup>dir</markup>
+                                    attributes</link> to control bidirectionality.</para>
+                        </listitem>
+                    </itemizedlist>
                 </listitem>
                 <listitem>
-                    <para xml:id="confreq-rs-css-unsupport">Reading Systems <literal role="rfc2119">may</literal> support
-                        additional CSS constructs not explicitly identified in the EPUB 3.1 CSS Profile, and <literal
-                            role="rfc2119">must</literal> handle any unsupported constructs as <link
-                            xlink:href="http://www.w3.org/TR/CSS21/conform.html#ignore">defined</link> in <xref
-                            linkend="refCSS21"/>. </para>
+                    <para>It <literal role="rfc2119">may</literal> include the prefixed properties defined in <xref
+                            linkend="sec-css-prefixed"/>.</para>
+                </listitem>
+                <listitem>
+                    <para>It <literal role="rfc2119">must</literal> be encoded in UTF-8 or UTF-16 <xref linkend="refUnicode5"
+                        />.</para>
                 </listitem>
             </itemizedlist>
-            <note xml:id="note-rs-css-support">
-                <para>Reading Systems have varying capabilities with regards to CSS rendering support, so may ignore some or
-                    all style information of an CSS Style Sheet.</para>
-                <para>In addition, even when a Reading System does have a <olink targetdoc="spec"
-                        targetptr="gloss-viewport-css" type="epub-spec"/>, it is likely to render content in a manner that
-                    differs from typical HTML5 User Agents (e.g., paginating content rather than providing a infinitely
-                    scrolling surface). </para>
+
+            <note>
+                <para>Keep in mind that some <olink targetdoc="spec" targetptr="gloss-epub-reading-system" type="epub-spec"
+                        >Reading Systems</olink> will not support all desired features of CSS. In particular, the following
+                    are known to be problematic:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Reading System-induced pagination can interact poorly with style sheets. Fixed and absolute
+                            positioning are particularly likely to be problematic.</para>
+                    </listitem>
+                    <listitem>
+                        <para>some types of screens, such as e-ink, will not support animations and transitions.</para>
+                    </listitem>
+                </itemizedlist>
             </note>
         </section>
 
-        <section xml:id="sec-css-profile">
-            <title>EPUB 3.1 CSS Profile</title>
+        <section xml:id="sec-css-rs-conf" xreflabel="CSS Style Sheets—Reading System Conformance">
+            <title>Reading System Conformance</title>
 
-            <section xml:id="sec-css-2.1">
-                <title>CSS 2.1</title>
+            <para>A conformant <olink targetdoc="spec" targetptr="gloss-epub-reading-system" type="epub-spec"/>
+                <literal role="rfc2119">must</literal> meet all of the following criteria for processing CSS Style
+                Sheets:</para>
 
-                <para>The style baseline of the EPUB 3.1 CSS Profile is Cascading Style Sheets Level 2 Revision 1 <xref
-                        linkend="refCSS21"/>. The profile includes all style sheet constructs normatively defined in <xref
-                        linkend="refCSS21"/>, with the following exceptions:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>It <literal role="rfc2119">must</literal> support CSS as defined in the <xref linkend="refCSSSNAP"
+                        /> if it has a <olink targetdoc="spec" targetptr="gloss-viewport" type="epub-spec"/>.</para>
+                </listitem>
+                <listitem>
+                    <para>It <literal role="rfc2119">should</literal> support all applicable modules in <xref
+                            linkend="refCSSSNAP"/> that have reached <link
+                            xlink:href="https://www.w3.org/2015/Process-20150901/#candidate-rec">Candidate
+                            Recommendation</link> status <xref linkend="refW3CProc"/> and are widely implemented.</para>
+                </listitem>
+                <listitem>
+                    <para>It <literal role="rfc2119">must</literal> support all prefixed properties defined in <xref
+                            linkend="sec-css-prefixed"/>.</para>
+                </listitem>
+            </itemizedlist>
 
-                <itemizedlist>
-                    <listitem>
-                        <para>The <code role="value">absolute</code> value of the <property>position</property> property
-                                <literal role="rfc2119">should</literal> be used only with HTML Content Documents whose
-                                <olink targetdoc="packages" targetptr="fxl-property-layout" type="epub-spec">rendition:layout
-                                property</olink> has been set to <property>pre-paginated</property>.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The <code role="value">fixed</code> value of the <property>position</property> property is not
-                            part of the EPUB 3.1 CSS Profile. To avoid potential rendering and interoperability issues, it
-                                <literal role="rfc2119">should not</literal> be included in a CSS Style Sheet.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The <property>direction</property> and <property>unicode-bidi</property> properties <literal
-                                role="rfc2119">must not</literal> be included in a CSS Style Sheet. Authors <literal
-                                role="rfc2119">should</literal> use appropriate <xref linkend="refHTML5"/> markup to express
-                            directionality information instead. </para>
-                    </listitem>
-                </itemizedlist>
-
-                <para>Reading Systems that have a <olink targetdoc="spec" targetptr="gloss-viewport-css" type="epub-spec"/>
-                    <literal role="rfc2119">must</literal> support the <property>font-family</property> property.</para>
-            </section>
-            <section xml:id="sec-css-2.0-list-style-type">
-                <title>CSS 2.0</title>
-                <para>The EPUB 3.1 CSS Profile includes the following values for the <property>list-style-type</property>
-                    property as <link xlink:href="http://www.w3.org/TR/2008/REC-CSS2-20080411/generate.html#lists">defined
-                        in</link>
-                    <xref linkend="refCSS20"/>:</para>
-                <itemizedlist>
-                    <listitem>
-                        <para>
-                            <code role="value">cjk-ideographic</code>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <code role="value">hebrew</code>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <code role="value">hiragana</code>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <code role="value">hiragana-iroha</code>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <code role="value">katakana</code>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <code role="value">katakana-iroha</code>
-                        </para>
-                    </listitem>
-                </itemizedlist>
-                <!--
-                <para>Additional details on these list styles can be found in <xref
-                        linkend="refCSS3Lists"/>. <remark role="todo">The definitions in CSS3 Lists
-                        are incorrect, so remove this paragraph if an updated WD has not yet been
-                        published.</remark>
-                </para>
-                -->
-            </section>
-            <section xml:id="sec-css-voice-characteristics">
-                <title>CSS 3.0 Speech</title>
-                <!-- TODO note the difference in inclusion <para>The EPUB 3 CSS Profile includes all features defined in the CSS 3.0 Speech
-                    Module <xref linkend="refCSS3Speech"/>. Reading Systems with <olink targetdoc="spec" targetptr="gloss-tts" type="epub-spec"/> capabilities <literal role="rfc2119">should</literal> support the following
-                        properties:</para> -->
-                <para>The EPUB 3.1 CSS Profile includes <property>-epub-</property> prefixed versions of the following
-                    properties from the CSS3 Speech Module <xref linkend="refCSS3Speech"/> using syntax as defined in <xref
-                        linkend="refCSS3Speech-dated"/> and semantics as defined in <xref linkend="refCSS3Speech"/>:</para>
-                <itemizedlist>
-                    <listitem>
-                        <para>
-                            <property>-epub-cue</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-pause</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-rest</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-speak</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-speak-as</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-voice-family</property>
-                        </para>
-                    </listitem>
-                </itemizedlist>
-                <xi:include href="./share/note-tts-features.xml"/>
-            </section>
-            <section xml:id="sec-css-fonts">
-                <title>CSS Fonts Level 3</title>
-                <!-- jdaggett, editor of CSS3 Fonts, believes the below-referenced @font-face portion of
-                 CSS3 Fonts to be stable. Other parts of the CSS3 Fonts spec are not yet stable.
-                 2011-01-11 -->
-
-                <para>The EPUB 3.1 CSS Profile includes <property>@font-face</property> rules and descriptors as defined in
-                    the CSS Fonts Module Level 3 <xref linkend="refCSS3FontsModule"/> specification, using syntax as defined
-                    in <xref linkend="refCSS3FontsModule-dated"/> and semantics as defined in <xref
-                        linkend="refCSS3FontsModule"/>. </para>
-
-                <para xml:id="confreq-rs-embedded-font-types">Reading Systems with a <olink targetdoc="spec"
-                        targetptr="gloss-viewport-css" type="epub-spec"/>
-                    <literal role="rfc2119">must</literal> support OpenType <xref linkend="refOpenType"/> and WOFF <xref
-                        linkend="refWOFF"/> fonts embedded using the <property>@font-face</property> rule.</para>
-
-                <para xml:id="sec-css-font-fallbacks">Fonts embedded in Content Documents or CSS Style Sheets using the
-                        <property>@font-face</property> mechanism <literal role="rfc2119">may</literal> be Foreign Resources.
-                    Reading Systems <literal role="rfc2119">must</literal> use the <link
-                        xlink:href="http://www.w3.org/TR/css3-fonts/#font-style-matching">rules for matching font
-                        styles</link>
-                    <xref linkend="refCSS3FontsModule"/> when identifying a fallback for an unsupported font type.</para>
-
-                <para>In addition, Reading Systems <literal role="rfc2119">must</literal> support at least the following
-                        <property>@font-face</property> font descriptors. <!-- using
-                        <literal>-epub-</literal> prefixed property names,
-                        syntax as defined in <xref
-                        linkend="refCSS3FontsModule-dated"/> and semantics -->
-                    <!-- as
-                    defined in <xref linkend="refCSS3FontsModule-dated"/>.--></para>
-
-                <itemizedlist>
-                    <!-- Got rid of font-size, as instructred by John Daggett. -->
-                    <!-- Got rid of font-variant, as instructed by John Daggett.  -->
-                    <listitem>
-                        <para>
-                            <property><!--epub-->font-family</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property><!--epub-->font-style</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property><!--epub-->font-weight</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property><!--epub-->src</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property><!--epub-->unicode-range</property>
-                        </para>
-                    </listitem>
-                </itemizedlist>
-
-                <para>For forwards compatibility with EPUB 2 Reading Systems that do not support <property
-                        linkend="sec-css-fonts">@font-face</property> rules, authors <literal role="rfc2119">should</literal>
-                    reference a generic font using the <property>font-family</property> property.</para>
-
-                <note>
-                    <para>Refer to <olink targetdoc="ocf" targetptr="sec-resource-obfuscation" type="epub-spec"/> for Reading
-                        System font obfuscation requirements. </para>
-                </note>
-
-            </section>
-            <section xml:id="sec-css-text">
-                <title>CSS Text Level 3</title>
-
-                <para>The EPUB 3.1 CSS Profile includes <property>-epub-</property> prefixed versions of the following
-                    properties from the CSS Text Level 3 <xref linkend="refCSS3Text"/> specification using syntax as defined
-                    in <xref linkend="refCSS3Text-dated"/> and semantics as defined in <xref linkend="refCSS3Text"/>.</para>
-
-                <itemizedlist>
-                    <listitem>
-                        <para>
-                            <property>-epub-hyphens</property>* </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-line-break</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-align-last</property>
-                        </para>
-                    </listitem>
-                    <!-- <listitem>
-                        <para>
-                            <property>-epub-text-transform</property>
-                        </para>
-                    </listitem> -->
-                    <listitem>
-                        <para>
-                            <property>-epub-word-break</property>
-                        </para>
-                    </listitem>
-                </itemizedlist>
-
-                <para>* The <property>-epub-hyphens</property> property does not include support for the value <code
-                        role="value">all</code>.</para>
-
-                <para xml:id="css-propdef-text-transform">In addition, the EPUB 3.1 CSS Profile includes the unprefixed
-                        <property>text-transform</property> property from CSS Text Level 3 using semantics as defined in
-                        <xref linkend="refCSS3Text"/> and syntax as defined in <xref linkend="refCSS3Text-dated"/>, with the
-                    exception that the <code role="value">fullwidth</code> and <code role="value">fullsize-kana</code> values
-                    are prefixed in the EPUB 3.1 CSS Profile (<code role="value">-epub-fullwidth</code> and <code
-                        role="value">-epub-fullsize-kana</code>, respectively). </para>
-
-                <para>Note that the CSS Text Level 3 module has dropped support for the <code role="value"
-                        >fullsize-kana</code> value since the EPUB 3.0 revision. The EPUB 3.1 CSS Profile retains this value,
-                    but now defines its semantics as below:</para>
-
-                <variablelist>
-                    <varlistentry>
-                        <term><code role="value">-epub-fullsize-kana</code></term>
-                        <listitem>
-                            <para>This value represents a mapping of HIRAGANA or KATAKANA characters as shown in <xref
-                                    linkend="fullsize-kana-char-mapping"/>. This value is typically used for Japanese ruby
-                                annotation text.</para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-            </section>
-            <section xml:id="sec-css-text-decoration">
-                <title>CSS Text Decoration Level 3</title>
-
-                <para>The EPUB 3.1 CSS Profile includes <property>-epub-</property> prefixed versions of the following
-                    properties from the CSS Text Decoration Level 3 <xref linkend="refCSS3TextDecoration"/> specification
-                    using syntax as defined in <xref linkend="refCSS3TextDecoration-dated"/> and semantics as defined in
-                        <xref linkend="refCSS3TextDecoration"/>.</para>
-
-                <itemizedlist>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-emphasis</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-emphasis-color</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-emphasis-position</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-emphasis-style</property>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>
-                            <property>-epub-text-underline-position</property>
-                        </para>
-                    </listitem>
-                </itemizedlist>
-            </section>
-            <section xml:id="sec-css-writing-modes">
-                <title>CSS Writing Modes</title>
-                <para>With exceptions for the <property>direction</property> and <property>unicode-bidi</property> properties
-                        <link linkend="css-writing-modes-excl">as noted below</link>, the EPUB 3.1 CSS Profile includes all
-                    of the features defined in the CSS Writing Modes Module Level 3 <xref linkend="refCSS3WritingModesModule"
-                    /> specification using <property>-epub-</property> prefixed property names, syntax as defined in <xref
-                        linkend="refCSS3WritingModesModule-dated"/> and semantics as defined in <xref
-                        linkend="refCSS3WritingModesModule"/>. Furthermore, as specified in <xref
-                        linkend="refCSS3WritingModesModule-new-dated"/>, both "<code role="value">sideways</code>" and "<code
-                        role="value">mixed</code>" are permitted as values of the <property>-epub-text-orientation</property>
-                    property. The values "<code role="value">vertical-right</code>", "<code role="value"
-                    >rotate-right</code>", "<code role="value">rotate-left</code>", "<code role="value">rotate-normal</code>"
-                    and "<code role="value">auto</code>" of this property are deprecated.</para>
-
-                <note>
-                    <para>The semantics of "<code role="value">vertical-right</code>", "<code role="value"
-                            >rotate-right</code>", "<code role="value">rotate-left</code>", "<code role="value"
-                            >rotate-normal</code>", and "<code role="value">auto</code>" is the same as that of "<code
-                            role="value">mixed</code>", "<code role="value">sideways-right</code>", "<code role="value"
-                            >sideways-left</code>", "<code role="value">sideways</code>" and "<code role="value"
-                            >use-glyph-orientation</code>" in <xref linkend="refCSS3WritingModesModule"/>,
-                        respectively.</para>
-                </note>
-
-                <para>The <property>-epub-text-combine</property> property is deprecated, and the
-                        <property>-epub-text-combine-horizontal</property> property from <xref
-                        linkend="refCSS3WritingModesModule-new-dated"/> added.</para>
-
-                <note>
-                    <para>The <property>-epub-text-combine</property> property's values can be mapped to
-                            <property>-epub-text-combine-horizontal</property> as follows: '<code role="value">none</code>'
-                        to '<code role="value">none</code>' and '<code role="value">horizontal</code>' to '<code role="value"
-                            >all</code>'. The syntax '<code role="value">horizontal</code> &lt;number>' is treated as an
-                        error.</para>
-                </note>
-
-                <para xml:id="css-writing-modes-excl">The <property>direction</property> and
-                        <property>unicode-bidi</property> properties from <xref linkend="refCSS3WritingModesModule"/> are not
-                    included in the EPUB 3.1 CSS Profile. Authors <literal role="rfc2119">should</literal> use appropriate
-                        <xref linkend="refHTML5"/> markup to express directionality information instead.</para>
-            </section>
-            <section xml:id="sec-css-selectors">
-                <title>Selectors</title>
-                <para>The EPUB 3.1 CSS Profile includes support for the Selectors Level 3 <xref linkend="refSelectors"/>
-                    specification.</para>
-            </section>
-            <section xml:id="sec-css-media-queries">
-                <!-- CR as of July 2010 -->
-                <title>Media Queries</title>
-                <para>The EPUB 3.1 CSS Profile includes <property>@media</property>
-                    <!-- As instructed by Fantasai, @import is added. --> and <property>@import</property> rules with media
-                    queries as defined in the Media Queries <xref linkend="refMediaQueries"/> specification.</para>
-            </section>
-            <section xml:id="sec-css-namespaces">
-                <!-- CR as of May 2008 -->
-                <title>CSS Namespaces</title>
-
-                <para>The EPUB 3.1 CSS Profile includes the <property>@namespace</property> rule defined in <xref
-                        linkend="refCSSNamespacesModule"/> for declaring the default namespace for a style sheet and for
-                    binding prefixes to namespaces.</para>
-            </section>
-            <section xml:id="sec-css-multi-column">
-                <!-- CR as of April 2011 -->
-                <title>CSS Multi-Column Layout</title>
-                <para>The EPUB 3.1 CSS Profile includes all of the features defined in the CSS Multi-column Layout Module
-                        <xref linkend="refCSS3Multicol"/> specification with the exception of the
-                        <property>column-span</property> property. </para>
-                <caution>
-                    <para>Authors should not rely on column behavior in overflow conditions as this behavior is unstable and
-                        may change.</para>
-                </caution>
-                <caution>
-                    <para>Pagination algorithms are not fully defined in CSS. Authors should therefore expect exact
-                        pagination points to vary from Reading System to Reading System.</para>
-                </caution>
-                <para>Reading Systems <literal role="rfc2119">must</literal> treat the <property>oeb-column-number</property>
-                    property as an alias for the <property>column-count</property> property. The use of the
-                        <property>oeb-column-number</property> property in CSS Style Sheets is deprecated; this conformance
-                    requirement may be removed in the next major version of EPUB.</para>
-            </section>
-            <section xml:id="sec-css-ruby-position">
-                <title>Ruby Positioning</title>
-                <!-- both syntax and semantics locally defined -->
-                <para>The EPUB 3.1 CSS Profile includes the <property>-epub-ruby-position</property> property as defined
-                    below:</para>
-
-                <informaltable xml:id="tbl-rubyposition">
-                    <tgroup cols="2">
-                        <colspec colname="c1"/>
-                        <colspec colname="c2"/>
-                        <tbody>
-                            <row>
-                                <entry role="rdfa-property-header">Name:</entry>
-                                <entry role="rdfa-property"><property>-epub-ruby-position</property></entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Value:</entry>
-                                <entry><code role="value">over</code> | <code role="value">under</code> | <code role="value"
-                                        >inter-character</code>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Initial:</entry>
-                                <entry>over</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Applies to:</entry>
-                                <entry>ruby text elements</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Inherited:</entry>
-                                <entry>yes</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Percentages:</entry>
-                                <entry>N/A</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Media:</entry>
-                                <entry>visual</entry>
-                            </row>
-                            <row>
-                                <entry role="rdfa-property-header">Computed value:</entry>
-                                <entry>as specified</entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                </informaltable>
-
-                <para>This property controls the placement of ruby text with respect to its base text. Values have the
-                    following meanings:</para>
-
-                <variablelist>
-                    <varlistentry>
-                        <term>
-                            <code role="value">over</code>
-                        </term>
-                        <listitem>
-                            <para>Ruby text is positioned on the <link
-                                    xlink:href="http://www.w3.org/TR/css3-writing-modes/#over">over</link> side of the ruby
-                                base.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>
-                            <code role="value">under</code>
-                        </term>
-                        <listitem>
-                            <para>Ruby text is positioned on the <link
-                                    xlink:href="http://www.w3.org/TR/css3-writing-modes/#under">under</link> side of the ruby
-                                base.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>
-                            <code role="value">inter-character</code>
-                        </term>
-                        <listitem>
-                            <para>Ruby text is positioned on the right side of the base text. (This value is typically used
-                                for Zhuyin Fuhao (Bopomofo) ruby.)</para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-                <note>
-                    <para>The <property>-epub-ruby-position</property> property will become an alias for the
-                            <property>ruby-position</property> property in the CSS Ruby Module <xref linkend="refCSS3Ruby"
-                        />.</para>
-                </note>
-            </section>
-            <section xml:id="sec-css-oeb-head-foot">
-                <title>Display Property Values <property>oeb-page-head</property> and <property>oeb-page-foot</property>
-                    [DEPRECATED]</title>
-
-                <para>The <property>oeb-page-head</property> and <code>oeb-page-foot</code> values are deprecated and
-                    expected to be removed or replaced in a future version of EPUB.</para>
-
-                <para>Authors <literal role="rfc2119">may</literal> continue to include these values in CSS Style Sheets to
-                    define running headers and footers. Refer to the <link
-                        xlink:href="../../30/spec/epub-contentdocs.html#sec-css-oeb-head-foot"
-                        xlink:title="oeb-page-head and oeb-page-foot definitions in EPUB 3.0">oeb-page-head oeb-page-foot
-                        definitions</link> in <xref linkend="refContentDocs30"/> for more information.</para>
-
-            </section>
+            <para>Reading System developers are encouraged to implement CSS support at the level of major browsers.</para>
         </section>
 
+        <section xml:id="sec-css-prefixed" xreflabel="CSS Style Sheets—Prefixed Properties">
+            <title>Prefixed Properties</title>
+
+            <note>
+                <para><olink targetdoc="spec" targetptr="gloss-author" type="epub-spec">Authors</olink> are encouraged to use
+                    unprefixed properties, and <olink targetdoc="spec" targetptr="gloss-epub-reading-system" type="epub-spec"
+                        >Reading Systems</olink> to support current CSS specifications. However, the widely-used prefixed
+                    properties will be retained in EPUB as long as necessary.</para>
+            </note>
+
+            <section xml:id="sec-css-prefixed-writing-modes">
+                <title>CSS Writing Modes</title>
+
+                <para>The following table lists the <property>-epub-</property> prefixed properties for <xref
+                        linkend="refCSS3WritingModesModule"/>. The Value column indicates the value the property accepts. The
+                    Prior EPUB Mapping column indicates values/properties that were used in previous versions of EPUB 3. An
+                    asterisk (*) denotes that the older property or value is now deprecated. The final column describes how
+                    to implement the prefixed property based on <xref linkend="refCSS3WritingModesModule-2015-dated"
+                    />.</para>
+
+                <table>
+                    <caption>CSS Writing Modes Properties</caption>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                            <th>Prior EPUB Mapping</th>
+                            <th>Mapping to <xref linkend="refCSS3WritingModesModule-2015-dated"/></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>upright</markup></td>
+                            <td><markup>upright</markup></td>
+                            <td><markup>upright</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>mixed</markup></td>
+                            <td><markup>vertical-right</markup>*</td>
+                            <td><markup>mixed</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>sideways-right</markup></td>
+                            <td><markup>sideways-right</markup></td>
+                            <td><markup>sideways</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>sideways-right</markup></td>
+                            <td><markup>rotate-right</markup>*</td>
+                            <td><markup>sideways</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>sideways</markup></td>
+                            <td><markup>rotate-normal</markup>*</td>
+                            <td><markup>sideways</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>sideways</markup></td>
+                            <td><markup>sideways</markup></td>
+                            <td><markup>sideways</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-orientation</property></td>
+                            <td><markup>mixed</markup></td>
+                            <td><markup>mixed</markup></td>
+                            <td><markup>mixed</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-writing-mode</property></td>
+                            <td><markup>horizontal-tb</markup></td>
+                            <td><markup>horizontal-tb</markup></td>
+                            <td><markup>horizontal-tb</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-writing-mode</property></td>
+                            <td><markup>vertical-rl</markup></td>
+                            <td><markup>vertical-rl</markup></td>
+                            <td><markup>vertical-rl</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-writing-mode</property></td>
+                            <td><markup>vertical-lr</markup></td>
+                            <td><markup>vertical-lr</markup></td>
+                            <td><markup>vertical-lr</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-combine-horizontal</property></td>
+                            <td><markup>none</markup></td>
+                            <td><markup>none</markup></td>
+                            <td><property>text-combine-upright: none</property></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-combine-horizontal</property></td>
+                            <td><markup>all</markup></td>
+                            <td><markup>all</markup></td>
+                            <td><property>text-combine-upright: all</property></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-combine</property>*</td>
+                            <td><property>-epub-text-combine-horizontal: none</property></td>
+                            <td><markup>none</markup></td>
+                            <td><markup>text-combine-upright: none</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-combine</property>*</td>
+                            <td><property>-epub-text-combine-horizontal: all</property></td>
+                            <td><markup>horizontal</markup></td>
+                            <td><markup>text-combine-upright: all</markup></td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-combine</property>*</td>
+                            <td>Error</td>
+                            <td><markup>horizontal &lt;number&gt;</markup></td>
+                            <td><property>text-combine-upright: digits &lt;number&gt;</property></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section xml:id="sec-css-prefixed-text">
+                <title>CSS Text Level 3</title>
+                <table>
+                    <caption>CSS Text Level 3 Properties</caption>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                            <th>Mapping to <xref linkend="refCSS3Text"/></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><property>-epub-hyphens</property></td>
+                            <td><markup>none | manual | auto</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-hyphens</property></td>
+                            <td><markup>all</markup></td>
+                            <td>Not Supported</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-line-break</property></td>
+                            <td><markup>auto | loose | normal | strict</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-align-last</property></td>
+                            <td><markup>auto | start | end | left | right | center | justify</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-word-break</property></td>
+                            <td><markup>normal | keep-all | break-all</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>text-transform</property></td>
+                            <td><markup>-epub-fullwidth</markup></td>
+                            <td><property>text-transform: full-width</property></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section xml:id="sec-css-prefixed-text-decoration">
+                <title>CSS Text Decoration Level 3</title>
+                <table>
+                    <caption>CSS Text Decoration Level 3 Properties</caption>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                            <th>Mapping to <xref linkend="refCSS3TextDecoration"/></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><property>-epub-text-emphasis-color</property></td>
+                            <td><markup>&lt;color&gt;</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-emphasis-position </property></td>
+                            <td><markup>[ over | under ] &amp;&amp; [ right | left ]</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-emphasis-style</property></td>
+                            <td><markup>none | [ [ filled | open ] || [ dot | circle | double-circle | triangle | sesame ] ]
+                                    | &lt;string&gt;</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-underline-position</property></td>
+                            <td><markup>auto | [ under || [ left | right ] ]</markup></td>
+                            <td>No Change</td>
+                        </tr>
+                        <tr>
+                            <td><property>-epub-text-underline-position</property></td>
+                            <td><markup>alphabetic</markup></td>
+                            <td><property>text-underline-position: auto</property></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </section>
     </chapter>
 
     <chapter xml:id="sec-pls">
@@ -2610,418 +2369,6 @@ alert("Feature " + feature + " supported?: " + conformTest);</synopsis>
                 </section>
             </section>
         </section>
-    </appendix>
-
-    <appendix xml:id="fullsize-kana-char-mapping" conformance="informative">
-        <title><code role="value">-epub-fullsize-kana</code> Character Mapping Reference</title>
-
-        <para>The following table provides character mappings for the <code role="value">-epub-fullsize-kana</code> value of
-            the <link linkend="css-propdef-text-transform"><property>text-transform</property> property</link>.</para>
-
-        <table xml:id="tbl-kanamapping">
-            <caption>Kana Mapping</caption>
-            <tr>
-                <th>From</th>
-                <th>From Character</th>
-                <th>From Name</th>
-                <th>To</th>
-                <th>To Character</th>
-                <th>To Name</th>
-            </tr>
-            <tr>
-                <td>03041</td>
-                <td class="center">&#12353;</td>
-                <td>HIRAGANA LETTER SMALL A</td>
-                <td>03042</td>
-                <td class="center">&#12354;</td>
-                <td>HIRAGANA LETTER A</td>
-            </tr>
-            <tr>
-                <td>03043</td>
-                <td class="center">&#12355;</td>
-                <td>HIRAGANA LETTER SMALL I</td>
-                <td>03044</td>
-                <td class="center">&#12356;</td>
-                <td>HIRAGANA LETTER I</td>
-            </tr>
-            <tr>
-                <td>03045</td>
-                <td class="center">&#12357;</td>
-                <td>HIRAGANA LETTER SMALL U</td>
-                <td>03046</td>
-                <td class="center">&#12358;</td>
-                <td>HIRAGANA LETTER U</td>
-            </tr>
-            <tr>
-                <td>03047</td>
-                <td class="center">&#12359;</td>
-                <td>HIRAGANA LETTER SMALL E</td>
-                <td>03048</td>
-                <td class="center">&#12360;</td>
-                <td>HIRAGANA LETTER E</td>
-            </tr>
-            <tr>
-                <td>03049</td>
-                <td class="center">&#12361;</td>
-                <td>HIRAGANA LETTER SMALL O</td>
-                <td>0304A</td>
-                <td class="center">&#12362;</td>
-                <td>HIRAGANA LETTER O</td>
-            </tr>
-            <tr>
-                <td>03063</td>
-                <td class="center">&#12387;</td>
-                <td>HIRAGANA LETTER SMALL TU</td>
-                <td>03064</td>
-                <td class="center">&#12388;</td>
-                <td>HIRAGANA LETTER TU</td>
-            </tr>
-            <tr>
-                <td>03083</td>
-                <td class="center">&#12419;</td>
-                <td>HIRAGANA LETTER SMALL YA</td>
-                <td>03084</td>
-                <td class="center">&#12420;</td>
-                <td>HIRAGANA LETTER YA</td>
-            </tr>
-            <tr>
-                <td>03085</td>
-                <td class="center">&#12421;</td>
-                <td>HIRAGANA LETTER SMALL YU</td>
-                <td>03086</td>
-                <td class="center">&#12422;</td>
-                <td>HIRAGANA LETTER YU</td>
-            </tr>
-            <tr>
-                <td>03087</td>
-                <td class="center">&#12423;</td>
-                <td>HIRAGANA LETTER SMALL YO</td>
-                <td>03088</td>
-                <td class="center">&#12424;</td>
-                <td>HIRAGANA LETTER YO</td>
-            </tr>
-            <tr>
-                <td>0308E</td>
-                <td class="center">&#12430;</td>
-                <td>HIRAGANA LETTER SMALL WA</td>
-                <td>0308F</td>
-                <td class="center">&#12431;</td>
-                <td>HIRAGANA LETTER WA</td>
-            </tr>
-            <tr>
-                <td>03095</td>
-                <td class="center">&#12437;</td>
-                <td>HIRAGANA LETTER SMALL KA</td>
-                <td>0304B</td>
-                <td class="center">&#12363;</td>
-                <td>HIRAGANA LETTER KA</td>
-            </tr>
-            <tr>
-                <td>03096</td>
-                <td class="center">&#12438;</td>
-                <td>HIRAGANA LETTER SMALL KE</td>
-                <td>03051</td>
-                <td class="center">&#12369;</td>
-                <td>HIRAGANA LETTER KE</td>
-            </tr>
-            <tr>
-                <td>030A1</td>
-                <td class="center">&#12449;</td>
-                <td>KATAKANA LETTER SMALL A</td>
-                <td>030A2</td>
-                <td class="center">&#12450;</td>
-                <td>KATAKANA LETTER A</td>
-            </tr>
-            <tr>
-                <td>030A3</td>
-                <td class="center">&#12451;</td>
-                <td>KATAKANA LETTER SMALL I</td>
-                <td>030A4</td>
-                <td class="center">&#12452;</td>
-                <td>KATAKANA LETTER I</td>
-            </tr>
-            <tr>
-                <td>030A5</td>
-                <td class="center">&#12453;</td>
-                <td>KATAKANA LETTER SMALL U</td>
-                <td>030A6</td>
-                <td class="center">&#12454;</td>
-                <td>KATAKANA LETTER U</td>
-            </tr>
-            <tr>
-                <td>030A7</td>
-                <td class="center">&#12455;</td>
-                <td>KATAKANA LETTER SMALL E</td>
-                <td>030A8</td>
-                <td class="center">&#12456;</td>
-                <td>KATAKANA LETTER E</td>
-            </tr>
-            <tr>
-                <td>030A9</td>
-                <td class="center">&#12457;</td>
-                <td>KATAKANA LETTER SMALL O</td>
-                <td>030AA</td>
-                <td class="center">&#12458;</td>
-                <td>KATAKANA LETTER O</td>
-            </tr>
-            <tr>
-                <td>030C3</td>
-                <td class="center">&#12483;</td>
-                <td>KATAKANA LETTER SMALL TU</td>
-                <td>030C4</td>
-                <td class="center">&#12484;</td>
-                <td>KATAKANA LETTER TU</td>
-            </tr>
-            <tr>
-                <td>030E3</td>
-                <td class="center">&#12515;</td>
-                <td>KATAKANA LETTER SMALL YA</td>
-                <td>030E4</td>
-                <td class="center">&#12516;</td>
-                <td>KATAKANA LETTER YA</td>
-            </tr>
-            <tr>
-                <td>030E5</td>
-                <td class="center">&#12517;</td>
-                <td>KATAKANA LETTER SMALL YU</td>
-                <td>030E6</td>
-                <td class="center">&#12518;</td>
-                <td>KATAKANA LETTER YU</td>
-            </tr>
-            <tr>
-                <td>030E7</td>
-                <td class="center">&#12519;</td>
-                <td>KATAKANA LETTER SMALL YO</td>
-                <td>030E8</td>
-                <td class="center">&#12520;</td>
-                <td>KATAKANA LETTER YO</td>
-            </tr>
-            <tr>
-                <td>030EE</td>
-                <td class="center">&#12526;</td>
-                <td>KATAKANA LETTER SMALL WA</td>
-                <td>030EF</td>
-                <td class="center">&#12527;</td>
-                <td>KATAKANA LETTER WA</td>
-            </tr>
-            <tr>
-                <td>030F5</td>
-                <td class="center">&#12533;</td>
-                <td>KATAKANA LETTER SMALL KA</td>
-                <td>030AB</td>
-                <td class="center">&#12459;</td>
-                <td>KATAKANA LETTER KA</td>
-            </tr>
-            <tr>
-                <td>030F6</td>
-                <td class="center">&#12534;</td>
-                <td>KATAKANA LETTER SMALL KE</td>
-                <td>030B1</td>
-                <td class="center">&#12465;</td>
-                <td>KATAKANA LETTER KE</td>
-            </tr>
-            <tr>
-                <td>031F0</td>
-                <td class="center">&#12784;</td>
-                <td>KATAKANA LETTER SMALL KU</td>
-                <td>030AF</td>
-                <td class="center">&#12463;</td>
-                <td>KATAKANA LETTER KU</td>
-            </tr>
-            <tr>
-                <td>031F1</td>
-                <td class="center">&#12785;</td>
-                <td>KATAKANA LETTER SMALL SI</td>
-                <td>030B7</td>
-                <td class="center">&#12471;</td>
-                <td>KATAKANA LETTER SI</td>
-            </tr>
-            <tr>
-                <td>031F2</td>
-                <td class="center">&#12786;</td>
-                <td>KATAKANA LETTER SMALL SU</td>
-                <td>030B9</td>
-                <td class="center">&#12473;</td>
-                <td>KATAKANA LETTER SU</td>
-            </tr>
-            <tr>
-                <td>031F3</td>
-                <td class="center">&#12787;</td>
-                <td>KATAKANA LETTER SMALL TO</td>
-                <td>030C8</td>
-                <td class="center">&#12488;</td>
-                <td>KATAKANA LETTER TO</td>
-            </tr>
-            <tr>
-                <td>031F4</td>
-                <td class="center">&#12788;</td>
-                <td>KATAKANA LETTER SMALL NU</td>
-                <td>030CC</td>
-                <td class="center">&#12492;</td>
-                <td>KATAKANA LETTER NU</td>
-            </tr>
-            <tr>
-                <td>031F5</td>
-                <td class="center">&#12789;</td>
-                <td>KATAKANA LETTER SMALL HA</td>
-                <td>030CF</td>
-                <td class="center">&#12495;</td>
-                <td>KATAKANA LETTER HA</td>
-            </tr>
-            <tr>
-                <td>031F6</td>
-                <td class="center">&#12790;</td>
-                <td>KATAKANA LETTER SMALL HI</td>
-                <td>030D2</td>
-                <td class="center">&#12498;</td>
-                <td>KATAKANA LETTER HI</td>
-            </tr>
-            <tr>
-                <td>031F7</td>
-                <td class="center">&#12791;</td>
-                <td>KATAKANA LETTER SMALL HU</td>
-                <td>030D5</td>
-                <td class="center">&#12501;</td>
-                <td>KATAKANA LETTER HU</td>
-            </tr>
-            <tr>
-                <td>031F8</td>
-                <td class="center">&#12792;</td>
-                <td>KATAKANA LETTER SMALL HE</td>
-                <td>030D8</td>
-                <td class="center">&#12504;</td>
-                <td>KATAKANA LETTER HE</td>
-            </tr>
-            <tr>
-                <td>031F9</td>
-                <td class="center">&#12793;</td>
-                <td>KATAKANA LETTER SMALL HO</td>
-                <td>030DB</td>
-                <td class="center">&#12507;</td>
-                <td>KATAKANA LETTER HO</td>
-            </tr>
-            <tr>
-                <td>031FA</td>
-                <td class="center">&#12794;</td>
-                <td>KATAKANA LETTER SMALL MU</td>
-                <td>030E0</td>
-                <td class="center">&#12512;</td>
-                <td>KATAKANA LETTER MU</td>
-            </tr>
-            <tr>
-                <td>031FB</td>
-                <td class="center">&#12795;</td>
-                <td>KATAKANA LETTER SMALL RA</td>
-                <td>030E9</td>
-                <td class="center">&#12521;</td>
-                <td>KATAKANA LETTER RA</td>
-            </tr>
-            <tr>
-                <td>031FC</td>
-                <td class="center">&#12796;</td>
-                <td>KATAKANA LETTER SMALL RI</td>
-                <td>030EA</td>
-                <td class="center">&#12522;</td>
-                <td>KATAKANA LETTER RI</td>
-            </tr>
-            <tr>
-                <td>031FD</td>
-                <td class="center">&#12797;</td>
-                <td>KATAKANA LETTER SMALL RU</td>
-                <td>030EB</td>
-                <td class="center">&#12523;</td>
-                <td>KATAKANA LETTER RU</td>
-            </tr>
-            <tr>
-                <td>031FE</td>
-                <td class="center">&#12798;</td>
-                <td>KATAKANA LETTER SMALL RE</td>
-                <td>030EC</td>
-                <td class="center">&#12524;</td>
-                <td>KATAKANA LETTER RE</td>
-            </tr>
-            <tr>
-                <td>031FF</td>
-                <td class="center">&#12799;</td>
-                <td>KATAKANA LETTER SMALL RO</td>
-                <td>030ED</td>
-                <td class="center">&#12525;</td>
-                <td>KATAKANA LETTER RO</td>
-            </tr>
-            <tr>
-                <td>0FF67</td>
-                <td class="center">&#65383;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL A</td>
-                <td>0FF71</td>
-                <td class="center">&#65393;</td>
-                <td>HALFWIDTH KATAKANA LETTER A</td>
-            </tr>
-            <tr>
-                <td>0FF68</td>
-                <td class="center">&#65384;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL I</td>
-                <td>0FF72</td>
-                <td class="center">&#65394;</td>
-                <td>HALFWIDTH KATAKANA LETTER I</td>
-            </tr>
-            <tr>
-                <td>0FF69</td>
-                <td class="center">&#65385;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL U</td>
-                <td>0FF73</td>
-                <td class="center">&#65395;</td>
-                <td>HALFWIDTH KATAKANA LETTER U</td>
-            </tr>
-            <tr>
-                <td>0FF6A</td>
-                <td class="center">&#65386;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL E</td>
-                <td>0FF74</td>
-                <td class="center">&#65396;</td>
-                <td>HALFWIDTH KATAKANA LETTER E</td>
-            </tr>
-            <tr>
-                <td>0FF6B</td>
-                <td class="center">&#65387;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL O</td>
-                <td>0FF75</td>
-                <td class="center">&#65397;</td>
-                <td>HALFWIDTH KATAKANA LETTER O</td>
-            </tr>
-            <tr>
-                <td>0FF6C</td>
-                <td class="center">&#65388;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL YA</td>
-                <td>0FF94</td>
-                <td class="center">&#65428;</td>
-                <td>HALFWIDTH KATAKANA LETTER YA</td>
-            </tr>
-            <tr>
-                <td>0FF6D</td>
-                <td class="center">&#65389;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL YU</td>
-                <td>0FF95</td>
-                <td class="center">&#65429;</td>
-                <td>HALFWIDTH KATAKANA LETTER YU</td>
-            </tr>
-            <tr>
-                <td>0FF6E</td>
-                <td class="center">&#65390;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL YO</td>
-                <td>0FF96</td>
-                <td class="center">&#65430;</td>
-                <td>HALFWIDTH KATAKANA LETTER YO</td>
-            </tr>
-            <tr>
-                <td>0FF6F</td>
-                <td class="center">&#65391;</td>
-                <td>HALFWIDTH KATAKANA LETTER SMALL TU</td>
-                <td>0FF82</td>
-                <td class="center">&#65410;</td>
-                <td>HALFWIDTH KATAKANA LETTER TU</td>
-            </tr>
-        </table>
-
     </appendix>
 
     <xi:include href="./share/contributors.xml"/>
