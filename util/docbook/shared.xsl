@@ -76,6 +76,15 @@
             
             <!-- top-level annotations -->
             
+            <xsl:if test="$topinfo/db:releaseinfo[@role='preamble']">
+                <xsl:element name="div" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:attribute name="class">note</xsl:attribute>
+                    <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                        <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='preamble']/node()"/>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:if>
+            
             <xsl:if test="$topinfo/db:annotation">
                 <xsl:apply-templates select="$topinfo/db:annotation"/>
             </xsl:if>
