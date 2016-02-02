@@ -66,10 +66,10 @@
 				</xsl:for-each>
 				<xsl:choose>
 					<xsl:when test="contains($vocab-uri,'magazine')">
-						<link rel="stylesheet" type="text/css" href="../../../css/epub-spec.css"/>
+						<link rel="stylesheet" type="text/css" href="../../../css/epub-spec-2016.css"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<link rel="stylesheet" type="text/css" href="../../css/epub-spec.css"/>
+						<link rel="stylesheet" type="text/css" href="../../css/epub-spec-2016.css"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<style>
