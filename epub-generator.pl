@@ -333,8 +333,9 @@ sub pack_epub {
     my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -e $epub_dir -mode exp -save`;
     print $epubcheck;
     
-    my $from = './temp/epub'.$epub_version.'.epub';
-    my $to = './build/'.$epub_version.'/epub'.$epub_version.'.epub';
-    copy($from, $to) or die "Could not copy $from to $to: $!\n";
+    my $from = './temp/epub'.$epub_version;
+    my $to = './build/'.$epub_version.'/docs/epub'.$epub_version.'-v30';
+    copy("${from}.epub", "${to}.epub") or die "Could not copy $from to $to: $!\n";
+    dircopy($from,$to) or die("$!\n");
 
 }
