@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>EPUB Types to ARIA Roles Transition Guide</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="../../css/epub-spec-2016.css" />
+	</head>
+	<body>
+		<header>
+			<p><a href="http://www.idpf.org"><img src="../../images/idpflogo_web_125.jpg" alt="IDPF" class="logo" /></a></p>
+			<h1 class="title">EPUB Types to ARIA Roles Transition Guide</h1>
+			<p class="identity">
+				<span class="pubdate">00 February 2016</span>
+			</p>
+			<div class="printhistory">
+				<dl class="printhistory">
+					<dt>This version</dt>
+					<dd>
+						<a class="link" href="http://www.idpf.org/epub/vocab/aria-transition-20160130.html"
+							>http://www.idpf.org/epub/vocab/aria-transition-20160130.html</a>
+					</dd>
+					<dt>Latest version</dt>
+					<dd>
+						<a class="link" href="http://www.idpf.org/epub/metadata"
+							>http://www.idpf.org/epub/vocab/aria-transition.html</a>
+					</dd>
+					<dt>Previous version</dt>
+					<dd>N/A</dd>
+				</dl>
+			</div>
+			<div class="history">
+				<span class="history-title">Document history</span>
+				<ul>
+					<li><a href="https://github.com/IDPF/epub-revision/commits/master/src/vocab/aria-transition.html">Changes
+							to this document</a></li>
+				</ul>
+			</div>
+		</header>
+		
+		<nav id="toc" class="toc">
+			<h2 class="toc-title">Table of Contents</h2>
+			<ol class="toc">
+				<li><span class="chapter"><a href="#sec-intro">1. Introduction</a></span></li>
+				<li><span class="chapter"><a href="#sec-guidelines">2. Guidelines</a></span>
+					<ol>
+						<li><span class="section"><a href="#sec-overload">2.1 Do Not Overload Roles</a></span></li>
+						<li><span class="section"><a href="#sec-repetition">2.2 Avoid Unnecessary Repetition</a></span></li>
+						<li><span class="section"><a href="#sec-lists">2.3 List Roles are for Lists</a></span></li>
+					</ol>
+				</li>
+			</ol>
+		</nav>
+		
+		<section id="sec-intro" class="chapter">
+			<h1 class="title">1. Introduction</h1>
+			<p>It is critical to understand the differences between the use of the <a 
+				href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-xhtml-content-type-attribute"><code 
+					class="markup">role</code> attribute</a> and the <a 
+					href="http://www.idpf.org/epub/31/spec/epub-contentdocs.html#sec-html-aria-role-attribute">ARIA 
+						<code class="markup">role</code>  attribute</a>, as EPUB transitions from an XHTML-only
+				method of semantic inflection to one that is usable in both the XHTML and HTML syntaxes.</p>
+			
+			<p>Perhaps the biggest difference is that, while the <code class="markup">role</code> attribute could be
+				used to relay additional semantic information to a user, the <code class="markup">role</code> attribute
+				has a real effect on the information conveyed to users of assistive technologies (<abbr>AT</abbr>).
+				Misapplication of <code class="markup">role</code> semantics was largely harmless, but misapplication
+				of ARIA roles can have very negative impacts on the reading experience, from over-announcement of information
+				to broken HTML rendering for AT users.</p>
+			
+			<p>This guide is not intended as a comprehensive overview of ARIA roles. Its only ambition is to highlight common
+				practices to avoid in the transition from the <code class="markup">role</code> attribute to the
+				<code class="markup">role</code> attribute.</p>
+			
+			<p>For more information about the role attribute, refer to &#8230;</p>
+		</section>
+		
+		<section id="sec-guidelines" class="chapter">
+			<h1 class="title">2. Guidelines</h1>
+			
+			<section id="sec-overload" class="section">
+				<h2 class="title">2.1 Do Not Overload Roles</h2>
+				
+				<p>Only use <strong>one digital publishing role</strong> per attribute:</p>
+				
+				<pre>&lt;section role="doc-chapter"&gt;</pre>
+				
+				<p>If you include a second role, it has to be a fallback from ARIA 1.1:</p>
+				
+				<pre>&lt;section role="doc-chapter landmark"&gt;</pre>
+				
+				<p>The fallback role should always be the superclass role defined in the
+					<a href="https://www.w3.org/TR/dpub-aria-1.0/">Digital Publishing Module</a>.</p>
+				
+				<p>Unlike the <code class="markup">role</code> attribute, the order of roles is important,
+					and only the first recognized role is applied to an element.</p>
+			</section>
+			
+			<section id="sec-repetition" class="section">
+				<h2 class="title">2.2 Avoid Unnecessary Repetition</h2>
+				
+				<p>Do not reapply a semantic just because your content has been chunked into separate files.</p>
+				
+				<p>For example, ensure that the <code class="markup">doc-part</code> role is only applied to the section that
+					contains the heading for the part. Do not reapply the part role for each chapter that belongs to the part,
+					as it will be announced to users of assistive technologies each time it occurs, causing confusion.</p>
+			</section>
+			
+			<section id="sec-lists" class="section">
+				<h2 class="title">2.3 List Roles are for Lists</h2>
+				
+				<p>Assigning a role to an element overrides its default nature, so use care when applying roles to 
+					lists and list items.</p>
+				
+				<p>Just as HTML ol/ul elements must contain list items, elements assigned a list role must only
+					contain elements assigned a list item role. Similarly, a list item must always be enclosed inside
+					of a list.</p>
+				
+				<p>For example, the <code class="markup">doc-biblioentry</code> role inherits from <code 
+					class="markup">listitem</code>. As a result, it has to be used inside of a list:</p>
+				
+				<pre>&lt;ul&gt;
+   &lt;li role="doc-biblioentry">&#8230;&lt;/li>
+   &#8230;
+&lt;/ul></pre>
+				
+				<p>or else a list role needs to be applied to an element that encloses all the note:</p>
+				
+				<pre>&lt;div role="list"&gt;
+   &lt;p role="doc-biblioentry">&#8230;&lt;/li>
+   &#8230;
+&lt;/div></pre>
+			</section>
+		</section>
+	</body>
+</html>

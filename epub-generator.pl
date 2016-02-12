@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Cwd;
 use File::Copy;
 use File::Copy::Recursive qw(dircopy);
 use File::Find;
@@ -54,63 +55,94 @@ my @spec_order = (
 my %spec_wanted = map { $_ => 1 } @spec_order;
 
 my @files;
-my $package = 'package.opf';
-my $nav = 'nav.xhtml';
 
-my $build_dir = './build/';
-my $skeleton_dir = './src/epub-skeleton/';
-my $epub_dir = './temp/epub' . $epub_version . '/';
-my $content_dir = $epub_dir . 'EPUB/';
+my $base_dir = getcwd;
+my $temp_dir = $base_dir . '/temp';
+my $build_dir = $base_dir . '/build';
+my $skeleton_dir = $base_dir . '/src/epub-skeleton';
+my $epub_dir = $temp_dir . '/epub' . $epub_version;
+my $epub_dir_html = $temp_dir . '/epub' . $epub_version . '-html';
+
 
 prep();
 
-chdir($content_dir);
+generate_epub('3.0');
+generate_epub('3.1');
 
-find(\&specs, '.');
 
-generate_opf();
-generate_nav();
-
-chdir('../../../');
-
-pack_epub();
 
 
 
 sub prep {
+    
+    my $content_dir = $epub_dir . '/EPUB/';
+    
     if (-e $epub_dir) {
         rmtree($epub_dir);
     }
+    
+    # copy the build dir for xhtml
     dircopy($skeleton_dir,$epub_dir) or die("$!\n");
     dircopy($build_dir,$content_dir) or die("$!\n");
+    rmtree($content_dir . $epub_version . '/docs');
     rmtree($content_dir . $epub_version . '/schema');
     rmtree($content_dir . 'dict');
     rmtree($content_dir . 'idx');
     rmtree($content_dir . 'previews');
     rmtree($content_dir . 'renditions');
+    
+    # create the html dir for 3.1 and bff
+    dircopy($epub_dir, $epub_dir_html) or die("$!\n");
+    find(\&tidy, $epub_dir_html);
 }
 
+
+
+sub generate_epub {
+
+    my $v = shift;
+    
+    undef @files;
+    
+    my $chk_dir = $v eq '3.0' ? $epub_dir : $epub_dir_html;
+    
+    find(\&specs, "$chk_dir/EPUB/");
+    
+    chdir($chk_dir);
+    
+    generate_opf($v, "$chk_dir/EPUB/");
+    generate_nav($v, "$chk_dir/EPUB/");
+    
+    # this test is mostly pointless until future non-packed bff added
+    if ($v =~ /^3\.[0-1]$/) {
+        pack_epub($v,$chk_dir);
+    }
+}
+
+
+
 sub specs {
+    
     if ($_ eq '.htaccess') {
         unlink $_ or die "Failed to remove .htaccess file $File::Find::name: $!\n";
         return; 
     }
     
-    return if $_ eq 'unsupported.xhtml';
+    return if $_ =~ 'unsupported.x?html';
     
     # return if no dots in path - for some reason -d and -f aren't detecting directories - but allow LICENSE file
     return if $_ !~ /\./ and $_ ne 'LICENSE';
     
     # don't pick up root directory
-    return if $_ =~ /^\.+$/;
+    return if $_ =~ /\.+$/;
     
     # remove the various gz/zips that get generated
     (my $ext = $_) =~ s/^.*\.//;
     $ext = lc($ext);
     if ($strip{$ext}) { print "Removing unwanted media type $File::Find::name.\n"; unlink $_; return; }
     
-    # have to strip ./ from start of paths for the manifest otherwise linking fails
-    (my $fixed_path = $File::Find::name) =~ s#^\./##;
+    # strip the base dir to make relative
+    (my $fixed_path = $File::Find::name) =~ s#$temp_dir/epub${epub_version}(-html)?/EPUB/##i;
     
     push @files, $fixed_path;
 
@@ -119,9 +151,46 @@ sub specs {
     
     if ($spec_wanted{$spec_id}) {
         print "Fixing errata for $File::Find::name.\n";
-        fix_errata($_, $File::Find::dir, $spec_id);
+        (my $path = $File::Find::dir) =~ s#$temp_dir/epub${epub_version}(-html)?/EPUB/##i;
+        fix_errata($_, $path, $spec_id);
     }
 }
+
+
+
+sub tidy {
+    (my $local_path = $File::Find::name) =~ s/^\.//;
+    my $path = "$base_dir/$local_path";
+    if (-d $path and $path !~ /mimetype/i) {
+        my $tidy = `tidy.bat >nul 2>&1`;
+    }
+    else {
+        if ($_ =~ /\.x?html$/i) {
+            (my $html = $_) =~ s/\.xhtml/.html/i;
+            move($_, $html) if $_ =~ /\.xhtml$/i;
+            clean_xml($html);
+        }
+    }
+}
+
+
+
+sub clean_xml {
+
+	my $html = shift;
+	
+	my $c = read_file($html);
+	
+	# get rid of the xml-y things tidy leaves behind 
+	$c =~ s#<\?xml.*?\?>##s;
+    $c =~ s#xmlns:(.*?)="[^"]+"##gis;
+    $c =~ s#epub:type#role#gis;
+	
+	write_file($html, $c);
+
+}
+
+
 
 
 sub fix_errata {
@@ -163,30 +232,36 @@ sub write_file {
 
 sub generate_opf {
 
+    my ($v, $dir) = @_;
+    
+    my $package = $dir . 'package.opf';
+    
     open(my $fh, '>:utf8', $package) or die "Failed to write the package file: $!\n";
     
     my $i = 1;
     
     my $modtime = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime);
+    my $html_ext = $v eq '3.0' ? 'xhtml' : 'html';
+    my $html_media = $v eq '3.0' ? 'application/xhtml+xml' : 'text/html';
     
     print $fh <<PKG;
-<?xml version="1.0" encoding="utf-8" ?>
-<package xmlns="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:dcterms="http://purl.org/dc/terms/" version="3.0" xml:lang="en"
-	unique-identifier="uid">
-	<metadata>
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" prefix="dc: http://purl.org/dc/elements/1.1/"
+         version="${v}" xml:lang="en" unique-identifier="uid">
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
 		<dc:identifier id="uid">org.idpf.epub${epub_version}</dc:identifier>
 		<dc:title>EPUB 3.1</dc:title>
 		<dc:language>en</dc:language>
 		<meta property="dcterms:modified">$modtime</meta>
 		<dc:creator>Markus Gylling</dc:creator>
+		<dc:creator>Tzviya Siegman</dc:creator>
 		<dc:creator>Matt Garrish</dc:creator>
 		<dc:publisher>International Digital Publishing Forum (IDPF)</dc:publisher>
-		<dc:rights>Copyright © 2010-2016 IDPF</dc:rights>
+		<meta property="dc:rights">Copyright © 2010-2016 IDPF</meta>
 	</metadata>
 	<manifest>
-		<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
-		<item id="fb" href="unsupported.xhtml" media-type="application/xhtml+xml"/>
+		<item id="nav" href="nav.${html_ext}" media-type="${html_media}" properties="nav"/>
+		<item id="fb" href="unsupported.${html_ext}" media-type="${html_media}"/>
 PKG
     
     my %spine;
@@ -200,7 +275,7 @@ PKG
             print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '" media-type="text/plain" fallback="fb"' . "/>\n";
         }
         else {
-            print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '"' . ($core_media{$ext} ? ' media-type="' . $core_media{$ext} . '"' : ' media-type="' . $alt_media{$ext} . '" fallback="fb"') . "/>\n";
+            print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '"' . ($core_media{$ext} ? ' media-type="' . (($ext eq 'html' and $v ne '3.0') ? 'text/html' : $core_media{$ext}) . '"' : ' media-type="' . $alt_media{$ext} . '" fallback="fb"') . "/>\n";
         }
         
         if ($ext =~ /x?html/i) {
@@ -246,20 +321,43 @@ PKG
 
 sub generate_nav {
 
+    my ($v, $dir) = @_;
+    
+    my $nav = $dir . 'nav' . ($v eq '3.0' ? '.xhtml' : '.html');
+    
     open(my $fh, '>:utf8', $nav) or die "Failed to write the nav doc: $!\n";
     
-    print $fh <<HTML;
+    if ($v eq '3.0') {
+        print $fh <<XHTML;
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
 	<head>
 		<title>EPUB 3.1</title>
 		<meta charset="utf-8"/>
+XHTML
+    }
+    
+    else {
+        print $fh <<HTML;
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>EPUB 3.1</title>
+		<meta charset="utf-8">
+HTML
+    }
+    
+    
+    my $toc = $v eq '3.0' ? 'epub:type="toc"' : 'role="doc-toc"';
+    
+    print $fh <<HTML;
 		<style>
 		  ol { list-style-type: none; }
 		</style>
 	</head>
 	<body>
-		<nav epub:type="toc">
+		<nav $toc>
 			<ol>
 HTML
     
@@ -272,12 +370,13 @@ HTML
         unless ($ext =~ /x?html/i) { next; }
         
         (my $shortname = $file) =~ s#.*/(.*)\.x?html#$1#is;
+        my $fullpath = $dir . $file;
         
         my $c = '';
         
         {
             local $/ = undef;
-            open(my $fin, '<:utf8', $file) or die "Failed reading $file: $!\n";
+            open(my $fin, '<:utf8', $fullpath) or die "Failed reading $fullpath: $!\n";
             $c = <$fin>;
             close($fin);
         } 
@@ -327,15 +426,24 @@ HTML
 
 
 sub pack_epub {
+
+    my ($v, $dir) = @_;
+    (my $vn = $v) =~ s/\.//;
     
-    print "Generating epub...\n";
+    print "Generating $v epub...\n";
     
-    my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt -e $epub_dir -mode exp -save`;
+    chdir($base_dir);
+    
+    # remove this flag once epubcheck gets 3.1 support and use -e
+    my $flag = $v eq '3.0' ? '-e' : '-f';
+    
+    my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt $flag $dir -mode exp -save`;
     print $epubcheck;
     
-    my $from = './temp/epub'.$epub_version;
-    my $to = './build/'.$epub_version.'/docs/epub'.$epub_version.'-v30';
-    copy("${from}.epub", "${to}.epub") or die "Could not copy $from to $to: $!\n";
-    dircopy($from,$to) or die("$!\n");
+    my $to = $base_dir . '/build/'.$epub_version.'/docs/epub'.$epub_version.'-v' . $vn;
+    
+    copy("${dir}.epub", "${to}.epub") or die "Could not copy ${dir}.epub to ${to}.epub: $!\n";
+    
+    dircopy($dir,$to) or die("$!\n");
 
 }
