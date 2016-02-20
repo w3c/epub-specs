@@ -12,6 +12,13 @@
         </rule>    
     </pattern>
     
+    <pattern id="opf.dc.properties">
+        <rule context="opf:package[@prefix]">
+            <report test="contains(@prefix, 'http://purl.org/dc/elements/1.1/')"
+                >A prefix for the Dublin Core /elements/1.1/ namespace is not allowed on the package element</report>
+        </rule>    
+    </pattern>
+    
     <pattern id="opf.dcterms.modified">
         <rule context="opf:metadata[not(ancestor::opf:collection)]">
             <assert test="count(opf:meta[@property='dcterms:modified' and not(@refines)]) = 1"
