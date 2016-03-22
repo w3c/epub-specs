@@ -745,7 +745,7 @@
                         <title>The <markup>identifier</markup> Element</title>
 
                         <para>The <xref linkend="refDCMES"/>
-                            <markup>identifier</markup> element contains the identifier associated with the given <olink
+                            <markup>identifier</markup> element contains an identifier associated with the given <olink
                                 targetdoc="spec" targetptr="gloss-rendition" type="epub-spec"/> of the <olink
                                 targetdoc="spec" targetptr="gloss-epub-publication" type="epub-spec"/>, such as a UUID, DOI,
                             ISBN or ISSN.</para>
@@ -778,7 +778,7 @@
                                 <listitem>
                                     <para>
                                         <markup linkend="attrdef-id">id</markup>
-                                        <option>[required]</option>
+                                        <option>[optional]</option>
                                     </para>
                                 </listitem>
                             </varlistentry>
@@ -790,8 +790,8 @@
                             </varlistentry>
                         </variablelist>
 
-                        <para>The <markup>metadata</markup> section <literal role="rfc2119">must</literal> include exactly
-                            one <markup>identifier</markup> element that contains an unambiguous identifier for the
+                        <para>The <markup>metadata</markup> section <literal role="rfc2119">must</literal> include an
+                                <markup>identifier</markup> element that contains an unambiguous identifier for the
                             Rendition. This identifier <literal role="rfc2119">must</literal> be marked as the <olink
                                 targetdoc="spec" targetptr="gloss-unique-identifier" type="epub-spec"/> via the
                                 <markup>package</markup> element <markup><link linkend="attrdef-package-unique-identifier"
@@ -803,11 +803,9 @@
                             <synopsis><xi:include parse="text" href="examples/publications/identifier.xml"/></synopsis>
                         </informalexample>
 
-                        <para>The identifier <literal role="rfc2119">may</literal> differ from Rendition to Rendition.</para>
-
-                        <para>To determine whether an <markup>identifier</markup> conforms to an established system or has
-                            been granted by an issuing authority, Reading Systems <literal role="rfc2119">should</literal>
-                            attempt to parse the value of the property.</para>
+                        <para>The Unique Identifier <literal role="rfc2119">may</literal> differ from Rendition to Rendition,
+                            and a Rendition <literal role="rfc2119">may</literal> include additional identifier
+                            elements.</para>
 
                         <para>To differentiate different versions of the same EPUB Publication, this specification makes a
                             distinction between the <olink targetdoc="spec" targetptr="gloss-unique-identifier"
@@ -828,6 +826,29 @@
                         <para>Whenever a Rendition is modified, it <literal role="rfc2119">must</literal> include a new last
                             modified date.</para>
 
+                        <para>To determine whether an <markup>identifier</markup> conforms to an established system or has
+                            been granted by an issuing authority, Reading Systems <literal role="rfc2119">should</literal>
+                            attempt to parse the value of the property. For additional precision (e.g., if the scheme cannot
+                            be determined from the value or could lead to an ambiguous result), Authors <literal
+                                role="rfc2119">may</literal> attach an <markup linkend="attrdef-id-type">id-type</markup>
+                            attribute to assist in Reading System identification. When included, the <markup>id-type</markup>
+                            value <literal role="rfc2119">should</literal> take precedence over value parsing the
+                            identifier.</para>
+
+                        <informalexample>
+                            <para>The following example shows how an identifier can be marked as a DOI using the
+                                    <markup>id-type</markup> attribute.</para>
+                            <synopsis><xi:include parse="text" href="examples/publications/id-type.xml"/></synopsis>
+                        </informalexample>
+
+                        <para>This specification does not require or endorse the use of any specific scheme for identifiers,
+                            and imposes no restrictions or requirements on <markup>id-type</markup> identifiers.</para>
+
+                        <para>When an EPUB Publication is derived from another publication, the identifier for that source
+                            publication <literal role="rfc2119">may</literal> be included in the metadata, but <literal
+                                role="rfc2119">must</literal> be represented using the <link linkend="sec-opf-dcsource">DCMES
+                                source element</link>.</para>
+
                         <para> This specification imposes no additional restrictions or the requirements of the identifier
                             except that it <literal role="rfc2119">must</literal> be at least one character in length. It is
                             strongly <literal role="rfc2119">recommended</literal> that the identifier be a fully qualified
@@ -840,8 +861,8 @@
                         <title>The <markup>title</markup> Element</title>
 
                         <para>The <xref linkend="refDCMES"/>
-                            <markup>title</markup> element represents the name given to the <olink targetdoc="spec"
-                                targetptr="gloss-epub-publication" type="epub-spec"/>.</para>
+                            <markup>title</markup> element represents an instance of a name given to the <olink
+                                targetdoc="spec" targetptr="gloss-epub-publication" type="epub-spec"/>.</para>
 
                         <variablelist xreflabel="dc:title" role="elem-synopsis" xml:id="elemdef-opf-dctitle">
                             <varlistentry>
@@ -908,13 +929,21 @@
                             </varlistentry>
                         </variablelist>
 
-                        <para>The <markup>metadata</markup> section <literal role="rfc2119">must</literal> include exactly
+                        <para>The <markup>metadata</markup> section <literal role="rfc2119">must</literal> include at least
                             one <markup>title</markup> element containing the title for the EPUB Publication.</para>
 
                         <informalexample>
                             <para>The following example shows a multi-part title.</para>
                             <synopsis><xi:include parse="text" href="examples/publications/meta-ex-title-3.xml"/></synopsis>
                         </informalexample>
+
+                        <para><olink targetdoc="spec" targetptr="gloss-epub-reading-system" type="epub-spec"
+                                epub:specref-exclude="true">Reading Systems</olink>
+                            <literal role="rfc2119">must</literal> treat the first <markup>title</markup> element in document
+                            order as the main title of the EPUB Publication (i.e., the primary one to present to <olink
+                                targetdoc="spec" targetptr="gloss-user" type="epub-spec" epub:specref-exclude="true"
+                                >Users</olink>). This specification does not define how to process additional
+                                <markup>title</markup> elements.</para>
 
                         <para>The title <literal role="rfc2119">may</literal> differ from <olink targetdoc="spec"
                                 targetptr="gloss-rendition" type="epub-spec"/> to Rendition.</para>
@@ -1801,12 +1830,8 @@
                     fixed-layout page to the next.</para>
 
                 <para xml:id="attrdef-spine-toc">The deprecated <markup>toc</markup> attribute allows an <xref
-                        linkend="refOPF2"/> NCX to be identified for backwards compatiblity purposes. Reading Systems <literal
-                        role="rfc2119">must</literal> ignore the attribute and NCX.</para>
-                
-                <note>
-                    <para>The <markup>toc</markup> attribute will be removed in the next major version of EPUB.</para>
-                </note>
+                        linkend="refOPF2"/> NCX to be identified for backwards compatiblity purposes. Reading Systems
+                        <literal role="rfc2119">must</literal> ignore the attribute and NCX.</para>
             </section>
 
             <section xml:id="sec-itemref-elem" xreflabel="itemref">
