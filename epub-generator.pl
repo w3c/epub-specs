@@ -93,7 +93,7 @@ sub prep {
     
     # create the html dir for 3.1 and bff
     dircopy($epub_dir, $epub_dir_html) or die("$!\n");
-    find(\&tidy, $epub_dir_html);
+    #find(\&tidy, $epub_dir_html);
 }
 
 
