@@ -2199,6 +2199,37 @@
 
         </section>
 
+        <section>
+            <title>IDL</title>
+
+            <para>This specification extends the <xref linkend="refHTML5"/> Navigator object as follows.</para>
+
+            <informalexample>
+                <synopsis>[Exposed=(Window, Worker)]
+interface EpubReadingSystem {
+    [Unforgeable] readonly attribute DOMString name;
+    [Unforgeable] readonly attribute DOMString version;
+    [Unforgeable] readonly attribute DOMString layoutStyle;
+    [Unforgeable] boolean hasFeature(DOMString feature, optional DOMString version);
+};
+
+partial interface Navigator {
+    [Unforgeable, SameObject] readonly attribute EpubReadingSystem epubReadingSystem;
+};</synopsis>
+                <para><xref linkend="refWebIDL"/> notation.</para>
+            </informalexample>
+
+            <note>
+                <para>This specification does not define an <markup>epubReadingSystem</markup> property extension for the
+                        <xref linkend="refWebWorkers"/>
+                    <markup xlink:href="https://www.w3.org/TR/2015/WD-workers-20150924/#the-workernavigator-object"
+                        >WorkerNavigator</markup> object. Reading Systems are therefore not required to expose the
+                        <markup>epubReadingSystem</markup> object in the scripting context of Workers, and Authors cannot
+                    rely on its presence.</para>
+            </note>
+
+        </section>
+
         <section xml:id="app-ers-desc">
             <title>Description</title>
 
@@ -2215,6 +2246,23 @@
                 <para>Example JavaScript function that displays the name of the current Reading System.</para>
                 <synopsis>alert("Reading System name: " + navigator.epubReadingSystem.name);</synopsis>
             </informalexample>
+
+            <para>Reading Systems <literal role="rfc2119">must</literal> expose the <markup>epubReadingSystem</markup> object
+                on the <markup>navigator</markup> object of all loaded Scripted Content Documents, including any nested <link
+                    linkend="sec-scripted-content-type-container-constrained">container-constrained</link> scripting
+                contexts. Reading Systems <literal role="rfc2119">must</literal> ensure that the
+                    <markup>epubReadingSystem</markup> object is available no later than when the <link
+                    xlink:href="https://www.w3.org/TR/html5/syntax.html#the-end"><markup>DOMContentLoaded</markup> event is
+                    triggered</link>
+                <xref linkend="refHTML5"/>.</para>
+
+            <note>
+                <para>Reading systems implementations might create cloned instances of the <code>epubReadingSystem</code>
+                    object in Scripted Content Documents for technical feasibility reasons. In such cases, the Reading System
+                    has to ensure that the object’s state &#8212; as reflected by the values of its properties and methods
+                    &#8212; is consistently maintained across all copied instances.</para>
+            </note>
+
         </section>
 
         <section xml:id="app-ers-properties">
@@ -2222,13 +2270,6 @@
 
             <para>The following properties <literal role="rfc2119">must</literal> be made available for retrieving
                 information about the Reading System.</para>
-
-            <annotation xml:id="issue-ui">
-                <para>The working group is currently considering the addition of a property/object that would allow authors
-                    to determine whether there is potential overlap with reading system user interface components.</para>
-                <para>For more information, refer to <link xlink:href="https://github.com/IDPF/epub-revision/issues/648"
-                        >Issue #648</link>.</para>
-            </annotation>
 
             <table xml:id="tbl-epubReadingSystem-properties">
                 <caption>Required epubReadingSystem properties</caption>

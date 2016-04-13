@@ -209,6 +209,9 @@
     
     <xsl:template match="db:para[ancestor::db:info]" priority="1">
         <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:if test="@role='informative'">
+                <xsl:attribute name="class">informative</xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates select="node()"/>
         </xsl:element>
     </xsl:template>
