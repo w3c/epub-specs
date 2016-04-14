@@ -128,8 +128,6 @@ sub specs {
         return; 
     }
     
-    return if $_ =~ 'unsupported.x?html';
-    
     # return if no dots in path - for some reason -d and -f aren't detecting directories - but allow LICENSE file
     return if $_ !~ /\./ and $_ ne 'LICENSE';
     
@@ -241,8 +239,8 @@ sub generate_opf {
     my $i = 1;
     
     my $modtime = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime);
-    my $html_ext = $v eq '3.0' ? 'xhtml' : 'html';
-    my $html_media = $v eq '3.0' ? 'application/xhtml+xml' : 'text/html';
+    my $html_ext = ($v eq '3.0' or $v eq '3.1') ? 'xhtml' : 'html';
+    my $html_media = ($v eq '3.0' or $v eq '3.1') ? 'application/xhtml+xml' : 'text/html';
     
     print $fh <<PKG;
 <?xml version="1.0" encoding="utf-8"?>
@@ -261,7 +259,6 @@ sub generate_opf {
 	</metadata>
 	<manifest>
 		<item id="nav" href="nav.${html_ext}" media-type="${html_media}" properties="nav"/>
-		<item id="fb" href="unsupported.${html_ext}" media-type="${html_media}"/>
 PKG
     
     my %spine;
@@ -275,7 +272,7 @@ PKG
             print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '" media-type="text/plain" fallback="fb"' . "/>\n";
         }
         else {
-            print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '"' . ($core_media{$ext} ? ' media-type="' . (($ext eq 'html' and $v ne '3.0') ? 'text/html' : $core_media{$ext}) . '"' : ' media-type="' . $alt_media{$ext} . '" fallback="fb"') . "/>\n";
+            print $fh '		<item id="res' . sprintf('%03d',$i) . '" href="' . $file . '"' . ($core_media{$ext} ? ' media-type="' . (($ext eq 'html' and ($v ne '3.0' and $v ne '3.1')) ? 'text/html' : $core_media{$ext}) . '"' : ' media-type="' . $alt_media{$ext} . '" fallback="fb"') . "/>\n";
         }
         
         if ($ext =~ /x?html/i) {
@@ -323,11 +320,11 @@ sub generate_nav {
 
     my ($v, $dir) = @_;
     
-    my $nav = $dir . 'nav' . ($v eq '3.0' ? '.xhtml' : '.html');
+    my $nav = $dir . 'nav' . (($v eq '3.0' or $v eq '3.1') ? '.xhtml' : '.html');
     
     open(my $fh, '>:utf8', $nav) or die "Failed to write the nav doc: $!\n";
     
-    if ($v eq '3.0') {
+    if ($v eq '3.0' or $v eq '3.1') {
         print $fh <<XHTML;
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -349,7 +346,7 @@ HTML
     }
     
     
-    my $toc = $v eq '3.0' ? 'epub:type="toc"' : 'role="doc-toc"';
+    my $toc = ($v eq '3.0' or $v eq '3.1') ? 'epub:type="toc"' : 'role="doc-toc"';
     
     print $fh <<HTML;
 		<style>
