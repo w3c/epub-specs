@@ -97,11 +97,27 @@
             <para>In addition, the following terminology is defined for use in this specification:</para>
 
             <glosslist>
+                <glossentry xml:id="gloss-codec" xreflabel="Codec">
+                    <glossterm>Codec</glossterm>
+                    <glossdef>
+                        <para>Codec refers to content that has intrinsic binary format qualities, such as video and audio
+                            media types which are already designed for optimum compression, or which provide optimized
+                            streaming capabilities.</para>
+                    </glossdef>
+                </glossentry>
                 <glossentry xml:id="gloss-ocf-file-name" xreflabel="Root Directory">
                     <glossterm>File Name</glossterm>
                     <glossdef>
                         <para>The name of any type of file, whether a directory or an ordinary file within a directory within
                             an <xref linkend="gloss-abstract-container"/>.</para>
+                    </glossdef>
+                </glossentry>
+                <glossentry xml:id="gloss-non-codec" xreflabel="Non-Codec">
+                    <glossterm>Non-Codec</glossterm>
+                    <glossdef>
+                        <para>Non-Codec refers to content types that benefit from compression due to the nature of their
+                            internal data structure, such as file formats based on character strings (for example, HTML, CSS,
+                            etc.). </para>
                     </glossdef>
                 </glossentry>
                 <glossentry xml:id="gloss-abstract-container" xreflabel="OCF Abstract Container">
@@ -557,7 +573,7 @@
                             <markup>EncryptedKey</markup> element, as described in XML Encryption.</para>
 
                     <para>The contents of the <filename>encryption.xml</filename> file <literal role="rfc2119">must</literal>
-                        be valid to schema in <xref linkend="app-schema-encryption"/>.</para>
+                        be valid to the schema in <xref linkend="app-schema-encryption"/>.</para>
 
                     <para>OCF encrypts individual files independently, trading off some security for improved performance,
                         allowing the container contents to be incrementally decrypted. Encryption in this way exposes the
@@ -574,10 +590,8 @@
                     <para>Encrypted data replaces unencrypted data in an OCF Abstract Container. For example, if an image
                         named <filename>photo.jpeg</filename> is encrypted, the contents of the
                             <filename>photo.jpeg</filename> resource <literal role="rfc2119">should</literal> be replaced by
-                        its encrypted contents. When stored in a ZIP container, streams of data <literal role="rfc2119"
-                            >must</literal> be compressed before they are encrypted and Deflate compression <literal
-                            role="rfc2119">must</literal> be used. Within the ZIP directory, encrypted files <literal
-                            role="rfc2119">should</literal> be stored rather than Deflate-compressed.</para>
+                        its encrypted contents. Within the ZIP directory, encrypted files <literal role="rfc2119"
+                            >should</literal> be stored rather than Deflate-compressed.</para>
 
                     <para>Note that some situations require obfuscating the storage of embedded resources referenced by a
                             <olink targetdoc="spec" targetptr="gloss-rendition" type="epub-spec"/> to tie them to the
@@ -617,6 +631,91 @@
                         <synopsis>
 <xi:include parse="text" href="./examples/ocf/encryption-2.xml"/>
                     </synopsis>
+                    </informalexample>
+
+                    <bridgehead xml:id="sec-enc-compression">Compression before Encryption</bridgehead>
+
+                    <para>When stored in a ZIP container, streams of data with <xref linkend="gloss-non-codec"/> content
+                        types <literal role="rfc2119">should</literal> be compressed before they are encrypted, and Deflate
+                        compression <literal role="rfc2119">must</literal> be used. In this case,
+                        compression-before-encryption not only ensures that the resulting entries in the ZIP container are
+                        smaller in size, but also enables additional content obfuscation.</para>
+
+                    <para>Streams of data with <xref linkend="gloss-codec"/> content types <literal role="rfc2119">should
+                            not</literal> be compressed before they are encrypted. In such cases, additional compression
+                        would introduce unnecessary processing overhead at production time (especially with large resource
+                        files), and would impact audio/video playback performance at consumption time. In some cases, the
+                        combination of compression with some encryption schemes might even compromise the ability of Reading
+                        Systems to handle partial content requests (e.g. HTTP byte ranges), due to the technical
+                        impossibility to determine the length of the full resource ahead of media playback (e.g. HTTP
+                        Content-Length header).</para>
+
+                    <para>Streams of data that are compressed before they are encrypted <literal role="rfc2119"
+                            >should</literal> provide additional <markup>EncryptionProperties</markup> metadata to specify
+                        the size of the initial resource (i.e., before compression and encryption), as per the
+                            <markup>Compression</markup> XML element defined below. Streams of data that are not compressed
+                        before they are encrypted <literal role="rfc2119">may</literal> provide the additional
+                            <markup>EncryptionProperties</markup> metadata to specify the size of the initial resource (i.e.,
+                        before encryption).</para>
+
+                    <variablelist xreflabel="Compression" role="elem-synopsis" xml:id="elemdef-enc-Compression">
+                        <varlistentry>
+                            <term>Element Name</term>
+                            <listitem>
+                                <para>
+                                    <markup>Compression</markup>
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>Namespace</term>
+                            <listitem>
+                                <para><uri>http://www.idpf.org/2016/encryption#compression</uri></para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>Usage</term>
+                            <listitem>
+                                <para>Optional child of <markup>EncryptionProperty</markup>.</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Attributes</term>
+                            <listitem>
+                                <variablelist>
+                                    <varlistentry>
+                                        <term>Method <option>[required]</option></term>
+                                        <listitem>
+                                            <para>Identifies the compression method used.</para>
+                                            <para>Value is either "<markup>0</markup>" (no compression) or
+                                                    "<markup>8</markup>" (Deflate algorithm).</para>
+                                        </listitem>
+                                    </varlistentry>
+                                    <varlistentry>
+                                        <term>OriginalLength <option>[required]</option></term>
+                                        <listitem>
+                                            <para>Represents the size of the initial resource (number of bytes).</para>
+                                            <para>Value is a positive integer.</para>
+                                        </listitem>
+                                    </varlistentry>
+                                </variablelist>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>Content Model</term>
+                            <listitem>
+                                <para>Empty</para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+
+                    <informalexample>
+                        <para>The following example shows an MP4 file that that has been Deflate compressed and whose
+                            original size was 3500000 bytes.</para>
+                        <synopsis><xi:include href="examples/ocf/compression.xml" parse="text"/></synopsis>
                     </informalexample>
                 </section>
 
@@ -1046,8 +1145,12 @@ store destination as source in ocf
         <section xml:id="app-schema-encryption">
             <title>Schema for <filename>encryption.xml</filename></title>
 
-            <para>The schema for <filename>encryption.xml</filename> files is included in <xref linkend="refXMLSecRngSchemas"
-                />.</para>
+            <para>The schema for <filename>encryption.xml</filename> files is available at <uri
+                    xlink:href="http://www.idpf.org/epub/31/schema/ocf-encryption-31.rnc"
+                    >http://www.idpf.org/epub/31/schema/ocf-encryption-31.rnc</uri>.</para>
+
+            <para>Validation using this schema requires a processor that supports <xref linkend="refRelaxNG"/> and <xref
+                    linkend="refXSDDatatypes"/>.</para>
         </section>
         <section xml:id="app-schema-signatures">
             <title>Schema for <filename>signatures.xml</filename></title>

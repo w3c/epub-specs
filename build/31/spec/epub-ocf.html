@@ -59,8 +59,12 @@
 
             <p>In addition, the following terminology is defined for use in this specification:</p>
 
-            <div class="glosslist"><dl><dt class="glossentry" id="gloss-ocf-file-name"><span class="glossterm">File Name</span></dt><dd class="glossdef"><p>The name of any type of file, whether a directory or an ordinary file within a directory within
-                            an <a class="glossterm" href="#gloss-abstract-container" title="OCF Abstract Container">OCF Abstract Container</a>.</p></dd><dt class="glossentry" id="gloss-abstract-container"><span class="glossterm">OCF Abstract Container</span></dt><dd class="glossdef"><p>The OCF Abstract Container defines a file system model for the contents of the <a class="glossterm" href="#gloss-zip-container" title="OCF ZIP Container">OCF ZIP Container</a>, as defined in <a class="xref" href="#sec-container-abstract" title="3 OCF Abstract Container"><em>OCF Abstract Container</em></a>.</p></dd><dt class="glossentry" id="gloss-ocf-processor"><span class="glossterm">OCF Processor</span></dt><dd class="glossdef"><p>A software application that processes <a class="glossterm" href="#gloss-zip-container" title="OCF ZIP Container">OCF ZIP
+            <div class="glosslist"><dl><dt class="glossentry" id="gloss-codec"><span class="glossterm">Codec</span></dt><dd class="glossdef"><p>Codec refers to content that has intrinsic binary format qualities, such as video and audio
+                            media types which are already designed for optimum compression, or which provide optimized
+                            streaming capabilities.</p></dd><dt class="glossentry" id="gloss-ocf-file-name"><span class="glossterm">File Name</span></dt><dd class="glossdef"><p>The name of any type of file, whether a directory or an ordinary file within a directory within
+                            an <a class="glossterm" href="#gloss-abstract-container" title="OCF Abstract Container">OCF Abstract Container</a>.</p></dd><dt class="glossentry" id="gloss-non-codec"><span class="glossterm">Non-Codec</span></dt><dd class="glossdef"><p>Non-Codec refers to content types that benefit from compression due to the nature of their
+                            internal data structure, such as file formats based on character strings (for example, HTML, CSS,
+                            etc.). </p></dd><dt class="glossentry" id="gloss-abstract-container"><span class="glossterm">OCF Abstract Container</span></dt><dd class="glossdef"><p>The OCF Abstract Container defines a file system model for the contents of the <a class="glossterm" href="#gloss-zip-container" title="OCF ZIP Container">OCF ZIP Container</a>, as defined in <a class="xref" href="#sec-container-abstract" title="3 OCF Abstract Container"><em>OCF Abstract Container</em></a>.</p></dd><dt class="glossentry" id="gloss-ocf-processor"><span class="glossterm">OCF Processor</span></dt><dd class="glossdef"><p>A software application that processes <a class="glossterm" href="#gloss-zip-container" title="OCF ZIP Container">OCF ZIP
                                 Containers</a> according to the requirements of this specification.</p></dd><dt class="glossentry" id="gloss-zip-container"><span class="glossterm">OCF ZIP Container</span></dt><dd class="glossdef"><p>The ZIP-based packaging and distribution format for EPUB Publications, as defined in <a class="xref" href="#sec-container-zip" title="4 OCF ZIP Container"><em>OCF ZIP Container</em></a>.</p><p>OCF ZIP Container and <span class="phrase"><a class="glossterm" href="epub-spec.html#gloss-container" target="_top">EPUB Container</a></span>
                             are synonymous.</p></dd><dt class="glossentry" id="gloss-ocf-path-name"><span class="glossterm">Path Name</span></dt><dd class="glossdef"><p>For a given directory within the <a class="link" href="#sec-container-abstract" title="3 OCF Abstract Container">OCF Abstract
                                 Container</a>, the string holding all directory <a class="glossterm" href="#gloss-ocf-file-name" title="File Name">Root Directory</a> in
@@ -444,7 +448,7 @@
                             <code class="markup">EncryptedKey</code> element, as described in XML Encryption.</p>
 
                     <p>The contents of the <code class="filename">encryption.xml</code> file <span class="rfc2119">must</span>
-                        be valid to schema in <a class="xref" href="#app-schema-encryption" title="A.2 Schema for encryption.xml">Schema for <code class="filename">encryption.xml</code></a>.</p>
+                        be valid to the schema in <a class="xref" href="#app-schema-encryption" title="A.2 Schema for encryption.xml">Schema for <code class="filename">encryption.xml</code></a>.</p>
 
                     <p>OCF encrypts individual files independently, trading off some security for improved performance,
                         allowing the container contents to be incrementally decrypted. Encryption in this way exposes the
@@ -460,7 +464,7 @@
                     <p>Encrypted data replaces unencrypted data in an OCF Abstract Container. For example, if an image
                         named <code class="filename">photo.jpeg</code> is encrypted, the contents of the
                             <code class="filename">photo.jpeg</code> resource <span class="rfc2119">should</span> be replaced by
-                        its encrypted contents. When stored in a ZIP container, streams of data <span class="rfc2119">must</span> be compressed before they are encrypted and Deflate compression <span class="rfc2119">must</span> be used. Within the ZIP directory, encrypted files <span class="rfc2119">should</span> be stored rather than Deflate-compressed.</p>
+                        its encrypted contents. Within the ZIP directory, encrypted files <span class="rfc2119">should</span> be stored rather than Deflate-compressed.</p>
 
                     <p>Note that some situations require obfuscating the storage of embedded resources referenced by a
                             <span class="phrase"><a class="glossterm" href="epub-spec.html#gloss-rendition" target="_top">Rendition</a></span> to tie them to the
@@ -511,6 +515,70 @@
     &lt;/enc:EncryptedData&gt;&#xD;
 &lt;/encryption&gt;
                     </pre>
+                    </div>
+
+                    <h4 id="sec-enc-compression">Compression before Encryption</h4>
+
+                    <p>When stored in a ZIP container, streams of data with <a class="glossterm" href="#gloss-non-codec" title="Non-Codec">Non-Codec</a> content
+                        types <span class="rfc2119">should</span> be compressed before they are encrypted, and Deflate
+                        compression <span class="rfc2119">must</span> be used. In this case,
+                        compression-before-encryption not only ensures that the resulting entries in the ZIP container are
+                        smaller in size, but also enables additional content obfuscation.</p>
+
+                    <p>Streams of data with <a class="glossterm" href="#gloss-codec" title="Codec">Codec</a> content types <span class="rfc2119">should
+                            not</span> be compressed before they are encrypted. In such cases, additional compression
+                        would introduce unnecessary processing overhead at production time (especially with large resource
+                        files), and would impact audio/video playback performance at consumption time. In some cases, the
+                        combination of compression with some encryption schemes might even compromise the ability of Reading
+                        Systems to handle partial content requests (e.g. HTTP byte ranges), due to the technical
+                        impossibility to determine the length of the full resource ahead of media playback (e.g. HTTP
+                        Content-Length header).</p>
+
+                    <p>Streams of data that are compressed before they are encrypted <span class="rfc2119">should</span> provide additional <code class="markup">EncryptionProperties</code> metadata to specify
+                        the size of the initial resource (i.e., before compression and encryption), as per the
+                            <code class="markup">Compression</code> XML element defined below. Streams of data that are not compressed
+                        before they are encrypted <span class="rfc2119">may</span> provide the additional
+                            <code class="markup">EncryptionProperties</code> metadata to specify the size of the initial resource (i.e.,
+                        before encryption).</p>
+
+                    <div class="elem-synopsis" id="elemdef-enc-Compression"><dl class="elem-synopsis"><dt class="varlistentry"><span class="term">Element Name</span></dt><dd>
+                                <p>
+                                    <code class="markup">Compression</code>
+                                </p>
+                            </dd><dt class="varlistentry"><span class="term">Namespace</span></dt><dd>
+                                <p><code class="uri">http://www.idpf.org/2016/encryption#compression</code></p>
+                            </dd><dt class="varlistentry"><span class="term">Usage</span></dt><dd>
+                                <p>Optional child of <code class="markup">EncryptionProperty</code>.</p>
+                            </dd><dt class="varlistentry"><span class="term">Attributes</span></dt><dd>
+                                <div class="variablelist"><dl class="variablelist"><dt class="varlistentry"><span class="term">Method <code class="option">[required]</code></span></dt><dd>
+                                            <p>Identifies the compression method used.</p>
+                                            <p>Value is either "<code class="markup">0</code>" (no compression) or
+                                                    "<code class="markup">8</code>" (Deflate algorithm).</p>
+                                        </dd><dt class="varlistentry"><span class="term">OriginalLength <code class="option">[required]</code></span></dt><dd>
+                                            <p>Represents the size of the initial resource (number of bytes).</p>
+                                            <p>Value is a positive integer.</p>
+                                        </dd></dl></div>
+                            </dd><dt class="varlistentry"><span class="term">Content Model</span></dt><dd>
+                                <p>Empty</p>
+                            </dd></dl></div>
+
+                    <div class="informalexample">
+                        <p>The following example shows an MP4 file that that has been Deflate compressed and whose
+                            original size was 3500000 bytes.</p>
+                        <pre class="synopsis">&lt;encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;enc:EncryptedData xmlns:enc="http://www.w3.org/2001/04/xmlenc#"&gt;
+        ...
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherReference URI="OEPBS/video.mp4"/&gt;
+        &lt;/enc:CipherData&gt;
+        &lt;enc:EncryptionProperties&gt;
+            &lt;enc:EncryptionProperty xmlns:ns="http://www.idpf.org/2016/encryption#compression"&gt;
+                &lt;ns:Compression Method="8" OriginalLength="3500000"/&gt;
+            &lt;/enc:EncryptionProperty&gt;
+        &lt;/enc:EncryptionProperties&gt;
+        ...
+    &lt;/enc:EncryptedData&gt;
+&lt;/encryption&gt;</pre>
                     </div>
                 </section>
 
@@ -937,7 +1005,9 @@ store destination as source in ocf
         <section class="section" id="app-schema-encryption"><h2 class="title" style="clear: both"><span class="link-marker"><a class="hidden-reveal" href="#app-schema-encryption"> </a> </span>A.2 Schema for <code class="filename">encryption.xml</code></h2>
             
 
-            <p>The schema for <code class="filename">encryption.xml</code> files is included in <a class="biblioref" href="#refXMLSecRngSchemas" title="XML Security RELAX NG Schemas (W3C Working Group Note)">[<abbr class="abbrev">XML Sec RNG Schemas</abbr>]</a>.</p>
+            <p>The schema for <code class="filename">encryption.xml</code> files is available at <code class="uri"><a class="uri" href="http://www.idpf.org/epub/31/schema/ocf-encryption-31.rnc" target="_top">http://www.idpf.org/epub/31/schema/ocf-encryption-31.rnc</a></code>.</p>
+
+            <p>Validation using this schema requires a processor that supports <a class="biblioref" href="#refRelaxNG" title="ISO/IEC 19757-2: Regular-grammar-based validation — RELAX NG. Second Edition">[<abbr class="abbrev">RelaxNG</abbr>]</a> and <a class="biblioref" href="#refXSDDatatypes" title="XML Schema Part 2: Datatypes Second Edition">[<abbr class="abbrev">XSD-DATATYPES</abbr>]</a>.</p>
         </section>
         <section class="section" id="app-schema-signatures"><h2 class="title" style="clear: both"><span class="link-marker"><a class="hidden-reveal" href="#app-schema-signatures"> </a> </span>A.3 Schema for <code class="filename">signatures.xml</code></h2>
             
