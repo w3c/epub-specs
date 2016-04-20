@@ -216,6 +216,18 @@
         </xsl:element>
     </xsl:template>
     
+    <xsl:template match="db:itemizedlist[ancestor::db:info]" priority="1">
+        <xsl:element name="ul" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:apply-templates select="node()"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="db:listitem[ancestor::db:info]" priority="1">
+        <xsl:element name="li" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:apply-templates select="node()"/>
+        </xsl:element>
+    </xsl:template>
+    
     <xsl:template match="db:link[ancestor::db:info]" priority="1">
         <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="href">
