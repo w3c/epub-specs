@@ -231,7 +231,14 @@
     <xsl:template match="db:link[ancestor::db:info]" priority="1">
         <xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
             <xsl:attribute name="href">
-                <xsl:value-of select="@xlink:href"/>
+                <xsl:choose>
+                    <xsl:when test="string-length(@xlink:href) &gt; 0">
+                        <xsl:value-of select="@xlink:href"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>#</xsl:text><xsl:value-of select="@linkend"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="string-length(normalize-space(.)) &gt; 0">
