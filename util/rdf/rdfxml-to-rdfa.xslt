@@ -134,14 +134,14 @@
 							<xsl:otherwise>
 								<div class="printhistory">
 									<p class="identity">
-										<span class="pubdate">30 January 2016</span>
+										<span class="pubdate">26 April 2016</span>
 									</p>
 									
 									<dl class="printhistory">
 										<dt>This version</dt>
 										<dd>
 											<a class="link"
-												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160130.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160130.html</a>
+												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160426.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160426.html</a>
 										</dd>
 										<dt>Latest version</dt>
 										<dd>
@@ -150,7 +150,7 @@
 										<dt>Previous version</dt>
 										<dd>
 											<a class="link"
-												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20150717.html</a>
+												href="http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160130.html">http://www.idpf.org/epub/vocab/structure/epub-vocab-structure-20160130.html</a>
 										</dd>
 									</dl>
 									<div class="history">
