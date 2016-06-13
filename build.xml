@@ -45,6 +45,7 @@
 	<property name="dir.build.schemadoc" value="${dir.build.epub}/schemadoc"/>
 	<property name="dir.build.vocab" value="${dir.build}/vocab"/>
 	<property name="dir.build.vocab.package" value="${dir.build.vocab}/package"/>
+	<property name="dir.build.vocab.a11y" value="${dir.build.vocab.package}/a11y"/>
 	<property name="dir.build.vocab.overlays" value="${dir.build.vocab}/overlays"/>
 	<property name="dir.build.vocab.structure" value="${dir.build.vocab}/structure"/>
 	<property name="dir.build.spec" value="${dir.build.epub}/spec"/>
@@ -135,7 +136,7 @@
 		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml epub-vocab-package.xml epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml epub-vocab-package.xml epub-vocab-overlays.xml epub-vocab-a11y.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="epub"/>
@@ -337,7 +338,7 @@
 		<build-htaccess dest-dir="${dir.build.vocab.structure}/"
 			index-name="${spec.filename.prefix}-vocab-structure.html"/>
 
-		<!-- structure vocab -->
+		<!-- magazine vocab -->
 		<echo>building magazine vocab...</echo>
 		<build-xhtml-vocab in-n3="${dir.src.vocab}/magazine.n3" name="magazine"
 			out-xhtml="${dir.build.vocab.structure}/magazine/epub-vocab-magazine.html"
@@ -359,8 +360,7 @@
 			should return "http://www.idpf.org/epub/30/spec/epub-publications.html#switch" and so on. -->
 		<mkdir dir="${dir.build.vocab.package}"/>
 
-		<mkdir dir="${dir.build.vocab}/overlays"/>
-		<build-htaccess dest-dir="${dir.build.vocab}/overlays" index-name="index.html"/>
+		<mkdir dir="${dir.build.vocab.overlays}"/>
 		<!-- a client redirect page that should never be reached but is added if the server Alias fails 
 		<saxon-xslt classpathref="build.classpath" in="${schema.rng}"
 			out="${dir.build.vocab}/overlays/index.html" style="${xslt.redirect}">
@@ -368,6 +368,8 @@
 				expression="${www.spec.path}/${spec.filename.prefix}-mediaoverlays.html"/>
 			<param name="title" expression="Media Overlays Vocabulary"/>
 		</saxon-xslt> -->
+		
+		<mkdir dir="${dir.build.vocab.a11y}"/>
 		
 		<mkdir dir="${dir.build.vocab}/rendition"/>
 		<build-htaccess dest-dir="${dir.build.vocab}/rendition" index-name="index.html"/>
@@ -396,6 +398,13 @@
 		<build-htaccess dest-dir="${dir.build.vocab.package}" index-name="epub-vocab-package.html"/>
 		<move file="${dir.build.spec}/epub-vocab-overlays.html" tofile="${dir.build.vocab.overlays}/epub-vocab-overlays.html" overwrite="yes"/>
 		<build-htaccess dest-dir="${dir.build.vocab.overlays}" index-name="epub-vocab-overlays.html"/>
+		
+		<saxon-xslt in="${dir.build.spec}/epub-vocab-a11y.html"
+			out="${dir.build.vocab.a11y}/epub-vocab-a11y.html" classpathref="build.classpath"
+			style="${xslt.css.link.replacer}">
+			<param name="css.link" expression="increase-depth"/>
+		</saxon-xslt>
+		<build-htaccess dest-dir="${dir.build.vocab.a11y}" index-name="epub-vocab-a11y.html"/>
 		
 		<!-- copy the directory listing file -->
 		<copy file="${dir.src.vocab}/vocab-directory.html" tofile="${dir.build.vocab}/index.html" overwrite="yes"/>
