@@ -192,7 +192,15 @@
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
-                        <xsl:when test="not(matches($targetdoc, 'vocab-package'))">../../31/spec/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'vocab-'))">../../31/spec/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='pkg-vocab'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'indexes')">../../../idx/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../../../linking/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'vocab-'))">../../../31/spec/</xsl:when>
                         <xsl:otherwise/>
                     </xsl:choose>
                 </xsl:when>
