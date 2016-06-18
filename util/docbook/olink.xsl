@@ -188,7 +188,7 @@
                         <xsl:otherwise/>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="$spec-group='vocab'">
+                <xsl:when test="$spec-group='overlays'">
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
@@ -196,7 +196,15 @@
                         <xsl:otherwise/>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="$spec-group='pkg-vocab'">
+                <xsl:when test="$spec-group='rendition'">
+                    <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'indexes')">../../epub/idx/</xsl:when>
+                        <xsl:when test="matches($targetdoc, 'cfi')">../../epub/linking/</xsl:when>
+                        <xsl:when test="not(matches($targetdoc, 'vocab-'))">../../epub/31/spec/</xsl:when>
+                        <xsl:otherwise/>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$spec-group='pkg'">
                     <xsl:choose>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../../idx/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../../linking/</xsl:when>

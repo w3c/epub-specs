@@ -36,7 +36,7 @@
 
 	<property name="dir.test" value="${basedir}/test"/>
 	<property name="dir.lib" value="${basedir}/lib"/>
-	<property name="dir.build" value="${basedir}/build/"/>
+	<property name="dir.build" value="${basedir}/build/epub/"/>
 	<property name="dir.build.css" value="${dir.build}/css"/>
 	<property name="dir.build.images" value="${dir.build}/images"/>
 	<property name="dir.build.epub" value="${dir.build}/31"/>
@@ -48,6 +48,7 @@
 	<property name="dir.build.vocab.a11y" value="${dir.build.vocab.package}/a11y"/>
 	<property name="dir.build.vocab.overlays" value="${dir.build.vocab}/overlays"/>
 	<property name="dir.build.vocab.structure" value="${dir.build.vocab}/structure"/>
+	<property name="dir.build.vocab.rendition" value="${basedir}/build/vocab/rendition/"/>
 	<property name="dir.build.spec" value="${dir.build.epub}/spec"/>
 	<property name="dir.build.extensions" value="${dir.build}/extensions"/>
 	<property name="dir.temp" value="${basedir}/temp"/>
@@ -156,13 +157,19 @@
 			includes="epub-vocab-*.xml" excludes="epub-vocab-rendition.xml epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="pkg-vocab"/>
+			<param name="spec-group" expression="pkg"/>
 		</saxon-xslt>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-vocab-rendition.xml epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			includes="epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="vocab"/>
+			<param name="spec-group" expression="overlays"/>
+		</saxon-xslt>
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-vocab-rendition.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="rendition"/>
 		</saxon-xslt>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
 			includes="epub-indexes.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
@@ -202,12 +209,17 @@
 		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
 			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
 			style="${xslt.biblio-path-fix}" includes="epub-vocab-*.xml" excludes="epub-vocab-rendition.xml epub-vocab-overlays.xml">
-			<param name="spec-name" expression="pkg-vocab"/>
+			<param name="spec-name" expression="pkg"/>
 		</saxon-xslt>
 		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
 			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
-			style="${xslt.biblio-path-fix}" includes="epub-vocab-rendition.xml epub-vocab-overlays.xml">
-			<param name="spec-name" expression="vocab"/>
+			style="${xslt.biblio-path-fix}" includes="epub-vocab-overlays.xml">
+			<param name="spec-name" expression="overlays"/>
+		</saxon-xslt>
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-vocab-rendition.xml">
+			<param name="spec-name" expression="rendition"/>
 		</saxon-xslt>
 		
 		
@@ -412,9 +424,13 @@
 		</saxon-xslt>
 		<build-htaccess dest-dir="${dir.build.vocab.package}/itemref/" index-name="epub-vocab-itemref.html"/>
 		
-		<mkdir dir="${dir.build.vocab}/rendition"/>
-		<move file="${dir.build.spec}/epub-vocab-rendition.html" tofile="${dir.build.vocab}/rendition/epub-vocab-rendition.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab}/rendition/" index-name="epub-vocab-rendition.html"/>
+		<mkdir dir="${dir.build.vocab.rendition}"/>
+		<saxon-xslt in="${dir.build.spec}/epub-vocab-rendition.html"
+			out="${dir.build.vocab.rendition}/epub-vocab-rendition.html" classpathref="build.classpath"
+			style="${xslt.css.link.replacer}">
+			<param name="css.link" expression="rendition"/>
+		</saxon-xslt>
+		<build-htaccess dest-dir="${dir.build.vocab.rendition}" index-name="epub-vocab-rendition.html"/>
 		
 		<!-- copy the prefix files to their destinations -->
 		<copy file="${dir.src.registries}/pfx-package.html" tofile="${dir.build.vocab.package}/pfx/reserved.html" overwrite="yes"/>

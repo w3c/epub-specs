@@ -21,16 +21,22 @@
                             <xsl:otherwise>../31/spec/</xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
-                    <xsl:when test="$spec-name eq 'pkg-vocab'">
+                    <xsl:when test="$spec-name eq 'pkg'">
                         <xsl:choose>
                             <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../../../linking/cfi/</xsl:when>
                             <xsl:otherwise>../../../31/spec/</xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
-                    <xsl:when test="$spec-name eq 'vocab'">
+                    <xsl:when test="$spec-name eq 'overlays'">
                         <xsl:choose>
                             <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../../linking/cfi/</xsl:when>
                             <xsl:otherwise>../../31/spec/</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:when test="$spec-name eq 'rendition'">
+                        <xsl:choose>
+                            <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../epub/linking/cfi/</xsl:when>
+                            <xsl:otherwise>../../epub/31/spec/</xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
                     <xsl:when test="$spec-name eq 'cfi'">

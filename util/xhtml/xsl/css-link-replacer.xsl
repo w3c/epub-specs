@@ -21,6 +21,11 @@
                     <xsl:value-of select="replace(@href,'\.\./\.\./','../../../')"/>
                 </xsl:attribute>
             </xsl:if>
+            <xsl:if test="$css.link eq 'rendition'">
+                <xsl:attribute name="href">
+                    <xsl:value-of select="replace(@href,'\.\./\.\./','../../epub/')"/>
+                </xsl:attribute>
+            </xsl:if>
         </xsl:element>        
     </xsl:template>
     
@@ -37,6 +42,11 @@
             <xsl:if test="$css.link eq 'increase-depth'">
                 <xsl:attribute name="src">
                     <xsl:value-of select="replace(@src,'\.\./\.\./','../../../')"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="$css.link eq 'rendition'">
+                <xsl:attribute name="src">
+                    <xsl:value-of select="replace(@src,'\.\./\.\./','../../epub/')"/>
                 </xsl:attribute>
             </xsl:if>
         </xsl:element>        
