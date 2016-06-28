@@ -352,13 +352,13 @@
           delimiter of the attribute value, so it becomes escaped with '<code class="literal">&amp;#x22;</code>'. Note that the
           Cyrillic "EF" character ('Ф') is directly supported in EPUB XML documents (which use the UTF-8 encoding to
           represent the unicode character repertoire), so it doesn't need to be encoded:</p>
-        <pre class="synopsis">#epubcfi(/6/4!/4/10/2/1:3[Ф-&amp;#x22;spa%20ce-99%25&amp;#x22;-aa^[bb^]^^])</pre>
+        <pre class="synopsis">#epubcfi(/6/4!/4/10/2/1:3[Ф-&amp;#x22;spa%20ce&amp;#x22;-99%25-aa^[bb^]^^])</pre>
       </div>
       <div class="informalexample">
         <p>Should the IRI need to be converted to URI, the non-ASCII Cyrillic "EF" character ('Ф') would get
           percent-escaped with 2 bytes ('<code class="literal">0xd0 0xa4</code>', in hexadecimal). This would result in the following
           URI:</p>
-        <pre class="synopsis">#epubcfi(/6/4!/4/10/2/1:3[%d0%a4-&amp;#x22;spa%20ce&amp;#x22;-99%25-aa^[bb^]^^])</pre>
+        <pre class="synopsis">#epubcfi(/6/4!/4/10/2/1:3[%d0%a4-%22spa%20ce%22-99%25-aa^[bb^]^^])</pre>
         <p> URI encoding / decoding APIs usually "aggressively" percent-encode characters, as demonstrated in the
           following example. Note how the circumflexes '<code class="literal">^</code>' (%5E), square brackets '<code class="literal">[</code>'
           (%5B) '<code class="literal">]</code>' (%5D) and double-quotes '<code class="literal">"</code>' (%22) are also percent-encoded (due to
@@ -436,10 +436,10 @@
         <p>When an EPUB CFI references an element that contains an ID <a class="biblioref" href="#refXML" title="Extensible Markup Language (XML) 1.0 (Fifth Edition)">[<abbr class="abbrev">XML</abbr>]</a>, the corresponding path
           step <span class="rfc2119">must</span> include that ID in square brackets (i.e., after the slash
             (<code class="literal">/</code>) and even number that identifies the element).</p>
-        <p>Specification of identifiers adds robustness to the CFI scheme: a Reading System <span class="rfc2119">may</span> determine that the location referenced by the CFI is not the original intended location, and
-            <span class="rfc2119">may</span> use the identifier to compute the set of steps that reach the desired
-          destination in the content (see <a class="xref" href="#sec-target-correction" title="3.5 Intended Target Location Correction">Intended Target Location Correction</a>). The cost of this added robustness is that
-          comparison (and sorting) of CFI strings <span class="rfc2119">may</span> be performed only after logically
+        <p>Specification of identifiers adds robustness to the CFI scheme: a Reading System can determine that the
+          location referenced by the CFI is not the original intended location, and can use the identifier to compute the set
+          of steps that reach the desired destination in the content (see <a class="xref" href="#sec-target-correction" title="3.5 Intended Target Location Correction">Intended Target Location Correction</a>). The cost
+          of this added robustness is that comparison (and sorting) of CFI strings can be performed only after logically
           stripping all bracketed substrings (see <a class="xref" href="#sec-sorting" title="3.2 Sorting Rules">Sorting Rules</a>).</p>
       </section>
       <section class="section" id="sec-path-indirection"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" href="#sec-path-indirection"> </a> </span>3.1.3 Step Indirection (<code class="literal">!</code>)</h3>
@@ -480,9 +480,28 @@
           is the <a class="biblioref" href="#refHTML5" title="HTML5: A vocabulary and associated APIs for HTML and XHTML">[<abbr class="abbrev">HTML5</abbr>]</a>
           <code class="markup"><a class="markup" href="http://www.w3.org/TR/html5/embedded-content-0.html#the-img-element" target="_top">img</a></code> element with
           an <code class="markup">alt</code> attribute containing the text to which the character offset applies.</p>
+
+
         <p>For XML character data, the offset is zero-based and always refers to a position between characters, so
             <code class="literal">0</code> means before the first character and a number equal to the total UTF-16 length means after
           the last character. A character offset value greater than the UTF-16 length of the available text <span class="rfc2119">must not</span> be specified.</p>
+
+        <p>In this specification, the definition of an "offset" within XML character data is based on the UTF-16 text
+          encoding, whereby each "character" (Unicode code point) may be represented using a single 16-bit code unit, or two
+          units (surrogate pairs, for Unicode characters outside of BMP / Basic Multilingual Plane) <a class="biblioref" href="#refUnicode5" title="The Unicode Consortium. The Unicode Standard.">[<abbr class="abbrev">Unicode</abbr>]</a>. A CFI "character offset" is a zero-based number that refers to a position between UTF-16
+          code units. Here, the "length" of the text is the total count of 16-bit units. Offset zero therefore means before
+          the first 16-bit unit, and a number equal to the "length" of the text means after the last 16-bit unit. An offset
+          value greater than the "length" of the text must not be specified.</p>
+
+        <div class="note"><h3 class="title">note</h3>
+          <p>Counting the number of text "characters" based on UTF-16 code units (instead of Unicode code points) is
+            compatible with the <a class="ulink" href="http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position-h3" target="_top">DOM Range
+              model</a>
+            <a class="biblioref" href="#refDOM2TraversalRange" title="Document Object Model (DOM) Level 2 Traversal and Range Specification">[<abbr class="abbrev">DOM2TraversalRange</abbr>]</a>, and with the <a class="ulink" href="http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types-string-type" target="_top">String
+              API</a>
+            <a class="biblioref" href="#refECMA262" title="ECMA-262 6th Edition, ECMAScript® 2015 Language Specification">[<abbr class="abbrev">ECMA262</abbr>]</a></p>
+        </div>
+
         <p>A character offset <span class="rfc2119">may</span> follow a <code class="literal">/N</code> step. For XHTML Content
           Documents, <code class="literal">N</code> would be an even number when referencing the <code class="markup">alt</code> text of an
             <code class="markup">img</code> element, and <code class="literal">N</code> would be odd when referencing XML character data within
@@ -536,11 +555,11 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
         <p>There is no restriction on the amount of the preceding and following text that can be included in the match.
           Text is taken from the document ignoring element boundaries and whitespace is always collapsed (i.e., a non-empty
           sequence of contiguous whitespace characters is always replaced with a single space character).</p>
-        <p>A Reading System <span class="rfc2119">may</span> determine that the location referenced by the CFI is not
-          the original intended location (due to non-matching text), and <span class="rfc2119">may</span> use the
-          preceding/trailing text to compute the set of steps that reach the desired destination in the content (see <a class="xref" href="#sec-target-correction" title="3.5 Intended Target Location Correction">Intended Target Location Correction</a>). The cost of this added robustness is that comparison (and sorting) of CFI
-          strings <span class="rfc2119">may</span> be performed only after logically stripping all bracketed substrings
-          (see <a class="xref" href="#sec-sorting" title="3.2 Sorting Rules">Sorting Rules</a>).</p>
+        <p>A Reading System can determine that the location referenced by the CFI is not the original intended location
+          (due to non-matching text), and can use the preceding/trailing text to compute the set of steps that reach the
+          desired destination in the content (see <a class="xref" href="#sec-target-correction" title="3.5 Intended Target Location Correction">Intended Target Location Correction</a>). The cost of this added robustness
+          is that comparison (and sorting) of CFI strings can be performed only after logically stripping all bracketed
+          substrings (see <a class="xref" href="#sec-sorting" title="3.2 Sorting Rules">Sorting Rules</a>).</p>
       </section>
       <section class="section" id="sec-path-side-bias"><h3 class="title"><span class="link-marker"><a class="hidden-reveal" href="#sec-path-side-bias"> </a> </span>3.1.9 Side Bias (<code class="literal">[</code> + <code class="literal">;s=</code>)</h3>
         
@@ -988,7 +1007,8 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
     </p></div><div class="biblioentry" id="refSVG"><p>[<abbr class="abbrev">SVG</abbr>] 
       
       <span class="title"><em>
-        <a class="ulink" href="https://www.w3.org/TR/2011/REC-SVG11-20110816/" target="_top">Scalable Vector Graphics (SVG) 1.1 (Second Edition)</a>
+        <a class="ulink" href="https://www.w3.org/TR/2011/REC-SVG11-20110816/" target="_top">Scalable Vector Graphics (SVG) 1.1 (Second
+          Edition)</a>
       </em>. </span>
       <span class="author">Erik Dahlström, et al. </span>
       <span class="date">08 August 2011. </span>
@@ -1031,7 +1051,20 @@ x x x y y y 0 1 2 3 4 5 6 7 8 9
     
     
     
-  <div class="biblioentry" id="refFragIDBP"><p>[<abbr class="abbrev">FragIDBestPractices</abbr>] 
+    
+    
+  <div class="biblioentry" id="refDOM2TraversalRange"><p>[<abbr class="abbrev">DOM2TraversalRange</abbr>] 
+      
+      <span class="title"><em><a class="ulink" href="http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html" target="_top">Document Object Model (DOM)
+          Level 2 Traversal and Range Specification</a></em>. </span>
+      <span class="author">Joe Kesselman, et al. </span>
+      <span class="date">13 November, 2000. </span>
+    </p></div><div class="biblioentry" id="refECMA262"><p>[<abbr class="abbrev">ECMA262</abbr>] 
+      
+      <span class="title"><em><a class="ulink" href="http://www.ecma-international.org/ecma-262/6.0/" target="_top">ECMA-262 6th Edition, ECMAScript® 2015
+          Language Specification</a></em>. </span>
+      <span class="date">June 2015. </span>
+    </p></div><div class="biblioentry" id="refFragIDBP"><p>[<abbr class="abbrev">FragIDBestPractices</abbr>] 
       
       <span class="title"><em><a class="ulink" href="http://www.w3.org/TR/fragid-best-practices/" target="_top">Best Practices for Fragment Identifiers and Media
           Type Definitions</a></em>. </span>
