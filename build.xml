@@ -12,17 +12,13 @@
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css"/>
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples"/>
 	<property name="dir.src.images" value="${dir.src}/spec/images"/>
-	<property name="dir.src.vocab" value="${dir.src}/vocab"/>
-	<property name="dir.src.registries" value="${dir.src}/registries"/>
 	<property name="dir.src.idx" value="${dir.src.spec}/idx"/>
 	<property name="dir.src.dict" value="${dir.src.spec}/dict"/>
 	<property name="dir.src.renditions" value="${dir.src.spec}/renditions"/>
-	<property name="dir.src.switch" value="${dir.src}/switch"/>
 	<property name="dir.src.previews" value="${dir.src.spec}/previews"/>
 	<property name="dir.src.linking" value="${dir.src}/linking"/>
 	<property name="dir.src.metadata" value="${dir.src}/metadata"/>
 	<property name="dir.src.errata" value="${dir.src}/errata"/>
-	<property name="dir.src.extensions" value="${dir.src}/extensions"/>
 	
 	<property name="dir.util" value="${basedir}/util"/>
 	<property name="dir.util.rng" value="${dir.util}/relaxng"/>
@@ -36,21 +32,14 @@
 
 	<property name="dir.test" value="${basedir}/test"/>
 	<property name="dir.lib" value="${basedir}/lib"/>
-	<property name="dir.build" value="${basedir}/build/epub/"/>
+	<property name="dir.build" value="${basedir}/build/"/>
 	<property name="dir.build.css" value="${dir.build}/css"/>
 	<property name="dir.build.images" value="${dir.build}/images"/>
 	<property name="dir.build.epub" value="${dir.build}/31"/>
 	<property name="dir.build.docs" value="${dir.build.epub}/docs"/>
 	<property name="dir.build.schema" value="${dir.build.epub}/schema"/>
 	<property name="dir.build.schemadoc" value="${dir.build.epub}/schemadoc"/>
-	<property name="dir.build.vocab" value="${dir.build}/vocab"/>
-	<property name="dir.build.vocab.package" value="${dir.build.vocab}/package"/>
-	<property name="dir.build.vocab.a11y" value="${dir.build.vocab.package}/a11y"/>
-	<property name="dir.build.vocab.overlays" value="${dir.build.vocab}/overlays"/>
-	<property name="dir.build.vocab.structure" value="${dir.build.vocab}/structure"/>
-	<property name="dir.build.vocab.rendition" value="${basedir}/build/vocab/rendition/"/>
 	<property name="dir.build.spec" value="${dir.build.epub}/spec"/>
-	<property name="dir.build.extensions" value="${dir.build}/extensions"/>
 	<property name="dir.temp" value="${basedir}/temp"/>
 	<property name="dir.temp.spec" value="${dir.temp}/spec"/>
 	<property name="dir.build.idx" value="${dir.build}/idx"/>
@@ -60,7 +49,6 @@
 	<property name="dir.build.linking" value="${dir.build}/linking"/>
 	<property name="dir.build.metadata" value="${dir.build}/metadata"/>
 	<property name="dir.build.cfi" value="${dir.build.linking}/cfi"/>
-	<property name="dir.build.switch" value="${dir.build}/switch"/>
 	<property name="dir.build.altss-tags" value="${dir.build}/altss-tags"/>
 
 	<property name="schema.epub.mediaoverlay.rnc" value="${dir.src.schema}/media-overlay-31.rnc"/>
@@ -93,7 +81,6 @@
 
 	<property name="www.base.path" value="http://www.idpf.org/epub/"/>
 	<property name="www.spec.path" value="http://www.idpf.org/epub/31/spec"/>
-	<property name="www.vocab.path" value="http://www.idpf.org/epub/vocab/"/>
 	
 	<property name="spec.filename.prefix" value="epub"/>
 
@@ -113,9 +100,6 @@
 	<target name="default"
 		depends=" clean,
 		build-specs,
-		build-vocabs,
-		build-switch-registry,
-		build-extensions,
 		build-schemas,
 		build-schema-catalog,		
 		build-archives, 
@@ -134,15 +118,10 @@
 			<fileset dir="${dir.src.spec}"/>
 		</copy>
 		
-		<!-- copy the vocab xml files into /00 for processing -->
-		<copy todir="${dir.temp.spec}/00">
-			<fileset dir="${dir.src.vocab}" includes="*.xml"/>
-		</copy>
-
 		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml epub-vocab-*.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="epub"/>
@@ -152,24 +131,6 @@
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="linking"/>
-		</saxon-xslt>
-		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-vocab-*.xml" excludes="epub-vocab-rendition.xml epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
-			style="${xslt.olink}">
-			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="pkg"/>
-		</saxon-xslt>
-		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-vocab-overlays.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
-			style="${xslt.olink}">
-			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="overlays"/>
-		</saxon-xslt>
-		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-vocab-rendition.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
-			style="${xslt.olink}">
-			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
-			<param name="spec-group" expression="rendition"/>
 		</saxon-xslt>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
 			includes="epub-indexes.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
@@ -193,7 +154,7 @@
 
 		<mkdir dir="${dir.temp.spec}/35"/>
 		<copy todir="${dir.temp.spec}/35" overwrite="true">
-			<fileset dir="${dir.temp.spec}/30" excludes="epub-indexes.xml epub-cfi.xml epub-vocab-*.xml"/>
+			<fileset dir="${dir.temp.spec}/30" excludes="epub-indexes.xml epub-cfi.xml"/>
 		</copy>
 		<!-- run the biblio link correction -->
 		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
@@ -205,21 +166,6 @@
 			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
 			style="${xslt.biblio-path-fix}" includes="epub-cfi.xml">
 			<param name="spec-name" expression="cfi"/>
-		</saxon-xslt>
-		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
-			style="${xslt.biblio-path-fix}" includes="epub-vocab-*.xml" excludes="epub-vocab-rendition.xml epub-vocab-overlays.xml">
-			<param name="spec-name" expression="pkg"/>
-		</saxon-xslt>
-		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
-			style="${xslt.biblio-path-fix}" includes="epub-vocab-overlays.xml">
-			<param name="spec-name" expression="overlays"/>
-		</saxon-xslt>
-		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
-			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
-			style="${xslt.biblio-path-fix}" includes="epub-vocab-rendition.xml">
-			<param name="spec-name" expression="rendition"/>
 		</saxon-xslt>
 		
 		
@@ -356,156 +302,6 @@
 		<build-htaccess-dirlist dest-dir="${dir.build.schema}"/>
 	</target>
 
-	<target name="build-vocabs" depends="clean, copy-css, copy-images, compile, build-specs">
-
-		<!-- structure vocab -->
-		<echo>building structure vocab...</echo>
-		<build-xhtml-vocab in-n3="${dir.src.vocab}/structure.n3" name="structure"
-			out-xhtml="${dir.build.vocab.structure}/epub-vocab-structure.html"
-			vocab-canonical-uri="http://www.idpf.org/epub/vocab/structure/" output-htu-expl="1" output-version-links="1"/>
-		<build-htaccess dest-dir="${dir.build.vocab.structure}/"
-			index-name="${spec.filename.prefix}-vocab-structure.html"/>
-
-		<!-- magazine vocab -->
-		<echo>building magazine vocab...</echo>
-		<build-xhtml-vocab in-n3="${dir.src.vocab}/magazine.n3" name="magazine"
-			out-xhtml="${dir.build.vocab.structure}/magazine/epub-vocab-magazine.html"
-			vocab-canonical-uri="http://www.idpf.org/epub/vocab/structure/magazine/" output-htu-expl="0" output-version-links="1"/>
-		<build-htaccess dest-dir="${dir.build.vocab.structure}/magazine/"
-			index-name="${spec.filename.prefix}-vocab-magazine.html"/>
-		
-		<!-- add rdfa to package vocab 
-		<echo>building package vocab...</echo>
-		<spec-rdfa spec="${dir.build.spec}/epub-package-metadata.html"
-			vocab-canonical-uri="http://www.idpf.org/epub/vocab/package/" vocab-name="package"/> -->
-
-		<!-- add rdfa to overlays 
-		<echo>building overlays vocab...</echo>
-		<spec-rdfa spec="${dir.build.spec}/epub-mediaoverlays.html"
-			vocab-canonical-uri="http://www.idpf.org/epub/vocab/overlays/" vocab-name="overlays"/> -->
-
-		<!-- note: need a server Alias for these two; "http://www.idpf.org/epub/vocab/package/#switch" 
-			should return "http://www.idpf.org/epub/30/spec/epub-publications.html#switch" and so on. -->
-		<mkdir dir="${dir.build.vocab.package}"/>
-
-		<mkdir dir="${dir.build.vocab.overlays}"/>
-		<!-- a client redirect page that should never be reached but is added if the server Alias fails 
-		<saxon-xslt classpathref="build.classpath" in="${schema.rng}"
-			out="${dir.build.vocab}/overlays/index.html" style="${xslt.redirect}">
-			<param name="target"
-				expression="${www.spec.path}/${spec.filename.prefix}-mediaoverlays.html"/>
-			<param name="title" expression="Media Overlays Vocabulary"/>
-		</saxon-xslt> -->
-		
-		<mkdir dir="${dir.build.vocab.a11y}"/>
-		
-		<!-- create mini-vocabs -->
-		<mkdir dir="${dir.build.vocab.package}/meta"/>
-		<saxon-xslt in="${dir.build.spec}/epub-vocab-meta.html"
-			out="${dir.build.vocab.package}/meta/epub-vocab-meta.html" classpathref="build.classpath"
-			style="${xslt.css.link.replacer}">
-			<param name="css.link" expression="increase-depth"/>
-		</saxon-xslt>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/meta/" index-name="epub-vocab-meta.html"/>
-		
-		<mkdir dir="${dir.build.vocab.package}/item"/>
-		<saxon-xslt in="${dir.build.spec}/epub-vocab-item.html"
-			out="${dir.build.vocab.package}/item/epub-vocab-item.html" classpathref="build.classpath"
-			style="${xslt.css.link.replacer}">
-			<param name="css.link" expression="increase-depth"/>
-		</saxon-xslt>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/item/" index-name="epub-vocab-item.html"/>
-		
-		<mkdir dir="${dir.build.vocab.package}/itemref"/>
-		<saxon-xslt in="${dir.build.spec}/epub-vocab-itemref.html"
-			out="${dir.build.vocab.package}/itemref/epub-vocab-itemref.html" classpathref="build.classpath"
-			style="${xslt.css.link.replacer}">
-			<param name="css.link" expression="increase-depth"/>
-		</saxon-xslt>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/itemref/" index-name="epub-vocab-itemref.html"/>
-		
-		<mkdir dir="${dir.build.vocab.rendition}"/>
-		<saxon-xslt in="${dir.build.spec}/epub-vocab-rendition.html"
-			out="${dir.build.vocab.rendition}/epub-vocab-rendition.html" classpathref="build.classpath"
-			style="${xslt.css.link.replacer}">
-			<param name="css.link" expression="rendition"/>
-		</saxon-xslt>
-		<build-htaccess dest-dir="${dir.build.vocab.rendition}" index-name="epub-vocab-rendition.html"/>
-		
-		<!-- copy the prefix files to their destinations -->
-		<copy file="${dir.src.registries}/pfx-package.html" tofile="${dir.build.vocab.package}/pfx/reserved.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/pfx" index-name="reserved.html"/>
-		<copy file="${dir.src.registries}/pfx-structure.html" tofile="${dir.build.vocab.structure}/pfx/reserved.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.structure}/pfx" index-name="reserved.html"/>
-		
-		<!-- copy the vocab files to their destinations -->
-		<copy file="${dir.src.registries}/dc-types.html" tofile="${dir.build.vocab.package}/types/registry.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/types" index-name="registry.html"/>
-		<copy file="${dir.src.registries}/collection-roles.html" tofile="${dir.build.vocab.package}/roles/registry.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/roles" index-name="registry.html"/>
-		<copy file="${dir.src.registries}/link-package.html" tofile="${dir.build.vocab.package}/link/link-vocab.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.package}/link" index-name="link-vocab.html"/>
-		<move file="${dir.build.spec}/epub-vocab-overlays.html" tofile="${dir.build.vocab.overlays}/epub-vocab-overlays.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab.overlays}" index-name="epub-vocab-overlays.html"/>
-		
-		<saxon-xslt in="${dir.build.spec}/epub-vocab-a11y.html"
-			out="${dir.build.vocab.a11y}/epub-vocab-a11y.html" classpathref="build.classpath"
-			style="${xslt.css.link.replacer}">
-			<param name="css.link" expression="increase-depth"/>
-		</saxon-xslt>
-		<build-htaccess dest-dir="${dir.build.vocab.a11y}" index-name="epub-vocab-a11y.html"/>
-		
-		<!-- copy the directory listing file -->
-		<copy file="${dir.src.vocab}/vocab-directory.html" tofile="${dir.build.vocab}/index.html" overwrite="yes"/>
-		<build-htaccess dest-dir="${dir.build.vocab}" index-name="index.html"/>
-		
-		<!-- copy the aria files -->
-		<copy file="${dir.src.vocab}/aria-mapping.html" todir="${dir.build.vocab.structure}" overwrite="yes"/>
-		<copy file="${dir.src.vocab}/epub-aria-authoring.html" todir="${dir.build.vocab.structure}" overwrite="yes"/>
-		
-		<!-- clean up the spec dir -->
-		<delete>
-			<fileset dir="${dir.build.spec}" includes="epub-vocab-*.html"/>
-		</delete>
-	</target>
-
-	<macrodef name="spec-rdfa">
-		<attribute name="spec"/>
-		<attribute name="vocab-canonical-uri"/>
-		<attribute name="vocab-name"/>
-		<sequential>
-			<xslt in="@{spec}" out="${dir.temp}/rdfa-temp.html"
-				style="${dir.util.rdf}/spec-to-rdfa.xslt" useimplicitfileset="yes"
-				classpathref="build.classpath">
-				<param name="vocab-canonical-uri" expression="@{vocab-canonical-uri}"/>
-				<param name="vocab-name" expression="@vocab-name"/>
-				<!-- point catalog to empty DTD file; otherwise xml:space="preserve" gets added in identity transform
-				when referencing the local copy of the xhtml 1.1 dtd in the catalog below-->
-				<xmlcatalog>
-					<dtd publicid="-//W3C//DTD XHTML 1.1//EN"
-						location="${dir.util.xhtml.dtd.catalog}/empty.dtd"/>
-				</xmlcatalog>
-			</xslt>
-			<move file="${dir.temp}/rdfa-temp.html" tofile="@{spec}" overwrite="yes"/>
-		</sequential>
-	</macrodef>
-
-	<target name="build-switch-registry" depends="copy-css">
-		<mkdir dir="${dir.build.switch}"/>
-		<copy todir="${dir.build.switch}" file="${dir.src.registries}/switch-index.html"/>
-		<build-htaccess dest-dir="${dir.build.switch}" index-name="switch-index.html"/>
-	</target>
-	
-	<target name="build-extensions" depends="copy-css">
-		<mkdir dir="${dir.build.extensions}/attributes"/>
-		<copy file="${dir.src.extensions}/attributes.html" tofile="${dir.build.extensions}/attributes/index.html"/>
-		<build-htaccess dest-dir="${dir.build.extensions}/attributes" index-name="index.html"/>
-		
-		<mkdir dir="${dir.build.extensions}/roles"/>
-		<copy file="${dir.src.extensions}/roles.html" tofile="${dir.build.extensions}/roles/index.html"/>
-		<build-htaccess dest-dir="${dir.build.extensions}/roles" index-name="index.html"/>
-	</target>
-	
 	<target name="copy-css">
 		<copy file="${css.docbook2xhtml}" overwrite="true" tofile="${css.current}"/>
 		<copy file="${css.print}" overwrite="true" todir="${dir.build.css}"/>
@@ -517,66 +313,7 @@
 		</copy>
 	</target>
 	
-	<macrodef name="build-xhtml-vocab" description="builds an xhtml+rdfa vocab from an n3 source">
-
-		<attribute name="in-n3"/>
-		<!-- full path -->
-		<attribute name="name"/>
-		<!-- string identifier -->
-		<attribute name="out-xhtml"/>
-		<!-- full path -->
-		<attribute name="vocab-canonical-uri"/>
-		<attribute name="output-htu-expl"/>
-		<attribute name="output-version-links"/>
-		<!-- 0 or 1, see rdfxml-to-rdfa.xslt -->
-		<sequential>
-
-			<clean-dir dir="${dir.temp}/vocab/"/>
-
-			<!-- convert the n3 to RDF/XML as an xslt source -->
-			<jena-n3-to-rdfxml in="@{in-n3}" out="${dir.temp}/vocab/rdfxml.xml"
-				vocab-uri="@{vocab-canonical-uri}"/>
-			
-			<!-- extract the RDFa from the docbook -->
-			<saxon-xslt in="${dir.temp}/vocab/rdfxml.xml" out="${dir.temp}/vocab/rdfa.xhtml"
-				style="${dir.util.rdf}/rdfxml-to-rdfa.xslt">
-				<param name="vocab-uri" expression="@{vocab-canonical-uri}"/>
-				<param name="vocab-as-n3" expression=""/>
-				<param name="vocab-as-rdfxml" expression=""/>
-				<param name="vocab-revision-history" expression=""/>
-				<param name="output-htu-expl" expression="@{output-htu-expl}"/>
-				<param name="output-version-links" expression="@{output-version-links}"/>
-			</saxon-xslt>
-
-			<!-- add toc to the xhtml and place in final destination -->
-			<saxon-xslt in="${dir.temp}/vocab/rdfa.xhtml" out="@{out-xhtml}"
-				style="${dir.util}/xhtml/xsl/toc.xsl"> </saxon-xslt>
-
-		</sequential>
-	</macrodef>
-
-	<macrodef name="jena-n3-to-rdfxml" description="convert N3 to RDF/XML using jena.rdfcopy">
-		<attribute name="in"/>
-		<attribute name="out"/>
-		<attribute name="vocab-uri"/>
-		<!-- the canonical uri of the vocab being converted -->
-		<sequential>
-			<property name="jena.intermediary" value="${dir.temp}/vocab/jena-intermediary.xml"/>
-			<java output="${jena.intermediary}" classname="jena.rdfcopy" fork="true"
-				failonerror="true" maxmemory="512m">
-				<arg value="@{in}"/>
-				<arg value="N3"/>
-				<arg value="RDF/XML"/>
-				<classpath refid="build.classpath"/>
-			</java>
-			<saxon-xslt in="${jena.intermediary}" out="@{out}"
-				style="${dir.util.rdf}/jena-rdf-fix.xslt">
-				<param name="vocab-uri" expression="@{vocab-uri}"/>
-			</saxon-xslt>
-		</sequential>
-	</macrodef>
-
-	<target name="build-archives" depends="clean, build-vocabs, build-specs, build-schemas">
+	<target name="build-archives" depends="clean, build-specs, build-schemas">
 
 		<!-- archives of and in the schema dir -->
 
@@ -798,7 +535,6 @@
 		<clean-dir dir="${dir.build.renditions}"/>
 		<clean-dir dir="${dir.build.previews}"/>
 		<clean-dir dir="${dir.build.linking}"/>
-		<clean-dir dir="${dir.build.vocab}"/>
 		<delete failonerror="false">
 			<fileset dir="${dir.build}" includes="*.zip *.tar *.gz"/>
 		</delete>

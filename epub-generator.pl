@@ -87,12 +87,12 @@ sub prep {
     # copy the build dir for xhtml
     dircopy($skeleton_dir,$epub_dir) or die("$!\n");
     dircopy($build_dir,$content_dir) or die("$!\n");
-    rmtree($content_dir . 'epub/' . $epub_version . '/docs');
-    rmtree($content_dir . 'epub/' . $epub_version . '/schema');
-    rmtree($content_dir . 'epub/' . 'dict');
-    rmtree($content_dir . 'epub/' . 'idx');
-    rmtree($content_dir . 'epub/' . 'previews');
-    rmtree($content_dir . 'epub/' . 'renditions');
+    rmtree($content_dir . $epub_version . '/docs');
+    rmtree($content_dir . $epub_version . '/schema');
+    rmtree($content_dir . 'dict');
+    rmtree($content_dir . 'idx');
+    rmtree($content_dir . 'previews');
+    rmtree($content_dir . 'renditions');
     
     # create the html dir for 3.1 and bff
     dircopy($epub_dir, $epub_dir_html) or die("$!\n");
@@ -440,7 +440,7 @@ sub pack_epub {
     my $epubcheck = `java -jar ./util/epubcheck/epubcheck.jar -c ./util/epubcheck/suppress.txt $flag $dir -mode exp -save`;
     print $epubcheck;
     
-    my $to = $base_dir . '/build/epub/'.$epub_version.'/docs/epub'.$epub_version.'-v' . $vn;
+    my $to = $base_dir.'/build/'.$epub_version.'/docs/epub'.$epub_version.'-v' . $vn;
     
     copy("${dir}.epub", "${to}.epub") or die "Could not copy ${dir}.epub to ${to}.epub: $!\n";
     
