@@ -104,7 +104,8 @@
         <section xml:id="sec-overview-pfx">
             <title>Prefix Mappings</title>
 
-            <para>For convenience, the following prefix mappings are used in this specification.</para>
+            <para>For convenience, the following <link linkend="sec-metadata-reserved-prefixes">reserved prefix
+                    mappings</link> are used in this specification.</para>
 
             <table xml:id="tbl-nspfx">
                 <caption>Prefix mappings</caption>
@@ -595,10 +596,10 @@
 
                 <orderedlist>
                     <listitem>
-                        <para>to provide a minimal set of bibliographic information for Reading Systems to use to internally
-                            catalogue an <olink targetdoc="spec" targetptr="gloss-epub-publication" type="epub-spec"/> and
-                            present it to a <olink targetdoc="spec" targetptr="gloss-user" type="epub-spec"/> (e.g., in a
-                            bookshelf).</para>
+                        <para>to provide a minimal set of meta information for Reading Systems to use to internally catalogue
+                            an <olink targetdoc="spec" targetptr="gloss-epub-publication" type="epub-spec"/> and make it
+                            available to a <olink targetdoc="spec" targetptr="gloss-user" type="epub-spec"/> (e.g., to
+                            present in a bookshelf).</para>
                     </listitem>
                     <listitem>
                         <para>to provide access to all rendering metadata needed to control the layout and display of the
@@ -607,11 +608,11 @@
                     </listitem>
                 </orderedlist>
 
-                <para>The Package Document is not designed to provide a comprehensive bibliographic record, and is not the
-                    correct location for such discovery information about the EPUB Publication. Metadata records, both that
-                    conform to international standards or that are designed for custom use, can instead be associated using
-                    the <markup linkend="sec-link-elem">link</markup> element. This approach allows the information they
-                    contain to be presented in their native format, avoiding the problems and loss of information caused by
+                <para>The Package Document is not designed to provide complex metadata encoding capabilities. If more
+                    detailed information about an EPUB Publication is needed, metadata records can be associated using the
+                        <markup linkend="sec-link-elem">link</markup> element (e.g., that conform to an international
+                    standard such as <xref linkend="refONIX"/> or are created for custom purposes). This approach allows the
+                    information to be processed in its native form, avoiding the problems and loss of information caused by
                     translating to use the minimal Package Document structure.</para>
 
                 <para>In keeping with this philosophy, the Package Document only has the following minimal metadata
@@ -619,8 +620,8 @@
                     <markup linkend="sec-opf-dcidentifier">title</markup>, <markup linkend="elemdef-opf-dcidentifier"
                         >identifier</markup> and <markup linkend="elemdef-opf-dclanguage">language</markup> elements together
                     with the <xref linkend="refDCTERMS"/>
-                    <markup linkend="last-modified-date">modified</markup> property. All other <xref linkend="refDCMES"/> are
-                        <literal linkend="sec-opf-dcmes-optional" role="rfc2119">optional</literal>.</para>
+                    <markup linkend="last-modified-date">modified</markup> property. All other metadata is <literal
+                        role="rfc2119">optional</literal>.</para>
 
                 <informalexample>
                     <para>The following example shows the minimal set of metadata that Authors have to include in the Package
@@ -1403,18 +1404,22 @@
                     identifies the location of a linked resource in its <literal role="rfc2119">required</literal>
                     <markup>href</markup> attribute</para>
 
-                <para>Linked resources <literal role="rfc2119">must not</literal> be listed in the <link
-                        linkend="sec-manifest-elem">manifest</link> unless they are also <olink targetdoc="spec"
-                        targetptr="gloss-publication-resource-cmt-or-foreign" type="epub-spec">Publication Resources</olink>
-                    (i.e., used in the rendering of the Rendition, such as a metadata record that is serialized in an <olink
-                        targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"/>).</para>
+                <para>Linked resources are not <olink targetdoc="spec" targetptr="gloss-publication-resource-cmt-or-foreign"
+                        type="epub-spec">Publication Resources</olink> and <literal role="rfc2119">must not</literal> be
+                    listed in the <link linkend="sec-manifest-elem">manifest</link>. A linked resource <literal
+                        role="rfc2119">may</literal> be embedded in a Publication Resource that is listed in the manifest,
+                    however, in which case it <literal role="rfc2119">must</literal> adhere to <olink targetdoc="spec"
+                        targetptr="sec-core-media-types" type="epub-spec">Core Media Type requirements</olink> (e.g., an
+                        <olink targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"/> could contain a
+                    metadata record serialized as <xref linkend="refRDFa"/> or <xref linkend="refJSONLD"/>).</para>
 
-                <para>Linked resources that are not Publication Resources are not subject to <olink targetdoc="spec"
-                        targetptr="sec-core-media-types" type="epub-spec">Core Media Type requirements</olink> and <literal
-                        role="rfc2119">may</literal> be located <olink targetdoc="spec" targetptr="sec-resource-locations"
-                        type="epub-spec">inside or outside</olink> the <olink targetdoc="spec" targetptr="gloss-container"
-                        type="epub-spec"/>. Retrieval of <olink targetdoc="spec" targetptr="gloss-remote-resource"
-                        type="epub-spec">Remote Resources</olink> is <literal role="rfc2119">optional</literal>.</para>
+                <para>Linked resources <literal role="rfc2119">may</literal> be located <olink targetdoc="spec"
+                        targetptr="sec-resource-locations" type="epub-spec">inside or outside</olink> the <olink
+                        targetdoc="spec" targetptr="gloss-container" type="epub-spec"/>, but Authors need to be aware that
+                    retrieval of <olink targetdoc="spec" targetptr="gloss-remote-resource" type="epub-spec">Remote
+                        Resources</olink> by <olink targetdoc="spec" targetptr="gloss-epub-reading-system" type="epub-spec"
+                        epub:specref-exclude="true">Reading Systems</olink> is <literal role="rfc2119"
+                    >optional</literal>.</para>
 
                 <para xml:id="attrdef-link-rel" xreflabel="rel">The <literal role="rfc2119">required</literal>
                     <markup>rel</markup> attribute takes a space-separated list of <link linkend="sec-property-datatype"
@@ -1426,8 +1431,8 @@
                     <synopsis><xi:include parse="text" href="examples/publications/link-4.xml"/></synopsis>
                 </informalexample>
 
-                <para>If a Reading System does not recognize the relationship defined in the <markup>rel</markup> attribute,
-                    it <literal role="rfc2119">should</literal> ignore the referenced resource.</para>
+                <para>Reading System are not required to use or present linked resources, even if they recognize the
+                    relationship defined in the <markup>rel</markup> attribute.</para>
 
                 <para>The value of the <markup>media-type</markup> attribute is not always sufficient to identify the type of
                     linked resource (e.g., many XML-based record formats use the media type "<code>application/xml</code>").
@@ -1448,7 +1453,7 @@
                 <para><olink targetdoc="spec" targetptr="gloss-author" type="epub-spec">Authors</olink>
                     <literal role="rfc2119">may</literal> add relationships and properties from other vocabularies via the
                         <link linkend="attrdef-package-prefix">metadata extensibility mechanism</link> defined in this
-                    specification. Authors <literal role="rfc2119">may</literal> also create new values by defining their own
+                    specification. Authors also <literal role="rfc2119">may</literal> create new values by defining their own
                     prefixes. Refer to <xref linkend="sec-metadata-assoc"/> for more information.</para>
 
                 <informalexample>
@@ -1459,31 +1464,36 @@
                     <synopsis><xi:include parse="text" href="examples/publications/link-2.xml"/></synopsis>
                 </informalexample>
 
-                <para>In the case of linked <link xlink:href="http://www.idpf.org/epub/vocab/package/link/#record">metadata
-                        records</link>, the document order of <markup>link</markup> elements in the Package Document defines
-                    the Author's preferred precedence for their use (i.e., metadata in the first record encountered has the
-                    highest precedence).</para>
+                <para xml:id="sec-linked-records">In the case of a <link
+                        xlink:href="http://www.idpf.org/epub/vocab/package/link/#record">linked metadata record</link>,
+                    Reading Systems <literal role="rfc2119">must not</literal> skip processing the metadata expressed in the
+                    Package Document and only use the information expressed in the record. Linked records are intended to
+                    enhance the information available to Reading Systems, and the package metadata can contain important
+                    rendering information. Reading Systems <literal role="rfc2119">may</literal> compile metadata from
+                    multiple linked records; they are not required to select only one record.</para>
+
+                <para>When it comes to resolving discrepancies and conflicts between metadata expressed in the Package
+                    Document and in linked metadata records, Reading Systems <literal role="rfc2119">must</literal> use the
+                    document order of link elements in the Package Document to establish precedence (i.e., metadata in the
+                    first linked record encountered has the highest precedence and metadata in the Package Document the
+                    lowest, regardless of whether the <markup>link</markup> elements occur before within or after the package
+                    metadata elements).</para>
 
                 <informalexample>
                     <para>The following example shows that a remotely-hosted record that has higher precedence than a local
-                        one. </para>
+                        record, which in turn has higher precedence than the metadata found in the <markup>metadata</markup>
+                        element. </para>
                     <synopsis><xi:include parse="text" href="examples/publications/link-5.xml"/></synopsis>
                 </informalexample>
-
-                <para>When the <markup>link</markup> element references a metadata record format that is recognized and
-                    retrievable by a Reading System, precedence <literal role="rfc2119">must</literal> be given to the
-                    metadata defined in that record (i.e., metadata in the Package Document has the lowest priority). If a
-                    Reading System recognizes more than one format, it <literal role="rfc2119">must</literal> give precedence
-                    to them based on the document order of <markup>link</markup> elements, as defined above.</para>
-
+                
+                <para>Reading Systems <literal role="rfc2119">must</literal> ignore any instructions contained in linked
+                    resources related to the layout and rendering of the EPUB Publication.</para>
+                
                 <note>
                     <para>Due to the variety of metadata record formats and serializations that can be linked to an EPUB
                         Publication, and the complexity of comparing metadata properties between them, this specification
-                        does not require Reading Systems to process more than one record.</para>
+                        does not require Reading Systems to process linked records.</para>
                 </note>
-
-                <para>Reading Systems <literal role="rfc2119">must</literal> ignore any instructions contained in linked
-                    resources related to the layout and rendering of the EPUB Publication.</para>
             </section>
 
             <section xml:id="sec-manifest-elem" xreflabel="manifest">
@@ -3379,8 +3389,8 @@
                 <title>The <markup>nav</markup> Element: Restrictions</title>
 
                 <para>When a <markup>nav</markup> element carries the <xref linkend="refARIA11"/>
-                    <markup><link xlink:href="http://www.w3.org/TR/wai-aria-1.1/#host_general_role">role</link>
-                        attribute</markup> in an <olink targetdoc="spec" targetptr="gloss-content-document-epub-nav"
+                    <olink targetdoc="contentdocs" targetptr="sec-epub-type-attribute" type="epub-spec">epub:type
+                        attribute</olink> in an <olink targetdoc="spec" targetptr="gloss-content-document-epub-nav"
                         type="epub-spec"/>, this specification restricts the content model of the element and its descendants
                     as follows:</para>
 
@@ -3402,10 +3412,8 @@
                             >li</markup>).</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-nav-a">Each list item of the ordered list represents a primary heading,
-                            structure or other point of interest within the given <olink targetdoc="spec"
-                                targetptr="gloss-rendition" type="epub-spec"/> and <literal role="rfc2119">must</literal>
-                            contain either a child <markup
+                        <para xml:id="confreq-nav-a">Each list item of the ordered list represents a heading, structure or
+                            other item of interest, and <literal role="rfc2119">must</literal> contain either a child <markup
                                 xlink:href="http://www.w3.org/TR/html5/text-level-semantics.html#the-a-element">a</markup>
                             element or a child <markup
                                 xlink:href="http://www.w3.org/TR/html5/text-level-semantics.html#the-span-element"
@@ -3425,18 +3433,33 @@
                             attributes <literal role="rfc2119">must</literal> be used when determining compliance with this
                             requirement.</para>
                     </listitem>
-                    <listitem xml:id="confreq-nav-a-title">
-                        <para>If an <markup>a</markup> or <markup>span</markup> element contains instances of <link
+                    <listitem>
+                        <para xml:id="confreq-nav-a-title">If an <markup>a</markup> or <markup>span</markup> element contains
+                            instances of <link
                                 xlink:href="http://www.w3.org/TR/html5/embedded-content-0.html#embedded-content-0">HTML5
                                 embedded content</link> that do not provide intrinsic text alternatives, the element <literal
                                 role="rfc2119">must</literal> also include a <markup>title</markup> attribute with an
                             alternate text rendering of the link label.</para>
                     </listitem>
                     <listitem>
-                        <para xml:id="confreq-nav-a-href">The relative IRI reference provided in the <markup>href</markup>
-                            attribute of the <markup>a</markup> element <literal role="rfc2119">must</literal> resolve to an
-                                <olink targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"/> or
-                            fragment therein.</para>
+                        <para xml:id="confreq-nav-a-href">The IRI reference provided in the <markup>href</markup> attribute
+                            of the <markup>a</markup> element <literal role="rfc2119">must</literal> adhere to the following
+                            requirements:</para>
+                        <itemizedlist>
+                            <listitem>
+                                <para xml:id="confreq-nav-a-href-default">In the case of the <link linkend="sec-nav-toc"
+                                            ><markup>toc nav</markup></link>, <link linkend="sec-nav-landmarks"
+                                            ><markup>landmarks nav</markup></link> and <link linkend="sec-nav-pagelist"
+                                            ><markup>page-list nav</markup></link>, it <literal role="rfc2119">must</literal>
+                                    resolve to an <olink targetdoc="spec" targetptr="gloss-content-document-epub"
+                                        type="epub-spec"/> or fragment therein.</para>
+                            </listitem>
+                            <listitem>
+                                <para xml:id="confreq-nav-a-href-other">For all other <markup>nav</markup> types, it <literal
+                                        role="rfc2119">may</literal> reference any resource, regardless of whether it is a
+                                    Publication Resource, or whether it is hosted in the Container or remotely. </para>
+                            </listitem>
+                        </itemizedlist>
                     </listitem>
                     <listitem>
                         <para xml:id="confreq-nav-a-nest">The <markup>a</markup> element <literal role="rfc2119"
@@ -3519,22 +3542,6 @@
                         table of contents in a printed work (i.e., it provides navigation to the major structural sections of
                         the publication).</para>
 
-                    <para>For usability and accessibility reasons, <olink targetdoc="spec" targetptr="gloss-author"
-                            type="epub-spec">Authors</olink>
-                        <literal role="rfc2119">should</literal> provide a comprehensive table of contents: the
-                            <property>toc</property>
-                        <markup>nav</markup>
-                        <literal role="rfc2119">should not</literal> exclude references based solely on their nesting depth
-                        within the document hierarchy, as is often the case in print works (particularly in reduced tables of
-                        contents).</para>
-
-                    <para>In the case of Renditions that exclusively reference <olink targetdoc="spec"
-                            targetptr="gloss-content-document-epub-xhtml" type="epub-spec">XHTML Content Documents</olink>
-                        from their <link linkend="sec-spine-elem">spines</link>, the <property>toc</property>
-                        <markup>nav</markup> will typically correspond to the aggregation of <link
-                            xlink:href="http://www.w3.org/TR/html5/sections.html#headings-and-sections">HTML5 outlines</link>
-                        of those documents (excluding any subtrees that do not contribute to the primary outline).</para>
-
                     <para>The order of <markup>li</markup> elements contained within the <property>toc</property>
                         <markup>nav</markup> element <literal role="rfc2119">must</literal> match the order of the targeted
                         elements within each <link linkend="confreq-nav-a-href">targeted EPUB Content Document</link>, and
@@ -3595,6 +3602,11 @@
                                 linkend="refEPUBStructureVocab">EPUB Structural Semantics Vocabulary</link>.</para>
                         <synopsis><xi:include href="./examples/contentdocs-nav/landmarks.xml" parse="text"/></synopsis>
                     </informalexample>
+
+                    <para>The <property>landmarks</property>
+                        <markup>nav</markup>
+                        <literal role="rfc2119">must not</literal> include multiple entries with the same relationship that
+                        reference the same resource, or fragment thereof.</para>
 
                     <para>The <property>landmarks</property>
                         <markup>nav</markup> element is <literal role="rfc2119">optional</literal> in EPUB Navigation

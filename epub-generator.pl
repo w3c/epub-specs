@@ -43,16 +43,9 @@ my @spec_order = (
     'epub-contentdocs',
     'epub-mediaoverlays',
     'epub-ocf',
-    'epub-changes',
-    'epub-cfi',
+    'accessibility',
     'altss-tags',
-    'epub-vocab-a11y',
-    'epub-vocab-meta',
-    'epub-vocab-item',
-    'epub-vocab-itemref',
-    'epub-vocab-overlays',
-    'epub-vocab-structure',
-    'epub-vocab-magazine'
+    'epub-changes'
 );
 
 my %spec_wanted = map { $_ => 1 } @spec_order;
@@ -89,6 +82,7 @@ sub prep {
     dircopy($build_dir,$content_dir) or die("$!\n");
     rmtree($content_dir . $epub_version . '/docs');
     rmtree($content_dir . $epub_version . '/schema');
+    rmtree($content_dir . 'linking');
     rmtree($content_dir . 'dict');
     rmtree($content_dir . 'idx');
     rmtree($content_dir . 'previews');
