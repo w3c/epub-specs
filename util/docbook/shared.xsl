@@ -20,7 +20,8 @@
     
     <!-- release info -->
     <xsl:variable name="topinfo" select="//db:info[1]"/>
-    <xsl:variable name="toptitle" select="//db:title[1]"/>
+    <xsl:variable name="toptitle" select="db:book/db:title[1]"/>
+    <xsl:variable name="topsubtitle" select="db:book/db:subtitle[1]"/>
     
     <!-- add xml:lang/lang to root -->
     <xsl:template name="root.attributes">
@@ -58,6 +59,14 @@
                 <xsl:attribute name="class">title</xsl:attribute>
                 <xsl:value-of select="$toptitle"/>
             </xsl:element>
+            
+            <!-- subtitle -->
+            <xsl:if test="string-length($topsubtitle) &gt; 0">
+                <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
+                    <xsl:attribute name="class">subtitle</xsl:attribute>
+                    <xsl:value-of select="$topsubtitle"/>
+                </xsl:element>
+            </xsl:if>
             
             <xsl:element name="p" namespace="http://www.w3.org/1999/xhtml">
                 <xsl:attribute name="class">identity</xsl:attribute>
