@@ -12,7 +12,6 @@
 	<property name="dir.src.spec.css" value="${dir.src}/spec/css"/>
 	<property name="dir.src.spec.examples" value="${dir.src}/spec/examples"/>
 	<property name="dir.src.images" value="${dir.src}/spec/images"/>
-	<property name="dir.src.a11y" value="${dir.src.spec}/a11y"/>
 	<property name="dir.src.idx" value="${dir.src.spec}/idx"/>
 	<property name="dir.src.dict" value="${dir.src.spec}/dict"/>
 	<property name="dir.src.renditions" value="${dir.src.spec}/renditions"/>
@@ -121,7 +120,7 @@
 		<!-- run the olink preprocess xslt -->
 		<mkdir dir="${dir.temp.spec}/10"/>
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
-			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			includes="epub-*.xml" excludes="epub-indexes.xml epub-cfi.xml epub-a11y*.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="epub"/>
@@ -137,6 +136,18 @@
 			style="${xslt.olink}">
 			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
 			<param name="spec-group" expression="indexes"/>
+		</saxon-xslt>
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-a11y.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="a11y"/>
+		</saxon-xslt>
+		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
+			includes="epub-a11ytech.xml" destdir="${dir.temp.spec}/10/" extension=".xml"
+			style="${xslt.olink}">
+			<param name="db-spec-base-uri" expression="${dir.temp.spec}/00/"/>
+			<param name="spec-group" expression="a11ytech"/>
 		</saxon-xslt>
 		<!-- no olinks in altsstags but run anyway to get xincludes dereferenced -->
 		<saxon-xslt classpathref="build.classpath" basedir="${dir.temp.spec}/00/"
@@ -154,7 +165,7 @@
 
 		<mkdir dir="${dir.temp.spec}/35"/>
 		<copy todir="${dir.temp.spec}/35" overwrite="true">
-			<fileset dir="${dir.temp.spec}/30" excludes="epub-indexes.xml epub-cfi.xml"/>
+			<fileset dir="${dir.temp.spec}/30" excludes="epub-indexes.xml epub-cfi.xml epub-a11*.xml"/>
 		</copy>
 		<!-- run the biblio link correction -->
 		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
@@ -166,6 +177,16 @@
 			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
 			style="${xslt.biblio-path-fix}" includes="epub-cfi.xml">
 			<param name="spec-name" expression="cfi"/>
+		</saxon-xslt>
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-a11y.xml">
+			<param name="spec-name" expression="a11y"/>
+		</saxon-xslt>
+		<saxon-xslt description="fix path to core specs" classpathref="build.classpath"
+			basedir="${dir.temp.spec}/30" destdir="${dir.temp.spec}/35/" extension=".xml"
+			style="${xslt.biblio-path-fix}" includes="epub-a11ytech.xml">
+			<param name="spec-name" expression="a11ytech"/>
 		</saxon-xslt>
 		
 		
@@ -225,9 +246,18 @@
 
 		<!-- move the accessibility specs -->
 		<mkdir dir="${dir.build.a11y}"/>
-		<copy todir="${dir.build.a11y}">
-			<fileset dir="${dir.src.a11y}/"/>
-		</copy>
+		<saxon-xslt in="${dir.build.spec}/epub-a11y.html"
+			out="${dir.build.a11y}/accessibility.html" classpathref="build.classpath"
+			style="${xslt.css.link.replacer}">
+			<param name="css.link" expression="reduce-depth"/>
+		</saxon-xslt>
+		<delete file="${dir.build.spec}/epub-a11y.html"/>
+		<build-htaccess dest-dir="${dir.build.a11y}" index-name="accessibility.html"/>
+		
+		<mkdir dir="${dir.build.a11y}/techniques"/>
+		<move file="${dir.build.spec}/epub-a11ytech.html" tofile="${dir.build.a11y}/techniques/techniques.html"/>
+		<delete file="${dir.build.spec}/epub-a11ytech.html"/>
+		<build-htaccess dest-dir="${dir.build.a11y}/techniques" index-name="techniques.html"/>
 		
 		<mkdir dir="${dir.build.idx}"/>
 		<saxon-xslt in="${dir.build.spec}/epub-indexes.html"
@@ -645,6 +675,9 @@
 		<generate-errata-impl
 			output-dir="${dir.build.spec}/epub-spec-errata/"
 			input-file="${dir.src.errata}/epub-spec.html" />
+		<generate-errata-impl
+			output-dir="${dir.build.a11y}/errata/"
+			input-file="${dir.src.errata}/accessibility.html" />
 		<generate-errata-impl
 			output-dir="${dir.build.idx}/epub-indexes-errata/"
 			input-file="${dir.src.errata}/epub-indexes.html" />

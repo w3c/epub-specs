@@ -11,11 +11,11 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="db:biblioentry[matches('refEPUB3refOverview3refPackages3refOCF3refOverlays3refContentDocs3',@xml:id)]/db:title/db:link">
+    <xsl:template match="db:biblioentry[matches('refEPUB3OverviewrefPackages3refOCF3refOverlays3refContentDocs3',@xml:id)]/db:title/db:link">
         <xsl:copy>
             <xsl:attribute name="xlink:href">
                 <xsl:choose>
-                    <xsl:when test="$spec-name eq 'idx'">
+                    <xsl:when test="$spec-name eq 'idx' or $spec-name eq 'a11y'">
                         <xsl:choose>
                             <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../linking/cfi/</xsl:when>
                             <xsl:otherwise>../31/spec/</xsl:otherwise>
@@ -27,7 +27,7 @@
                             <xsl:otherwise>../../../31/spec/</xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
-                    <xsl:when test="$spec-name eq 'overlays'">
+                    <xsl:when test="$spec-name eq 'overlays' or $spec-name eq 'a11ytech'">
                         <xsl:choose>
                             <xsl:when test="parent::db:biblioentry/@xml:id = 'refEPUBCFI'">../../linking/cfi/</xsl:when>
                             <xsl:otherwise>../../31/spec/</xsl:otherwise>

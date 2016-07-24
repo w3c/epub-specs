@@ -1549,5 +1549,83 @@
         </xsl:element>
     </xsl:template>
     
+    
+    <!-- disable individual section numbers (for a11y techniques) -->
+    
+    <xsl:template match="section" mode="label.markup">
+        <!-- if this is a nested section, label the parent -->
+        <xsl:if test="local-name(..) = 'section' and not(@role='suppress-numbering')">
+            <xsl:variable name="parent.section.label">
+                <xsl:call-template name="label.this.section">
+                    <xsl:with-param name="section" select=".."/>
+                </xsl:call-template>
+            </xsl:variable>
+            <xsl:if test="$parent.section.label != '0'">
+                <xsl:apply-templates select=".." mode="label.markup"/>
+                <xsl:apply-templates select=".." mode="intralabel.punctuation"/>
+            </xsl:if>
+        </xsl:if>
+        
+        <!-- if the parent is a component, maybe label that too -->
+        <xsl:variable name="parent.is.component">
+            <xsl:call-template name="is.component">
+                <xsl:with-param name="node" select=".."/>
+            </xsl:call-template>
+        </xsl:variable>
+        
+        <!-- does this section get labelled? -->
+        <xsl:variable name="label">
+            <xsl:call-template name="label.this.section">
+                <xsl:with-param name="section" select="."/>
+            </xsl:call-template>
+        </xsl:variable>
+        
+        <xsl:if test="not(@role='suppress-numbering')">
+            <xsl:if test="($section.label.includes.component.label != 0
+                and $parent.is.component != 0)">
+                <xsl:variable name="parent.label">
+                    <xsl:apply-templates select=".." mode="label.markup"/>
+                </xsl:variable>
+                <xsl:if test="$parent.label != ''">
+                    <xsl:apply-templates select=".." mode="label.markup"/>
+                    <xsl:apply-templates select=".." mode="intralabel.punctuation"/>
+                </xsl:if>
+            </xsl:if>
+        </xsl:if>
+        
+        <xsl:choose>
+            <xsl:when test="@label">
+                <xsl:value-of select="@label"/>
+            </xsl:when>
+            <xsl:when test="$label != 0">      
+                <xsl:variable name="format">
+                    <xsl:call-template name="autolabel.format">
+                        <xsl:with-param name="format" select="$section.autolabel"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:number format="{$format}" count="section"/>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    
+    <xsl:template name="label.this.section">
+        <xsl:param name="section" select="."/>
+        
+        <xsl:variable name="level">
+            <xsl:call-template name="section.level"/>
+        </xsl:variable>
+        
+        <xsl:choose>
+            <!-- bridgeheads are not numbered -->
+            <xsl:when test="$section/self::bridgehead">0</xsl:when>
+            <xsl:when test="$section/@role='suppress-numbering'">0</xsl:when>
+            <xsl:when test="$level &lt;= $section.autolabel.max.depth">      
+                <xsl:value-of select="$section.autolabel"/>
+            </xsl:when>
+            <xsl:otherwise>0</xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
 
 </xsl:stylesheet>
