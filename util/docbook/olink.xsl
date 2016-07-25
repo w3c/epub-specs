@@ -184,6 +184,7 @@
             <xsl:choose>
                 <xsl:when test="$spec-group='epub'">
                     <xsl:choose>
+                        <xsl:when test="matches($targetdoc, 'a11y')">../../a11y/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'cfi')">../../linking/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'indexes')">../../idx/</xsl:when>
                         <xsl:when test="matches($targetdoc, 'vocab-package')">../../vocab/package/</xsl:when>
@@ -260,8 +261,8 @@
                 <xsl:when test="matches($targetdoc, 'packages')">epub-packages.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'cfi')">cfi/epub-cfi.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'terminology')">epub-terminology.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'a11y')">epub-a11y.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'a11ytech')">epub-a11ytech.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'a11y')">accessibility.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'a11ytech')">techniques/techniques.html</xsl:when>
                 <xsl:otherwise>
                     <xsl:message terminate="yes">no match for $targetdoc in
                         olink.xsl#fn:getDestDocHTMLURI (<xsl:value-of select="$targetdoc"
