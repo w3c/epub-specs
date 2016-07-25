@@ -137,12 +137,11 @@
                     <xsl:element name="li">
                         <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='history']/node()"/>
                     </xsl:element>
-                    <xsl:element name="li">
-                        <xsl:element name="a">
-                            <xsl:attribute name="href">https://github.com/IDPF/epub-revision/issues?q=milestone%3A%22EPUB+3.1%22+is%3Aclosed</xsl:attribute>
-                            <xsl:text>Issues addressed in this revision</xsl:text>
+                    <xsl:if test="$topinfo/db:releaseinfo[@role='issues']">
+                        <xsl:element name="li">
+                            <xsl:apply-templates select="$topinfo/db:releaseinfo[@role='issues']/node()"/>
                         </xsl:element>
-                    </xsl:element>
+                    </xsl:if>
                     <xsl:element name="li">
                         <xsl:element name="a">
                             <xsl:attribute name="href">https://github.com/IDPF/epub-revision/issues</xsl:attribute>
