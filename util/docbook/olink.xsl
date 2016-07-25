@@ -261,8 +261,8 @@
                 <xsl:when test="matches($targetdoc, 'packages')">epub-packages.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'cfi')">cfi/epub-cfi.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'terminology')">epub-terminology.html</xsl:when>
+                <xsl:when test="matches($targetdoc, 'a11ytech')">techniques.html</xsl:when>
                 <xsl:when test="matches($targetdoc, 'a11y')">accessibility.html</xsl:when>
-                <xsl:when test="matches($targetdoc, 'a11ytech')">techniques/techniques.html</xsl:when>
                 <xsl:otherwise>
                     <xsl:message terminate="yes">no match for $targetdoc in
                         olink.xsl#fn:getDestDocHTMLURI (<xsl:value-of select="$targetdoc"
@@ -284,8 +284,8 @@
             <xsl:when test="matches($targetdoc, 'packages')">refPackages3</xsl:when>
             <xsl:when test="matches($targetdoc, 'cfi')">refEPUBCFI</xsl:when>
             <xsl:when test="matches($targetdoc, 'terminology')">refEPUBTERMS</xsl:when>
-            <xsl:when test="matches($targetdoc, 'a11y')">refA11Y</xsl:when>
             <xsl:when test="matches($targetdoc, 'a11ytech')">refA11YTech</xsl:when>
+            <xsl:when test="matches($targetdoc, 'a11y')">refA11Y</xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">no match for $targetdoc in olink.xsl#fn:getBiblioRef
                         (<xsl:value-of select="$targetdoc"/>)</xsl:message>
