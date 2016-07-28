@@ -394,7 +394,7 @@ HTML
             $toc =~ s#</?span[^>]*>##gis;
             $toc =~ s#(href=['"])#$1$file#gis;
             $toc =~ s/[\r\n\s]+/ /gis;
-            $toc{$shortname} = '				<li><span>' . $title . '</span>' . $toc . "</li>\n";
+            $toc{$shortname} = '				<li><a href="' . $file . '">' . $title . '</a>' . $toc . "</li>\n";
         }
         
         else {
