@@ -1925,6 +1925,66 @@
                                 properties examples</link> for use of the <markup>properties</markup> attribute.</para>
                     </note>
                 </section>
+            
+                <section xml:id="sec-foreign-restrictions-manifest">
+                    <title>Manifest Fallbacks</title>
+                    
+                    <para>Foreign Resources <literal role="rfc2119">may</literal> be referenced in contexts in which an intrinsic
+                        fallback cannot be provided (e.g., directly from <olink targetdoc="spec" targetptr="gloss-spine"
+                            type="epub-spec"/>
+                        <markup><xref linkend="elemdef-spine-itemref"/></markup> elements; from <xref linkend="refHTML"/>
+                        <markup>img</markup>, <markup>iframe</markup> and <markup>link</markup> elements in <olink targetdoc="spec"
+                            targetptr="gloss-content-document-epub-xhtml" type="epub-spec">XHTML Content Documents</olink>; and from
+                        <property>@import</property> rules in CSS Style Sheets). Manifest fallbacks <literal role="rfc2119"
+                            >must</literal> be provided in such cases.</para>
+                    
+                    <para>Manifest fallbacks are provided using the <markup linkend="attrdef-item-fallback">fallback</markup>
+                        attribute on the <olink targetdoc="spec" targetptr="gloss-manifest" type="epub-spec">manifest</olink>
+                        <markup linkend="elemdef-package-item">item</markup> element that represents the Publication Resource. The
+                        <markup>fallback</markup> attribute's IDREF <xref linkend="refXML"/> value <literal role="rfc2119"
+                            >must</literal> resolve to another <markup>item</markup> in the <markup>manifest</markup>. This fallback
+                        <markup>item</markup>
+                        <literal role="rfc2119">may</literal> itself specify another fallback <markup>item</markup>, and so on. </para>
+                    
+                    <para>The ordered list of all the ID references that can be reached starting from a given item's
+                        <markup>fallback</markup> attribute represents the <emphasis>fallback chain</emphasis> for that item. The
+                        order of the resources in the fallback chain represents the Author's preferred fallback order.</para>
+                    
+                    <para>A Reading System that does not support the Media Type of a given Publication Resource <literal
+                        role="rfc2119">must</literal> traverse the fallback chain until it has identified at least one supported
+                        Publication Resource to be used in place of the unsupported resource. If the Reading System supports multiple
+                        Publication Resources in the fallback chain, it <literal role="rfc2119">may</literal> select the resource to
+                        use based on specific <link linkend="attrdef-item-properties">properties</link> of that resource, otherwise
+                        it <literal role="rfc2119">should</literal> honor the Author's preferred fallback order.</para>
+                    
+                    <para>Fallback chains <literal role="rfc2119">must</literal> conform to one of the following requirements, as
+                        appropriate:</para>
+                    
+                    <itemizedlist>
+                        <listitem>
+                            <para>For Foreign Resources referenced directly from spine <markup><link linkend="elemdef-spine-itemref"
+                                >itemref</link></markup> elements, the chain <literal role="rfc2119">must</literal> contain
+                                at least one <olink targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"
+                                />.</para>
+                        </listitem>
+                        <listitem>
+                            <para>For Foreign Resources for which an intrinsic fallback cannot be provided, the chain <literal
+                                role="rfc2119">must</literal> contain at least one <olink targetdoc="spec"
+                                    targetptr="gloss-publication-resource-cmt" type="epub-spec"/>.</para>
+                        </listitem>
+                    </itemizedlist>
+                    
+                    <para>Fallback chains <literal role="rfc2119">must not</literal> contain any circular- or self-references to
+                        <markup>item</markup> elements in the chain.</para>
+                    
+                    <para>Fallbacks <literal role="rfc2119">may</literal> also be provided for <olink targetdoc="spec"
+                        targetptr="gloss-content-document-top-level" type="epub-spec">Top-Level Content Documents</olink> that
+                        are EPUB Content Documents; a Reading System <literal role="rfc2119">may</literal> choose to utilize such
+                        fallbacks in order to find the optimal version of a Content Document to render in a given context. An example
+                        of when this feature can be utilized is when providing <olink targetdoc="contentdocs"
+                            targetptr="confreq-cd-scripted-flbk" type="epub-spec">fallbacks for scripted content</olink>.</para>
+                    
+                </section>
             </section>
 
             <section xml:id="sec-pkg-spine">
@@ -2171,235 +2231,179 @@
                 </section>
             </section>
 
-            <section xml:id="sec-collection-elem" xreflabel="collection">
-                <title>The <markup>collection</markup> Element</title>
-
-                <para>The <markup>collection</markup> element defines a related group of resources.</para>
-
-                <variablelist xreflabel="collection" role="elem-synopsis" xml:id="elemdef-collection">
-                    <varlistentry>
-                        <term>Element Name</term>
-                        <listitem>
-                            <para><markup>collection</markup></para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Usage</term>
-                        <listitem>
-                            <para><literal role="rfc2119">Optional</literal> sixth element of <markup>package</markup>.
-                                Repeatable.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Attributes</term>
-                        <listitem>
-                            <itemizedlist mark="none">
-                                <listitem>
-                                    <para>
-                                        <markup linkend="attrdef-dir">dir</markup>
-                                        <option>[optional]</option>
-                                    </para>
-                                </listitem>
-                                <listitem>
-                                    <para>
-                                        <markup linkend="attrdef-id">id</markup>
-                                        <option>[optional]</option>
-                                    </para>
-                                </listitem>
-                                <listitem>
-                                    <para>
-                                        <markup linkend="attrdef-collection-role">role</markup>
-                                        <option>[required]</option>
-                                    </para>
-                                </listitem>
-                                <listitem>
-                                    <para>
-                                        <markup linkend="attrdef-xml-lang">xml:lang</markup>
-                                        <option>[optional]</option>
-                                    </para>
-                                </listitem>
-                            </itemizedlist>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Content Model</term>
-                        <listitem>
-                            <para>In this order: <markup><link linkend="elemdef-collection-metadata">metadata</link></markup>
-                                <option>[optional]</option>, ( <markup><xref linkend="elemdef-collection"/></markup>
-                                <option>[1 or more]</option> or ( <markup><xref linkend="elemdef-collection"/></markup>
-                                <option>[0 or more]</option>, <markup><link linkend="elemdef-collection-link"
-                                    >link</link></markup>
-                                <option>[1 or more]</option> ))</para>
-                        </listitem>
-                    </varlistentry>
-                </variablelist>
-
-                <para>The <markup>collection</markup> element allows resources to be assembled into logical groups for a
-                    variety of potential uses: enabling content that has been split across multiple <olink targetdoc="spec"
-                        targetptr="gloss-content-document-epub" type="epub-spec">EPUB Content Documents</olink> to be
-                    reassembled back into a meaningful unit (e.g., an index split across multiple documents), identifying
-                    resources for specialized purposes (e.g., preview content), or collecting together resources that present
-                    additional information about the given <olink targetdoc="spec" targetptr="gloss-rendition"
-                        type="epub-spec"/>.</para>
-
-                <para>The <markup>collection</markup> element, as defined in this section, represents a generic framework
-                    from which specific implementations are intended to be derived (e.g., through IDPF sub-specifications).
-                    Such implementations <literal role="rfc2119">must</literal> define the purpose of the
+            <section xml:id="sec-pkg-collections">
+                <title>Collections</title>
+                
+                <section xml:id="sec-collection-elem" xreflabel="collection">
+                    <title>The <markup>collection</markup> Element</title>
+                    
+                    <para>The <markup>collection</markup> element defines a related group of resources.</para>
+                    
+                    <variablelist xreflabel="collection" role="elem-synopsis" xml:id="elemdef-collection">
+                        <varlistentry>
+                            <term>Element Name</term>
+                            <listitem>
+                                <para><markup>collection</markup></para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Usage</term>
+                            <listitem>
+                                <para><literal role="rfc2119">Optional</literal> sixth element of <markup>package</markup>.
+                                    Repeatable.</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Attributes</term>
+                            <listitem>
+                                <itemizedlist mark="none">
+                                    <listitem>
+                                        <para>
+                                            <markup linkend="attrdef-dir">dir</markup>
+                                            <option>[optional]</option>
+                                        </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>
+                                            <markup linkend="attrdef-id">id</markup>
+                                            <option>[optional]</option>
+                                        </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>
+                                            <markup linkend="attrdef-collection-role">role</markup>
+                                            <option>[required]</option>
+                                        </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>
+                                            <markup linkend="attrdef-xml-lang">xml:lang</markup>
+                                            <option>[optional]</option>
+                                        </para>
+                                    </listitem>
+                                </itemizedlist>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Content Model</term>
+                            <listitem>
+                                <para>In this order: <markup><link linkend="elemdef-collection-metadata">metadata</link></markup>
+                                    <option>[optional]</option>, ( <markup><xref linkend="elemdef-collection"/></markup>
+                                    <option>[1 or more]</option> or ( <markup><xref linkend="elemdef-collection"/></markup>
+                                    <option>[0 or more]</option>, <markup><link linkend="elemdef-collection-link"
+                                        >link</link></markup>
+                                    <option>[1 or more]</option> ))</para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+                    
+                    <para>The <markup>collection</markup> element allows resources to be assembled into logical groups for a
+                        variety of potential uses: enabling content that has been split across multiple <olink targetdoc="spec"
+                            targetptr="gloss-content-document-epub" type="epub-spec">EPUB Content Documents</olink> to be
+                        reassembled back into a meaningful unit (e.g., an index split across multiple documents), identifying
+                        resources for specialized purposes (e.g., preview content), or collecting together resources that present
+                        additional information about the given <olink targetdoc="spec" targetptr="gloss-rendition"
+                            type="epub-spec"/>.</para>
+                    
+                    <para>The <markup>collection</markup> element, as defined in this section, represents a generic framework
+                        from which specific implementations are intended to be derived (e.g., through IDPF sub-specifications).
+                        Such implementations <literal role="rfc2119">must</literal> define the purpose of the
                         <markup>collection</markup> element within a Rendition, as well as all requirements for its valid
-                    production and use (specifically any requirements that differ from the general framework presented
-                    below).</para>
-
-                <para xml:id="attrdef-collection-role">Each implementation <literal role="rfc2119">must</literal> define a
-                    role value that uniquely identifies all conformant <markup>collection</markup> elements. The role of each
+                        production and use (specifically any requirements that differ from the general framework presented
+                        below).</para>
+                    
+                    <para xml:id="attrdef-collection-role">Each implementation <literal role="rfc2119">must</literal> define a
+                        role value that uniquely identifies all conformant <markup>collection</markup> elements. The role of each
                         <markup>collection</markup> element in the Package Document <literal role="rfc2119">must</literal> be
-                    identified in its <markup>role</markup> attribute, whose value <literal role="rfc2119">must</literal> be
-                    one or more NMTOKENs <xref linkend="refXSDDatatypes"/> and/or absolute IRIs <xref linkend="refRFC3987"/>.
-                    The use of NMTOKEN values is reserved for IDPF-defined roles, which are maintained in the <xref
-                        linkend="refRoleRegistry"/>. NMTOKEN values not defined in the registry are not valid. No roles are
-                    defined in this section.</para>
-
-                <para>Third parties <literal role="rfc2119">may</literal> define custom roles for the
+                        identified in its <markup>role</markup> attribute, whose value <literal role="rfc2119">must</literal> be
+                        one or more NMTOKENs <xref linkend="refXSDDatatypes"/> and/or absolute IRIs <xref linkend="refRFC3987"/>.
+                        The use of NMTOKEN values is reserved for IDPF-defined roles, which are maintained in the <xref
+                            linkend="refRoleRegistry"/>. NMTOKEN values not defined in the registry are not valid. No roles are
+                        defined in this section.</para>
+                    
+                    <para>Third parties <literal role="rfc2119">may</literal> define custom roles for the
                         <markup>collection</markup> element, but such roles <literal role="rfc2119">must</literal> be
-                    identified using absolute IRIs. Custom roles <literal role="rfc2119">must not</literal> incorporate the
-                    string <uri>idpf.org</uri> in the host component of their identifying IRI.</para>
-
-                <note>
-                    <para>To facilitate interoperability of custom roles across Reading Systems, implementers are strongly
-                        encouraged to document their use of the <markup>collection</markup> element in <xref
-                            linkend="refRoleExtensions"/>.</para>
-                </note>
-
-                <para xml:id="elemdef-collection-metadata">The <literal role="rfc2119">optional</literal>
-                    <markup>metadata</markup> element child of <markup>collection</markup> is an adaptation of the package
+                        identified using absolute IRIs. Custom roles <literal role="rfc2119">must not</literal> incorporate the
+                        string <uri>idpf.org</uri> in the host component of their identifying IRI.</para>
+                    
+                    <note>
+                        <para>To facilitate interoperability of custom roles across Reading Systems, implementers are strongly
+                            encouraged to document their use of the <markup>collection</markup> element in <xref
+                                linkend="refRoleExtensions"/>.</para>
+                    </note>
+                    
+                    <para xml:id="elemdef-collection-metadata">The <literal role="rfc2119">optional</literal>
+                        <markup>metadata</markup> element child of <markup>collection</markup> is an adaptation of the package
                         <markup linkend="elemdef-opf-metadata">metadata</markup> element, with the following differences in
-                    syntax and semantics:</para>
-
-                <itemizedlist>
-                    <listitem>
-                        <para>No metadata is mandatory by default.</para>
-                    </listitem>
-                    <listitem>
-                        <para>Package-level restrictions on the use of metadata elements <literal role="rfc2119"
+                        syntax and semantics:</para>
+                    
+                    <itemizedlist>
+                        <listitem>
+                            <para>No metadata is mandatory by default.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Package-level restrictions on the use of metadata elements <literal role="rfc2119"
                                 >may</literal> be overridden.</para>
-                    </listitem>
-                </itemizedlist>
-
-                <para>A <markup>collection</markup>
-                    <literal role="rfc2119">may</literal> define sub-collections through the inclusion of one or more child
+                        </listitem>
+                    </itemizedlist>
+                    
+                    <para>A <markup>collection</markup>
+                        <literal role="rfc2119">may</literal> define sub-collections through the inclusion of one or more child
                         <markup>collection</markup> elements.</para>
-
-                <para xml:id="elemdef-collection-link">The <markup>link</markup> element child of <markup>collection</markup>
-                    is an adaptation of the metadata <markup linkend="elemdef-opf-link">link</markup> element, with the
-                    following differences in syntax and semantics:</para>
-
-                <itemizedlist>
-                    <listitem>
-                        <para>The IRI value of the <markup>href</markup> attribute <literal role="rfc2119">may</literal> have
-                            a fragment component to indicate that only a portion or subset of a resource is included in the
-                            collection.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The <markup>rel</markup> attribute is <literal role="rfc2119">optional</literal>.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The <markup>properties</markup> attribute also accepts <link
+                    
+                    <para xml:id="elemdef-collection-link">The <markup>link</markup> element child of <markup>collection</markup>
+                        is an adaptation of the metadata <markup linkend="elemdef-opf-link">link</markup> element, with the
+                        following differences in syntax and semantics:</para>
+                    
+                    <itemizedlist>
+                        <listitem>
+                            <para>The IRI value of the <markup>href</markup> attribute <literal role="rfc2119">may</literal> have
+                                a fragment component to indicate that only a portion or subset of a resource is included in the
+                                collection.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The <markup>rel</markup> attribute is <literal role="rfc2119">optional</literal>.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The <markup>properties</markup> attribute also accepts <link
                                 xlink:href="http://www.idpf.org/epub/vocab/package/item/">manifest item properties</link>
-                            <xref linkend="refManifestVocab"/> without a prefix (e.g., so that a collection can declare its
-                            own Navigation Document or cover image).</para>
-                    </listitem>
-                </itemizedlist>
-
-                <para>Each <markup>link</markup>
-                    <literal role="rfc2119">must</literal> reference a resource that is a member of the group. The order of
+                                <xref linkend="refManifestVocab"/> without a prefix (e.g., so that a collection can declare its
+                                own Navigation Document or cover image).</para>
+                        </listitem>
+                    </itemizedlist>
+                    
+                    <para>Each <markup>link</markup>
+                        <literal role="rfc2119">must</literal> reference a resource that is a member of the group. The order of
                         <markup>link</markup> elements is not significant.</para>
-
-                <para>Specific implementations of the <markup>collection</markup> element <literal role="rfc2119"
+                    
+                    <para>Specific implementations of the <markup>collection</markup> element <literal role="rfc2119"
                         >may</literal> tailor the requirements defined above to better reflect their needs (e.g., requiring
-                    metadata, imposing further restrictions on the use of elements and attributes, or making the order of
+                        metadata, imposing further restrictions on the use of elements and attributes, or making the order of
                         <markup>link</markup> elements significant). However, the resulting content model <literal
-                        role="rfc2119">must</literal> represent a valid subset of the one defined in this section (e.g.,
-                    specific implementations cannot introduce new elements or attributes, or re-introduce those expressly
-                    forbidden above). Specific implementations <literal role="rfc2119">must not</literal> define collections
-                    in a way that overrides the requirements of the <markup linkend="elemdef-opf-manifest">manifest</markup>
-                    and <markup linkend="elemdef-opf-spine">spine</markup>.</para>
-
-                <para>In the context of this specification, support for collections in Reading Systems is <literal
+                            role="rfc2119">must</literal> represent a valid subset of the one defined in this section (e.g.,
+                        specific implementations cannot introduce new elements or attributes, or re-introduce those expressly
+                        forbidden above). Specific implementations <literal role="rfc2119">must not</literal> define collections
+                        in a way that overrides the requirements of the <markup linkend="elemdef-opf-manifest">manifest</markup>
+                        and <markup linkend="elemdef-opf-spine">spine</markup>.</para>
+                    
+                    <para>In the context of this specification, support for collections in Reading Systems is <literal
                         role="rfc2119">optional</literal>. Reading Systems <literal role="rfc2119">must</literal> ignore
                         <markup>collection</markup> elements that define unrecognized roles.</para>
-
-                <para>The rendering of a Rendition <literal role="rfc2119">must not</literal> be dependent on the recognition
-                    of <markup>collection</markup> elements. The content <literal role="rfc2119">must</literal> remain
-                    consumable by a User without any information loss or other significant deterioration.</para>
-
-                <bridgehead xml:id="sec-collection-ex">Examples</bridgehead>
-
-                <informalexample xml:id="example-collection">
-                    <para>The following example shows the assembly of two <olink targetdoc="spec"
+                    
+                    <para>The rendering of a Rendition <literal role="rfc2119">must not</literal> be dependent on the recognition
+                        of <markup>collection</markup> elements. The content <literal role="rfc2119">must</literal> remain
+                        consumable by a User without any information loss or other significant deterioration.</para>
+                    
+                    <bridgehead xml:id="sec-collection-ex">Examples</bridgehead>
+                    
+                    <informalexample xml:id="example-collection">
+                        <para>The following example shows the assembly of two <olink targetdoc="spec"
                             targetptr="gloss-content-document-epub-xhtml" type="epub-spec">XHTML Content Documents</olink>
-                        that represent a single unit.</para>
-                    <synopsis><xi:include href="./examples/publications/collection.xml" parse="text"/></synopsis>
-                </informalexample>
+                            that represent a single unit.</para>
+                        <synopsis><xi:include href="./examples/publications/collection.xml" parse="text"/></synopsis>
+                    </informalexample>
+                </section>
             </section>
-        </section>
-
-        <section xml:id="sec-foreign-restrictions-manifest">
-            <title>Manifest Fallbacks</title>
-
-            <para>Foreign Resources <literal role="rfc2119">may</literal> be referenced in contexts in which an intrinsic
-                fallback cannot be provided (e.g., directly from <olink targetdoc="spec" targetptr="gloss-spine"
-                    type="epub-spec"/>
-                <markup><xref linkend="elemdef-spine-itemref"/></markup> elements; from <xref linkend="refHTML"/>
-                <markup>img</markup>, <markup>iframe</markup> and <markup>link</markup> elements in <olink targetdoc="spec"
-                    targetptr="gloss-content-document-epub-xhtml" type="epub-spec">XHTML Content Documents</olink>; and from
-                    <property>@import</property> rules in CSS Style Sheets). Manifest fallbacks <literal role="rfc2119"
-                    >must</literal> be provided in such cases.</para>
-
-            <para>Manifest fallbacks are provided using the <markup linkend="attrdef-item-fallback">fallback</markup>
-                attribute on the <olink targetdoc="spec" targetptr="gloss-manifest" type="epub-spec">manifest</olink>
-                <markup linkend="elemdef-package-item">item</markup> element that represents the Publication Resource. The
-                    <markup>fallback</markup> attribute's IDREF <xref linkend="refXML"/> value <literal role="rfc2119"
-                    >must</literal> resolve to another <markup>item</markup> in the <markup>manifest</markup>. This fallback
-                    <markup>item</markup>
-                <literal role="rfc2119">may</literal> itself specify another fallback <markup>item</markup>, and so on. </para>
-
-            <para>The ordered list of all the ID references that can be reached starting from a given item's
-                    <markup>fallback</markup> attribute represents the <emphasis>fallback chain</emphasis> for that item. The
-                order of the resources in the fallback chain represents the Author's preferred fallback order.</para>
-
-            <para>A Reading System that does not support the Media Type of a given Publication Resource <literal
-                    role="rfc2119">must</literal> traverse the fallback chain until it has identified at least one supported
-                Publication Resource to be used in place of the unsupported resource. If the Reading System supports multiple
-                Publication Resources in the fallback chain, it <literal role="rfc2119">may</literal> select the resource to
-                use based on specific <link linkend="attrdef-item-properties">properties</link> of that resource, otherwise
-                it <literal role="rfc2119">should</literal> honor the Author's preferred fallback order.</para>
-
-            <para>Fallback chains <literal role="rfc2119">must</literal> conform to one of the following requirements, as
-                appropriate:</para>
-
-            <itemizedlist>
-                <listitem>
-                    <para>For Foreign Resources referenced directly from spine <markup><link linkend="elemdef-spine-itemref"
-                                >itemref</link></markup> elements, the chain <literal role="rfc2119">must</literal> contain
-                        at least one <olink targetdoc="spec" targetptr="gloss-content-document-epub" type="epub-spec"
-                        />.</para>
-                </listitem>
-                <listitem>
-                    <para>For Foreign Resources for which an intrinsic fallback cannot be provided, the chain <literal
-                            role="rfc2119">must</literal> contain at least one <olink targetdoc="spec"
-                            targetptr="gloss-publication-resource-cmt" type="epub-spec"/>.</para>
-                </listitem>
-            </itemizedlist>
-
-            <para>Fallback chains <literal role="rfc2119">must not</literal> contain any circular- or self-references to
-                    <markup>item</markup> elements in the chain.</para>
-
-            <para>Fallbacks <literal role="rfc2119">may</literal> also be provided for <olink targetdoc="spec"
-                    targetptr="gloss-content-document-top-level" type="epub-spec">Top-Level Content Documents</olink> that
-                are EPUB Content Documents; a Reading System <literal role="rfc2119">may</literal> choose to utilize such
-                fallbacks in order to find the optimal version of a Content Document to render in a given context. An example
-                of when this feature can be utilized is when providing <olink targetdoc="contentdocs"
-                    targetptr="confreq-cd-scripted-flbk" type="epub-spec">fallbacks for scripted content</olink>.</para>
-
         </section>
 
     </chapter>
