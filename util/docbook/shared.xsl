@@ -1635,5 +1635,24 @@
         </xsl:choose>
     </xsl:template>
     
+    <xsl:template match="informalfigure">
+        <xsl:element name="figure">
+            <xsl:element name="figcaption">
+                <xsl:apply-templates select="descendant::para"/>
+            </xsl:element>
+            <xsl:element name="img">
+                <xsl:attribute name="src">
+                    <xsl:value-of select="descendant::imagedata/@fileref"/>
+                </xsl:attribute>
+                <xsl:if test="descendant::imagedata/@width">
+                    <xsl:attribute name="width">
+                        <xsl:value-of select="descendant::imagedata/@width"/>
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:attribute name="alt"/>
+            </xsl:element>
+        </xsl:element>
+    </xsl:template>
+    
 
 </xsl:stylesheet>

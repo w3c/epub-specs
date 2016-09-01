@@ -13,6 +13,7 @@ my $epub_version = '31';
 my %core_media = (
     'css' => 'text/css',
     'html' => 'application/xhtml+xml',
+    'svg' => 'image/svg+xml',
     'jpg' => 'image/jpeg',
     'jpeg' => 'image/jpeg',
     'js' => 'text/javascript',
