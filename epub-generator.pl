@@ -284,7 +284,7 @@ PKG
                 push @nonlinear, '		<itemref idref="res' . sprintf('%03d',$i) . '" linear="no"/>' . "\n";
             }
         }
-        elsif ($ext !~ /(jpe?g|png|css|js)/i) {
+        elsif ($ext !~ /(jpe?g|png|svg|css|js)/i) {
             push @nonlinear, '		<itemref idref="res' . sprintf('%03d',$i) . '" linear="no"/>';
         }
         else {
