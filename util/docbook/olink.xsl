@@ -96,7 +96,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:function name="fn:getLinkLabel" as="text()">
+    <xsl:function name="fn:getLinkLabel">
         <xsl:param name="olink" as="element()"/>
         <xsl:param name="targetdoc" as="attribute()"/>
         <xsl:param name="targetptr" as="attribute()"/>
@@ -107,28 +107,32 @@
                     select="$targetptr"/>' in <xsl:value-of select="$targetdoc"/> in
                 olink.xsl#fn:getLinkLabel</xsl:message>
         </xsl:if>
+        
+        <xsl:variable name="olink-text">
+            <xsl:value-of select="$olink"/>
+        </xsl:variable>
 
         <xsl:choose>
-            <xsl:when test="$olink/*">
+        <!--    <xsl:when test="$olink/*">
                 <xsl:message terminate="yes">sorry, no elements on olink link labels: '<xsl:value-of select="$olink"/>'</xsl:message>
+            </xsl:when> -->
+            <xsl:when test="string-length($olink-text)>0">
+                <xsl:apply-templates select="$olink/node()"/>
             </xsl:when>
-            <xsl:when test="string-length($olink/text())>0">
-                <xsl:value-of select="$olink/text()"/>
-            </xsl:when>            
             <xsl:when test="$curelem/@xreflabel">
                 <xsl:value-of select="$curelem/@xreflabel"/>
             </xsl:when>
             <xsl:when test="$curelem/db:title">
-                <xsl:value-of select="$curelem/db:title"/>
+                <xsl:apply-templates select="$curelem/db:title/node()"/>
             </xsl:when>
             <xsl:when test="$curelem/db:term">
-                <xsl:value-of select="$curelem/db:term"/>
+                <xsl:apply-templates select="$curelem/db:term/node()"/>
             </xsl:when>
             <xsl:when test="$curelem/db:glossterm">
-                <xsl:value-of select="$curelem/db:glossterm"/>
+                <xsl:apply-templates select="$curelem/db:glossterm/node()"/>
             </xsl:when>
             <xsl:when test="local-name($curelem) eq 'bridgehead' ">
-                <xsl:value-of select="$curelem"/>
+                <xsl:apply-templates select="$curelem/node()"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:message terminate="yes">Failed retrieving a label in olink.xsl#fn:getLinkLabel
