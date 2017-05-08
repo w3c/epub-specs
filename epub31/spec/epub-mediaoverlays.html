@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+   <head>
+      <meta charset="utf-8" />
+      <title>EPUB Media Overlays 3.1</title>
+      <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+      <script src="common/biblio.js" class="remove"></script>
+      <script src="common/dfn-crossref.js" class="remove"></script>
+      <script src="common/confreq-permalinks.js" class="remove"></script>
+      <link href="common/css/common.css" rel="stylesheet" type="text/css" />
+      <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-mediaoverlays",
+              prevRecURI: "http://www.idpf.org/epub/a11y/accessibility-20170105.html",
+              edDraftURI: "http://w3c.github.io/publ-cg-epub3/epub31/cg-draft/accessibility.html",
+              editors: [
+                  {
+                      name: "Marisa DeMeglio",
+                      company: "DAISY Consortium",
+                      companyURL: "http://daisy.org"
+                  },
+                  {
+                      name: "Daniel Weck",
+                      company: "DAISY Consortium",
+                      companyURL: "http://daisy.org"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+   </head>
+   <body>
+      <section id="abstract">
+         <p>EPUB Media Overlays 3.1 specifies a usage of SMIL, the Package Document, CSS Style Sheets, and EPUB Content
+            Documents for representation of audio synchronized with the EPUB Content Document.</p>
+      </section>
+      <section id="sotd"></section>
+      <section id="sec-overview">
+         <h1>Overview</h1>
+
+         <section id="sec-overview-purpose-and-scope" class="informative">
+            <h2>Purpose and Scope</h2>
+
+            <p>This specification, EPUB Media Overlays 3.1, defines a usage of [[SMIL]] (Synchronized Multimedia Integration
+               Language), the <a class="glossterm" href="epub-spec.html#gloss-package-document">Package Document</a>, CSS
+               Style Sheets, and <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB® Content
+                  Documents</a> for representation of audio synchronized with the EPUB Content Document.</p>
+
+            <p>The text and audio synchronization enabled by Media Overlays provides enhanced accessibility for any user who
+               has difficulty following the text of a traditional book. Media Overlays also provide a continuous listening
+               experience for readers who are unable to read the text for any reason, something that traditional audio
+               embedding techniques cannot offer. They are even useful for purposes not traditionally considered
+               accessibility concerns (e.g., for language learning or reading of commercial audio books).</p>
+
+            <p>This specification is one of a <a href="epub-spec.html#sec-epub-specs">family of specifications</a> that
+               compose [[EPUB31]], an interchange and delivery format for digital publications based on XML and Web
+               Standards. It is meant to be read and understood in concert with the other specifications that make up EPUB
+               3.1.</p>
+
+            <p>Refer to [[EPUB3Changes]] for more information on the differences between this specification and its
+               predecessor.</p>
+
+         </section>
+
+         <section id="sec-overview-relationship" class="informative">
+            <h2>Relationship to Other Specifications</h2>
+
+            <section id="d46451e218">
+               <h3>Relationship to SMIL</h3>
+
+               <p>This specification relies on a subset of [[SMIL]], from which the EPUB Media Overlays elements and
+                  attributes defined in <a href="#sec-overlays-def">Media Overlay Document Definition</a> are derived.</p>
+
+            </section>
+
+         </section>
+
+         <section id="sec-terminology">
+            <h2>Terminology</h2>
+
+            <p>Terms with meanings specific to EPUB 3.1 are capitalized in this document (e.g., "Author", "Reading System").
+               A complete list of these <a href="epub-spec.html#sec-terminology">terms and definitions</a> is provided in
+               [[!EPUB31]].</p>
+
+            <p>Only the first instance of a term in a section is linked to its definition.</p>
+
+         </section>
+
+         <section id="conformance"></section>
+
+         <section id="sec-overview-nspfx">
+            <h2>Namespace prefix mappings</h2>
+
+            <p>For convenience, the following namespace prefixes [[!XML-NAMES]] are used in this specification without
+               explicitly being declared. To use any of these prefixes, a declaration is REQUIRED.</p>
+
+            <table class="mapping">
+               <tr>
+                  <th>prefix</th>
+                  <th>URI</th>
+               </tr>
+
+               <tr>
+                  <td>
+                     <code>epub</code>
+                  </td>
+                  <td>
+                     <code>http://www.idpf.org/2007/ops</code>
+                  </td>
+               </tr>
+            </table>
+         </section>
+
+      </section>
+      <section id="sec-media-overlays-document-definition">
+         <h1>Media Overlay Document Definition</h1>
+
+         <section id="sec-overlays-introduction" class="informative">
+            <h2>Introduction</h2>
+
+            <p>Synchronized audio narration is found in mainstream ebooks, educational tools and ebooks formatted for persons
+               with print disabilities. In EPUB 3.1, these types of books are created using Media Overlay Documents to
+               describe the timing for the pre-recorded audio narration and how it relates to the EPUB Content Document
+               markup. The file format for Media Overlays is defined as a subset of [[SMIL]], a W3C recommendation for
+               representing synchronized multimedia information in XML.</p>
+
+            <p>The Media Overlays feature is designed to be transparent to <a class="glossterm"
+                  href="epub-spec.html#gloss-epub-reading-system">EPUB Reading Systems</a> that do not support the feature.
+               The inclusion of Media Overlays in an EPUB Publication has no impact on the ability of Media Overlay-unaware
+               Reading Systems to render the EPUB Publication as though the Media Overlays are not present.</p>
+
+            <p>Although future versions of this specification might incorporate support for video media (e.g., synchronized
+               text/sign-language books), this version supports only synchronizing audio media with the EPUB Content
+               Document.</p>
+
+         </section>
+
+         <section id="sec-overlays-content-conf">
+            <h2>Content Conformance</h2>
+
+            <p>A <a class="glossterm" href="epub-spec.html#gloss-media-overlay-document">Media Overlay Document</a> MUST meet
+               all of the following criteria:</p>
+
+            <dl class="conformance-list">
+               <dt id="confreq-mo-docprops">Document Properties</dt>
+               <dd>
+                  <p id="confreq-mo-xml"> It MUST meet the conformance constraints for XML documents defined in <a
+                        href="epub-spec.html#sec-xml-constraints">XML Conformance</a> [[!EPUB31]].</p>
+                  <p id="confreq-mo-docprops-schema">It MUST be valid to the Media Overlays schema as defined in <a
+                        href="#app-overlays-schema">Appendix A, <em>Media Overlays Schema</em></a> and conform to all content
+                     conformance constraints expressed in <a href="#sec-overlays-def">Media Overlay Document
+                     Definition</a>.</p>
+                  <p id="confreq-mo-docprops-structure">It MUST be authored to reflect the structure of the <a
+                        class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a> with
+                     which it is associated, as stated in <a href="#sec-media-overlays-structure">Structure</a>.</p>
+                  <p id="confreq-mo-docprops-references">It MAY refer to more than one EPUB Content Document, but an EPUB
+                     Content Document MUST NOT be referenced by more than one Media Overlay Document.</p>
+                  <p id="confreq-mo-docprops-embed"><a class="glossterm" href="epub-spec.html#gloss-author">Authors</a>
+                     SHOULD avoid using scripts to control audio and video embedded in the EPUB Content Document, as stated
+                     in <a href="#sec-audio-video">Embedded Media</a>.</p>
+                  <p id="confreq-mo-docprops-semantics">It SHOULD use semantic markup where appropriate, as described in <a
+                        href="#sec-docs-semantic-inflection">Semantic Inflection</a>.</p>
+                  <p id="confreq-mo-docprops-package">It MUST be packaged with the <a class="glossterm"
+                        href="epub-spec.html#gloss-epub-publication">EPUB Publication</a> as shown in <a
+                        href="#sec-docs-package">Packaging</a>.</p>
+               </dd>
+               <dt id="confreq-mo-fileprops">File Properties</dt>
+               <dd>
+                  <p id="confreq-mo-fileprops-name">The Media Overlay Document filename SHOULD use the file extension <code
+                        class="filename">.smil</code>.</p>
+               </dd>
+            </dl>
+
+         </section>
+
+         <section id="sec-overlays-rs-conf">
+            <h2>Reading System Conformance</h2>
+
+            <p><a class="glossterm" href="epub-spec.html#gloss-epub-reading-system">EPUB Reading System</a> support for Media
+               Overlays is OPTIONAL. A Reading System that supports Media Overlays MUST meet the following criteria:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-rs-package-def">It MUST process the Media Overlay Document in conformance with all Reading
+                     System conformance constraints expressed in <a href="#sec-overlays-def">Media Overlay Document
+                        Definition</a>.</p>
+                  <p id="confreq-rs-xhtml-svg">It MUST support <a class="glossterm"
+                        href="epub-spec.html#gloss-content-document-epub-xhtml">XHTML Content Documents</a>, and it MAY
+                     support <a class="glossterm" href="epub-spec.html#gloss-content-document-epub-svg">SVG Content
+                        Documents</a>.</p>
+                  <p id="confreq-rs-render">It MUST render Media Overlay elements as described in <a
+                        href="#sec-behaviors-playback">Basic Playback</a>.</p>
+                  <p id="confreq-rs-navigation">It MUST allow user navigation while a Media Overlay is being played, as
+                     discussed in <a href="#sec-rsconf-navigation">Navigation</a>.</p>
+                  <p id="confreq-rs-embed">It MUST adhere to rules regarding referenced audio and video embedded in the <a
+                        class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>, as
+                     stated in <a href="#sec-embedded-media">Embedded Audio and Video</a>.</p>
+                  <p id="confreq-rs-tts"><a class="glossterm" href="epub-spec.html#gloss-tts">Text-to-Speech</a>-capable
+                     Reading Systems SHOULD conform to <a href="epub-spec.html#confreq-rs-epub3-tts">Reading System
+                        Text-to-Speech Conformance Requirements</a> [[!EPUB31]].</p>
+                  <p id="confreq-rs-skip-escape">It SHOULD offer the skippability and escapability features described in <a
+                        href="#sec-behaviors-skip-escape">Skippability and Escapability</a>.</p>
+               </li>
+            </ul>
+
+            <p>A Reading System that does not support Media Overlays MUST meet the following criteria:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-rs-mo-ignore">It MUST ignore both the <code>media-overlay</code> attribute on <a
+                        class="glossterm" href="epub-spec.html#gloss-manifest">Manifest</a>
+                     <a href="epub-packages.html#elemdef-package-item"><code>item</code> elements</a> and the manifest
+                        <code>item</code> elements where the <code>media-type</code> attribute value equals
+                        <code>application/smil+xml</code>.</p>
+               </li>
+            </ul>
+
+         </section>
+
+         <section id="sec-overlays-def">
+            <h2>Media Overlay Document Definition</h2>
+
+            <p>All elements [[!XML]] defined in this section are in the <code>https://www.w3.org/ns/SMIL</code> namespace
+               [[!XML-NAMES]] unless otherwise specified.</p>
+
+            <section id="sec-smil-smil-elem">
+               <h3>The <code>smil</code> Element</h3>
+
+               <p>The <code>smil</code> element is the root element of all Media Overlay Documents.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>smil</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>The <code>smil</code> element is the root element of the Media Overlay Document.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <code>version</code>
+                           <code>[required]</code>
+                        </dt>
+                        <dd>
+                           <p>Specifies the version number of the [[!SMIL]] specification to which the Media Overlay
+                              adheres.</p>
+                           <p>This attribute MUST have the value "<code>3.0</code>".</p>
+                        </dd>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                        <dt id="attrdef-smil-prefix">
+                           <code>epub:prefix</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>Declares additional metadata vocabulary prefixes.</p>
+                           <p>Refer to <a href="#sec-docs-semantic-inflection">Semantic Inflection</a> for more
+                              information.</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>In this order:</p>
+                     <ul class="nomark">
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-head"><code>head</code></a>
+                              <code>[0 or 1]</code></p>
+                        </li>
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-body"><code>body</code></a>
+                              <code>[exactly 1]</code></p>
+                        </li>
+                     </ul>
+                  </dd>
+               </dl>
+
+            </section>
+
+            <section id="sec-smil-head-elem">
+               <h3>The <code>head</code> Element</h3>
+
+               <p>The <code>head</code> element is the container for metadata in the Media Overlay Document.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>head</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>The <code>head</code> element is the OPTIONAL first child of the <a href="#elemdef-smil"
+                              ><code>smil</code></a> element.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <p>None</p>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p><a href="#elemdef-smil-metadata"><code>metadata</code></a>
+                        <code>[0 or 1]</code></p>
+                  </dd>
+               </dl>
+
+               <p>As this specification does not define any metadata properties that have to occur in the Media Overlay
+                  Document, the <code>head</code> element is OPTIONAL.</p>
+
+            </section>
+
+            <section id="sec-smil-metadata-elem">
+               <h3>The <code>metadata</code> Element</h3>
+
+               <p>The <code>metadata</code> element represents metadata for the Media Overlay Document. The
+                     <code>metadata</code> element is an extension point that allows the inclusion of metadata from any
+                  metainformation structuring language.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>metadata</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>As a child of the <a href="#elemdef-smil-head"><code>head</code></a> element.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <p>None</p>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p><code>[0 or more]</code> elements from any namespace</p>
+                  </dd>
+               </dl>
+
+               <p>This specification defines no metadata properties that MUST occur in the Media Overlay Document; the
+                     <code>metadata</code> element is provided for custom metadata requirements.</p>
+
+            </section>
+
+            <section id="sec-smil-body-elem">
+               <h3>The <code>body</code> Element</h3>
+
+               <p>The <code>body</code> element is the starting point for the presentation contained in the Media Overlay
+                  Document. It contains the main sequence of <code>par</code> and <code>seq</code> elements.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>body</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>The <code>body</code> element is the REQUIRED second child of the <a href="#elemdef-smil"
+                              ><code>smil</code></a> element.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt id="addrdef-smil-body-type">
+                           <code>epub:type</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>An expression of the structural semantics of the corresponding element in the <a
+                                 class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+                                 Document</a>.</p>
+                           <p>The value is a white space separated list of <a href="epub-packages.html#sec-property-datatype"
+                                 >property</a> [[!Packages31]] types. Refer to <a href="#sec-docs-semantic-inflection"
+                                 >Semantic Inflection</a> for more information.</p>
+                        </dd>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                        <dt id="attrdef-body-textref">
+                           <code>epub:textref</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The relative IRI reference [[!RFC3987]] of the corresponding EPUB Content Document, including a
+                              fragment identifier that references the specific element as per the [[!XPTRSH]].</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>In any order:</p>
+                     <ul class="nomark">
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-seq"><code>seq</code></a>
+                              <code>[0 or more]</code></p>
+                        </li>
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-par"><code>par</code></a>
+                              <code>[0 or more]</code></p>
+                        </li>
+                     </ul>
+                     <p>At least one <code>par</code> or <code>seq</code> is REQUIRED.</p>
+                  </dd>
+               </dl>
+
+            </section>
+
+            <section id="sec-smil-seq-elem">
+               <h3>The <code>seq</code> Element</h3>
+
+               <p>The <code>seq</code> element contains media objects which are to be rendered sequentially.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>seq</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>One or more <code>seq</code> elements MAY occur as children of the <a href="#elemdef-smil-body"
+                              ><code>body</code></a> element and of the <a href="#elemdef-smil-seq"><code>seq</code></a>
+                        element.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <code>epub:type</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>An expression of the structural semantics of the corresponding element in the <a
+                                 class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+                                 Document</a>.</p>
+                           <p>The value is a white space separated list of <a href="epub-packages.html#sec-property-datatype"
+                                 >property</a> [[!Packages31]] types. Refer to <a href="#sec-docs-semantic-inflection"
+                                 >Semantic Inflection</a> for more information.</p>
+                        </dd>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                        <dt id="attrdef-seq-textref">
+                           <code>epub:textref</code>
+                           <code>[required]</code>
+                        </dt>
+                        <dd>
+                           <p>The relative IRI reference [[!RFC3987]] of the corresponding EPUB Content Document, including a
+                              fragment identifier that references the specific element as per the [[!XPTRSH]].</p>
+                           <p>Refer to <a href="#sec-media-overlays-structure">Structure</a> for more information.</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>In any order:</p>
+                     <ul class="nomark">
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-seq"><code>seq</code></a>
+                              <code>[0 or more]</code></p>
+                        </li>
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-par"><code>par</code></a>
+                              <code>[0 or more]</code></p>
+                        </li>
+                     </ul>
+                     <p>At least one <code>par</code> or <code>seq</code> is REQUIRED.</p>
+                  </dd>
+               </dl>
+
+            </section>
+
+            <section id="sec-smil-par-elem">
+               <h3>The <code>par</code> Element</h3>
+
+               <p>The <code>par</code> element contains media objects which are to be rendered in parallel.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>par</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>One or more <code>par</code> elements MAY occur as children of the <a href="#elemdef-smil-body"
+                              ><code>body</code></a> and <a href="#elemdef-smil-seq"><code>seq</code></a> elements.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <code>epub:type</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>An expression of the structural semantics of the corresponding element in the <a
+                                 class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+                                 Document</a>.</p>
+                           <p>The value is a white space separated list of <a href="epub-packages.html#sec-property-datatype"
+                                 >property</a> [[!Packages31]] types. Refer to <a href="#sec-docs-semantic-inflection"
+                                 >Semantic Inflection</a> for more information.</p>
+                        </dd>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>In any order:</p>
+                     <ul class="nomark">
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-text"><code>text</code></a>
+                              <code>[exactly 1]</code></p>
+                        </li>
+                        <li>
+                           <p>
+                              <a href="#elemdef-smil-audio"><code>audio</code></a>
+                              <code>[0 or 1]</code></p>
+                        </li>
+                     </ul>
+                     <p>The <a href="#elemdef-smil-audio"><code>audio</code></a> element is OPTIONAL only if its sibling <a
+                           href="#elemdef-smil-text"><code>text</code></a> element refers to audio or video media (see <a
+                           href="#sec-audio-video">Embedded Media</a>), or to textual content intended for rendering via <a
+                           class="glossterm" href="epub-spec.html#gloss-tts">Text-to-Speech (TTS)</a>.</p>
+                  </dd>
+               </dl>
+
+            </section>
+
+            <section id="sec-smil-text-elem">
+               <h3>The <code>text</code> Element</h3>
+
+               <p>The <code>text</code> element references an element in the <a class="glossterm"
+                     href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>. A <code>text</code> element
+                  typically refers to a textual element, but can also refer to other EPUB Content Document media elements
+                  (see <a href="#sec-audio-video">Embedded Media</a>).</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>text</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>As a REQUIRED child of the <a href="#elemdef-smil-par"><code>par</code></a> element.</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <code>src</code>
+                           <code>[required]</code>
+                        </dt>
+                        <dd>
+                           <p>The relative IRI reference [[!RFC3987]] of the corresponding EPUB Content Document, including a
+                              fragment identifier that references the specific element as per the [[!XPTRSH]].</p>
+                        </dd>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>Empty</p>
+                  </dd>
+               </dl>
+
+            </section>
+
+            <section id="sec-smil-audio-elem">
+               <h3>The <code>audio</code> Element</h3>
+
+               <p>The <code>audio</code> element represents a clip of audio media.</p>
+
+               <dl class="elemdef">
+                  <dt>Element Name</dt>
+                  <dd>
+                     <p>
+                        <code>audio</code></p>
+                  </dd>
+                  <dt>Usage</dt>
+                  <dd>
+                     <p>A REQUIRED child of the <a href="#elemdef-smil-par"><code>par</code></a> element unless its sibling
+                           <a href="#elemdef-smil-text"><code>text</code></a> element refers to audio or video media, in
+                        which case it is OPTIONAL (see <a href="#sec-audio-video">Embedded Media</a>).</p>
+                  </dd>
+                  <dt>Attributes</dt>
+                  <dd>
+                     <dl>
+                        <dt>
+                           <code>id</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>The ID [[!XML]] of the element, which MUST be unique within the document scope.</p>
+                        </dd>
+                        <dt>
+                           <code>src</code>
+                           <code>[required]</code>
+                        </dt>
+                        <dd>
+                           <p>The relative or absolute IRI reference [[!RFC3987]] of an audio file. The audio file MUST be
+                              one of the audio formats listed in the <a href="epub-spec.html#sec-core-media-types">Core Media
+                                 Types</a> [[!EPUB31]] table.</p>
+                        </dd>
+                        <dt id="attrdef-smil-clipBegin">
+                           <code>clipBegin</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>A clock value that specifies the offset into the physical media corresponding to the start
+                              point of an audio clip.</p>
+                           <p>MUST be a [[!SMIL]] <a
+                                 href="https://www.w3.org/TR/2008/REC-SMIL3-20081201/smil-timing.html#q22">clock
+                              value</a>.</p>
+                           <p>See <a href="#app-clock-examples">Appendix B, <em>Examples of Clock Values</em></a>.</p>
+                        </dd>
+                        <dt id="attrdef-smil-clipEnd">
+                           <code>clipEnd</code>
+                           <code>[optional]</code>
+                        </dt>
+                        <dd>
+                           <p>A clock value that specifies the offset into the physical media corresponding to the end point
+                              of an audio clip.</p>
+                           <p>MUST be a [[!SMIL]] <a
+                                 href="https://www.w3.org/TR/2008/REC-SMIL3-20081201/smil-timing.html#q22">clock
+                              value</a>.</p>
+                           <p>See <a href="#app-clock-examples">Appendix B, <em>Examples of Clock Values</em></a>.</p>
+                           <p>The chronological offset of the terminating position MUST be after the starting offset
+                              specified in the <code>clipBegin</code> attribute.</p>
+                        </dd>
+                     </dl>
+                  </dd>
+                  <dt>Content Model</dt>
+                  <dd>
+                     <p>Empty</p>
+                  </dd>
+               </dl>
+
+            </section>
+
+         </section>
+
+      </section>
+      <section id="sec-overlay-docs">
+         <h1>Creating Media Overlays</h1>
+
+         <section id="sec-docs-intro" class="informative">
+            <h2>Introduction</h2>
+
+            <p>A pre-recorded narration of a publication can be represented as a series of audio clips, each corresponding to
+               part of the <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>.
+               A single audio clip, for example, typically represents a single phrase or paragraph, but infers no order
+               relative to the other clips or to the text of a document. Media Overlays solve this problem of synchronization
+               by tying the structured audio narration to its corresponding text (or other media) in the EPUB Content
+               Document using [[SMIL]] markup. Media Overlays are, in fact, a simplified subset of SMIL 3.0 that allow the
+               playback sequence of these clips to be defined.</p>
+
+            <p>The SMIL elements primarily used for structuring Media Overlays are <a href="#elemdef-smil-body"
+                     ><code>body</code></a> (used for the main sequence), <a href="#elemdef-smil-seq"><code>seq</code></a>
+               (sequence) and <a href="#elemdef-smil-par"><code>par</code></a> (parallel). (Refer to <a
+                  href="#sec-overlays-def">Media Overlay Document Definition</a> for more information on these and other SMIL
+               elements.)</p>
+
+            <p>The <code>par</code> element is the basic building block of an Overlay and corresponds to a phrase in the EPUB
+               Content Document. The element provides two key pieces of information for synchronizing content: 1) the audio
+               clip containing the narration for the phrase; and 2) a pointer to the associated EPUB Content Document
+               fragment. The <code>par</code> element uses two media element children to represent this information: an <a
+                  href="#elemdef-smil-audio"><code>audio</code></a> element and a <a href="#elemdef-smil-text"
+                     ><code>text</code></a> element. Since <code>par</code> elements render their children in parallel, the
+               audio clip and EPUB Content Document fragment are played at the same time, resulting in a synchronized
+               presentation.</p>
+
+            <p>The <code>text</code> element <code>src</code> attribute references the associated phrase, sentence, or other
+               segment of the EPUB Content Document by its IRI reference. The <code>audio</code> element <code>src</code>
+               attribute similarly references the location of the corresponding audio clip, and adds the OPTIONAL <a
+                  href="#attrdef-smil-clipBegin"><code>clipBegin</code></a> and <a href="#attrdef-smil-clipEnd"
+                     ><code>clipEnd</code></a> attributes to indicate a specific offset within the clip.</p>
+
+            <aside class="example">
+               <p>The following example shows the Media Overlays markup for a single phrase or sentence.</p>
+               <pre>&lt;par&gt;                        
+    &lt;text src="chapter1.xhtml#sentence1"/&gt;
+    &lt;audio src="chapter1_audio.mp3" clipBegin="23s" clipEnd="30s"/&gt;
+&lt;/par&gt;</pre>
+            </aside>
+
+            <p><code>par</code> elements are placed together sequentially to form a series of phrases or sentences. Not every
+               element of the EPUB Content Document will have a corresponding <code>par</code> element in the Media Overlay,
+               only those relevant to the audio narration.</p>
+
+            <aside class="example">
+               <p>The following example shows a basic Media Overlay Document containing a sequence of phrases. The
+                     <code>body</code> element acts as the main sequence for the whole document.</p>
+               <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" 
+      version="3.0"&gt;
+    &lt;body&gt;
+        &lt;par id="par1"&gt;
+            &lt;text src="chapter1.xhtml#sentence1"/&gt;
+            &lt;audio src="chapter1_audio.mp3" clipBegin="0s" clipEnd="10s"/&gt;
+        &lt;/par&gt;
+        &lt;par id="par2"&gt;
+            &lt;text src="chapter1.xhtml#sentence2"/&gt;
+            &lt;audio src="chapter1_audio.mp3" clipBegin="10s" clipEnd="20s"/&gt;
+        &lt;/par&gt;
+        &lt;par id="par3"&gt;
+            &lt;text src="chapter1.xhtml#sentence3"/&gt;
+            &lt;audio src="chapter1_audio.mp3" clipBegin="20s" clipEnd="30s"/&gt;
+        &lt;/par&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;</pre>
+            </aside>
+
+            <p><code>par</code> elements can also be added to <code>seq</code> elements to define more complex structures
+               such as parts and chapters (see <a href="#sec-media-overlays-structure">Structure</a>).</p>
+
+         </section>
+
+         <section id="sec-docs-relations">
+            <h2>Relationship to the EPUB Content Document</h2>
+
+            <div class="note">
+               <p>In this section, the <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+                     Document</a> is assumed to be an <a class="glossterm"
+                     href="epub-spec.html#gloss-content-document-epub-xhtml">XHTML Content Document</a>. While Media Overlays
+                  can be used with <a class="glossterm" href="epub-spec.html#gloss-content-document-epub-svg">SVG Content
+                     Documents</a>, playback behavior might not be consistent and therefore interoperability is not
+                  guaranteed.</p>
+            </div>
+
+            <section id="sec-media-overlays-structure">
+               <h3>Structure</h3>
+
+               <p>The <a href="#elemdef-smil-body"><code>body</code></a> of a Media Overlay Document consists of two
+                  elements: the <a href="#elemdef-smil-par"><code>par</code></a> element and the <a href="#elemdef-smil-seq"
+                        ><code>seq</code></a> element. The ordering of these elements MUST match the default reading order of
+                  the EPUB Content Document.</p>
+
+               <p>The <code>par</code> element represents phrases. Each element identifies a text and audio component to
+                  sychronize during playback.</p>
+
+               <p>The <code>seq</code> element represents sequences. It is used to represent nested containers such as
+                  sections, asides, headers, and footnotes. It allows the structure inherent in these containers to be
+                  retained in the Media Overlay Document.</p>
+
+               <p>The <code>seq</code> element MUST contain an <a href="#attrdef-body-textref"><code>epub:textref</code></a>
+                  attribute. The IRI [[!RFC3987]] value of this attribute MUST reference the corresponding structural element
+                  in an EPUB Content Document. As <code>seq</code> elements do not provide synchronization instructions, this
+                  attribute allows a Reading System to still match the element to a location in the text.</p>
+
+               <div class="example" id="example-mo-nesting">
+
+                  <p>The following example shows a Media Overlay Document with nested <code>seq</code> elements, representing
+                     a chapter with both a section header and a figure.</p>
+                  <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" xmlns:epub="http://www.idpf.org/2007/ops" version="3.0"&gt;
+    &lt;body&gt;
+
+        &lt;!-- a chapter --&gt;
+        &lt;seq id="id1" epub:textref="chapter1.xhtml#s01" epub:type="chapter"&gt;
+
+            &lt;!-- the section title --&gt;
+            &lt;par id="id2"&gt;
+                &lt;text src="chapter1.xhtml#section1_title"/&gt;
+                &lt;audio src="chapter1_audio.mp3"
+                       clipBegin="0:23:23.84"
+                       clipEnd="0:23:34.221"/&gt;
+            &lt;/par&gt;
+
+            &lt;!-- some sentences in the chapter --&gt;
+            &lt;par id="id3"&gt;
+                &lt;text src="chapter1.xhtml#text1"/&gt;
+                &lt;audio src="chapter1_audio.mp3"
+                       clipBegin="0:23:34.221"
+                       clipEnd="0:23:59.003"/&gt;
+            &lt;/par&gt;
+            &lt;par id="id4"&gt;
+                &lt;text src="chapter1.xhtml#text2"/&gt;
+                &lt;audio src="chapter1_audio.mp3"
+                       clipBegin="0:23:59.003"
+                       clipEnd="0:24:15.000"/&gt;
+            &lt;/par&gt;
+
+            &lt;!-- a figure --&gt;
+            &lt;seq id="id7" epub:textref="chapter1.xhtml#figure"&gt;
+                &lt;par id="id8"&gt;
+                    &lt;text src="chapter1.xhtml#photo"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:24:18.123"
+                           clipEnd="0:24:28.764"/&gt;
+                &lt;/par&gt;
+                &lt;par id="id9"&gt;
+                    &lt;text src="chapter1.xhtml#caption"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:24:28.764"
+                           clipEnd="0:24:50.010"/&gt;
+                &lt;/par&gt;
+            &lt;/seq&gt;
+
+            &lt;!-- more sentences in the chapter (outside the figure) --&gt;
+            &lt;par id="id12"&gt;
+                &lt;text src="chapter1.xhtml#text3"/&gt;
+                &lt;audio src="chapter1_audio.mp3"
+                       clipBegin="0:25:45.515"
+                       clipEnd="0:26:30.203"/&gt;
+            &lt;/par&gt;
+            &lt;par id="id13"&gt;
+                &lt;text src="chapter1.xhtml#text4"/&gt;
+                &lt;audio src="chapter1_audio.mp3"
+                       clipBegin="0:26:30.203"
+                       clipEnd="0:27:15.000"/&gt;
+            &lt;/par&gt;
+
+        &lt;/seq&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;
+</pre>
+               </div>
+
+               <div class="note">
+                  <p>The reason for grouping structures like sections, figures, tables, and footnotes in a <code>seq</code>
+                     element is so that their start and end positions can be identified during playback. Reading Systems can
+                     then offer playback options tailored to the layout of the given <a class="glossterm"
+                        href="epub-spec.html#gloss-rendition">Rendition</a>, such as jumping past a long figure, turning off
+                     rendering of page break announcements (see <a href="#sec-behaviors-skip-escape">Skippability and
+                        Escapability</a>), or customizing the reading mode to suit structures such as tables.</p>
+               </div>
+
+               <aside class="example">
+                  <p>The following example shows the EPUB Content Document that corresponds to the <a
+                        href="#example-mo-nesting">previous Media Overlay example</a>.</p>
+                  <pre>&lt;html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:epub="http://www.idpf.org/2007/ops" 
+      xml:lang="en" 
+     &gt;
+    &lt;head&gt;
+        &lt;title&gt;Media Overlays Example of EPUB Content Document&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body id="sec1"&gt;
+        &lt;section id="sectionstart" epub:type="chapter"&gt;
+            &lt;h1 id="section1_title"&gt;The Section Title&lt;/h1&gt;
+            &lt;p id="text1"&gt;The first phrase of the main text body.&lt;/p&gt;
+            &lt;p id="text2"&gt;The second phrase of the main text body.&lt;/p&gt;
+            &lt;figure id="figure"&gt;
+                &lt;img id="photo" 
+                     src="photo.png" 
+                     alt="a photograph for which there is a caption" /&gt;
+                &lt;figcaption id="caption"&gt;The photo caption&lt;/figcaption&gt;
+            &lt;/figure&gt;
+            &lt;p id="text3"&gt;The third phrase of the main text body.&lt;/p&gt;
+            &lt;p id="text4"&gt;The fourth phrase of the main text body.&lt;/p&gt;
+        &lt;/section&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </aside>
+
+            </section>
+
+            <section id="sec-media-overlays-granularity" class="informative">
+               <h3>Granularity</h3>
+
+               <p>Media Overlay <a href="#elemdef-smil-text"><code>text</code></a> elements' <code>src</code> attributes
+                  refer to <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>
+                  elements by their IDs [[XML]]. The granularity level of the Media Overlay therefore depends on how the EPUB
+                  Content Document is marked up. If the finest level of markup is at the paragraph level, then that is the
+                  finest possible level at which Media Overlay synchronization can be authored. Likewise, if sub-paragraph
+                  markup is available, such as [[HTML]] <a
+                     href="https://www.w3.org/TR/html/textlevel-semantics.html#the-span-element"><code>span</code></a>
+                  elements representing phrases or sentences, then finer granularity is possible in the Media Overlay. Finer
+                  granularity gives users more precise results for synchronized playback when navigating by word or phrase
+                  and when searching the text, but increases the file size of the Media Overlay Documents.</p>
+
+            </section>
+
+            <section id="sec-audio-video">
+               <h3>Embedded Media</h3>
+
+               <p>Any <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>
+                  associated with a Media Overlay MAY contain embedded media such as video, audio, and images. The Media
+                  Overlay <a href="#elemdef-smil-text"><code>text</code></a> element MAY be used in such instances to
+                  reference the embedded media by its ID [[!XML]] value.</p>
+
+               <p>When a <code>text</code> element references embedded media that contains audio, the <a
+                     href="#elemdef-smil-audio"><code>audio</code></a> sibling element is OPTIONAL.</p>
+
+               <p><a class="glossterm" href="epub-spec.html#gloss-author">Authors</a> SHOULD avoid using scripts to control
+                  playback of referenced embedded EPUB Content Document media, as this might conflict with Media Overlays
+                  playback behavior.</p>
+
+            </section>
+
+            <section id="sec-tts">
+               <h3>Text-to-Speech</h3>
+
+               <p> This specification allows the use of <a class="glossterm" href="epub-spec.html#gloss-tts">Text-to-Speech
+                     (TTS)</a> in addition to pre-recorded audio clips. When a Media Overlay <a href="#elemdef-smil-text"
+                        ><code>text</code></a> element with no <a href="#elemdef-smil-audio"><code>audio</code></a> sibling
+                  element references an element within the target <a class="glossterm"
+                     href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>, the contents of that
+                  referenced element MUST be appropriate for rendering via TTS. For example, it could be a textual EPUB
+                  Content Document element or contain a text fallback.</p>
+
+            </section>
+
+         </section>
+
+         <section id="sec-docs-semantic-inflection">
+            <h2>Semantic Inflection</h2>
+
+            <p>In order to express semantic inflections, the <a
+                  href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#attrdef-epub-type"><code>epub:type</code>
+                  attribute</a> [[!ContentDocs301]] MAY be attached to Media Overlay <a href="#elemdef-smil-par"
+                     ><code>par</code></a>, <a href="#elemdef-smil-seq"><code>seq</code></a>, and <a
+                  href="#elemdef-smil-body"><code>body</code></a> elements.</p>
+
+            <p>Values for the Media Overlay <code>epub:type</code> attribute are constrained identically to the
+                  <code>epub:type</code> attribute in <a class="glossterm" href="epub-spec.html#gloss-content-document-epub"
+                  >EPUB Content Documents</a>. Refer to <a
+                  href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-xhtml-semantic-inflection">Semantic
+                  Inflection</a> [[!ContentDocs301]] for details.</p>
+
+            <p> The <code>epub:type</code> attribute facilitates Reading System behavior appropriate for the semantic type(s)
+               indicated. Examples of these behaviors are <a href="#sec-behaviors-skip-escape">Skippability and
+                  Escapability</a> and <a href="#note-table-reading-mode">Note</a>.</p>
+
+            <aside class="example">
+               <p>The following example shows the semantic markup for a Media Overlay containing a figure.</p>
+               <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" 
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      version="3.0"&gt;
+    &lt;body&gt;
+        &lt;seq id="id1" epub:textref="chapter1.xhtml#figure" epub:type="figure"&gt;
+            &lt;par id="id2"&gt;
+                &lt;text src="chapter1.xhtml#figuretitle"/&gt;
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:15.000" clipEnd="0:24:18.123"/&gt;
+            &lt;/par&gt;
+            &lt;par id="id3"&gt;
+                &lt;text src="chapter1.xhtml#figurecaption"/&gt;
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:18.123" clipEnd="0:24:38.530"/&gt;
+            &lt;/par&gt;
+            &lt;par id="id4"&gt;
+                &lt;text src="chapter1.xhtml#figuretext1"/&gt;
+                &lt;audio src="chapter1_audio.mp3" clipBegin="0:24:38.530" clipEnd="0:25:00.515"/&gt;
+            &lt;/par&gt;
+        &lt;/seq&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;</pre>
+            </aside>
+
+            <p>This specification adopts the vocabulary association mechanisms defined in <a
+                  href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-contentdocs-vocab-association">Vocabulary
+                  Association</a> [[!ContentDocs301]] unmodified. Terms from the <a
+                  href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-contentdocs-default-vocab">default
+                  vocabulary</a> MUST be used unprefixed in Overlay Documents.</p>
+
+            <p>Media Overlays MAY use additional vocabularies by defining them in the <a href="#attrdef-smil-prefix"
+                     ><code>epub:prefix</code></a> attribute on the root <code>smil</code> element.</p>
+
+         </section>
+
+         <section id="sec-docs-assoc-style">
+            <h2>Associating Style Information</h2>
+
+            <p>Visual rendering information for the currently-playing <a class="glossterm"
+                  href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a> element MAY be expressed in the
+               CSS Style Sheet using author-defined classes. These author-defined class names SHOULD be declared in the <a
+                  class="glossterm" href="epub-spec.html#gloss-package-document">Package Document</a> metadata using the
+               metadata properties <a href="http://www.idpf.org/epub/vocab/overlays/#active-class"
+                  ><code>active-class</code></a> and <a href="http://www.idpf.org/epub/vocab/overlays/#playback-active-class"
+                     ><code>playback-active-class</code></a> [[!OverlaysVocab]]. The class names are then discoverable by
+               Reading Systems.</p>
+
+            <p>This example demonstrates how Authors can associate style information with the currently-playing EPUB Content
+               Document.</p>
+
+            <div class="note">
+               <p>Although this example uses the class names <code>-epub-media-overlay-active</code> and
+                     <code>-epub-media-overlay-playing</code>, any class names are permitted. The class names chosen can be
+                  used along with any supported CSS features.</p>
+            </div>
+
+            <aside class="example">
+               <p>The author-defined CSS class names, declared using the metadata properties <a
+                     href="http://www.idpf.org/epub/vocab/overlays/#active-class"><code>active-class</code></a> and <a
+                     href="http://www.idpf.org/epub/vocab/overlays/#playback-active-class"
+                     ><code>playback-active-class</code></a> [[!OverlaysVocab]] in the Package Document:</p>
+               <pre>&lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;
+&lt;meta property="media:playback-active-class"&gt;-epub-media-overlay-playing&lt;/meta&gt;
+                </pre>
+
+               <p>The CSS Style Sheet containing the author-defined class names:</p>
+               <pre>/* emphasize the active element */
+.-epub-media-overlay-active {
+    background-color: yellow;
+    color: black !important;
+}
+
+/* fade out the inactive text */
+html.-epub-media-overlay-playing * {
+    color: gray;
+}
+</pre>
+
+               <p>The relevant EPUB Content Document excerpt:</p>
+               <pre>&lt;html&gt;
+    …
+    &lt;span id="txt1"&gt;This is the first phrase.&lt;/span&gt;
+    &lt;span id="txt2"&gt;This is the second phrase.&lt;/span&gt;
+    &lt;span id="txt3"&gt;This is the third phrase.&lt;/span&gt;
+    …
+&lt;/html&gt;</pre>
+
+            </aside>
+
+            <p>In this example, the Reading System would apply the author-defined <code>-epub-media-overlay-active</code>
+               class to each text element in the EPUB Content Document as it became active during playback. Conversely, the
+               class name is removed when the element is no longer active. The user would see each EPUB Content Document
+               element styled with a yellow background for the duration of that element's playback.</p>
+
+            <p>The Reading System would also apply the author-defined <code>-epub-media-overlay-playing</code> class to the
+               document element of the EPUB Content Document when Media Overlays playback begins. The class name is removed
+               when playback stops. In the case of an XHTML Content Document, the class name would be applied to the
+                  <code>html</code> element. In the case of an SVG Content Document, it would be applied to the
+                  <code>svg</code> element. The user would see all the inactive text elements turn gray during Media Overlays
+               playback. When playback stopped, the elements’ colors would return to their defaults.</p>
+
+         </section>
+
+         <section id="sec-docs-package">
+            <h2>Packaging</h2>
+
+            <section id="sec-package-including">
+               <h3>Including Media Overlays</h3>
+
+               <p><a class="glossterm" href="epub-spec.html#gloss-manifest">Manifest</a>
+                  <a href="epub-packages.html#elemdef-package-item"><code>item</code> elements</a> [[!Packages31]] that
+                  reference <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Documents</a>
+                  MAY specify a Media Overlay via the <a href="epub-packages.html#attrdef-item-media-overlay"
+                        ><code>media-overlay</code> attribute</a>. The attribute MUST reference the ID [[!XML]] of the
+                  manifest <code>item</code> for the corresponding Media Overlay Document.</p>
+
+               <p>Manifest items for Media Overlay Documents MUST have the media type <code>application/smil+xml</code>.</p>
+
+               <p>The duration of an EPUB Content Document MUST be specified in a <a
+                     href="epub-packages.html#attrdef-item-duration"><code>duration</code> attribute</a> [[!Packages31]] on
+                  its manifest <code>item</code>.</p>
+
+               <aside class="example">
+                  <p>The following example shows how to include Media Overlays in the manifest of a Package Document.</p>
+                  <pre>&lt;manifest&gt;
+   &lt;item id="ch1" 
+         href="chapter1.xhtml" 
+         media-type="application/xhtml+xml" 
+         media-overlay="ch1_audio"
+         duration="0:32:29"/&gt;
+   
+   &lt;item id="ch1_audio" 
+         href="chapter1_audio.smil" 
+         media-type="application/smil+xml"/&gt;
+   …
+&lt;/manifest&gt;</pre>
+               </aside>
+
+               <p>If an EPUB Content Document is wholly or partially referenced by a Media Overlay, then its manifest
+                     <code>item</code> entry MUST include a <code>media-overlay</code> attribute.</p>
+
+               <p>The <code>media-overlay</code> attribute MUST NOT be attached to manifest <code>item</code> elements that
+                  do not reference <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+                     Documents</a>.</p>
+
+            </section>
+
+            <section id="sec-package-metadata">
+               <h3>Package Metadata</h3>
+
+               <p>The <a class="glossterm" href="epub-spec.html#gloss-package-document">Package Document</a> MUST include the
+                  duration of the entire <a class="glossterm" href="epub-spec.html#gloss-rendition">Rendition</a> in a <a
+                     href="epub-packages.html#elemdef-package-item"><code>meta</code> element</a> with the <a
+                     href="http://www.idpf.org/epub/vocab/overlays/#duration"><code>duration</code> [<abbr class="abbrev"
+                        >Overlays Vocab</abbr>] property</a>.</p>
+
+               <p><a class="glossterm" href="epub-spec.html#gloss-author">Authors</a> also MAY include <a
+                     href="http://www.idpf.org/epub/vocab/overlays/#narrator"><code>narrator</code></a> [[!OverlaysVocab]]
+                  information in the Package Document, as well as <a href="#sec-docs-assoc-style">author-defined CSS class
+                     names</a> to be applied to the currently-playing EPUB Content Document element.</p>
+
+               <aside class="example">
+                  <p>The following example shows a Package Document with metadata about Media Overlays.</p>
+                  <pre>&lt;metadata&gt;
+   …
+   &lt;meta property="media:duration"&gt;1:36:20&lt;/meta&gt;
+   &lt;meta property="media:narrator"&gt;Joe Speaker&lt;/meta&gt;
+   &lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;
+   &lt;meta property="media:playback-active-class"&gt;-epub-media-overlay-playing&lt;/meta&gt;
+   …
+&lt;/metadata&gt;</pre>
+               </aside>
+
+               <div class="note">
+                  <p>The prefix <a href="epub-packages.html#sec-metadata-reserved-prefixes"><code>media:</code></a> is
+                     reserved by [[Packages31]] for the inclusion of these properties in package metadata.</p>
+               </div>
+
+            </section>
+
+         </section>
+
+      </section>
+      <section id="sec-overlay-behaviors">
+         <h1>Playback Behaviors</h1>
+
+         <section id="sec-behaviors-loading">
+            <h2>Loading the Media Overlay</h2>
+
+            <p>When an <a class="glossterm" href="epub-spec.html#gloss-epub-reading-system">EPUB Reading System</a> loads a
+                  <a class="glossterm" href="epub-spec.html#gloss-package-document">Package Document</a>, it MUST refer to
+               the <a class="glossterm" href="epub-spec.html#gloss-manifest">Manifest</a>
+               <a href="epub-packages.html#elemdef-package-item"><code>item</code> elements'</a>
+               <code>media-overlay</code> attributes to discover the corresponding Media Overlays for <a class="glossterm"
+                  href="epub-spec.html#gloss-content-document-epub">EPUB Content Documents</a>. Playback MUST start at the
+               Media Overlay element which corresponds to the desired EPUB Content Document starting point. Note that the
+               start of an EPUB Content Document MAY correspond to an element at the start or in the middle of a Media
+               Overlay. When the Media Overlay Document has finished playing, the Reading System SHOULD load the next EPUB
+               Content Document (as specified in the Package Document <a class="glossterm" href="epub-spec.html#gloss-spine"
+                  >spine</a>) and also load its corresponding Media Overlay Document, provided that one is given.</p>
+
+         </section>
+
+         <section id="sec-behaviors-playback">
+            <h2>Basic Playback</h2>
+
+            <section id="sec-rsconf-timing-synch">
+               <h3>Timing and Synchronization</h3>
+
+               <p>Reading Systems MUST render immediate children of the <a href="#elemdef-smil-body"><code>body</code></a>
+                  element in a sequence. A <a href="#elemdef-smil-seq"><code>seq</code></a> element's children MUST be
+                  rendered in sequence, and playback completes when the last child has finished playing. A <a
+                     href="#elemdef-smil-par"><code>par</code></a> element's children MUST be rendered in parallel (with each
+                  starting at the same time), and playback completes when all the children have finished playing. When the
+                     <code>body</code> element's last child has finished playing, playback of the Media Overlay Document is
+                  done.</p>
+
+            </section>
+
+            <section id="sec-rsconf-rendering-audio">
+               <h3>Rendering Audio</h3>
+
+               <p>When presented with a Media Overlay <a href="#elemdef-smil-audio"><code>audio</code></a> element, Reading
+                  Systems MUST play the audio resource referenced by the <code>src</code> attribute, starting at the clip
+                  offset time given by the <a href="#attrdef-smil-clipBegin"><code>clipBegin</code></a> attribute and ending
+                  at the clip offset time given by the <a href="#attrdef-smil-clipEnd"><code>clipEnd</code></a> attribute.
+                  The following rules MUST be observed:</p>
+
+               <ul>
+                  <li>
+                     <p>If <code>clipBegin</code> is not specified, its value is assumed to be "<code>0</code>".</p>
+                  </li>
+                  <li>
+                     <p>If <code>clipEnd</code> is not specified, its value is assumed to be the full duration of the
+                        physical media.</p>
+                  </li>
+                  <li>
+                     <p>If <code>clipEnd</code> exceeds the full duration of the physical media, then its value is assumed to
+                        be the full duration of the physical media.</p>
+                  </li>
+               </ul>
+
+               <p>User-controllable audio playback options SHOULD include timescale modification, in which the playback rate
+                  is altered without distorting the pitch. The suggested range is half-speed to double-speed.</p>
+
+            </section>
+
+            <section id="sec-rsconf-rendering-text">
+               <h3>Rendering EPUB Content Document Elements</h3>
+
+               <p>When presented with a Media Overlay <a href="#elemdef-smil-text"><code>text</code></a> element, Reading
+                  Systems SHOULD ensure the EPUB Content Document element referenced by the <code>src</code> attribute is
+                  visible in the <a class="glossterm" href="epub-spec.html#gloss-viewport">Viewport</a>. During Media
+                  Overlays playback, Reading Systems with a Viewport SHOULD add the class names given by the metadata
+                  properties <a href="http://www.idpf.org/epub/vocab/overlays/#active-class"><code>active-class</code></a>
+                  and <a href="http://www.idpf.org/epub/vocab/overlays/#playback-active-class"
+                        ><code>playback-active-class</code></a> [[!OverlaysVocab]] to the appropriate elements in the EPUB
+                  Content Document. Conversely, the class names SHOULD be removed when the playback state changes, as
+                  described in <a href="#sec-docs-assoc-style">Associating Style Information</a>.</p>
+
+               <p>The <code>active-class</code> and <code>playback-active-class</code> metadata properties are OPTIONAL, and
+                  if omitted, Reading System behavior is implementation-specific.</p>
+
+            </section>
+
+         </section>
+
+         <section id="sec-behaviors-interaction">
+            <h2>Interacting with the EPUB Content Document</h2>
+
+            <section id="sec-rsconf-navigation">
+               <h3>Navigation</h3>
+
+               <p>Because the Media Overlay is closely linked to the <a class="glossterm"
+                     href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>, it is very easy for Reading
+                  Systems to locate a position in the EPUB Content Document based on the current position in the Media
+                  Overlay playback. If the user pauses synchronized playback and navigates to a different part of the <a
+                     class="glossterm" href="epub-spec.html#gloss-epub-publication">EPUB Publication</a>, synchronized
+                  playback MUST resume at that point. For example, if a specific page number in the EPUB Content Document is
+                  the desired location, then this same point is located in the Media Overlay and playback started there.</p>
+
+               <p>This same approach allows for synchronizing the Media Overlay playback with user selection of a navigation
+                  point in the <a class="glossterm" href="epub-spec.html#gloss-content-document-epub-nav">EPUB Navigation
+                     Document</a>. The Reading System loads the Media Overlay for that file and finds the correct point for
+                  starting playback based on the ID [[!XML]] of the navigation point target.</p>
+
+               <div class="note">
+                  <p>A Media Overlay Document can be associated directly with a Navigation Document in order to provide
+                     synchronized playback of its contents, regardless of whether the <a class="glossterm"
+                        href="epub-spec.html#gloss-content-document-epub-xhtml">XHTML Content Document</a> in which it
+                     resides is included in the <a class="glossterm" href="epub-spec.html#gloss-spine">spine</a>. See <a
+                        href="#sec-nav-doc"><em>EPUB Navigation Document</em></a> for more information.</p>
+               </div>
+
+               <div class="note" id="note-table-reading-mode">
+                  <p>Media Overlay Document elements can be associated with EPUB Content Document structures such as tables.
+                     Reading Systems need to ensure that Media Overlay playback remains synchronized with user navigation of
+                     table rows and cells. The Reading System might also play the corresponding table header preceding the
+                     contents of the cell.</p>
+               </div>
+
+            </section>
+
+            <section id="sec-embedded-media">
+               <h3>Embedded Audio and Video</h3>
+
+               <p> An <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a> with
+                  which a Media Overlay is associated MAY itself contain embedded video and audio media, which MAY be pointed
+                  to by Media Overlay elements. Unlike text and images, video and audio media has an intrinsic duration.
+                  Consequently, when a Reading System renders the synchronization described by a Media Overlay, the default
+                  playback behavior of audio and video media embedded within the associated EPUB Content Document MUST be
+                  overridden.</p>
+
+               <p>Note that the rules below apply only to <em>referenced</em> [[!HTML]] <a
+                     href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+                     ><code>video</code></a> or <a
+                     href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-audio-element"
+                     ><code>audio</code></a> elements within the associated EPUB Content Document. That is to say, the rules
+                  apply to only those elements pointed to by <a href="#elemdef-smil-text"><code>text</code></a> elements
+                  within the Media Overlay (i.e., via the <code>src</code> attribute). Embedded media that is not referenced
+                  by Media Overlay elements is not subject to these rules.</p>
+
+               <ul>
+                  <li>
+                     <p>All referenced audio and video media embedded within an EPUB Content Document MUST have their public
+                        playback interface deactivated (typically: play/pause control, time slider, volume level, etc.). This
+                        behavior is necessary to avoid interference between the scheduled playback sequence defined by the
+                        Media Overlay, and the arbitrary playback behavior due to user interaction or script execution. As a
+                        result, when the Reading System is in playback mode, it SHOULD:</p>
+                     <ul>
+                        <li>
+                           <p>Hide the individual video/audio UI controls from the page, which overrides the default behavior
+                              defined by the [[!HTML]] <a
+                                 href="https://www.w3.org/TR/html/semantics-embedded-content.html#element-attrdef-mediaelements-controls"
+                                    ><code>controls</code></a> attribute.</p>
+                        </li>
+                        <li>
+                           <p>Prevent scripts embedded within the EPUB Content Document from invoking the JavaScript
+                              audio/video playback API (i.e., authored as part of the default behavior). It is RECOMMENDED
+                              that content producers avoid publishing embedded scripts dedicated to controlling the playback
+                              of embedded audio/video media. The published Media Overlay can then retain full control of the
+                              synchronized presentation without any risk of interference from script-enabled custom
+                              behaviors.</p>
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     <p>All referenced audio and video media embedded within an EPUB Content Document MUST be initialized to
+                        their "stopped" state, and be ready to be played from the zero-position within their content stream
+                        (possibly displaying the image specified using the [[!HTML]] <a
+                           href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+                              ><code>poster</code></a> attribute). This requirement overrides the default behavior defined by
+                        the [[!HTML]] <a href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+                              ><code>autoplay</code></a> attribute.</p>
+                  </li>
+                  <li>
+                     <p>When an EPUB Content Document element becomes active, the CSS Style Sheet visual highlighting rules
+                        apply regardless of the content type referred to by that element's <code>src</code> attribute (e.g.,
+                        the CSS class name defined by the <a href="http://www.idpf.org/epub/vocab/overlays/#active-class"
+                              ><code>active-class</code></a> [[!OverlaysVocab]] metadata property SHOULD be applied to
+                        visible video and audio player controls within the host EPUB Content Document).</p>
+                  </li>
+                  <li>
+                     <p>In addition to the default behavior of Media Overlay activation for textual fragments and images,
+                        audio and video playback MUST be started and stopped according to the duration implied by the
+                        authored Media Overlay synchronization (as per the standard [[!SMIL]] timing model). There are two
+                        possible scenarios:</p>
+                     <ul>
+                        <li>
+                           <p>When a Media Overlay <code>text</code> element has no <a href="#elemdef-smil-audio"
+                                    ><code>audio</code></a> sibling within its <a href="#elemdef-smil-par"
+                                 ><code>par</code></a> parent container, the referenced EPUB Content Document audio or video
+                              media MUST play until it ends, at which point the <code>text</code> element's lifespan
+                              terminates. In this case, the implicit duration of the <code>text</code> element (and by
+                              inference, of the parent <code>par</code> container) is that of the referenced audio or video
+                              clip.</p>
+                        </li>
+                        <li>
+                           <p>When a Media Overlay <code>text</code> element has an <code>audio</code> sibling within its
+                                 <code>par</code> parent container, the playback duration of the referenced EPUB Content
+                              Document audio or video media MUST be constrained by the duration of the <code>audio</code>
+                              sibling. In this case, the actual duration of the parent <code>par</code> container is that of
+                              the child audio clip, regardless of the duration of the video or audio media pointed to by the
+                                 <code>text</code> element. This behavior can result in embedded video or audio media ending
+                              playback prematurely (before reaching its full duration), or ending before the playback of the
+                              parallel Media Overlay <code>audio</code> is finished (in which case the last-played video
+                              frame SHOULD remain visible until the parent <code>par</code> container finally ends). This
+                              behavior is equivalent of the Media Overlay <code>audio</code> element implicitly carrying the
+                              behavior of the [[!SMIL]] <a
+                                 href="https://www.w3.org/TR/2008/REC-SMIL3-20081201/smil-timing.html#adef-endsync"
+                                    ><code>endsync</code></a> attribute.</p>
+                           <p>Furthermore, Reading Systems SHOULD expose user controls for the volume levels of each
+                              independent audio track (i.e., from the <code>audio</code> element of the Media Overlay, and
+                              from the embedded audio or video media within the EPUB Content Document), so that audio output
+                              can be adjusted to match listeners' requirements. Note that having overlapping audio tracks is
+                              typically an authoring-time concern: content producers usually add a layer of audio information
+                              over a video track for description purposes. It is RECOMMENDED that overlapping audio
+                              situations are carefully examined and dealt with at production stage, as Reading Systems are
+                              NOT REQUIRED to handle simultaneous volume levels in any particular way.</p>
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     <p>When a <code>text</code> element becomes inactive in the Media Overlay, and when it points to
+                        embedded video or audio media, that referenced media MUST be reset to its initial "stopped" state,
+                        ready to be played from the zero-position within their content stream (possibly displaying the poster
+                        image specified using the [[!HTML]] markup).</p>
+                  </li>
+               </ul>
+
+            </section>
+
+            <section id="sec-text-to-speech">
+               <h3>Text-to-Speech</h3>
+
+               <p>When a Media Overlay <a href="#elemdef-smil-text"><code>text</code></a> element with no <a
+                     href="#elemdef-smil-audio"><code>audio</code></a> sibling element references text within the target <a
+                     class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content Document</a>, Reading
+                  Systems capable of <a class="glossterm" href="epub-spec.html#gloss-tts">Text-to-Speech (TTS)</a> SHOULD
+                  render the referenced text using TTS.</p>
+
+               <p>As per Reading System conformance requirements, the speech-related information provided in the target EPUB
+                  Content Document SHOULD be used to play the audio stream as part of the Media Overlay rendering. See <a
+                     href="epub-spec.html#confreq-rs-epub3-tts">Reading System Text-to-Speech Conformance Requirements</a>
+                  [[!EPUB31]].</p>
+
+               <p>The Media Overlay <code>text</code> element's lifespan corresponds to the rendering time of the associated
+                  speech synthesis. The implicit duration of the <code>text</code> element (and by inference, of the parent
+                     <code>par</code> element) is therefore determined by the execution of the Text-to-Speech engine, and
+                  cannot be known at authoring time (factors like speech rate, pauses and other prosody parameters influence
+                  the audio output).</p>
+
+            </section>
+
+         </section>
+
+         <section id="sec-behaviors-skip-escape">
+            <h2>Skippability and Escapability</h2>
+
+            <section id="sec-skippability">
+               <h3>Skippability</h3>
+
+               <p>While reading, users might want to turn on or off certain features of the content, such as footnotes, page
+                  numbers, or other types of secondary content. This feature is called skippability. Reading Systems SHOULD
+                  use the semantic information provided by Media Overlay elements' <a href="#sec-docs-semantic-inflection"
+                        ><code>epub:type</code></a> attribute to determine when to offer users the option of skippable
+                  features.</p>
+
+               <aside class="example">
+                  <p>The following example shows a Media Overlay Document with a pagebreak. A Reading System could offer the
+                     user the option of turning on and off the page break/page number announcements, which are often
+                     cumbersome to listen to.</p>
+                  <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" 
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      version="3.0"&gt;
+    &lt;body&gt;
+        &lt;!-- a paragraph --&gt;
+        &lt;par id="id1"&gt;
+            &lt;text src="chapter1.xhtml#para1"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:23:22.000"
+                   clipEnd="0:24:15.000"/&gt;
+        &lt;/par&gt;
+
+        &lt;!-- a page number --&gt;
+        &lt;par id="id2" epub:type="pagebreak"&gt;
+            &lt;text src="chapter1.xhtml#pgbreak1"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:24:15.000"
+                   clipEnd="0:24:18.123"/&gt;
+        &lt;/par&gt;
+
+        &lt;!-- another paragraph --&gt;
+        &lt;par id="id3"&gt;
+            &lt;text src="chapter1.xhtml#para2"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:24:18.123"
+                   clipEnd="0:25:28.530"/&gt;
+        &lt;/par&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;
+</pre>
+               </aside>
+
+               <aside class="example">
+                  <p>The following example shows an EPUB Content Document with a pagebreak.</p>
+                  <pre>&lt;html … &gt;
+    …
+    &lt;body&gt;
+        &lt;p id="para1"&gt;This is the paragraph before the pagebreak … &lt;/p&gt;
+        
+        &lt;span id="pgbreak1" epub:type="pagebreak"/&gt;
+        
+        &lt;p id="para2"&gt;This is the paragraph after the pagebreak …&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </aside>
+
+               <p>The following non-exhaustive list represents terms from the [[!EPUB-SSV]] for which Reading Systems might
+                  offer the option of skippability:</p>
+
+               <ul>
+                  <li>
+                     <p>footnote</p>
+                  </li>
+                  <li>
+                     <p>endnote</p>
+                  </li>
+                  <li>
+                     <p>pagebreak</p>
+                  </li>
+               </ul>
+
+               <p>Reading System support for skippability based on <code>epub:type</code> values SHOULD NOT be assumed.</p>
+
+            </section>
+
+            <section id="sec-escabaility">
+               <h3>Escapability</h3>
+
+               <p>Escapable items are nested structures, such as tables and lists, that users might wish to skip over,
+                  continuing to read from the point immediately after the nested structure. The escapability feature differs
+                  from the skippability feature in that it does not enable or disable entire types of items, but provides an
+                  exit from them (e.g., a user can listen to some of the content before choosing to escape).</p>
+
+               <p>Reading Systems SHOULD allow escaping of nested structures. Reading Systems MUST determine the start of
+                  nested structures by the value of the <a href="#sec-docs-semantic-inflection"><code>epub:type</code></a>
+                  attribute and SHOULD offer users the option to skip playback of that structure and resume with whatever
+                  content comes after it.</p>
+
+               <aside class="example">
+                  <p>The following example shows the Media Overlay Document for an EPUB Content Document containing a
+                     paragraph, a table, and another paragraph. A Reading System that supported escapability would give the
+                     user the option to interrupt playback of the table to continue playing the next paragraph.</p>
+                  <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" 
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      version="3.0"&gt;
+    &lt;body&gt;
+        &lt;!-- a paragraph, part of the regular document text --&gt;
+        &lt;par id="id1"&gt;
+            &lt;text src="c01.xhtml#para1"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:23:22.000"
+                   clipEnd="0:24:15.000"/&gt;
+        &lt;/par&gt;
+
+        &lt;!-- a table with two nested rows --&gt;
+        &lt;seq id="id2" epub:textref="c01.xhtml#t1" epub:type="table"&gt;
+            &lt;seq id="id3" epub:textref="c01.xhtml#tr1" epub:type="table-row"&gt;
+                &lt;par id="id4" epub:type="table-cell"&gt;
+                    &lt;text src="c01.xhtml#td1"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:24:15.000"
+                           clipEnd="0:24:18.123"/&gt;
+                &lt;/par&gt;
+                &lt;par id="id5" epub:type="table-cell"&gt;
+                    &lt;text src="c01.xhtml#td2"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:24:18.123"
+                           clipEnd="0:25:28.530"/&gt;
+                &lt;/par&gt;
+                &lt;par id="id6" epub:type="table-cell"&gt;
+                    &lt;text src="c01.xhtml#td3"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:25:28.530"
+                           clipEnd="0:25:45.515"/&gt;
+                &lt;/par&gt;
+            &lt;/seq&gt;
+            &lt;seq id="id7" epub:textref="c01.xhtml#tr2" epub:type="table-row"&gt;
+                &lt;par id="id8" epub:type="table-cell"&gt;
+                    &lt;text src="c01.xhtml#td4"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:25:45.515"
+                           clipEnd="0:26:45.700"/&gt;
+                &lt;/par&gt;
+                &lt;par id="id9" epub:type="table-cell"&gt;
+                    &lt;text src="chapter1.xhtml#td5"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:26:45.700"
+                           clipEnd="0:28:02.033"/&gt;
+                &lt;/par&gt;
+                &lt;par id="id10" epub:type="table-cell"&gt;
+                    &lt;text src="chapter1.xhtml#td6"/&gt;
+                    &lt;audio src="chapter1_audio.mp3"
+                           clipBegin="0:28:02.033"
+                           clipEnd="0:28:52.207"/&gt;
+                &lt;/par&gt;
+            &lt;/seq&gt;
+        &lt;/seq&gt;
+
+        &lt;!-- another paragraph --&gt;
+        &lt;par id="id11"&gt;
+            &lt;text src="c01.xhtml#para2"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:28:52.207"
+                   clipEnd="0:30:01.000"/&gt;
+        &lt;/par&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;</pre>
+               </aside>
+
+               <p>The following non-exhaustive list represents terms from the [[!EPUB-SSV]] for which Reading Systems might
+                  offer the option of escapability:</p>
+
+               <ul>
+                  <li>
+                     <p>table</p>
+                  </li>
+                  <li>
+                     <p>table-row</p>
+                  </li>
+                  <li>
+                     <p>table-cell</p>
+                  </li>
+                  <li>
+                     <p>list</p>
+                  </li>
+                  <li>
+                     <p>list-item</p>
+                  </li>
+                  <li>
+                     <p>figure</p>
+                  </li>
+               </ul>
+
+            </section>
+
+         </section>
+
+      </section>
+      <section id="sec-nav-doc">
+         <h1>EPUB Navigation Document</h1>
+
+         <p>The <a class="glossterm" href="epub-spec.html#gloss-content-document-epub-nav">EPUB Navigation Document</a> is an
+               <a class="glossterm" href="epub-spec.html#gloss-content-document-epub-xhtml">XHTML Content Document</a> and
+            can therefore be associated with an audio Media Overlay. Unlike traditional XHTML Content Documents, however, <a
+               class="glossterm" href="epub-spec.html#gloss-epub-reading-system">Reading Systems</a> have to present the EPUB
+            Navigation Document to users even when it is not included in the <a class="glossterm"
+               href="epub-spec.html#gloss-spine">spine</a> (see <a href="epub-packages.html#sec-package-nav-rs-conf">EPUB
+               Navigation Documents — Reading System Conformance</a> [[!Packages31]]). As a result, the method in which an
+            associated Media Overlay behaves can change depending on the context:</p>
+
+         <ul>
+            <li>
+               <p>When included in the spine, playback of the EPUB Navigation Document's Media Overlay obeys the same
+                  conformance requirements as with any other XHTML Content Document.</p>
+            </li>
+            <li>
+               <p>When exposed in a presentation context that allows users to access and activate the links, Reading Systems
+                  MAY implement additional presentation behaviours to expose audio feedback when navigation links are
+                  accessed.</p>
+            </li>
+         </ul>
+
+         <div class="note">
+            <p>Specific implementation details are beyond the scope of this specification. The <a
+                  href="http://www.daisy.org/guidelines/epub/media-overlays-playback-requirements">DAISY Media Overlays
+                  Playback Requirements</a> document describes best practices for Authors, and provides recommendations for
+               Reading System developers.</p>
+         </div>
+
+      </section>
+      <section class="appendix" id="app-overlays-schema">
+         <h1>Media Overlays Schema</h1>
+
+         <p>The schema for Media Overlays is available at <a href="http://www.idpf.org/epub/31/schema/media-overlay-31.nvdl"
+               >http://www.idpf.org/epub/31/schema/media-overlay-31.nvdl</a>.</p>
+
+         <p>Validation using this schema requires a processor that supports [[!NVDL]], [[!RelaxNG-Schema]],
+            [[!ISOSchematron]] and [[!XMLSCHEMA-2]].</p>
+
+         <div class="note">
+            <p>The NVDL schema layer can be substituted by a multi-pass validation using the embedded RELAX NG and ISO
+               Schematron schemas alone.</p>
+         </div>
+
+      </section>
+      <section class="appendix" id="app-clock-examples">
+         <h1>Examples of Clock Values</h1>
+
+         <p>The following are examples of allowed clock values:</p>
+
+         <ul>
+            <li>
+               <p><code>5:34:31.396</code> = 5 hours, 34 minutes, 31 seconds and 396 milliseconds</p>
+            </li>
+            <li>
+               <p><code>124:59:36</code> = 124 hours, 59 minutes and 36 seconds</p>
+            </li>
+            <li>
+               <p><code>0:05:01.2</code> = 5 minutes, 1 second and 200 milliseconds</p>
+            </li>
+            <li>
+               <p><code>0:00:04</code> = 4 seconds</p>
+            </li>
+            <li>
+               <p><code>09:58</code> = 9 minutes and 58 seconds</p>
+            </li>
+            <li>
+               <p><code>00:56.78</code> = 56 seconds and 780 milliseconds</p>
+            </li>
+            <li>
+               <p><code>76.2s</code> = 76.2 seconds = 76 seconds and 200 milliseconds</p>
+            </li>
+            <li>
+               <p><code>7.75h</code> = 7.75 hours = 7 hours and 45 minutes</p>
+            </li>
+            <li>
+               <p><code>13min</code> = 13 minutes</p>
+            </li>
+            <li>
+               <p><code>2345ms</code> = 2345 milliseconds</p>
+            </li>
+            <li>
+               <p><code>12.345</code> = 12 seconds and 345 milliseconds</p>
+            </li>
+         </ul>
+
+
+      </section>
+      <div data-include="common/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"></div>
+   </body>
+</html>
