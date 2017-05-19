@@ -4,6 +4,8 @@ Repository for EPUB 3 specification documents of the [EPUB 3 Community Group](ht
 
 HTML documents on this repository’s master branch can also be displayed in a browser via the `https://w3c.github.io/publ-epub-revision/...` URLs. 
 
+## EPUB 3.1 Specification
+
 1. [EPUB 3.1 Overview](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-overview.html)
 2. [EPUB 3.1 Specification](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-spec.html)
 3. [EPUB Packages 3.1](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-packages.html)
@@ -12,6 +14,11 @@ HTML documents on this repository’s master branch can also be displayed in a b
 6. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-ocf.html)
 7. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/epub31/spec/accessibility.html)
 8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/epub31/spec/altss-tags.html)
+
+
+## Registries
+
+1. [EPUB Publication Type Registry](https://w3c.github.io/publ-epub-revision/registries/epub-publication-types-registry.html)
 
 ---
 
