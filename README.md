@@ -12,8 +12,8 @@ HTML documents on this repository’s master branch can also be displayed in a b
 4. [EPUB Content Documents 3.1](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-contentdocs.html)
 5. [EPUB Media Overlays 3.1](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-mediaoverlays.html)
 6. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub31/spec/epub-ocf.html)
-7. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/epub31/spec/accessibility.html)
-8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/epub31/spec/altss-tags.html)
+7. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
+8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
 
 
 ## Registries
