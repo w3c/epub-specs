@@ -155,8 +155,12 @@ var biblio = {
       "date": "2006-06-01"
     },
     "OCF31": {
-      "title": "Open Container Format 3.1",
+      "title": "Open Container Format (OCF) 3.1",
       "href": "epub-ocf.html"
+    },
+    "OCF301": {
+      "title": "EPUB Open Container Format (OCF) 3.0.1",
+      "href": "http://www.idpf.org/epub/301/spec/epub-ocf.html"
     },
     "ODF": {
       "title": "Open Document Format for Office Applications (OpenDocument) v1.0",
