@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>Open Annotation in EPUB</title>
+        <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+        <script src="../common/js/biblio.js" class="remove"></script>
+        <script src="../common/js/dfn-crossref.js" class="remove"></script>
+        <script src="../common/js/confreq-permalinks.js" class="remove"></script>
+        <link href="../common/css/common.css" rel="stylesheet" type="text/css" />
+        <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-oa",
+              edDraftURI: "http://w3c.github.io/publ-epub-revision/oa/epub-oa.html",
+              editors: [
+                  {
+                      name: "Romain Deltour",
+                      company: "DAISY",
+                      companyURL: "http://daisy.org"
+                  },
+                  {
+                      name: "Matt Garrish",
+                      company: "Invited Expert"
+                  },
+                  {
+                      name: "Markus Gylling",
+                      company: "International Digital Publishing Forum (IDPF)",
+                      companyURL: "http://idpf.org"
+                  },
+                  {
+                      name: "Rob Sanderson",
+                      company: "Invited Expert"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+    </head>
+    <body>
+        <section id="abstract">
+            <p>Open Annotation in EPUB defines an adaptation of the W3C Open Annotation Data Model [[OA]] for representing
+                annotations in an EPUB Publication.</p>
+        </section>
+        <section id="sotd">
+            <p>The media type value for the annotation document defined in <a href="#sec-pub-conf-collections-structure"
+                    >3.2.1 Structure</a> is subject to change prior to this specification becoming a recommendation.</p>
+        </section>
+        <section>
+            <h2 id="sec-overview">Overview</h2>
+
+            <section class="informative">
+                <h3>Purpose and Scope</h3>
+
+                <p>This specification, Open Annotation in EPUB, defines a profile of the W3C Open Annotation specification
+                    [[OA]] for the creation, distribution and rendering of annotations for EPUB® Publications.</p>
+            </section>
+
+            <section id="sec-terminology">
+                <h3>Terminology</h3>
+
+                <p>Refer to the EPUB Specifications for definitions of EPUB-specific terminology used in this document.</p>
+
+                <div class="glosslist">
+                    <dl>
+                        <dt><dfn>Annotation Document</dfn></dt>
+                        <dd>The JSON document [[!RFC4627]] containing the collection of annotations, which follows the
+                            JSON-LD conventions [[!JSON-LD]].</dd>
+                    </dl>
+                </div>
+            </section>
+
+            <section id="conformance"></section>
+
+            <section id="sec-namespaces" class="informative">
+                <h3>Namespaces</h3>
+
+                <p>The following namespaces are used in this specification:</p>
+
+                <table class="mapping">
+                    <thead>
+                        <tr>
+                            <th>Prefix</th>
+                            <th>Namespace</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>oa</td>
+                            <td><a href="http://www.w3.org/ns/oa#">http://www.w3.org/ns/oa#</a></td>
+                            <td><a href="http://www.openannotation.org/spec/core/">The Open Annotation ontology</a></td>
+                        </tr>
+                        <tr>
+                            <td>epub</td>
+                            <td><a href="http://www.idpf.org/epub/vocab/oa#">http://www.idpf.org/epub/vocab/oa#</a></td>
+                            <td>The Open Annotation in EPUB ontology</td>
+                        </tr>
+                        <tr>
+                            <td>cnt</td>
+                            <td><a href="http://www.w3.org/2011/content#">http://www.w3.org/2011/content#</a></td>
+                            <td><a href="http://www.w3.org/TR/Content-in-RDF10/">Representing Content in RDF</a></td>
+                        </tr>
+                        <tr>
+                            <td>dc</td>
+                            <td><a href="http://purl.org/dc/elements/1.1/">http://purl.org/dc/elements/1.1/</a></td>
+                            <td><a href="http://dublincore.org/documents/dces/">Dublin Core Elements</a></td>
+                        </tr>
+                        <tr>
+                            <td>dcterms</td>
+                            <td><a href="http://purl.org/dc/terms/">http://purl.org/dc/terms/</a></td>
+                            <td><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core Terms</a></td>
+                        </tr>
+                        <tr>
+                            <td>dctypes</td>
+                            <td><a href="http://purl.org/dc/dcmitype/">http://purl.org/dc/dcmitype/</a></td>
+                            <td><a href="http://dublincore.org/documents/dcmi-type-vocabulary/">Dublin Core Type
+                                    Vocabulary</a></td>
+                        </tr>
+                        <tr>
+                            <td>schema</td>
+                            <td><a href="http://schema.org/">http://schema.org/</a></td>
+                            <td><a href="http://schema.org/">Schema.org Vocabulary</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </section>
+        <section>
+            <h2 id="sec-conformance">Conformance</h2>
+
+            <section id="sec-conformance-content">
+                <h3>Content Conformance</h3>
+
+                <p>A conformant Annotation Document MUST meet all of the following criteria:</p>
+
+                <ul class="conformance-list">
+                    <li><p id="confreq-anno-serialization">It MUST be serialized as defined in <a href="#sec-pub-comp-format"
+                                >3.1.1 Format</a>, and conform to the JSON-LD representation schema in <a href="#app-schema"
+                                >Appendix B</a>.</p></li>
+                    <li><p id="confreq-anno-collection">It MUST include exactly one collection conforming to the requirements
+                            in <a href="#sec-pub-conf-collections">3.2 Collections</a>.</p></li>
+                    <li><p id="confreq-anno-packaging">It MUST conform to the packaging requirements in <a
+                                href="#sec-pub-conf-packaging">3.1.3 Packaging</a>.</p></li>
+                    <li><p id="confreq-anno-content">Each annotation in the document:</p>
+                        <ul class="conformance-list">
+                            <li><p id="confreq-anno-content-metadata">MUST include the necessary metadata defined in <a
+                                        href="#sec-anno-metadata">4.1 Metadata</a>.</p></li>
+                            <li><p id="confreq-anno-content-fragment">MUST have a valid [[!HTML5]] fragment as its body, as
+                                    defined in <a href="#sec-anno-body">4.2 Body</a>.</p></li>
+                            <li><p id="confreq-anno-content-styling">MAY include styling information, as defined in <a
+                                        href="#sec-anno-body-styling">4.2.2 Styling</a>.</p></li>
+                            <li><p id="confreq-anno-content-target">MUST identify a target, as defined in <a
+                                        href="#sec-anno-targets">4.3 Targets</a>.</p></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="sec-conformance-rs">
+                <h3>Reading System Conformance</h3>
+
+                <p>An EPUB Reading System MUST meet all of the following criteria for processing annotations:</p>
+
+                <ul class="conformance-list">
+                    <li><p id="confreq-rs-export">It SHOULD provide a mechanism to export annotations conformant with this
+                            specification.</p></li>
+                    <li><p id="confreq-rs-import">It MUST provide a mechanism for the import of annotations conformant with
+                            this specification, which includes both annotations provided from an <a
+                                href="#sec-pub-conf-pack-standalone">external source</a>, as well as annotations <a
+                                href="#sec-pub-conf-pack-embedded">embedded within an EPUB Publication</a>.</p></li>
+                </ul>
+
+                <p>This specification does not mandate how a Reading System is to present annotations to the User.</p>
+            </section>
+        </section>
+        <section id="sec-publishing">
+            <h2>Publishing</h2>
+
+            <section id="sec-pub-composition">
+                <h3>Composition</h3>
+
+                <section id="sec-pub-comp-format">
+                    <h4>Format</h4>
+
+                    <p>The Annotation Document MUST be serialized in a JSON document [[!RFC4627]] which follows the JSON-LD
+                        conventions [[!JSON-LD]].</p>
+
+                    <p>The document MUST be valid to the schema provided in <a href="#app-schema">Appendix B</a>.</p>
+                </section>
+
+                <section id="sec-pub-conf-identifiers">
+                    <h4>Identifiers</h4>
+
+                    <p>To ensure global uniqueness across all Annotation Documents, identifiers for resources MUST be URIs
+                        [[!RFC3986]] and SHOULD either follow the HTTP/S [[!RFC2616]] or UUID URN [[!RFC4122]] schemes.</p>
+
+                    <p>Identifiers of Collections and Annotations will be given as the value of an <code>@id</code> property
+                        in the Annotation Document.</p>
+                </section>
+
+                <section id="sec-pub-conf-packaging">
+                    <h4>Packaging</h4>
+
+                    <section id="sec-pub-conf-pack-standalone">
+                        <h5>Standalone Collections</h5>
+
+                        <p>The need to package annotations independent of an EPUB Publication is important in many
+                            distribution scenarios: a publisher might sell annotations separately from their publications,
+                            Reading Systems need a way to synchronize annotations between devices, and so on.</p>
+
+                        <p>To facilitate this model, the Annotation Document MAY be exchanged as a standalone file, provided
+                            the annotations it contains do not reference any <a href="#sec-pub-conf-pack-local-res">local
+                                resources</a>.</p>
+
+                        <p>If any of the annotations in the Annotation Document reference local resources, however, the
+                            document MUST be zipped together with those resources for interchange.</p>
+
+                        <p>The ZIP container used to package the Annotation Document with the local resources MUST conform to
+                            [[!ZIP APPNOTE 6.3.3]].</p>
+
+                        <p>The Annotation Document MUST be stored in the root of the ZIP container and MUST have the file
+                            name "<code>annotations.json</code>".</p>
+                    </section>
+
+                    <section id="sec-pub-conf-pack-embedded">
+                        <h5>Embedded Collections</h5>
+
+                        <p>It is not always feasible for the Annotation Document and <a href="#sec-pub-conf-pack-local-res"
+                                >local resources</a> be separate from the EPUB Publication they annotate. A publisher might
+                            want to include one or more collections of annotations in the default distribution, for
+                            example.</p>
+
+                        <p>To facilitate this model, the Annotation Document and all local resources MAY be included in the
+                            Rendition being annotated. If the annotations apply to more than one Rendition, the Annotation
+                            Document SHOULD be included in the Default Rendition.</p>
+
+                        <p>When embedding the Annotation Document and local resources, they MUST NOT be included as a ZIP
+                            file in the EPUB Container [[!OCF301]].</p>
+
+                        <p>Instead, the Annotation Document and all local resources are listed in the Package Document
+                            manifest [[!Publications301]] and included in the EPUB Container like any other Publication
+                            Resources.</p>
+                    </section>
+
+                    <section id="sec-pub-conf-pack-local-res">
+                        <h5>Local Resources</h5>
+
+                        <p>Annotations MAY reference local resources additional to the Annotation Document itself. Such
+                            resources are referenced using relative IRIs [[!RFC3987]], and are resolved relative to the
+                            location of the Annotation Document.</p>
+
+                        <p>All local resources MUST be valid <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-core-media-types">Core
+                                Media Types</a> [[!Publications301]].</p>
+
+                        <div class="note">
+                            <p>Local resources have to be zipped with the Annotation Document when creating a standalone
+                                distribution file, as described in <a href="#sec-pub-conf-pack-standalone">3.1.3.1 Standalone
+                                    Collections</a>.</p>
+                        </div>
+                    </section>
+
+                    <section id="sec-pub-conf-pack-remote-res">
+                        <h5>Remote Resources</h5>
+
+                        <p>Remotely-hosted resources MAY be referenced from annotations, but Reading Systems are not required
+                            to dereference and render such resources.</p>
+
+                        <p>All remote resources MUST be valid <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-core-media-types">Core
+                                Media Types</a> [[!Publications301]].</p>
+                    </section>
+                </section>
+            </section>
+            <section id="sec-pub-conf-collections">
+                <h3>Collections</h3>
+
+                <section id="sec-pub-conf-collections-structure">
+                    <h4>Structure</h4>
+
+                    <p>The root object of the Annotation Document MUST contain exactly one object, which represents the
+                        collection of annotations.</p>
+
+                    <p>The annotation collection object MUST have an "<code>annotations</code>" property, which defines the
+                        array of annotation objects for the collection. The annotations array typically includes one or more
+                        annotations, but MAY be empty. Refer to <a href="#sec-annotation">4. Annotations</a> for more
+                        information on defining individual annotations.</p>
+
+                    <p>The annotation collection MUST have the following properties:</p>
+
+                    <ul>
+                        <li><code>@context </code>‒ The mapping document that specifies the semantics of the JSON structure.
+                            MUST specify the value "<code>http://www.idpf.org/epub/oa/1.0/context.json</code>".</li>
+                        <li><code>@id</code> ‒ The identifier for the collection. Refer to <a
+                                href="#sec-pub-conf-identifiers">3.1.2 Identifiers</a> for identifier requirements.</li>
+                        <li><code>@type</code> ‒ Conveys that the object is a collection of annotations. MUST specify the
+                            value "<code>epub:AnnotationCollection</code>".</li>
+                        <li><code>annotations</code> ‒ The set of annotations in the collection. The value MUST be a JSON
+                            array, which MAY be empty.</li>
+                    </ul>
+
+                    <p>The Annotation Document's format MUST be identified by the media type
+                            "<code>application/ld+json;profile=http://www.idpf.org/epub/oa/1.0/</code>".</p>
+
+                    <p>This specification extends the <a
+                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-core-media-types">EPUB 3 Core
+                            Media Types</a> [[!Publications301]] to allow Annotation Documents designated using this media
+                        type to travel in the EPUB Container [[!OCF301]].</p>
+
+                    <div class="example">
+                        <p>The following example shows the default structure of an annotation collection.</p>
+                        <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [ … ]
+}</pre>
+                    </div>
+                </section>
+
+                <section id="sec-pub-conf-collections-metadata">
+                    <h4>Metadata</h4>
+
+                    <p>Collection metadata MAY be included as additional properties of the collection object. The values of
+                        these properties are intended for presenting information about the collection to Users.</p>
+
+                    <p>When providing collection metadata, annotation authors are strongly RECOMMENDED to utilize the
+                        following properties from DCMI Metadata Terms [[!DCTERMS]] where applicable:</p>
+
+                    <ul>
+                        <li><code>dc:created</code></li>
+                        <li><code>dc:creator</code></li>
+                        <li><code>dc:description</code></li>
+                        <li><code>dc:language</code></li>
+                        <li><code>dcterms:modified</code></li>
+                        <li><code>dc:publisher</code></li>
+                        <li><code>dc:rights</code></li>
+                        <li><code>dc:title</code></li>
+                    </ul>
+
+                    <p>Additional metadata MAY be included, but Reading Systems processing of such metadata is OPTIONAL.
+                        Reading Systems SHOULD provide an interface for the User to view any metadata provided.</p>
+
+                    <p>Metadata properties accept either a single value or an array of values. Reading Systems SHOULD make
+                        use of multiple values provided in different languages using the <code>@value/@language</code>
+                        construction from [[!JSON-LD]] in order to provide an accessible interface.</p>
+
+                    <aside class="example">
+                        <p>The following example shows typical metadata for an annotation collection.</p>
+                        <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json",
+   "@type": "epub:AnnotationCollection",
+   "dc:title": "Alice in Wonderland Annotations",
+   "dc:publisher": "Example Organization",
+   "dc:creator": "Anne O'Tater",
+   "dcterms:modified": "2014-03-17T12:30:00Z", 
+   "dc:description": "Anne's collection of annotations on Alice in Wonderland", 
+   "dc:rights": [
+      {"@value": "Quelques droits en Français", "@language": "fr"}, 
+      {"@value": "Some Rights in English", "@language": "en"}
+   ],
+   "annotations": [ … ]
+}</pre>
+                    </aside>
+                </section>
+            </section>
+        </section>
+        <section id="sec-annotations">
+            <h2>Annotations</h2>
+
+            <section id="sec-anno-metadata">
+                <h3>Metadata</h3>
+
+                <section id="sec-anno-meta-general">
+                    <h4>General</h4>
+
+                    <p>Each annotation object MUST include the following child properties:</p>
+
+                    <ul>
+                        <li><code>@id</code> ‒ The identifier for the annotation. Identifiers MUST be URIs and globally
+                            unique.</li>
+                        <li><code>@type</code> ‒ Identifies that the object is an annotation. MUST specify the value
+                                "<code>oa:Annotation</code>".</li>
+                        <li><code>hasTarget</code> ‒ The target of the annotation. MUST be a publication, as defined in <a
+                                href="#sec-anno-targets-hastarget">4.3.1 The <code>hasTarget</code> Property</a>, or a
+                            segment thereof. An annotation MAY have more than one target, in which case the value of
+                                <code>hasTarget</code> is an array of publications or segments.</li>
+                    </ul>
+
+                    <p>The provenance of the annotation SHOULD be identified in the annotation metadata, as detailed in <a
+                            href="http://www.openannotation.org/spec/core/core.html#Provenance">2.2 Annotation Provenance</a>
+                        [[!OA]]. Likewise, the motivation SHOULD be identified, as detailed in <a
+                            href="http://www.openannotation.org/spec/core/core.html#Motivations">2.3 Motivations</a>
+                        [[!OA]].</p>
+
+                    <p>An annotation object MAY include additional properties defined in [[!OA]].</p>
+
+                    <p>All properties accept either a single value or an array of values.</p>
+
+                    <aside class="example">
+                        <p>The following example shows typical provenance and motivation expressions for an annotation.</p>
+                        <pre>{
+   "@id": "http://example.org/epub/annotation/1.json",
+   "@type": "oa:Annotation",
+   "motivatedBy": "oa:commenting",
+   "annotatedBy": {
+      "@id": "mailto:Anne@example.org",
+      "@type": "foaf:Person",
+      "name": "Anne O'Tater"
+   }, 
+   "annotatedAt": "2014-03-20T09:32:30Z", 
+   "hasTarget": { … }, 
+   "hasBody": { … }
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-meta-target">
+                    <h4>Target Audience</h4>
+
+                    <p>It is sometimes the case that annotations are intended for only a certain audience. For example, a
+                        teacher's guide might be expressed as a set of annotations intended only for the instructor.</p>
+
+                    <p>To specify the intended audience of an annotation, Authors MAY use the <code>audience</code> property
+                        on an annotation. The use of the [[!schema.org]] <a href="http://www.schema.org/Audience"
+                            >Audience</a> class and sub-classes, plus their properties, is RECOMMENDED with this property.
+                        Property names from these classes MUST be prefixed with "<code>schema:</code>".<br /></p>
+
+                    <aside class="example">
+                        <p>The following example shows an annotation intended for use by teachers.</p>
+                        <pre>{
+   "@id": "http://example.org/epub/annotation/1.json", 
+   "@type": "oa:Annotation", 
+   "audience": {
+      "@type" : "schema:EducationalAudience",
+      "schema:educationalRole" : "teacher"
+   },
+   "hasTarget": { … }, 
+   "hasBody": { … }
+}</pre>
+                    </aside>
+
+                    <p>The <code>audience</code> property MAY identify a single audience or an array of audiences.</p>
+
+                    <p>If a Reading System provides the ability for the User to indicate their role, and recognizes the
+                        expressed audience, it MUST filter the annotations displayed to the User. In all other cases, Reading
+                        Systems MUST ignore this property.</p>
+
+                    <div class="note">
+                        <p>For annotations intended for educational audiences, the [[!schema.org]] <a
+                                href="http://www.schema.org/EducationalAudience">EducationalAudience</a> type is suggested,
+                            using <a href="http://www.idpf.org/epub/profiles/edu/10/edupub.html#h.plhteljwdwn3">the
+                                recommended terms from the </a><a
+                                href="http://www.idpf.org/epub/profiles/edu/10/edupub.html#h.plhteljwdwn3">EDUPUB Profile</a>
+                            for the <a href="http://www.schema.org/educationalRole">educationalRole</a> property to identify
+                            the audience.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section id="sec-anno-body">
+                <h3>Body</h3>
+
+                <section id="sec-anno-body-structure">
+                    <h4>Structure</h4>
+
+                    <p>Each annotation object MAY include a comment, called the body of the annotation. The annotation body
+                        is defined in a child <code>hasBody</code> property of the annotation object. If present, this
+                        property MUST reference an object consisting of the following properties:</p>
+
+                    <ul>
+                        <li><code>format</code> ‒ Identifies the media type of the body content in the <code>chars</code>
+                            property. For this version of this specification, the property MUST have the value
+                                "<code>application/xhtml+xml</code>".</li>
+                        <li><code>@type</code> ‒ A general specification of the type of content in the <code>chars</code>
+                            property. For this version of this specification, the property MUST have the value
+                                "<code>dctypes:Text</code>". (Note that this value is not a restriction on the [[!HTML5]]
+                            content that can be included in the <code>chars</code> property; the use of audio, video and
+                            images is valid in the fragment.)</li>
+                        <li><code>chars</code> ‒ the XHTML document fragment conforming to the requirements detailed in this
+                            section.</li>
+                    </ul>
+
+                    <p>The language of the body SHOULD be identified in a child <code>language</code> property of the body
+                        object whose value MUST conform to [[!RFC5646]]. It is strongly RECOMMENDED that the language also be
+                        specified on the root element of the body fragment to ensure proper rendering in assistive
+                        technologies.</p>
+
+                    <p>The annotation body MUST contain an [[!HTML5]] document fragment, using the XML serialization. The
+                        fragment root MUST be an [[!HTML5]] <a href="http://www.w3.org/TR/html5/dom.html#flow-content">Flow
+                            Content</a> element and the body fragment MUST be UTF-8 encoded [[!Unicode]].</p>
+
+                    <p>The annotation body MUST NOT contain instances of the [[!HTML5]] <a
+                            href="http://www.w3.org/TR/html5/scripting-1.html#the-script-element">script</a> element and
+                        Reading Systems MUST NOT execute scripts embedded in the body, if encountered.</p>
+
+                    <div class="ednote">
+                        <p>The restriction on scripting will be reviewed in a future version of this specification, after a
+                            security model is developed for Open Annotation.</p>
+                    </div>
+
+                    <aside class="example">
+                        <p>The following example shows an annotation body, which will be referenced from the
+                                <code>hasBody</code> property of the annotation.</p>
+                        <pre>{
+   "@type": "dctypes:Text",
+   "format": "application/xhtml+xml", 
+   "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;", 
+   "language": "en"
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-body-styling">
+                    <h4>Styling</h4>
+
+                    <p>As the annotation body does not allow linking to an external CSS style sheet, styling information has
+                        to be included by other means. Styling information MAY be be inlined using the [[!HTML5]]
+                            <code>style</code> attribute or by embedding a scoped <code>style</code> element.</p>
+
+                    <p>CSS stylesheets referenced via an inline CSS <code>@import </code>rule MUST be UTF-8 encoded
+                        [[!Unicode]].</p>
+
+                    <p>Reading Systems with a CSS viewport SHOULD support the EPUB 3 CSS Profile [[!ContentDocs301]] for
+                        rendering annotations.</p>
+
+                    <aside class="example">
+                        <p>The following example shows a body with embedded style.</p>
+                        <pre>{
+   "@type": "dctypes:Text", 
+   "format": "application/xhtml+xml", 
+   "chars": "&lt;div
+                style='font-family:sans-serif;' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in
+                Wonderland&lt;/div&gt;", 
+   "language": "en"
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-body-accessibility">
+                    <h4>Accessibility</h4>
+
+                    <p>Authors are strongly RECOMMENDED to identify the accessible qualities of the annotation body using the
+                            <code>accessibilityFeature</code> property of the [[!schema.org]] <a
+                            href="http://schema.org/CreativeWork">CreativeWork</a> type (e.g., that alternative text is
+                        provided for embedded images). The value of the property MUST be a list, even if there is only one
+                        feature provided.</p>
+
+                    <aside class="example">
+                        <p>The following example shows typical accessibility features for a body.</p>
+                        <pre>{
+   "@id": "http://example.org/epub/annotation/1.json",
+   "@type": "oa:Annotation",
+   "hasTarget": { … },
+   "hasBody": {
+      "@type": "dctypes:Text",
+      "format": "application/xhtml+xml",
+      "language": "en",
+      "accessibilityFeature": ["alternativeText", "captions"]
+   }
+}</pre>
+                    </aside>
+
+                    <p>The other [[!schema.org]] accessibility properties MAY be specified, as appropriate.</p>
+
+                    <p>The vocabulary of recommended terms to use with these properties is maintained at the <a
+                            href="https://www.w3.org/wiki/WebSchemas/Accessibility">W3C Web Schemas Wiki</a>.</p>
+                </section>
+            </section>
+
+            <section id="sec-anno-targets">
+                <h3>Targets</h3>
+
+                <section id="sec-anno-targets-hastarget">
+                    <h4>The <code>hasTarget</code> Property</h4>
+
+                    <p>The target of the annotation is identified in a child <code>hasTarget</code> property of the
+                        annotation object.</p>
+
+                    <p>The target MUST be either an <code>oa:SpecificResource</code> with the EPUB Publication as the <a
+                            href="#sec-anno-targets-ref">object of <code>hasSource</code></a> or <a
+                            href="#sec-anno-targets-annotating">another <code>oa:Annotation</code></a>. In the case of an
+                        EPUB Publication, the annotation MAY reference a fragment thereof as described in <a
+                            href="#sec-anno-targets-selectors">4.3.5 Selectors</a>.</p>
+
+                    <p>The <code>hasTarget</code> property MAY identify a single target or an array of targets.</p>
+                </section>
+
+                <section id="sec-anno-targets-ref">
+                    <h4>Publication Referencing</h4>
+
+                    <p>The publication or work referenced by the annotation MUST be identified in the <code>hasSource</code>
+                        property of the the target object. The object representing the publication MUST have a
+                            <code>@type</code> property with the value "<code>dctypes:Text</code>".</p>
+
+                    <p>Additional metadata to aid in identification of the target publication SHOULD be given using any
+                        combination of the following optional properties:</p>
+
+                    <ul>
+                        <li><code>@id </code>- a URI that uniquely identifies the specific version of the EPUB Publication
+                            being annotated.</li>
+                        <li><code>originURL </code>- a URL of an actual location where the EPUB or more information about it
+                            (for example a "landing page") is available. The URL doesn't necessarily identify a specific
+                            version of the EPUB being annotated; if it does however, it can be the same URL as the value of
+                            the <code>@id</code> property.</li>
+                        <li><code>uniqueIdentifier </code>- the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-metadata-identifiers-uid"
+                                >Unique Identifier</a> of the target EPUB Publication [[!Publications301]].</li>
+                        <li><code>dcterms:modified </code>- the last modification date of the default Rendition of the target
+                            EPUB Publication, as part of the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-metadata-identifiers-pid"
+                                >Release Identifier</a> of the target EPUB Publication [[!Publications301]].</li>
+                        <li><code>dc:identifier </code>- any other identifier of the target publication, such as such as
+                            UUID, DOI, ISBN or ISSN. The value can be a string (representing a single identifier) of an array
+                            of strings (representing multiple identifiers).</li>
+                        <li>any other property representing arbitrary metadata on the publication target, such as its title,
+                            creator name, etc.</li>
+                    </ul>
+
+                    <p>Annotation Authors SHOULD provide as much as possible of the above information in the target
+                        object.</p>
+
+                    <p>All properties accept either a single value or an array of values.</p>
+
+                    <aside class="example">
+                        <p>The following example shows a set of source metadata for the target EPUB Publication in the
+                                <code>hasSource</code> property.</p>
+                        <pre>{
+   "@type": "oa:SpecificResource",
+   "hasSource": {
+      "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub", 
+      "@type": "dctypes:Text",
+      "uniqueIdentifier": "isbn:123456789x",
+      "originURL": "http://www.example.com/publisher/book/",
+      "dc:identifier": [
+         "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+         "isbn:123456789X"
+      ],
+      "dcterms:modified": "2011-01-01T12:00:00Z"
+   }
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-targets-specificity">
+                    <h4>Specificity</h4>
+
+                    <p>Although an annotation always refers to a published work, or fragment thereof, its scope can vary from
+                        applying to a specific release of an EPUB Publication to applying to any published version of the
+                        work – even print. Annotation Authors MAY use the <code>specificityLevel </code>property of the
+                        target object to explicitly define the intended scope of the annotation. This property can have the
+                        following values:</p>
+
+                    <ul>
+                        <li>“<code>release</code>” – indicates that the annotation is relevant to a specific release of an
+                            EPUB Publication, based on the Publication's Release Identifier.</li>
+                        <li>“<code>publication</code>” – indicates that the annotation is relevant to any version of an EPUB
+                            Publication, based on the Publication's Unique Identifier.</li>
+                        <li>“<code>work</code>” – indicates that the annotation is relevant to the work, regardless of its
+                            publisher and version.</li>
+                    </ul>
+
+                    <p>When the target object does not have a <code>specificityLevel</code> property, no default specificity
+                        level can be assumed and the Reading System SHOULD infer one from the available metadata, or
+                        negotiate with the user to come to the appropriate level.</p>
+
+                    <aside class="example">
+                        <p>The following example shows how an annotation that is specific to a work.</p>
+                        <pre>{
+   "@type": "oa:SpecificResource",
+   "specificityLevel": "work",
+   "hasSource": {
+      "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+      "@type": "dctypes:Text"
+   }
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-targets-renditions">
+                    <h4>Renditions</h4>
+
+                    <p>To handle multiple Renditions of an EPUB Publication in the Container, this specification adds the
+                        ability to select the specific Package Document [[!Publications301]] within the Container that
+                        evaluation of the fragment expression is to begin at.</p>
+
+                    <p>The path to the package document is specified in an object of type <code>epub:RenditionState
+                        </code>(the value of the <code>hasState</code> property). It MUST have an <code>opfPath</code>
+                        property, which contains the path to the Package Document relative to the root of the OCF
+                        Container.</p>
+
+                    <p>If an <code>epub:RenditionState</code> object is not specified, then any <a
+                            href="#sec-anno-targets-selectors-cfi">EPUB Canonical Fragment Identifiers</a> are resolved
+                        starting at the Package Document of the Default Rendition.</p>
+
+                    <p>The workflow that a Reading System SHOULD follow is:</p>
+
+                    <ol>
+                        <li>Determine the correct EPUB, given an identifier or the metadata from <code>hasSource</code>.</li>
+                        <li>Determine the correct Rendition, if there is an <code>epub:RenditionState</code> object.</li>
+                        <li>Determine the correct segment of the Rendition, if there is a <code>oa:FragmentSelector</code>
+                            that provides the CFI fragment (see <a href="#sec-anno-targets-selectors-cfi">Section
+                            4.3.5.1</a>).</li>
+                    </ol>
+
+                    <aside class="example">
+                        <p>The following example shows the source EPUB Publication and Rendition for resolving EPUB CFIs. </p>
+                        <pre>{
+   "@type": "oa:SpecificResource",
+   "hasSource": {
+      "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+      "@type": "dctypes:Text"
+   }, 
+   "hasState": {
+      "@type": "epub:RenditionState",
+      "opfPath": "/opfs/content.opf"
+   }
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-targets-selectors">
+                    <h4>Selectors</h4>
+
+                    <section id="sec-anno-targets-selectors-cfi">
+                        <h5>EPUB CFI Fragment Selector</h5>
+
+                        <p>If an annotation refers to a specific fragment of a resource within an EPUB Publication, that
+                            segment MUST be identified using the EPUB Canonical Fragment Identifiers (EPUB CFI) scheme
+                            [[!EPUB-CFI]].</p>
+
+                        <p>Each annotation MAY include an <code>oa:FragmentSelector</code> object that specifies the EPUB CFI
+                            (the value of the <code>hasSelector</code> property). The type of selector is defined in the
+                                <code>@type</code> property, which MUST specify the value
+                            "<code>oa:FragmentSelector</code>".</p>
+
+                        <p>The EPUB CFI in the <code>value</code> property of the <code>oa:FragmentSelector</code> object
+                            MUST NOT include a resource IRI [[!RFC3987]], only the fragment identifier excluding the initial
+                            hash (#).</p>
+
+                        <aside class="example">
+                            <pre>{
+   "@type": "oa:SpecificResource", 
+   "hasSource": {
+      "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+      "@type": "dctypes:Text"
+   }, 
+   "hasState": {
+      "@type": "epub:RenditionState",
+      "opfPath": "/opfs/content.opf"
+   },
+   "hasSelector": {
+      "@type": "oa:FragmentSelector", 
+      "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+   }
+}</pre>
+                        </aside>
+                    </section>
+
+                    <section id="sec-anno-targets-selectors-other">
+                        <h5>Other Selectors</h5>
+
+                        <p>The Open Annotation framework allows for multiple selectors to be specified to provide robustness
+                            of the target anchoring. This version of the Open Annotation in EPUB specification does not
+                            provide guidance on how to use the <a
+                                href="http://www.openannotation.org/spec/core/multiplicity.html">multiplicity constructs</a>
+                            [[!OA]] as currently there is not an accepted Selector for choosing a file within a containing
+                            resource, such as an HTML or image file within the EPUB container. A future version of this
+                            specification may specify how to define such selectors.</p>
+                    </section>
+                </section>
+
+                <section id="sec-anno-targets-styling">
+                    <h4>Styling</h4>
+
+                    <p>It is sometimes important to capture styling information for the target segments. For example,
+                        highlight colors might have meaning to the annotator, or the styling of the publication might make it
+                        difficult or impossible to see the default rendering of the target area. An additional style MAY be
+                        added by means of a <code>styleClass</code> property on the target and a <code>styledBy</code>
+                        property on the annotation itself that contains the stylesheet in a <code>oa:CssStyle</code>
+                        object.</p>
+
+                    <p>The <code>styleClass</code> property MUST have the name of a CSS class defined in the stylesheet. The
+                        stylesheet is embedded in the same way as <a href="#sec-anno-body-styling">the body</a>, and MUST
+                        have <code>@type</code> property with value "<code>oa:CssStyle</code>", and <code>format</code>
+                        property with the value "<code>text/css</code>". The stylesheet content is included as the value of
+                        the <code>chars</code> property of the object.</p>
+
+                    <aside class="example">
+                        <p>The following example shows a red border is to be applied to the target of the annotation.</p>
+                        <pre>{
+   "@id": "http://example.org/epub/annotation/1.json",
+   "@type": "oa:Annotation",
+   "motivatedBy": "oa:commenting",
+   "styledBy": {
+      "@type": "oa:CssStyle", 
+      "format": "text/css", 
+      "chars": ".red { border: 1px solid red; }"
+   }, 
+   "hasTarget": {
+      "@type": "oa:SpecificResource",
+      "hasSelector": {
+         "@type": "oa:FragmentSelector", 
+         "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+      },
+      "hasSource": {
+         "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+         "@type": "dctypes:Text"
+      },
+      "styleClass": "red"
+   }, 
+   "hasBody": { … }
+}</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-anno-targets-annotating">
+                    <h4>Annotating Annotations</h4>
+
+                    <p>An additional requirement, beyond annotating publications, is the ability to annotate other
+                        annotations. This allows for threaded conversations to occur, such as between teacher and student or
+                        between members of a reading group. The target of an annotation MAY be another annotation. In this
+                        case, the value of the <code>hasTarget</code> property MUST be the URI, given in <code>@id</code>, of
+                        the annotation being annotated. The motivation of the annotating annotation SHOULD be
+                            "<code>oa:replying</code>". </p>
+
+                    <aside class="example">
+                        <p>The following example shows an annotation (2.json) with another annotation (1.json) as its
+                            target.</p>
+                        <pre>{
+   "@id": "http://example.org/epub/annotation/2.json",
+   "@type": "oa:Annotation", 
+   "motivatedBy": "oa:replying",
+   "hasTarget": "http://example.org/epub/annotation/1.json", 
+   "hasBody": { … }
+}</pre>
+                    </aside>
+                </section>
+            </section>
+        </section>
+        <section id="app-examples" class="appendix informative">
+            <h2>Examples</h2>
+
+            <p>All examples use the same hypothetical publication of Alice in Wonderland, and are given in the collection
+                structure with a single annotation.</p>
+
+            <aside class="example" title="Commentary Annotation on Publication with URI">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6", 
+         "@type": "oa:Annotation", 
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+               "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+               "@type": "dctypes:Text"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text", 
+            "format": "application/xhtml+xml", 
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;", 
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Commentary Annotation on Publication without Identifying URI">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+                  "@type": "dctypes:Text",
+                  "uniqueIdentifier": "isbn:123456789x",
+                  "originURL": "http://www.example.com/publisher/book/",
+                  "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+                  "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Collection Metadata">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection", 
+   "dc:title": "Alice in Wonderland Annotations",
+   "dc:publisher": "Example Organization",
+   "dc:creator": "Anne O'Tater",
+   "dcterms:modified": "2014-03-17T12:30:00Z", 
+   "dc:description": "Anne's collection of annotations on Alice in Wonderland", 
+   "dc:rights": [
+      {
+         "@value": "Quelques droits en Français", 
+         "@language": "fr"
+      }, 
+      {
+         "@value": "Some Rights in English", 
+         "@language": "en"
+      }
+   ], 
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6", 
+         "@type": "oa:Annotation", 
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+                "@type": "dctypes:Text",
+                "uniqueIdentifier": "isbn:123456789x",
+                "originURL": "http://www.example.com/publisher/book/",
+                "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+                "dcterms:modified": "2011-01-01T12:00:00Z"
+             }
+          },
+          "hasBody": {
+             "@type": "dctypes:Text",
+             "format": "application/xhtml+xml",
+             "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;",
+             "language": "en"
+          },
+          "motivatedBy": "oa:commenting"
+       }
+    ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Annotation Provenance">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6", 
+         "@type": "oa:Annotation", 
+         "annotatedBy": {
+           "@id": "mailto:Anne@example.org", 
+           "@type": "foaf:Person", 
+           "name": "Anne O'Tater"
+         },
+         "annotatedAt": "2014-03-20T10:40:08Z",
+         "hasTarget": {
+            "@type": "oa:SpecificResource", 
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         }, 
+         "hasBody": {
+             "@type": "dctypes:Text",
+             "format": "application/xhtml+xml",
+             "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;",
+             "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Annotation with Ancillary Resources in the Zip">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6", 
+         "@type": "oa:Annotation", 
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland! &lt;img src='/imgs/heart.jpg'/&gt;&lt;/div&gt;"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Reading Location Bookmarking">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "http://example.org/epub/annotation/1.json", 
+         "@type": "oa:Annotation", 
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector",
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "motivatedBy": "oa:bookmarking"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Text Selection Highlighting">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection", 
+   "annotations": [
+      {
+         "@id": "http://example.org/epub/annotation/1.json",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector",
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "motivatedBy": "oa:highlighting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Commentary on Text Selection">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "http://example.org/epub/annotation/1.json",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector",
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love this part of the text&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Specifying a Rendition">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "http://example.org/epub/annotation/1.json",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector",
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            },
+            "hasState": {
+                "@type": "epub:RenditionState",
+                "opfPath": "/opfs/content.opf"
+            }
+         }, 
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love this part of the text&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Annotating Multiple Targets">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6",
+         "@type": "oa:Annotation",
+         "hasTarget": [
+            {
+               "@type": "oa:SpecificResource",
+               "hasSelector": {
+                  "@type": "oa:FragmentSelector",
+                  "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+               },
+               "hasSource": {
+                  "@type": "dctypes:Text",
+                  "uniqueIdentifier": "isbn:123456789x",
+                  "originURL": "http://www.example.com/publisher/book/",
+                  "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+                  "dcterms:modified": "2011-01-01T12:00:00Z"
+               }
+            },
+            {
+               "@type": "oa:SpecificResource",
+               "hasSelector": {
+                  "@type": "oa:FragmentSelector",
+                  "value": "epubcfi(/8/2[chap02ref]!/4[body02]/12[para06]/10:20)"
+               },
+               "hasSource": {
+                  "@id": "http://www.example.org/ebooks/A1B0D67E-2E81-4DF5/v2.epub",
+                  "@type": "dctypes:Text"
+               }
+            }
+         ],
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love the Cheshire Cat in these two sections&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Styling of Selection">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6", 
+         "@type": "oa:Annotation", 
+         "styledBy": {
+            "@type": "oa:CssStyle",
+            "format": "text/css",
+            "chars": ".red { border: 1px solid red; }"
+         },
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector", 
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            },
+            "styleClass": "red"
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love this part of the text&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Styling of Comment">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSelector": {
+               "@type": "oa:FragmentSelector",
+               "value": "epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/3:10)"
+            },
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div style='font-family:sans-serif;color:red;' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;",
+            "language": "en"
+         },
+         "motivatedBy": "oa:commenting"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Tagging">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json",
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6",
+         "@type": "oa:Annotation",
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;span xmlns='http://www.w3.org/1999/xhtml'&gt;fantasy&lt;/span&gt;"
+         },
+         "motivatedBy": "oa:tagging"
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Specifying Intended Audience(s)">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json",
+   "@id": "http://example.org/epub/annotations.json",
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:B81AF8C4-B04A-4D3D-B1D3-23F7C02E56BB",
+         "@type": "oa:Annotation",
+         "motivatedBy": "oa:commenting",
+         "audience" : [
+            {
+               "@type" : "schema:EducationalAudience",
+               "schema:educationalRole" : "teacher"
+            },
+            {
+               "@type" : "schema:Audience",
+               "schema:audienceType" : "scientist"
+            }
+         ],
+         "hasTarget": {
+            "@type": "oa:SpecificResource",
+            "hasSource": {
+               "@type": "dctypes:Text",
+               "uniqueIdentifier": "isbn:123456789x",
+               "originURL": "http://www.example.com/publisher/book/",
+               "dc:identifier": "urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809",
+               "dcterms:modified": "2011-01-01T12:00:00Z"
+            }
+         },
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;div xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'&gt;I love Alice in Wonderland&lt;/div&gt;",
+            "language": "en"
+         }
+      }
+   ]
+}</pre>
+            </aside>
+
+            <aside class="example" title="Replying to an Annotation">
+                <pre>{
+   "@context": "http://www.idpf.org/epub/oa/1.0/context.json", 
+   "@id": "http://example.org/epub/annotations.json", 
+   "@type": "epub:AnnotationCollection",
+   "annotations": [
+      {
+         "@id": "urn:uuid:B81AF8C4-B04A-4D3D-B1D3-23F7C02E56BB",
+         "@type": "oa:Annotation",
+         "motivatedBy": "oa:replying",
+         "hasTarget": "urn:uuid:E7E3799F-3CD5-4F69-87C6-5478B22873D6",
+         "hasBody": {
+            "@type": "dctypes:Text",
+            "format": "application/xhtml+xml",
+            "chars": "&lt;span xmlns='http://www.w3.org/1999/xhtml'&gt;I agree!&lt;/span&gt;"
+         }
+      }
+   ]
+}</pre>
+            </aside>
+        </section>
+        <section id="app-schema" class="appendix">
+            <h2>Schema for JSON-LD representation</h2>
+
+            <p>The JSON-LD representation schema for Annotation Documents is available at <a
+                    href="http://www.idpf.org/epub/oa/schema/oa-epub-schema.json"
+                    >http://www.idpf.org/epub/oa/schema/oa-epub-schema.json</a>.</p>
+
+            <p>Validation using this schema requires a processor that supports [[!JSON-Schema]].</p>
+        </section>
+        <section id="app-default-context" class="appendix">
+            <h2>Default Context description</h2>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td><pre>{
+   "@context": [
+      "http://www.w3.org/ns/oa-context-20130208.json",
+      {
+         "epub": "http://www.idpf.org/epub/vocab/oa/#",
+         "schema": "http://schema.org/",
+         "annotations": {
+            "@id": "epub:annotations",
+            "@type": "@id",
+            "@container": "@list"
+         },
+         "language": "dc:language",
+         "opfPath": "epub:opfPath",
+         "specificityLevel": "epub:specificityLevel",
+         "originURL": "epub:originURL",
+         "uniqueIdentifier": "epub:uniqueIdentifier",
+         "accessibilityFeature": "schema:accessibilityFeature",
+         "accessibilityHazard": "schema:accessibilityHazard",
+         "accessibilityAPI": "schema:accessibilityAPI",
+         "accessibilityControl": "schema:accessibilityControl",
+         "audience": "schema:audience",
+         "audienceType": "schema:audienceType"
+      }
+   ]
+} </pre></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section id="app-compaison-oa" class="appendix informative">
+            <h2>Comparison to Open Annotation</h2>
+
+            <p>This appendix summarizes the restrictions and specializations that this profile of Open Annotation introduces
+                as compared to the parent specification [[OA]]. </p>
+
+            <ul>
+                <li>Open Annotation does not impose restrictions on the serialization used; this profile requires the use of
+                    JSON-LD as serialization format, whereas Open Annotation recommends it.</li>
+                <li>Open Annotation does not impose restrictions on the annotation body; this profile requires that the
+                    annotation body be an HTML5 Flow element fragment using the XML serialization. </li>
+                <li>Open Annotation does not define a formalism for specifying collections of annotations; this profile
+                    defines a collection construct as well as recommended collection-level metadata. </li>
+                <li>This profile defines a simple zip-based archive format for transporting annotations that consist of more
+                    than one resource. Open Annotation does not define a similar construct. </li>
+                <li>In Open Annotation, the target resource is typically identified using a URI. As EPUB is a portable
+                    document format, and as EPUB Publications do not necessarily include a URI internally as an identifier,
+                    this profile uses a multi-faceted approach to identify the target publication, which also supports
+                    varying levels of specificity (release, publication and work).</li>
+                <li>This profile mandates the use of EPUB CFI for referencing fragments within EPUB Publications. (In a
+                    scenario where future versions of [[OA]] defines a generic technique to point to resources within a zip
+                    archive, this restriction may be removed from this specification.) </li>
+                <li>This profile defines <a href="#app-schema">syntactic restrictions</a> such that reading and writing of
+                    annotations compliant with this profile can be implemented in non-RDF-enabled contexts, needing only a
+                    compliant JSON reader and/or writer.</li>
+            </ul>
+        </section>
+        <section id="acknowledgements" class="appendix informative">
+            <h2>Acknowledgements and Contributors</h2>
+
+            <p>EPUB has been developed by the International Digital Publishing Forum in a cooperative effort, bringing
+                together publishers, vendors, software developers, and experts in the relevant standards.</p>
+
+            <p>The Open Annotations in EPUB 1.0 specification was prepared by the International Digital Publishing Forum's
+                EPUB Working Group, operating under a continuation of the EPUB 3.0 charter approved by the membership in May,
+                2010 under the leadership of:</p>
+
+            <ul>
+                <li>Sanderson, Rob (Invited Expert) <span class="italic">Co-chair</span></li>
+                <li>Gylling, Markus (International Digital Publishing Forum (IDPF)) <span class="italic">Co-chair</span></li>
+            </ul>
+
+            <p>Active members of the working group at the time of publication were:</p>
+
+            <p>IDPF Members</p>
+
+            <ul>
+                <li>Cho, Yong-Sang (KERIS)</li>
+                <li>Chow, King-Wai (ASTRI (Hong Kong Applied Science &amp; Technology Research Institute))</li>
+                <li>Deltour, Romain (DAISY Consortium)</li>
+                <li>Gylling, Markus (International Digital Publishing Forum (IDPF))</li>
+                <li>Ikeuchi, Yasuki (ACCESS)</li>
+                <li>Koike, Toshiaki (Voyager Japan)</li>
+                <li>Murata, Makoto (JEPA EPUB Study Group)</li>
+                <li>Tamura, Yasu (Sophia Univ.)</li>
+                <li>Tufiș, Mihnea (LIP6)</li>
+                <li>Weck, Daniel (DAISY Consortium)</li>
+            </ul>
+
+            <p>Invited Experts/Observers</p>
+
+            <ul>
+                <li>Ciccarese, Paolo</li>
+                <li>Garrish, Matt</li>
+                <li>Sanderson, Rob</li>
+            </ul>
+        </section>
+    </body>
+</html>
