@@ -27,6 +27,10 @@ var biblio = {
       "title": "EPUB Subject Authorities Registry",
       "href": "https://www.idpf.org/epub/registries/authorities/"
     },
+    "CollectionPackageDoc": {
+      "title": "Using collection Elements as Embedded Package Documents",
+      "href": "http://www.idpf.org/epub/guides/collection-as-package"
+    },
     "ContentDocs": {
       "title": "EPUB Content Documents 3",
       "href": "http://www.idpf.org/epub3/latest/contentdocs"
@@ -124,6 +128,10 @@ var biblio = {
       "title": "EPUB Metadata Link Vocabulary",
       "href": "http://www.idpf.org/epub/vocab/package/link/"
     },
+    "ManifestRole": {
+      "title": "EPUB Manifest Role",
+      "href": "http://www.idpf.org/epub/vocab/package/roles/manifest"
+    },
     "ManifestVocab": {
       "title": "EPUB Manifest Properties Vocabulary",
       "href": "http://www.idpf.org/epub/vocab/package/item"
@@ -139,6 +147,10 @@ var biblio = {
     "MediaOverlays31": {
       "title": "EPUB Media Overlays 3.1",
       "href": "epub-mediaoverlays.html"
+    },
+    "MediaOverlays301": {
+      "title": "EPUB Media Overlays 3.0.1",
+      "href": "http://www.idpf.org/epub/301/spec/epub-mediaoverlays.html"
     },
     "MetaVocab": {
       "title": "EPUB Meta Properties Vocabulary",
@@ -226,6 +238,10 @@ var biblio = {
     "schema.org": {
       "title": "schema.org",
       "href": "https://schema.org"
+    },
+    "SchemaGuide": {
+      "title": "Schema.org Metadata Integration Guide for EPUB 3",
+      "href": "http://www.idpf.org/epub/guides/schema-org-integration"
     },
     "SHA-1": {
       "title": "Federal Information Processing Standards Publication 180-3: Secure Hash Standard (SHS)",

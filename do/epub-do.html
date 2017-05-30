@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>EPUB Distributable Objects 1.0</title>
+        <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+        <script src="../common/js/biblio.js" class="remove"></script>
+        <script src="../common/js/dfn-crossref.js" class="remove"></script>
+        <script src="../common/js/confreq-permalinks.js" class="remove"></script>
+        <link href="../common/css/common.css" rel="stylesheet" type="text/css" />
+        <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-do",
+              edDraftURI: "https://w3c.github.io/publ-epub-revision/do/epub-do.html",
+              editors: [
+                  {
+                      name: "Darryl Lehmann",
+                      company: "Imagineeringart.com",
+                      companyURL: "http://imagineeringart.com"
+                  },
+                  {
+                      name: "Bill Kasdorf",
+                      company: "Apex CoVantage",
+                      companyURL: "http://apexcovantage.com/"
+                  },
+                  {
+                      name: "Markus Gylling",
+                      company: "International Digital Publishing Forum (IDPF)",
+                      companyURL: "http://idpf.org"
+                  },
+                  {
+                      name: "Matt Garrish",
+                      company: "Invited Expert"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+    </head>
+    <body>
+        <section id="abstract">
+            <p>This specification, EPUB Distributable Objects, defines a method for the encapsulation, transportation, and
+                integration of Distributable Objects in EPUB® Publications.</p>
+        </section>
+        <section id="sotd"></section>
+        <section id="sec-overview">
+            <h2>Overview</h2>
+
+            <section id="sec-purpose-scope" class="informative">
+                <h3>Purpose and Scope</h3>
+
+                <p>This specification, EPUB Distributable Objects, defines a method for the encapsulation, transportation,
+                    and integration of Distributable Objects in EPUB® Publications.</p>
+
+                <p>Distributable Objects are components of an EPUB Publication that can be reused in other contexts. A
+                    Distributable Object can be a complete EPUB Content Document (e.g., a chapter of a book), a section of
+                    such a document (e.g., an exercise or a promotional excerpt), a media resource (e.g., a video or
+                    interactive feature), or a combination of such resources that are not necessarily contiguous within the
+                    parent EPUB Publication but are intended to be able to be distributed as a unit.</p>
+
+                <p>This specification provides a framework for identifying these Distributable Objects within an EPUB
+                    Publication, extracting them for transport, and integrating them again into a Destination EPUB. Note,
+                    however, that both extraction and integration are optional stages in the lifecycle of a Distributable
+                    Object; it can be born and live only in its packaged state, be born packaged and only integrated, or be
+                    embedded in a source and extracted.</p>
+
+                <p>The specification does not address the nature of Distributable Objects or how they are exchanged. This
+                    omission is intentional, as the framework for addressing and sharing objects is designed to facilitate
+                    many different workflows: exchanging Distributable Objects in an open textbook environment, integrating
+                    Distributable Objects into content and learning management systems, identifying components of an EPUB
+                    Publication for sale separately, and so on. In that vein, only re-integration in an EPUB Publication is
+                    defined, as there are many possible non-EPUB integration scenarios.</p>
+
+                <p>In effect, this framework enables the exchange of Distributable Objects between any two parties, while at
+                    the same time providing a consistent framework for exchange standards to be developed without continually
+                    having to reinvent the markup and processing.</p>
+            </section>
+
+            <section id="sec-terminology">
+                <h3>Terminology</h3>
+
+                <p><span>Refer to the </span><span><a href="http://idpf.org/epub/301">EPUB
+                        Specifications</a></span><span> for definitions of EPUB-specific terminology used in this
+                        document.</span></p>
+
+                <dl class="termlist">
+                    <dt><dfn data-lt="Destination EPUBs">Destination EPUB</dfn></dt>
+                    <dd><p>The EPUB Publication into which a Distributable Object is integrated.</p></dd>
+
+                    <dt><dfn data-lt="Distributable Objects">Distributable Object</dfn></dt>
+                    <dd><p>A collection of <a href="#sec-obj-embed-discrete">discrete content entities</a> and associated
+                            resources that comprise a single logical unit of content, usable in other contexts.</p></dd>
+
+                    <dt><dfn data-lt="Embedded Objects">Embedded Object</dfn></dt>
+                    <dd><p>A Distributable Object as defined in a <code>collection</code> element in the Package Document of
+                            a Source or Destination EPUB.</p></dd>
+
+                    <dt><dfn data-lt="Packaged Objects">Packaged Object</dfn></dt>
+                    <dd><p>An EPUB Publication whose sole content is a single Distributable Object for distribution.</p></dd>
+
+                    <dt><dfn data-lt="Processing Agents">Processing Agent</dfn></dt>
+                    <dd><p>The system, or human, responsible for translating a Distributable Object from one state to
+                            another.</p></dd>
+
+                    <dt><dfn data-lt="Source EPUBs">Source EPUB</dfn></dt>
+                    <dd><p>The EPUB Publication into which a Distributable Object is integrated.</p></dd>
+                </dl>
+            </section>
+
+            <section id="conformance"></section>
+        </section>
+        <section id="sec-object-states">
+            <h2>Object States</h2>
+
+            <section id="sec-obj-intro" class="informative">
+                <h3>Introduction</h3>
+
+                <p>There are two states in which Distributable Objects exist at any point in time: embedded and packaged. The
+                    embedded state occurs when the Distributable Object is integrated into an EPUB Publication intended for
+                    Users, whether the initial source it was created for or a destination it has been reused or integrated
+                    in. In this state, the Distributable Object is inseparable from the rest of the content it has been
+                    integrated with, and only a <code>collection</code> element in the Package Document identifies the
+                    metadata and resources necessary to extract it.</p>
+
+                <p>To create the packaged version of the Distributable Object, the information in the embedded collection is
+                    used to extract all the needed resources and create a Package Document for the new Packaged Object ‒ an
+                    EPUB Publication that contains only the Distributable Object. (Note that nothing in this specification
+                    prevents an Distributable Object from being "born" directly in its transport state.)</p>
+
+                <p>The Packaged Object might be intended for Users, or could exist only to get the Distributable Object from
+                    one location to another. There is fundamentally no difference between an Embedded Object and a Packaged
+                    Object, all that differs is the manner in which the information is serialized. That the Distributable
+                    Object can be moved around in a consistent manner is the key.</p>
+
+                <p>The specification cannot guarantee that the Distributable Object will pass validation in this state,
+                    however, as the entities that compose the Distributable Object might not constitute valid Content
+                    Documents on their own (e.g., shared SVG components, or fragments of HTML not valid as body markup).</p>
+            </section>
+
+            <section id="sec-obj-embedded">
+                <h3>Embedded Objects</h3>
+
+                <section id="sec-obj-embed-conf">
+                    <h4>Conformance</h4>
+
+                    <p>A conformant Embedded Object MUST meet all of the following criteria:</p>
+
+                    <ul class="conformance-list">
+                        <li><p id="confreq-do-embed-struct">It MUST conform to all structural requirements in <a
+                                    href="#sec-obj-embed-do-collection">2.2.2 The
+                                    <code>distributable-object</code> collection</a>.</p></li>
+                        <li><p id="confreq-do-embed-meta">It MUST include all required metadata as defined in <a
+                                    href="#sec-obj-embed-meta">2.2.3 Metadata</a>.</p></li>
+                        <li><p id="confreq-do-embed-entities">It MUST reference one or more discrete content entities as
+                                defined in <a href="#sec-obj-embed-discrete">2.2.4 Discrete Entities</a>.</p></li>
+                    </ul>
+                </section>
+
+                <section id="sec-obj-embed-do-collection">
+                    <h4>The <code>distributable-object</code> Collection</h4>
+
+                    <section id="sec-obj-embed-do-package">
+                        <h5>Package Document Structure</h5>
+
+                        <p>The Package Document <code>collection</code> element [[!Publications301]] is used to identify the
+                            presence of Distributable Objects embedded within an EPUB Rendition, enumerate its resources and
+                            indicate its reading order.</p>
+
+                        <p>The <code>collection</code> MUST have a <code>role</code> attribute value specified. The generic
+                            identifier "<code>distributable-object</code>" is REQUIRED for any <code>collection</code> that
+                            can be extracted or integrated using this framework, unless overridden by other specifications
+                            that make use of this framework for transporting specialized types.</p>
+
+                        <p>The <code>collection</code> MUST include the following components, which constitute a minimal
+                            Package Document:</p>
+
+                        <ul>
+                            <li>a child <code>metadata</code> element containing all necessary <a href="#sec-obj-embed-meta"
+                                    >metadata</a> for the Distributable Object.</li>
+
+                            <li>a child <code>manifest</code> collection [[!ManifestRole]] that identifies the supplementary
+                                resources necessary to render the Distributable Object, such as style sheets, scripts and
+                                multimedia resources. (As specified in the [[!ManifestRole]], each <code>link</code> in the
+                                manifest MUST reference a resource by its location.)</li>
+
+                            <li>one or more child <code>link</code> elements that reference the <a
+                                    href="#sec-obj-embed-discrete">discrete entities</a> that compose the Distributable
+                                Object.</li>
+                        </ul>
+
+                        <div class="example">
+                            <p>The following example shows the minimal collection structure for an extractable chapter.</p>
+
+                            <pre>&lt;collection role="distributable-object"&gt;
+   &lt;metadata&gt;
+      &lt;dc:title&gt;Phantom Textbook - Chapter 1&lt;/dc:title&gt;
+      … 
+   &lt;/metadata&gt;
+   &lt;collection role="manifest"&gt;
+      &lt;link href="css/epub.css" media-type="text/stylesheet"/&gt;
+      &lt;link href="xhtml/chapter01.xhtml" media-type="application/xhtml+xml"/&gt;
+      …
+   &lt;/collection&gt;
+   &lt;link href="xhtml/chapter01.xhtml"/&gt;
+&lt;/collection&gt;</pre>
+                        </div>
+
+                        <p>The <code>collection</code> MAY also nest one or more <code>collection</code> elements (e.g., <a
+                                href="#sec-obj-embed-do-nest">Nested Objects</a>).</p>
+
+                        <div class="note">
+                            <p>For more information about the use of the <code>collection</code> element as a Package
+                                Document, refer to [[CollectionPackageDoc]].</p>
+                        </div>
+                    </section>
+
+                    <section id="sec-obj-embed-do-nest">
+                        <h5>Nested Objects</h5>
+
+                        <p>A Distributable Object MAY be composed of one or more child Distributable Objects ‒ called Nested
+                            Objects. These Nested Objects MAY, in turn, nest other Distributable Objects, and so on.</p>
+
+                        <p>In such cases, the Embedded Object MUST include a child
+                            <code>distributable-object</code> collection for each nested Distributable Object.</p>
+
+                        <div class="example">
+                            <p>The following example shows a chapter with a nested shared sidebar on the monarchy. Note that
+                                the sidebar is a fragment of the chapter's XHTML Content Document.</p>
+
+                            <pre>&lt;collection role="distributable-object"&gt;
+   &lt;metadata&gt;
+      …
+   &lt;/metadata&gt;
+   &lt;collection role="manifest"&gt;
+      …
+   &lt;/collection&gt;
+   &lt;collection role="distributable-object"&gt;
+      &lt;metadata&gt;
+         …
+      &lt;/metadata&gt;
+      &lt;collection role="manifest"&gt;
+         …
+      &lt;/collection&gt;
+      &lt;link href="chapter01.xhtml#history-monarchy" media-type"application/xhtml+xml"/&gt;
+   &lt;/collection&gt;
+   &lt;link href="chapter01.xhtml" media-type"application/xhtml+xml"/&gt;
+&lt;/collection&gt;</pre>
+                        </div>
+
+                        <p>The <code>manifest</code> collection for the Embedded Object MUST list all unique resources
+                            necessary to render all Nested Objects, including all those nested inside Nested Objects. The
+                                <code>manifest</code> collection for each Nested Object, in turn, MUST list only those
+                            resources required to render it and any Nested Objects inside it.</p>
+
+                        <p>Consequently, resources MAY be listed in the parent manifest and in one or more manifest of Nested
+                            Objects.</p>
+
+                        <div class="example">
+                            <p>The following example shows the manifests for successive nestings of Distributable Objects.
+                                Notice that chapter01.xhtml is listed in all the manifests, as it also contains the necessary
+                                fragments for each Nested Object.</p>
+
+                            <pre>&lt;collection role="distributable-object"&gt;
+   …
+   &lt;collection role="manifest"&gt;
+      &lt;!-- components needed for the assessment --&gt;
+      &lt;link href="css/assessment.css"/&gt;
+      &lt;!-- components needed for the scripted component --&gt;
+      &lt;link href="css/component.css"/&gt;
+      &lt;link href="css/component.js"/&gt;
+      &lt;!-- components needed for the chapter --&gt;
+      &lt;link href="css/book.css"/&gt;
+      &lt;link href="img/c01img01.jpg"/&gt;
+      &lt;link href="img/c01img02.jpg"/&gt;
+      &lt;link href="img/c01img03.jpg"/&gt;
+      &lt;link href="audio/c01clip01.jpg"/&gt;
+      &lt;link href="xhtml/chapter01.xhtml"/&gt;
+   &lt;/collection&gt;
+   &lt;!-- nested object for a testing component --&gt;
+   &lt;collection role="distributable-object"&gt;
+      …
+      &lt;collection role="manifest"&gt;
+         &lt;link href="css/assessment.css"/&gt;
+         &lt;link href="css/component.css"/&gt;
+         &lt;link href="css/component.js"/&gt;
+         &lt;link href="xhtml/chapter01.xhtml"/&gt;
+      &lt;/collection&gt;
+      
+      &lt;!-- nested object for a scripted component --&gt;
+      &lt;collection role="distributable-object"&gt;
+         …
+         &lt;collection role="manifest"&gt;
+            &lt;link href="css/component.css"/&gt;
+            &lt;link href="css/component.js"/&gt;
+            &lt;link href="xhtml/chapter01.xhtml"/&gt;
+         &lt;/collection&gt;
+         &lt;link href="xhtml/chapter01.xhtml#interactive"/&gt;
+      &lt;/collection&gt;
+      &lt;link href="xhtml/chapter01.xhtml#test01"/&gt;
+   &lt;/collection&gt;
+   &lt;link href="xhtml/chapter01.xhtml"/&gt;
+&lt;/collection&gt;</pre>
+                        </div>
+
+                        <div class="note">
+                            <p>Resources in Nested Objects have to be listed in their ancestor manifests as each Nested
+                                Object could be extracted using this framework, not just the top-most Embedded Object.
+                                Failure to list all resources complicates such extraction.</p>
+                        </div>
+                    </section>
+                </section>
+
+                <section id="sec-obj-embed-meta">
+                    <h4>Metadata</h4>
+
+                    <section id="sec-obj-embed-meta-general">
+                        <h5>General</h5>
+
+                        <p>Embedded Objects MUST include the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-metadata-elem">required
+                                Dublin Core metadata properties</a> defined in [[!Publications301]].</p>
+
+                        <p>The Distributable Object MUST include a <code>dc:type</code> element with the identifier
+                                "<code>distributable-object</code>" for any generic Distributable Object that can be
+                            extracted or integrated using this framework. Other specifications that use this framework
+                            MAY override this requirement and use their own identifiers. In either case, the
+                                <code>role</code> attribute and <code>dc:type</code> element values MUST match.</p>
+
+                        <div class="note">
+                            <p>Although the <code>role</code> attribute identifies the nature of the collection, including a
+                                    <code>dc:type</code> element simplifies moving an Distributable Object from its embedded
+                                to packaged states.</p>
+                        </div>
+
+                        <p>The following [[!DCTERMS]] elements are additionally RECOMMENDED for describing the Distributable
+                            Object:</p>
+
+                        <ul>
+                            <li><code>dc:creator</code> ‒ the name of the individual or organization who authored the
+                                Distributable Object</li>
+
+                            <li><code>dc:description</code> ‒ a brief description of the nature or purpose of the
+                                Distributable Object</li>
+
+                            <li><code>dc:source</code> ‒ a pointer to the original source EPUB Publication the Distributable
+                                Object was or is a part of</li>
+
+                            <li><code>dc:rights</code> ‒ whether the Distributable Object can be re-used, and under what
+                                conditions (see <a href="#sec-obj-rights">2.2.5 Rights</a>)</li>
+
+                            <li><code>dc:date</code> - the creation date (for transport)</li>
+                        </ul>
+
+                        <p>If the Embedded Object includes Media Overlays [[!MediaOverlays301]], a
+                                <code>media:duration</code> metadata property MUST be included that identifies the total time
+                            for playback of the object.</p>
+
+                        <p>Other metadata MAY be used to describe the Distributable Object, and conformance with specific <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-dctype">EPUB
+                                Publication types</a> [[!Publications301]] MAY introduce other metadata requirements.</p>
+
+                        <div class="example">
+                            <p>The following example shows an extended metadata set for an extractable chapter.</p>
+
+                            <pre>&lt;collection role="distributable-object"&gt;
+   &lt;metadata&gt;
+      &lt;dc:type&gt;distributable-object&lt;/dc:type&gt;
+      &lt;dc:title&gt;Phantom Textbook - Chapter 1&lt;/dc:title&gt;
+      &lt;dc:language&gt;en&lt;/dc:language&gt;
+      &lt;dc:identifier&gt;urn:isbn:9781234567890&lt;/dc:identifier&gt;
+      &lt;meta property="identifier-type" refines="#e6c30273-7d23-4b8f-90f8-9fab5c1cdadc"&gt;unique-identifier&lt;/meta&gt;
+      &lt;meta property="dcterms:modified"&gt;2014-11-11T12:34:56Z&lt;/meta&gt;
+      &lt;dc:creator&gt;Jane Doe&lt;/dc:creator&gt;
+      &lt;dc:description&gt;Introduction to the history of phantasm. For sale separately.&lt;/dc:description&gt;
+      &lt;dc:source&gt;urn:isbn:9780987654321&lt;/dc:source&gt;
+      &lt;dc:date&gt;2014-10-31&lt;/dc:date&gt;
+      &lt;dc:rights&gt;All rights reserved. Not available for use or sale except by authorized vendors.&lt;/dc:right&gt;
+      … 
+   &lt;/metadata&gt;
+   …
+&lt;/collection&gt;</pre>
+                        </div>
+                    </section>
+
+                    <section id="sec-obj-embed-meta-release-id">
+                        <h5>Release Identifier</h5>
+
+                        <p>A <code>dc:identifier</code> element and <code>dcterms:modified</code> property serve as the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-metadata-identifiers-pid"
+                                >release identifier</a> [[!Publications301]] for the Distributable Object.</p>
+
+                        <p>To ensure the creation of this identifier, Embedded Objects MUST have exactly one primary
+                            expression of the <code>dcterms:modified</code> property. As collections lack a <code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#attrdef-package-unique-identifier"
+                                    >unique-identifier</a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#attrdef-package-unique-identifier"
+                                > attribute</a> [[!Publications301]], the <code>dc:identifier</code> element that contains
+                            the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-metadata-identifiers-uid"
+                                >unique identifier</a> [[!Publications301]] MUST be identified by attaching an <code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#identifier-type"
+                                    >identifier-type</a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#identifier-type"
+                            > property</a> [[!Publications301]] with the value "<code>unique-identifier</code>" to it.</p>
+
+                        <div class="example">
+                            <p>The following examples shows how the unique identifier is identified.</p>
+
+                            <pre>&lt;dc:identifier&gt;urn:isbn:9780000000001&lt;/dc:identifier&gt;
+&lt;meta property="identifier-type" refines="#uid"&gt;unique-identifier&lt;/meta&gt;</pre>
+                        </div>
+
+                        <p>The <code>dcterms:modified</code> value MUST NOT be updated when only a change in the state of the
+                            Distributable Object occurs (i.e., when it is repackaged as a Packaged Object or integrated into
+                            a Destination EPUB). In order to identify the Distributable Object as it moves around, changes to
+                            the identifier and last modified time only occur when making changes to the content and metadata.
+                            For example:</p>
+
+                        <ul>
+                            <li>If the content of the Source EPUB is changed, the <code>dcterms:modified</code> value for
+                                the EPUB Publication is changed. Only if the changed content is part of the Distributable
+                                Object, is the <code>dcterms:modified</code> value for the collection changed as well.</li>
+
+                            <li>If a Packaged Object is created, the <code>dcterms:modified</code> value is not changed from
+                                that identified in the collection unless an actual edit is made to its content. (Note that
+                                    <code>dc:date</code> can be used to describe a timestamp for when the package was
+                                created.)</li>
+
+                            <li>If a Distributable Object is embedded into a Destination EPUB, the
+                                    <code>dcterms:modified</code> value of the Distributable Object collection is not changed
+                                unless an actual edit is made to its content.</li>
+                        </ul>
+                    </section>
+
+                    <section id="sec-obj-embed-meta-fxl">
+                        <h5>Fixed Layout</h5>
+
+                        <p>Embedded Objects MUST NOT rely on fixed-layout metadata expressions set using <code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#meta-properties-rendering"
+                                    >meta</a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#meta-properties-rendering"
+                                > element properties</a> [[!Publications301]] of the Source EPUB, as such expressions are not
+                            easily translated to the Packaged Object (and vice versa). Authors SHOULD use <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-itemref-property-values"
+                                >spine </a><code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-itemref-property-values"
+                                    >itemref </a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-itemref-property-values"
+                                >overrides</a> [[!Publications301]] to indicate the fixed-layout properties of EPUB Content
+                            Documents, as these are more directly tied to the documents (i.e., they can be looked up and
+                            translated without a complex system of comparisons, additions, subtractions and overrides).</p>
+
+                        <p>For example, if the XHTML Content Documents in an Packaged Object are identified as fixed layout
+                            using a global <code>meta</code> expression, that information is lost as the
+                            <code>meta</code> element ends up in the Embedded Collection when integrated. As a result, the
+                            XHTML Content Documents will take on the nature of the Destination EPUB by default, which could
+                            be reflowable.</p>
+
+                        <p>If, on the other hand, the properties are defined on each XHTML Content Document's spine
+                                <code>itemref</code> entry, the properties are easily copied between states and remain local
+                            to the documents.</p>
+                    </section>
+
+                    <section id="sec-obj-embed-meta-a11y">
+                        <h5>Accessibility</h5>
+
+                        <p>The accessible nature of a Distributable Object is identified using the <a
+                                href="https://www.w3.org/wiki/WebSchemas/Accessibility#Accessibility_terms_.28Version_1.0.29"
+                                >accessibility metadata properties</a> from the [[!schema.org]] <a
+                                href="http://schema.org/CreativeWork">CreativeWork</a> type.</p>
+
+                        <p>Each Distributable Object MUST identify all applicable accessibility features using the
+                                <code>accessibilityFeature</code> property. The property MUST be repeated for each applicable
+                            value.</p>
+
+                        <p>If the given Rendition contains no accessible features, or the Author is unable to state which
+                            apply, a single <code>accessibilityFeature</code> declaration specifying the value
+                                "<code>none</code>" MUST be included.</p>
+
+                        <p>It is RECOMMENDED that the other properties be specified whenever applicable.</p>
+
+                        <p>The vocabulary of recommended terms to use with these properties is maintained at the <a
+                                href="https://www.w3.org/wiki/WebSchemas/Accessibility">W3C Web Schemas Wiki</a>.</p>
+
+                        <p>For more information on using these properties in the Package Document, refer to the Schema.org
+                            Integration Guide [[SchemaGuide]].</p>
+                    </section>
+
+                    <section id="sec-obj-embed-meta-local-manifest">
+                        <h5>The <code>local-manifest-designator</code> Property</h5>
+
+                        <p><span>Warning:</span><span> This property is subject to removal before this specification reaches
+                                recommendation status. Please see </span><span><a
+                                    href="https://code.google.com/p/epub-revision/issues/detail?id=484">issue
+                                484</a></span><span>.</span></p>
+
+                        <dl>
+                            <dt>Description</dt>
+                            <dd><p>The <code>local-manifest-designator</code> allows <a
+                                        href="http://www.idpf.org/epub/301/spec/epub-publications.html#attrdef-item-properties"
+                                        >manifest </a><code><a
+                                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#attrdef-item-properties"
+                                            >properties</a></code> [[!Publications301]] that are restricted to one instance
+                                    in an EPUB Rendition ‒ such as "<code>nav</code>" and "<code>cover-image</code>" ‒ to be
+                                    specified for resources in a collection. Authors can then create these these special
+                                    resources specifically for collections, without their use being lost during packaging
+                                    into a standalone EPUB Publication.</p>
+                                <p>The property MUST be specified on <code>meta</code> elements whose
+                                    <code>refines</code> attributes reference the resource the property applies to.</p>
+                                <p>This property SHOULD NOT be used to specify manifest properties that can be carried
+                                    directly on an item without restriction (e.g., “<code>scripted</code>” and
+                                        “<code>mathml</code>”).</p></dd>
+
+                            <dt>Allowed Value(s)</dt>
+                            <dd>
+                                <p>Any value allowed in the <code>properties</code> attribute [[!Publications301]].</p>
+                                <p>No default value.</p>
+                            </dd>
+
+                            <dt>Cardinality</dt>
+                            <dd><p>In the metadata section: <code>Zero or more</code></p>
+                                <p>Attached to resources: <code>Zero or more</code></p></dd>
+
+                            <dt>Extends</dt>
+                            <dd><p>Publication Resources in a collection.</p></dd>
+
+                            <dt>Example</dt>
+                            <dd><pre>&lt;meta property="local-manifest-designator" refines="object01/nav.xhtml"&gt;nav&lt;/meta&gt;</pre></dd>
+                        </dl>
+                    </section>
+
+                    <section id="sec-obj-embed-meta-pubtype">
+                        <h5>Publication Type Conformance</h5>
+
+                        <p>A Distributable Object MAY conform to a particular <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-dctype">type of EPUB
+                                Publication</a> [[!Publications301]], in which case it MUST include a
+                            <code>dc:type</code> element declaration for each type to which it conforms.</p>
+                    </section>
+                </section>
+
+                <section id="sec-obj-embed-discrete">
+                    <h4>Discrete Entities</h4>
+
+                    <p>Objects are composed of one or more discrete content entities, each of which MUST be identified in a
+                        child <code>link</code> element in the of the Embedded Object <code>collection</code>.</p>
+
+                    <p>Each <code>link</code>  element MUST point to an EPUB Content Document, or element fragment thereof.
+                        The sequence of child <code>link</code> elements represents the default linear reading order of the
+                        Distributable Object (i.e., its spine).</p>
+
+                    <p>If the IRI [[!RFC3987]] in a <code>link</code> element <code>href</code> attribute includes a fragment
+                        identifier, only the referenced element is part of the Distributable Object. The
+                        <code>link</code> element <code>href</code> attribute MUST NOT include EPUB canonical fragment
+                        identifiers [[!EPUB-CFI]].</p>
+
+                    <p>This specification places no restrictions on what markup a discrete entity can reference, but see <a
+                            href="#sec-obj-pkg-contentdocs">2.3.4 EPUB Content Documents</a> for additional
+                        consideration.</p>
+
+                    <p>The Author of the Distributable Object MUST ensure that all resources necessary to render the
+                        Distributable Object are identified in the manifest and child <code>link</code> elements, including
+                        all linked entities that belong to the Distributable Object (e.g., via [[!HTML5]] <a
+                            href="http://www.w3.org/TR/html5/text-level-semantics.html#the-a-element">a</a> elements).</p>
+
+                    <p>Conformance with specific EPUB Publication types MAY introduce other requirements.</p>
+
+                    <div class="example">
+                        <p>The following example shows a Distributable Object declaration for a learning object that contains
+                            MathML markup, a fallback image and two style sheets.</p>
+
+                        <pre>&lt;collection role="distributable-object"&gt;
+   &lt;metadata&gt;
+      &lt;dc:type&gt;distributable-object&lt;/dc:type&gt;
+      &lt;dc:title&gt;Learning Object 1&lt;/dc:title&gt;
+      &lt;dc:identifier&gt;urn:uuid:5856b480-e1be-11e3-8b68-0800200c9a66&lt;/dc:identifier&gt;
+      &lt;meta property="identifier-type" refines="#e6c30273-7d23-4b8f-90f8-9fab5c1cdadc"&gt;unique-identifier&lt;/meta&gt;
+      &lt;dc:creator&gt;Object Author&lt;/dc:creator&gt;
+      &lt;dc:language&gt;en&lt;/dc:language&gt;
+      &lt;meta property="schema:typicalAgeRange"&gt;9-11&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityFeature"&gt;mathml&lt;/meta&gt;
+      … 
+   &lt;/metadata&gt;
+   &lt;collection role="manifest"&gt;
+      &lt;link href="images/mathml01.gif" media-type="image/gif"/&gt;
+      &lt;link href="css/epub.css" media-type="text/stylesheet"/&gt;
+      &lt;link href="css/mathml.css" media-type="text/stylesheet"/&gt;
+      &lt;link href="fonts/STIXGeneral.woff" media-type="application/font-woff"/&gt;
+      …
+   &lt;/collection&gt;
+   &lt;link href="xhtml/chapter01.xhtml#learningobject01"/&gt;
+&lt;/collection&gt;</pre>
+                    </div>
+                </section>
+
+                <section id="sec-obj-embed-res-location">
+                    <h4>Resource Location</h4>
+
+                    <p>Although the local resources needed to render the Distributable Object can be hosted anywhere in the
+                        EPUB Container, storing them all in a directory with a unique name is RECOMMENDED (e.g., a directory
+                        named using a universally unique identifier [[!RFC4122]] or the <code>dc:identifier</code> value).
+                        This practice will help avoid naming collisions as the Distributable Object moves around.</p>
+
+                    <p>As this framework allows fragments to be transported, and resources necessary for the rendering are
+                        often shared, encapsulation in a single directory will not always be possible.</p>
+
+                    <p>Specifications that make use of this framework and can ensure their Distributable Objects are
+                        completely self-contained SHOULD enforce encapsulation.</p>
+                </section>
+            </section>
+
+            <section id="sec-obj-packaged">
+                <h3>Packaged Objects</h3>
+
+                <section id="sec-obj-pkg-intro" class="informative">
+                    <h4>Introduction</h4>
+
+                    <p>This section outlines the requirements for a Packaged Object ‒ a Distributable Object that has been
+                        bundled separately as an EPUB Publication for transport. As a Packaged Object is just a different
+                        serialization of an Embedded Object, the requirements are largely similar.</p>
+
+                    <p>References to the appropriate sections in Embedded Objects are provided, with only requirements
+                        particular to packaging as an EPUB Publication detailed.</p>
+                </section>
+
+                <section id="sec-obj-pkg-conf">
+                    <h4>Conformance</h4>
+
+                    <p>A conformant Packaged Object MUST meet all of the following criteria:</p>
+
+                    <ul class="conformance-list">
+                        <li><p id="confreq-do-pub">It MUST follow all requirements for EPUB Publications in
+                                [[!Publications301]], but allows for document fragments (see <a
+                                    href="#sec-obj-pkg-contentdocs">2.3.4 EPUB Content Documents</a>).</p></li>
+
+                        <li><p id="confreq-do-meta">It MUST include all required metadata as defined in <a
+                                    href="#sec-obj-pkg-meta">2.3.3 Metadata</a>.</p></li>
+                    </ul>
+                </section>
+
+                <section id="sec-obj-pkg-meta">
+                    <h4>Metadata</h4>
+
+                    <p>The Package Document metadata MUST include all metadata for Embedded Objects defined in <a
+                            href="#sec-obj-embed-meta">2.2.3 Metadata</a>.</p>
+                </section>
+
+                <section id="sec-obj-pkg-contentdocs">
+                    <h4>EPUB Content Documents</h4>
+
+                    <p>EPUB Content Documents in a Packaged Object MAY contain markup fragments that invalidate the document.
+                        As a result, a Packaged Object is not always a valid EPUB Publication.</p>
+
+                    <p>Authors SHOULD avoid creating invalid EPUB Content Documents, however, reserving such fragment
+                        transmission to private-use exchange where there is agreement between the distributor and
+                        recipient.</p>
+                </section>
+
+                <section id="sec-obj-pkg-embed">
+                    <h4>Embedded Objects</h4>
+
+                    <p>A Packaged Object MAY contain Embedded Object definitions in its Package Document.</p>
+
+                    <p>These Embedded Objects become <a href="#sec-obj-embed-do-nest">Nested Objects</a> when the Packaged
+                        Objected is <a href="#sec-trans-pkg-to-embed">translated into an Embedded Object</a>.</p>
+                </section>
+            </section>
+
+            <section id="sec-obj-identifiers">
+                <h3>Identifiers</h3>
+
+                <p>If a Distributable Object is intended to be integrated into a Destination EPUB, all
+                    <code>id</code> attribute values in the Package Document related to the Distributable Object (e.g., on
+                    metadata elements and manifest <code>item</code> elements) SHOULD be universally unique to avoid naming
+                    collisions. For example, the values could be UUIDs [[!RFC4122]] that begin with alphabetic
+                    characters.</p>
+            </section>
+
+            <section id="sec-obj-rights">
+                <h3>Rights</h3>
+
+                <p>The presence of a Distributable Object, whether embedded or packaged, does not, in itself, confer any
+                    rights to reuse the Distributable Object in any other context.</p>
+
+                <p>Usage is only permitted according to the terms of an included rights statement, or a link to where such
+                    information can be found. In the absence of such a statement, no rights can be inferred.</p>
+            </section>
+
+            <section id="sec-obj-multi-component">
+                <h3>Multi-Component Distribution</h3>
+
+                <p>This specification does not define a method for defining more than one Distributable Object in an EPUB
+                    Container. Each Container MUST include only a single Distributable Object.</p>
+
+                <p>Multiple Distributable Objects can be zipped together when it is necessary to bundle more than one
+                    together for distribution.</p>
+            </section>
+        </section>
+        <section id="sec-translating">
+            <h2>Translating Objects</h2>
+
+            <section id="sec-trans-intro" class="informative">
+                <h3>Introduction</h3>
+
+                <p>This section details the general steps necessary to translate a Distributable Object from its <a
+                        href="#sec-obj-embedded">embedded state</a> to its <a href="#sec-obj-packaged">packaged state</a>,
+                    and vice versa.</p>
+
+                <p>An exact method of translating content is not defined, as many technologies could be used in the
+                    translations (XSLT, procedural languages, etc.). It is also possible for humans to manually translate
+                    Distributable Objects from one state to another.</p>
+
+                <p>Depending on the complexity of the Distributable Object being translated, and the state into which it is
+                    being translated, the translation process might include a mix of automated and manual. In the case of
+                    content fragments, for example, a machine can integrate the EPUB Content Document containing the
+                    fragments into an EPUB Publication, but a human might have to determine whether the fragments needs to be
+                    subsequently moved to a more appropriate location in another EPUB Content Document, and where that
+                    location is.</p>
+
+                <p>As a result, a general understanding of translation process is necessary for anyone looking to work with
+                    Distributable Objects, as manual modifications can lead to changes to the Embedded Object definition
+                    (e.g., path and file name changes).</p>
+            </section>
+
+            <section id="sec-trans-embed-to-pkg">
+                <h3>Embedded to Packaged</h3>
+
+                <section class="informative" id="sec-trans-process">
+                    <h4>Translation Process</h4>
+
+                    <p>The process of creating a Packaged Object from an Embedded Object involves the following general
+                        steps:</p>
+
+                    <ul>
+                        <li><a href="#sec-trans-package-doc">create a new Package Document</a> from the
+                                <code>distributable-object</code> collection and copy all necessary resources</li>
+
+                        <li><a href="#sec-trans-filter">filter any EPUB Content Documents</a> if only fragments are
+                            included</li>
+
+                        <li><a href="#sec-trans-nav-doc">create a new EPUB Navigation Document</a></li>
+                    </ul>
+
+                    <p>Although these steps are broken out logically in this document in order to analyze the necessary
+                        transformation requirements, in real-world practice they could happen in different order or even
+                        simultaneously. There are also many technologies that could be used in the translation process, and
+                        different intended end uses of the Distributable Object can impact on processing.</p>
+
+                    <p>As a result, this section has been structured to avoid making strict requirements about how the
+                        content is transformed ‒ detailed is only what needs to happen to create a valid Packaged Object.</p>
+
+                    <p>Also omitted is all standard requirements for packaging an EPUB Publication, such as creating the
+                            <code>container.xml</code> file and the OCF Container.</p>
+
+                    <div class="note">
+                        <p>The translation process detailed in this section only deals with the <a
+                                href="http://idpf.org/epub/301">core EPUB 3.0.1 specifications</a>. Distributable Objects
+                            that employ features defined in other IDPF specifications might require additional handling to
+                            ensure proper translation.</p>
+                    </div>
+                </section>
+
+                <section id="sec-trans-package-doc">
+                    <h4>Create Package Document</h4>
+
+                    <p>The following list provides the general set of steps necessary to translate the elements of an
+                        Embedded Object's <code>distributable-object</code> collection to a Package Document.</p>
+
+                    <ol>
+                        <li>Copy any internationalization attributes (<code>dir</code>, <code>xml:lang</code>) on the
+                                <code>collection</code> element to the <code>package</code> element. If these attributes are
+                            specified on the <code>package</code> element of the Source EPUB, copy them from that element,
+                            with precedence given to declarations on the <code>collection</code>.</li>
+
+                        <li>Copy the <code>metadata</code> element unchanged to the <code>package</code> element, ensuring
+                            any namespace declarations are preserved.</li>
+
+                        <li>If any non-<a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-metadata-reserved-vocabs"
+                                >reserved prefixes</a> are bound to the collection (whether declared in the collection or on
+                            related item/itemref entries), copy their declarations to a <code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-prefix-attr"
+                                    >prefix</a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-prefix-attr"
+                                > attribute</a> on the <code>package</code> element.</li>
+
+                        <li>Add a <code>unique-identifier</code> attribute to the <code>package</code> element that
+                            references the <code>id</code> of the <code>dc:identifier</code> element marked as the unique
+                            identifier for the collection (see <a href="#sec-obj-embed-meta-general">2.2.3.1
+                            General</a>).</li>
+
+                        <li><p>For each <code>link</code> element in the <code>manifest</code> <code>collection</code>:</p>
+                            <ol>
+                                <li>Use its <code>href</code> attribute value to look up the corresponding manifest
+                                        <code>item</code> element and copy that <code>item</code> to the new Package
+                                    Document's <code>manifest</code>. Avoid simple string comparisons of the attribute
+                                    values, as different paths may refer to the same resource (e.g., "./foo.xhtml" and
+                                    "foo.xhtml"). Also, avoid translating the <code>link</code> elements directly into
+                                        <code>item</code> elements unless the nature of the Distributable Object can always
+                                    be predicted, as important information could be lost ‒ e.g., the manifest
+                                        <code>properties</code> and <code>fallback</code> attribute values.</li>
+
+                                <li>Copy the referenced resource to the same location in the Packaged Object's directory
+                                    structure. (See also <a href="#sec-trans-filter">3.2.3 EPUB Content Documents</a> and <a
+                                        href="#sec-trans-res-name">3.2.4 Resource Renaming</a>.)</li>
+                            </ol>
+                        </li>
+
+                        <li><p>Translate the <code>collection</code> element's child <code>link</code> elements to
+                                    <code>spine itemref</code> elements as follows:</p>
+                            <ol>
+                                <li><p>If the URL specified in the <code>link</code> <code>href</code> attribute includes a
+                                        fragment identifier:</p>
+                                    <ol>
+                                        <li>if the EPUB Content Document containing the fragment has not been encountered in
+                                            a preceding <code>link</code> element, add an <code>itemref</code> to the
+                                                <code>spine</code>.</li>
+
+                                        <li>if a fragment from the EPUB Content Document has already been encountered, ignore
+                                            the <code>link</code>.</li>
+                                    </ol>
+                                </li>
+
+                                <li>If no fragment identifier is included, the <code>itemref</code> must reference the
+                                    manifest entry for the specified EPUB Content Document.</li>
+                            </ol>
+                        </li>
+
+                        <li>For each spine <code>itemref</code> created in the previous step, check whether or not the
+                            referenced EPUB Content Document is linear or not by inspecting the spine of the Source EPUB and
+                            copy the appropriate attribute. Also, copy the <code>properties</code> attribute, if
+                            present.</li>
+
+                        <li>If the Source EPUB makes use of bindings [[!Publications301]], check the Package Document
+                                <code>bindings</code> element for any <code>mediaType</code> rules that match a resource type
+                            in the Distributable Object's manifest and copy them to the new Package Document.</li>
+                    </ol>
+
+                    <p>The <code>distributable-object</code> collection MUST NOT be copied into the Packaged Object to avoid
+                        problems reintegrating the Distributable Object into a Destination EPUB. If the collection contains
+                            <a href="#sec-obj-embed-do-nest">Nested Objects</a>, each of those Distributable Object
+                            <code>collection</code> elements becomes a top-level <code>distributable-object</code> collection
+                        in the resulting Package Document. (This requirement applies only to direct children; any Nested
+                        Objects in the child collections remain nested.)</p>
+
+                    <p>The translation process MAY require additional steps not outlined above, particularly in the case of
+                        other specifications that implement this framework, and for features defined outside the core EPUB 3
+                        specifications.</p>
+                </section>
+
+                <section id="sec-trans-filter">
+                    <h4>Filter EPUB Content Documents</h4>
+
+                    <p>As a Distributable Object MAY reference one or more markup fragments in an EPUB Content Document, a
+                        Processing Agent MUST be able to filter documents to remove all non-distributable markup when
+                        generating the Packaged Object.</p>
+
+                    <p>The process for determining which documents to filter, and what content to preserve is as follows:</p>
+
+                    <ol>
+                        <li>Create two lists: one for complete EPUB Content Documents to keep and another for documents
+                            containing fragments. The fragment list should allow a list of identifiers to be preserved for
+                            each entry (e.g., a hashtable) or else a separate list will need to be maintained.</li>
+
+                        <li><p>Inspect each child <code>link</code> element in the
+                                <code>distributable-object</code> collection:</p>
+                            <ol>
+                                <li>if the referenced EPUB Content Document includes a fragment identifier, and has not
+                                    already been encountered, add it to the list to filter. Append the identifier to the list
+                                    of fragments to keep from that document.</li>
+                                <li>if the referenced EPUB Content Document does not include a fragment identifier, add the
+                                    document to the list of complete documents to keep</li>
+                            </ol>
+                        </li>
+
+                        <li>Iterate over the list of EPUB Content Documents to filter that was generated in step 2, and strip
+                            all non-distributable markup from each, leaving only the referenced fragments. (Filtering might
+                            result in the document no longer being valid; see <a href="#sec-obj-pkg-contentdocs">2.3.4 EPUB
+                                Content Documents</a> for more information.)</li>
+                    </ol>
+
+                    <div class="note">
+                        <p>If any EPUB Content Documents are present in both lists after step 2, the collection is invalid.
+                            The Processing Agent can continue by keeping the entire EPUB Content Document and ignoring any
+                            fragments, but the source of the invalidity needs to be investigated.</p>
+                    </div>
+
+                    <div class="note">
+                        <p>Rather than rely on automated processing, Authors might prefer to prepare specific versions of
+                            Distributable Object files containing only partially-relevant content, particularly if the
+                            Distributable Object is destined for Users. For example, relying on fragment filtering of
+                            indexes, bibliographies, notes and other backmatter could lead to suboptimal rendering.</p>
+                    </div>
+                </section>
+
+                <section id="sec-trans-res-name">
+                    <h4>Resource Renaming</h4>
+
+                    <p>Resources MAY be renamed when moving them from the Embedded Object to the Packaged Object.</p>
+
+                    <p>This specification does not impose any requirements on the renaming of resources except that the names
+                        MUST be valid file names as defined in [[!OCF301]].</p>
+
+                    <p>If a Processing Agent renames files, it is responsible for also ensuring that all references to the
+                        original names are updated in all resources (all <code>href</code> and <code>src</code> attributes in
+                        XHTML Content Documents, any linked CSS and <code>@import</code> rules, etc.).</p>
+                </section>
+
+                <section id="sec-trans-nav-doc">
+                    <h4>EPUB Navigation Document</h4>
+
+                    <p>The Packaged Object MUST include an EPUB Navigation Document, which MUST be generated by the
+                        Processing Agent.</p>
+
+                    <p>The Processing Agent MAY choose any method to generate this file. The following suggestions are
+                        provided only as guidance:</p>
+
+                    <ol>
+                        <li>If the Packaged Object is intended for direct User consumption (e.g., a chapter of a book for
+                            sale separately), ensure a complete table of contents is provided. The required <code>toc
+                                nav</code> [[!ContentDocs301]] can be generated in these cases by traversing all EPUB Content
+                            Documents that belong to the Distributable Object and adding links to all structural
+                            headings.</li>
+
+                        <li><p>If the Packaged Object is being created only for transport purposes, the Processing Agent can
+                                either:</p>
+                            <ol>
+                                <li>create the required <code>toc nav</code> by adding generic links to each EPUB Content
+                                    Document in the spine, and leave it to the Author implementing the Distributable Object
+                                    to add the necessary structure to their Publication.</li>
+
+                                <li>create structured navigation by inspecting each EPUB Content Document and adding links to
+                                    all structural headings to aid later integration.</li>
+                            </ol>
+                        </li>
+                    </ol>
+
+                    <p>How to handle other components in the EPUB Navigation Document is at the discretion of the Processing
+                        Agent (e.g., extracting landmarks, page lists and lists of tables or figure specific to the
+                        Distributable Object).</p>
+
+                    <p>Specifications that implement this framework MAY provide stricter requirements on how to generate the
+                        EPUB Navigation Document.</p>
+                </section>
+            </section>
+
+            <section id="sec-trans-pkg-to-embed">
+                <h3>Packaged to Embedded</h3>
+
+                <section id="sec-trans-p2e-process" class="informative">
+                    <h4>Translation Process</h4>
+
+                    <p>The process of creating an Embedded Object from a Packaged Object is effectively a reversal of the
+                        steps needed to translate from <a href="#sec-trans-embed-to-pkg">embedded to packaged</a>:</p>
+
+                    <ul>
+                        <li><a href="#sec-trans-p2e-collection">recreate the </a><code><a href="#sec-3.3.2"
+                                    >distributable-object</a></code><a href="#sec-3.3.2"> collection</a> from the Package
+                            Document</li>
+
+                        <li><a href="#sec-trans-p2e-migrate">copy all resources</a> into the Destination EPUB</li>
+
+                        <li><a href="#sec-trans-p2e-fragments">integrate any fragments</a></li>
+
+                        <li><a href="#sec-trans-p2e-nav-doc">update the Navigation Document</a> in the Destination EPUB</li>
+                    </ul>
+
+                    <p>As the process of integrating content into an existing EPUB Publication is not trivial, a greater
+                        degree of manual intervention is likely in this process. The EPUB Navigation Document has to be
+                        updated with more precision than packaging requires, fragments integrated into their correct
+                        destination document, collection links updated to reflect the new fragment locations, the spine
+                        reordered, and so on.</p>
+
+                    <p>Similar to the process detailed in the previous section, the following subsections do not necessarily
+                        represent a linear order in which translation events have to occur. The intent is only to provide an
+                        overview of the essential steps involved.</p>
+
+                    <div class="note">
+                        <p>The translation process detailed in this section only deals with the <a
+                                href="http://idpf.org/epub/301">core EPUB 3.0.1 specifications</a>. Distributable Objects
+                            that employ features defined in other IDPF specifications might require additional handling to
+                            ensure proper translation.</p>
+                    </div>
+                </section>
+
+                <section id="sec-trans-p2e-collection">
+                    <h4>Create the <code>distributable-object</code> Collection</h4>
+
+                    <p>The following list provides the general set of steps necessary to create the
+                            <code>distributable-object</code> collection in the Destination EPUB:</p>
+
+                    <ol>
+                        <li>Create a new <code>collection</code> element in the Destination EPUB and assign it the
+                                <code>role</code> attribute value "<code>distributable-object</code>". (If the Distributable
+                            Object's metadata contains any other <code>dc:type</code> values, additional roles might be
+                            required depending on the requirements of the publication type to which the Distributable Object
+                            conforms.)</li>
+
+                        <li>Copy any internationalization attributes (<code>dir</code>, <code>xml:lang</code>) on the
+                                <code>package</code> element to the <code>collection</code> element.</li>
+
+                        <li>If present, add any <code><a
+                                    href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-prefix-attr"
+                                    >prefix</a></code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-prefix-attr"
+                                > attribute</a> declarations to the Destination EPUB's <code>package</code> element.</li>
+
+                        <li>Copy the Packaged Object's <code>metadata</code> section into the <code>collection</code> as its
+                            required first child element.</li>
+
+                        <li>Create a new <code>manifest</code> collection and translate all of the Packaged Object's manifest
+                                <code>item</code> elements into child <code>link</code> elements.</li>
+
+                        <li>If the Packaged Object contains any <code>distributable-object</code> collections, copy each
+                            after the <code>manifest</code> collection.</li>
+
+                        <li>Translate each spine <code>itemref</code> in the Package Object to a child
+                            <code>link</code> element, replacing the ID reference in the <code>idref</code> attribute with
+                            the location of the resource when creating the <code>link</code> element's
+                            <code>href</code> attribute.</li>
+                    </ol>
+                </section>
+
+                <section id="sec-trans-p2e-migrate">
+                    <h4>Migrate Resources</h4>
+
+                    <p>The following list provides the general set of steps necessary to merge the Packaged Object's
+                        resources into the Destination EPUB:</p>
+
+                    <ol>
+                        <li>Copy all of the Packaged Object's manifest <code>item</code> elements into the
+                                <code>manifest</code> of the Destination EPUB, excluding the entry for the EPUB Navigation
+                            Document.</li>
+
+                        <li>Copy all resources listed in the Packaged Object's manifest to the same location in the
+                            Destination EPUB, again excluding the EPUB Navigation Document. If a resource with the same name
+                            already exists at the specified location, the Processing Agent is responsible for assigning it a
+                            new name and modifying all references to it.</li>
+
+                        <li>Copy each spine <code>itemref</code> in the Packaged Object to the Destination EPUB's
+                                <code>spine</code>, retaining the order in which they are listed. (The position of these
+                            entries will typically have to be manually corrected to reflect the correct reading order.)</li>
+                    </ol>
+
+                    <p>Note that the Package Document MUST NOT be copied into the Destination EPUB. A new Package Document
+                        can be created from the collection information during translation from embedded to packaged
+                        states.</p>
+                </section>
+
+                <section id="sec-trans-p2e-fragments">
+                    <h4>Incorporate Content Fragments</h4>
+
+                    <p>Although all EPUB Content Documents from the Packaged Object are copied into the Destination EPUB,
+                        some MAY contain fragments that are to be integrated into the existing content.</p>
+
+                    <p>This specification does not prescribe how such fragments are to be integrated. A tool could be used
+                        that allows the Author to select the location, or a person could have to manually copy and paste the
+                        fragments.</p>
+
+                    <p>Whatever the scenario, if fragments are moved into another EPUB Content Document the Processing Agent
+                        MUST update all references in the <code>distributable-object</code> collection to the new locations.
+                        The child <code>link</code> element set will also have to be updated to add references to the
+                        fragments.</p>
+                </section>
+
+                <section id="sec-trans-p2e-nav-doc">
+                    <h4>EPUB Navigation Document</h4>
+
+                    <p>The EPUB Navigation Document from the Packaged Object MUST NOT be copied to the Destination EPUB.</p>
+
+                    <p>This specification does not prescribe how the Destination EPUB's Navigation Document is to be updated
+                        to reflect the added content. The document could be regenerated automatically, or a person could have
+                        to manually update.</p>
+                </section>
+
+                <section id="sec-trans-p2e-overlays">
+                    <h4>Media Overlays</h4>
+
+                    <p>If the Packaged Object includes Media Overlays [[MediaOverlays301]], in addition to integrating the
+                        Media Overlay Documents, the <code>media:duration</code> metadata value for the Packaged Object has
+                        to be added to the Destination EPUB's total duration.</p>
+
+                    <p>If the Packaged Object contains content fragments, the duration of each fragment has to be added to
+                        the total for the EPUB Content Document it is integrated into.</p>
+                </section>
+
+                <section id="sec-trans-p2e-non-rendering" class="informative">
+                    <h4>Non-Rendering Resources</h4>
+
+                    <p>It is possible to include resources in an EPUB Container that are not intended for use when
+                        rendering any of the given Renditions. As these resources are typically not listed in the Package
+                        Document manifest, however, there is no way to automatically detect their presence.</p>
+
+                    <p>Consequently, although such resources can be bundled with a Packaged Object, their translation has to
+                        be done manually.</p>
+                </section>
+            </section>
+
+            <section id="sec-trans-enc-obs">
+                <h3>Encryption and Obfuscation</h3>
+
+                <p>The translation processes defined in this section assume that the resources in a Distributable Object are
+                    not encrypted or obfuscated, or that the translation process occurs before, or after, decryption or
+                    deobfuscation has occured.</p>
+
+                <p>Whether resources have to be re-encrypted or re-obfuscated each time the Distributable Object changes
+                    state is outside scope of this framework. A Processing Agent might inspect the META-INF/encryption.xml
+                    file to determine this information, but that will only reveal that the Distributable Object is currently
+                    encrypted/obfuscated, not whether it always has to be.</p>
+
+                <p>If resources can only be distributed provided they are encrypted/obfuscated, the Author of the
+                    Distributable Object MUST specify which resources and what method to use (see <a href="#sec-obj-rights"
+                        >usage rights</a>).</p>
+            </section>
+
+            <section id="sec-trans-cfi">
+                <h3>EPUB Canonical Fragment Identifiers</h3>
+
+                <p>Although canonical fragment identifiers [[!EPUB-CFI]] are not permitted for use defining discrete entities
+                    (see <a href="#sec-obj-embed-discrete">2.2.4 Discrete Entities</a>), they can appear in the resources
+                    included in the Embedded Object. When translating states, these identifiers can become invalid, as the
+                    spine locations of the referenced EPUB Content Documents will often change.</p>
+
+                <p>It is therefore RECOMMENDED that [[!EPUB-CFI]] be avoided unless there is no alternative. Processing
+                    Agents need to be aware that these identifiers may exist and may need to be updated.</p>
+            </section>
+        </section>
+        <section id="app-example" class="appendix informative">
+            <h2>Example</h2>
+
+            <section id="app-example-comp">
+                <h3>Side-by-Side Comparison</h3>
+
+                <p>This section provides a side-by-side comparison of a <code>distributable-object</code> collection (<a
+                        href="#sec-obj-embedded">embedded state</a>) and Package Document (<a href="#sec-obj-packaged"
+                        >transport state</a>) for the same Distributable Object. To see the markup for each separately, refer
+                    to the following subsections.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Package Document</th>
+                            <th>Collection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><pre>&lt;package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;</pre></td>
+                            <td><pre>&lt;collection role="distributable-object"&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;</pre></td>
+                            <td><pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><pre>&lt;dc:type&gt;distributable-object&lt;/dc:type&gt;</pre></td>
+                            <td><pre>&lt;dc:type&gt;distributable-object&lt;/dc:type&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><pre>&lt;dc:identifier&gt;urn:uuid:a46825d1-e796-4cc3-a633-5160f529a1e0&lt;/dc:identifier&gt;</pre></td>
+                            <td><pre>&lt;dc:identifier&gt;urn:uuid:a46825d1-e796-4cc3-a633-5160f529a1e0&lt;/dc:identifier&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><pre>&lt;meta property="identifier-type"  refines="#c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;unique-identifier&lt;/meta&gt;</pre></td>
+                            <td><pre>&lt;meta property="identifier-type" refines="#c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;unique-identifier&lt;/meta&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><pre>&lt;meta property="dcterms:modified"&gt;2014-11-10T19:30:22Z&lt;/meta&gt;</pre></td>
+                            <td><pre>&lt;meta property="dcterms:modified"&gt;2014-11-10T19:30:22Z&lt;/meta&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><pre>&lt;!-- all metadata is identical, so additional elements have been omitted for brevity --&gt;</pre></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><pre>&lt;/metadata&gt;</pre></td>
+                            <td><pre>&lt;/metadata&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td><pre>&lt;manifest&gt;</pre></td>
+                            <td><pre>&lt;collection role="manifest"&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td><pre>&lt;item href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/&gt;</pre></td>
+                            <td><pre>&lt;!-- omitted --&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td><pre>&lt;item href="xhtml/chapter01.xhtml" media-type="application/xhtml+xml" properties="scripted"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/chapter01.xhtml" media-type="application/xhtml+xml"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td><pre>&lt;item href="xhtml/notes.xhtml" media-type="application/xhtml+xml"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/notes.xhtml" media-type="application/xhtml+xml"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td><pre>&lt;item href="xhtml/biblio.xhtml" media-type="application/xhtml+xml"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/biblio.xhtml" media-type="application/xhtml+xml"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td><pre>&lt;item href="css/epub.css" media-type="text/css"/&gt;</pre></td>
+                            <td><pre>&lt;link href="css/epub.css" media-type="text/css"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td><pre>&lt;/manifest&gt;</pre></td>
+                            <td><pre>&lt;/collection&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td><pre>&lt;spine&gt;</pre></td>
+                            <td><pre>&lt;!-- the spine is inferred --&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td><pre>&lt;itemref idref="b82e04c7-cdf2-42ad-b363-c5dda9e68103"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/chapter01.xhtml"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td><pre>&lt;itemref idref="e911ca8f-674e-4033-aaba-51fc72332cbc"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/notes.xhtml#c01"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td><pre>&lt;itemref idref="ca0d932e-bfca-4ab6-9985-bfe1227ldb33a"/&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/biblio.xhtml#b001"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td><pre>&lt;!-- repeat for fragments is not listed in the package document spine --&gt;</pre></td>
+                            <td><pre>&lt;link href="xhtml/biblio.xhtml#b023"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td></td>
+                            <td><pre>&lt;link href="xhtml/biblio.xhtml#b029"/&gt;</pre></td>
+                        </tr>
+                        <tr>
+                            <td>22</td>
+                            <td><pre>&lt;/spine&gt;</pre></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>23</td>
+                            <td><pre>&lt;/package&gt;</pre></td>
+                            <td><pre>&lt;/collection&gt;</pre></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="app-example-pkg-doc">
+                <h3>Package Document</h3>
+
+                <div class="example">
+                    <pre>&lt;package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;
+   &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+      &lt;dc:type&gt;distributable-object&lt;/dc:type&gt;
+      &lt;dc:identifier&gt;1&lt;/dc:identifier&gt;
+      &lt;meta property="identifier-type"  refines="#c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;unique-identifier&lt;/meta&gt;
+      &lt;meta property="dcterms:modified"&gt;2014-11-10T19:30:22Z&lt;/meta&gt;
+      &lt;dc:title&gt;Phantom Textbook - Chapter 1&lt;/dc:title&gt;
+      &lt;dc:language&gt;en&lt;/dc:language&gt;
+      &lt;dc:creator&gt;Jane Doe&lt;/dc:creator&gt;
+      &lt;dc:description&gt;Introduction to the history of phantasms. For sale separately.&lt;/dc:description&gt;
+      &lt;dc:source&gt;urn:isbn:9780987654321&lt;/dc:source&gt;
+      &lt;dc:date&gt;2014-10-31&lt;/dc:date&gt;
+      &lt;dc:rights&gt;All rights reserved. Not available for use or sale except by authorized vendors.&lt;/dc:right&gt;
+   &lt;/metadata&gt;
+   &lt;manifest&gt;
+      &lt;item href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/&gt;
+      &lt;item href="xhtml/chapter01.xhtml" media-type="application/xhtml+xml" properties="scripted"/&gt;
+      &lt;item href="xhtml/notes.xhtml" media-type="application/xhtml+xml"/&gt;
+      &lt;item href="xhtml/biblio.xhtml" media-type="application/xhtml+xml"/&gt;
+      &lt;item href="css/epub.css" media-type="text/css"/&gt;
+   &lt;/manifest&gt;
+   &lt;spine&gt;
+      &lt;itemref idref="b82e04c7-cdf2-42ad-b363-c5dda9e68103"/&gt;
+      &lt;itemref idref="e911ca8f-674e-4033-aaba-51fc72332cbc"/&gt;
+      &lt;itemref idref="ca0d932e-bfca-4ab6-9985-bfe1227ldb33a"/&gt;
+      &lt;!-- repeated fragments are not listed in the package document spine --&gt;
+   &lt;/spine&gt;
+&lt;/package&gt;</pre>
+                </div>
+            </section>
+
+            <section id="app-example-collection">
+                <h3>Collection</h3>
+
+                <div class="example">
+                    <pre>&lt;collection role="distributable-object"&gt;
+   &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+      &lt;dc:type&gt;distributable-object&lt;/dc:type&gt;
+      &lt;dc:identifier&gt;urn:uuid:a46825d1-e796-4cc3-a633-5160f529a1e0&lt;/dc:identifier&gt;
+      &lt;meta property="identifier-type" refines="#c5bba4b9-3d3c-4da4-bafd-8e185f7b35b2"&gt;unique-identifier&lt;/meta&gt;
+      &lt;meta property="dcterms:modified"&gt;2014-11-10T19:30:22Z&lt;/meta&gt;
+      &lt;dc:title&gt;Phantom Textbook - Chapter 1&lt;/dc:title&gt;
+      &lt;dc:language&gt;en&lt;/dc:language&gt;
+      &lt;dc:creator&gt;Jane Doe&lt;/dc:creator&gt;
+      &lt;dc:description&gt;Introduction to the history of phantasms. For sale separately.&lt;/dc:description&gt;
+      &lt;dc:source&gt;urn:isbn:9780987654321&lt;/dc:source&gt;
+      &lt;dc:date&gt;2014-10-31&lt;/dc:date&gt;
+      &lt;dc:rights&gt;All rights reserved. Not available for use or sale except by authorized vendors.&lt;/dc:right&gt;   &lt;/metadata&gt;
+   &lt;collection role="manifest"&gt;
+      &lt;link href="xhtml/chapter01.xhtml" media-type="application/xhtml+xml"/&gt;
+      &lt;link href="xhtml/notes.xhtml" media-type="application/xhtml+xml"/&gt;
+      &lt;link href="xhtml/biblio.xhtml" media-type="application/xhtml+xml"/&gt;
+      &lt;link href="css/epub.css" media-type="text/css"/&gt;
+   &lt;/collection&gt;
+   &lt;link href="xhtml/chapter01.xhtml"/&gt;
+   &lt;link href="xhtml/notes.xhtml#c01"/&gt;
+   &lt;link href="xhtml/biblio.xhtml#b001"/&gt;
+   &lt;link href="xhtml/biblio.xhtml#b023"/&gt;
+   &lt;link href="xhtml/biblio.xhtml#b029"/&gt;
+&lt;/collection&gt;</pre>
+                </div>
+            </section>
+        </section>
+        <section id="acknowledgements" class="appendix informative">
+            <h2>Acknowledgements and Contributors</h2>
+
+            <p>EPUB has been developed by the International Digital Publishing Forum in a cooperative effort, bringing
+                together publishers, vendors, software developers, and experts in the relevant standards.</p>
+
+            <p>The EPUB Distributable Objects 1.0 specification was prepared by the International Digital Publishing Forum's
+                EPUB Working Group, operating under under the leadership of:</p>
+
+            <ul>
+                <li>Stroup, David <span>Co-chair</span></li>
+                <li>Gylling, Markus <span>Co-chair</span></li>
+            </ul>
+
+            <p>Active members of the working group at the time of publication were:</p>
+
+            <p>IDPF Members</p>
+            <ul>
+                <li>Bailey, Brent (Elsevier) </li>
+                <li>Belfanti, Paul (Pearson) </li>
+                <li>Bonelli, Peppo (LIA) </li>
+                <li>Cho, Yong-Sang (KERIS) </li>
+                <li>Chow, King-Wai (ASTRI) </li>
+                <li>Conboy, Garth (Google) </li>
+                <li>Creasy, Keith (APH) </li>
+                <li>Duga, Brady (Google)</li>
+                <li>Gylling, Markus (IDPF &amp; DAISY) </li>
+                <li>Harris, Zonker (VitalSource) </li>
+                <li>Ikeuchi, Yasuki (ACCESS) </li>
+                <li>Johnson, Tam (MTM) </li>
+                <li>Kaplansky, Jean (Aptara) </li>
+                <li>Kasdorf, Bill (Apex) </li>
+                <li>Keohane, Susann (IBM) </li>
+                <li>Kerscher, George (DAISY &amp; IDPF) </li>
+                <li>Kleinfeld, Sanders (O’Reilly) </li>
+                <li>Lehmann, Darryl (Imagineeringart.com) </li>
+                <li>Levenson Hirschman, Yonah (Pearson) </li>
+                <li>Mathis, Rock (Pearson) </li>
+                <li>MURATA, Makoto (JEPA) </li>
+                <li>Prabhu, John (SPi Global) </li>
+                <li>Pritchett, James (Learning Ally) </li>
+                <li>Schroeter, Ben (CourseSmart) </li>
+                <li>Siegman, Tzviya (Wiley) </li>
+                <li>Stroup, David (Pearson) </li>
+                <li>Tamura, Yasu (Sophia Univ.) </li>
+                <li>Watanabe, Ryuichi (Sony)</li>
+                <li>Weck, Daniel (Readium)</li>
+                <li>Wright, Ric (Readium)</li>
+            </ul>
+
+            <p>Invited Experts/Observers</p>
+            <ul>
+                <li>Garrish, Matt</li>
+                <li>Hector, Chris</li>
+                <li>Ko, Ben</li>
+                <li>Metcalfe, David</li>
+            </ul>
+        </section>
+    </body>
+</html>
