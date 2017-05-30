@@ -18,6 +18,7 @@ HTML documents on this repository’s master branch can also be displayed in a b
 1. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
 2. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
 3. [Open Annotation in EPUB](https://w3c.github.io/publ-epub-revision/oa/epub-oa.html)
+4. [Distributable Objects](https://w3c.github.io/publ-epub-revision/do/epub-do.html)
 
 
 ## Registries
