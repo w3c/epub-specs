@@ -71,6 +71,10 @@ var biblio = {
       "title": "EPUB Dictionaries and Glossaries",
       "href": "http://www.idpf.org/epub/dict"
     },
+    "DistributableObjects": {
+      "title": "EPUB Distributable Objects 1.0",
+      "href": "http://www.idpf.org/epub/do"
+    },
     "EPUB-CFI": {
       "title": "EPUB Canonical Fragment Identifier (epubcfi) Specification",
       "href": "http://www.idpf.org/epub/linking/cfi/epub-cfi.html"
@@ -242,6 +246,14 @@ var biblio = {
     "SchemaGuide": {
       "title": "Schema.org Metadata Integration Guide for EPUB 3",
       "href": "http://www.idpf.org/epub/guides/schema-org-integration"
+    },
+    "ScriptableComponents": {
+      "title": "EPUB Scriptable Components 1.0",
+      "href": "http://www.idpf.org/epub/sc/api"
+    },
+    "ScriptableComponents-Packaging": {
+      "title": "EPUB Scriptable Components Packaging and Integration 1.0",
+      "href": "http://www.idpf.org/epub/sc/pkg"
     },
     "SHA-1": {
       "title": "Federal Information Processing Standards Publication 180-3: Secure Hash Standard (SHS)",

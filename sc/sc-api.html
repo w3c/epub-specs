@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>EPUB Scriptable Components 1.0</title>
+        <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+        <script src="../common/js/biblio.js" class="remove"></script>
+        <script src="../common/js/dfn-crossref.js" class="remove"></script>
+        <script src="../common/js/confreq-permalinks.js" class="remove"></script>
+        <link href="../common/css/common.css" rel="stylesheet" type="text/css" />
+        <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-sc",
+              edDraftURI: "https://w3c.github.io/publ-epub-revision/sc/sc-api.html",
+              editors: [
+                  {
+                      name: "Will Manis",
+                      company: "Invited Expert"
+                  },
+                  {
+                      name: "Brady Duga",
+                      company: "Google",
+                      companyURL: "http://google.com"
+                  },
+                  {
+                      name: "Darryl Lehmann",
+                      company: "Imagineeringart.com",
+                      companyURL: "http://imagineeringart.com"
+                  },
+                  {
+                      name: "Mike Chen",
+                      company: "Inkling",
+                      companyURL: "http://inkling.com"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+    </head>
+    <body>
+        <section id="abstract">
+            <p>EPUB Scriptable Components provides an interoperable publish and subscribe (pubsub) pattern by which
+                interactive content can be created and incorporated into EPUB Publications.</p>
+        </section>
+        <section id="sotd">
+            <p>The <a href="#sec-conf-rs">third bullet in s. 2.2</a> indicates how reading systems handle the situations
+                where they don't support spine-level scripting but are ESC-aware and do support spine-level scripting but
+                aren't ESC-aware. A third case has been identified where the reading system supports spine-level scripting
+                and is also ESC-aware. It is not clear what the expectations are in this case, as further study is needed in
+                real-world systems. Further guidance may be added in a future draft.</p>
+        </section>
+        <section id="sec-overview">
+            <h2>Overview</h2>
+
+            <section id="sec-purpose-scope" class="informative">
+                <h3>Purpose and Scope</h3>
+
+                <p>This specification, EPUB Scriptable Components, provides an interoperable publish and subscribe (pubsub)
+                    pattern by which interactive content can be created and incorporated into EPUB Publications. This
+                    interactive content can be rendered in any Reading System that conforms to the requirements in this
+                    specification.</p>
+
+                <p>This specification is not a replacement for the scripting architecture defined in [[ContentDocs301]], and
+                    implementing or using the APIs and processes does not replace the requirements, restrictions and best
+                    practices defined in that specification.</p>
+
+                <p>Scriptable Components can be used in Reading Systems that support only container-constrained scripts or
+                    that support full spine-level scripting.</p>
+
+                <section data-lt="sec-ps-security">
+                    <h4>Security</h4>
+
+                    <p>The goal of this specification and [[ScriptableComponents-Packaging]] is to allow third-party
+                        Scriptable Components (widgets) to be securely integrated into XHTML Content Documents. As such, this
+                        specification requires that Scriptable Components be embedded using the [[HTML5]] <code
+                            class="markup">iframe</code> element ‒ whether they are embedded into an XHTML Content Document
+                        in an EPUB Publication or into another Scriptable Component.</p>
+
+                    <p>This specification assumes that domain isolation exists between the Scriptable Components, but the
+                        Reading System might or might not enforce domain isolation on the document referenced by the <code
+                            class="markup">iframe</code> element. If domain isolation is enforced a relatively high degree of
+                        isolation and security is achieved. If domain isolation is not enforced security could be an issue
+                        (e.g., the Scriptable Component might compromise the EPUB Publication and/or the Reading System).</p>
+
+                    <p>Compliance with this specification does not guarantee any particular level of security, it is intended
+                        to provide a framework in which Reading System implementors can achieve security with third-party
+                        scripting.</p>
+                </section>
+
+                <section id="sec-ps-rs-comm">
+                    <h4>User Agent to Reading System Communication </h4>
+
+                    <p>Some Reading Systems on mobile devices are implemented using a system-provided web component (often
+                        referred to as a WebView) for the rendering of content. It is common for these components to provide
+                        some level of communication with the rest of the Reading System, for instance to report on progress
+                        and load content. Such calls can have both security and privacy implications. For example, it might
+                        be possible to determine the name of the user and the list of books in the users library. Such
+                        communications can also be used to exploit vulnerabilities, like buffer overflows, in the Reading
+                        System.</p>
+
+                    <p>This specification does not directly resolve these issues. It is the responsibility of the Reading
+                        System implementor to account for the security and privacy implication of WebView-to-application
+                        communication.</p>
+                </section>
+
+                <section id="sec-ps-privacy">
+                    <h4>Privacy</h4>
+
+                    <p>As Scriptable Components evolve, they will invariably make use of communication resources to retrieve
+                        and store remote (cloud) data ‒ data that might contain sensitive personal information.</p>
+
+                    <p>It is beyond the scope of this specification to ensure or enforce the privacy of this information.
+                        Reading Systems might employ measures to restrict or eliminate communication across a network, or
+                        limit or disallow cookies and local storage.</p>
+                </section>
+            </section>
+
+            <section id="sec-terminology">
+                <h3>Terminology</h3>
+
+                <p>Refer to the <a href="http://idpf.org/epub/30/">EPUB Specifications</a> for definitions of EPUB-specific
+                    terminology used in this document.</p>
+
+                <dl class="termlist">
+                    <dt><dfn>Component Parent</dfn></dt>
+                    <dd>
+                        <p>The parent that hosts the Scriptable Component, which could be either:</p>
+                        <ol start="1">
+                            <li>another Scriptable Component, if referenced from an [[!HTML5]] <code class="markup"
+                                    >iframe</code> within it; or</li>
+                            <li>the Reading System, if referenced from an <code>iframe</code> in a Top-level Content
+                                Document.</li>
+                        </ol>
+                    </dd>
+
+                    <dt><dfn>PubSub Communication Bridge</dfn></dt>
+                    <dd><p>The publisher/subscriber relationship defined in <a href="#sec-pubsub-bridge">4.2.1 The PubSub
+                                Communication Bridge</a> to facilitate message communication.</p></dd>
+
+                    <dt><dfn data-lt="Scriptable Components">Scriptable Component</dfn></dt>
+                    <dd><p>A scripted Distributable Object that is distributed for use in other EPUB Publications. A
+                            Scriptable Component conforms to all content requirements in this specification and in
+                            [[!ScriptableComponents-Packaging]].</p></dd>
+                </dl>
+            </section>
+
+            <section id="conformance"></section>
+        </section>
+        <section id="sec-conformance">
+            <h2>Conformance</h2>
+
+            <section id="sec-conf-content">
+                <h3>Content Conformance</h3>
+
+                <p>An EPUB Content Document that supports Scriptable Components MUST meet the following criteria:</p>
+
+                <ul class="conformance-list">
+                    <li><p id="confreq-content-general">It MUST conform to all content and security requirements in <a
+                                href="#sec-sc">3. Scriptable Components</a>.</p>
+                    </li>
+                    <li><p id="confreq-content-pubsub">It MUST contain EPUB Scriptable Component code that supports the
+                            pub/sub protocol defined in <a href="#sec-inter-component">4. Inter-Component
+                            Communication</a>.</p></li>
+                </ul>
+
+                <p>An EPUB Publication that contains EPUB Scriptable Components MUST be packaged in conformance with
+                    [[!ScriptableComponents-Packaging]].</p>
+            </section>
+
+            <section id="sec-conf-rs">
+                <h3>Reading System Conformance</h3>
+
+                <p>EPUB Reading Systems that support Scriptable Components MUST meet the following criteria:</p>
+
+                <ul>
+                    <li><p id="confreq-rs-epub">All conformance requirements placed on Reading Systems by the EPUB
+                            specification, particularly <a
+                                href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-scripted-content-rs-reqs"
+                                >the requirements for scripting</a> [[!ContentDocs301]], MUST be met.</p></li>
+
+                    <li><p id="confreq-rs-scripting">› <a
+                                href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-scripted-content-type-container-constrained"
+                                >Container-constrained</a><a
+                                href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-scripted-content-type-container-constrained"
+                                > scripting</a> [[!ContentDocs301]] MUST be supported for the [[!HTML5]] <code class="markup"
+                                    ><a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element"
+                                    >iframe</a></code><a
+                                href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element"
+                            > element</a>.</p></li>
+
+                    <li><p id="confreq-rs-spine-scripting">If <a
+                                href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-scripted-content-type-spine-level"
+                                >spine-level scripting</a> [[!ContentDocs301]] is not supported, the Reading System
+                            MUST still support the pubsub protocol defined <a href="#sec-pubsub-bridge">4.2.1 The PubSub
+                                Communication Bridge</a> for Scriptable Components embedded directly in Top-level Content
+                            Documents (i.e., to ensure communication at the top-most level). Otherwise, if the Reading System
+                            supports spine-level scripting and it is enabled, it MUST NOT implement the pubsub protocol, as
+                            the spine-level Scriptable Components will already implement it.</p>
+                    </li>
+                </ul>
+            </section>
+        </section>
+        <section id="sec-sc">
+            <h2>Scriptable Components</h2>
+
+            <section id="sec-sc-integration">
+                <h3>Integration</h3>
+
+                <p>All Scriptable Components MUST be hosted in an [[!HTML5]] <code><a
+                            href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element">iframe</a></code><a
+                        href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element"> element</a>. </p>
+
+                <p>All resources used by a Scriptable Component MUST be included in the EPUB Container, unless allowed to be
+                        <a href="http://www.idpf.org/epub3/latest/publications#sec-resource-locations">remotely
+                    hosted</a> (e.g., audio/video).</p>
+            </section>
+
+            <section id="sec-sc-security">
+                <h3>Security</h3>
+
+                <p>Scriptable Components MUST assume that they exist in a separate domain from the EPUB Content Document that
+                    hosts them. Reading Systems MAY enforce domain isolation of Scriptable Components.</p>
+
+                <p>The only means of communication between an EPUB Content Document and the contained Scriptable Components
+                    MUST occur using the <a href="#sec-ic-pubsub">EPUB Scriptable Components protocol</a>. No direct access
+                    across Scriptable Component boundaries is allowed; properties contained on <code><a
+                            href="http://www.w3.org/TR/html5/browsers.html#dom-parent"
+                    >window.parent</a></code> [[!HTML5]] MUST NOT be accessed.</p>
+            </section>
+        </section>
+        <section id="sec-inter-component">
+            <h2>Inter-Component Communication</h2>
+
+            <section id="sec-ic-intro" class="informative">
+                <h3>Introduction</h3>
+
+                <p>A Scriptable Component communicates via a protocol layer driven internally by an implementation of the <a
+                        href="http://www.w3.org/TR/webmessaging/#dom-window-postmessage">HTML5
+                    postMessage API</a> [[WebMessaging]].</p>
+
+                <p>The Scriptable Component functions ubiquitously by being both subscriber and subscribed in this model.
+                    This distributed model means that each Scriptable Component is responsible for relaying the messaging
+                    protocol to its direct dependent children and its parent in turn.</p>
+
+                <p>This protocol defines the methods by which Scriptable Components communicate, and predefines a set of
+                    message topics for communication.</p>
+            </section>
+
+            <section id="sec-ic-pubsub">
+                <h3>PubSub Protocol </h3>
+
+                <section id="sec-pubsub-bridge">
+                    <h4>The PubSub Communication Bridge</h4>
+
+                    <p>The <code>window.postMessage()</code> API [[!WebMessaging]] provides a safe communication bridge
+                        between two Scriptable Components in different domains, and is used by Scriptable Components to
+                        publish messages to target windows – their subscribers.</p>
+
+                    <p>Scriptable Components MUST use the <code>window.postMessage()</code> method<code class="markup"
+                            > </code>[[!WebMessaging]] to publish messages to, and through, target windows ‒ referred to
+                        hereafter as the PubSub Communication Bridge.</p>
+
+                    <p>Subscribers, in turn, MUST register event listeners on the event handler event type "<code
+                            class="markup">message</code>" [[!WebMessaging]] to subscribe to messages.</p>
+                </section>
+
+                <section id="sec-ic-pubsub-msg">
+                    <h4>Message Structure</h4>
+
+                    <p>Scriptable Components publish messages over the PubSub Communication Bridge to relay topics and events
+                        as they occur or are passed through.</p>
+
+                    <p>Each message MUST be serialized as a JSON object [[!RFC4627]] that conforms to the schema in <a
+                            href="#app-schema">Appendix A</a>.</p>
+
+                    <p>Messages are composed of the following properties:</p>
+
+                    <ul>
+                        <li id="propdef-componentId"><code>componentId</code> &#8212; The REQUIRED <code class="markup"
+                                >componentId</code> property contains a string identifier that uniquely identifies a
+                            Scriptable Component for the lifetime of the session (e.g., a GUID [[RFC4122]]). See also <a
+                                href="#app-componentID">Appendix B</a> for examples.</li>
+
+                        <li id="propdef-messageId"><code>messageId</code> &#8212; The REQUIRED <code class="markup"
+                                >messageId</code> property contains a string identifier that uniquely identifies a message.
+                            This specification does not require a format for the identifier. The identifier can be a
+                            combination of a unique value with the <a href="#propdef-componentId">Scriptable Component
+                                identifier</a>, a simple monotonic counter value or any other value guaranteed to be
+                            unique.</li>
+
+                        <li id="propdef-timestamp"><code>timestamp</code> &#8212; The REQUIRED <code class="markup"
+                                >timestamp</code> property identifies the time the message was generated. The value MUST be
+                            the value returned from the JavaScript <code class="markup">Date.now()</code> function, as
+                            implemented by the Reading System.</li>
+
+                        <li id="propdef-type"><code>type</code> &#8212; The REQUIRED <code class="markup"
+                            >type</code> property identifies that the object represents a message generated by a Scriptable
+                            Component. The value MUST be the string "<code class="markup">epubsc_message</code>".</li>
+
+                        <li id="propdef-method"><code>method</code> &#8212; The REQUIRED <code class="markup"
+                            >method</code> property contains a string identifier that declares the event method being
+                            invoked. The value MUST be one of the following: "<code><a href="#sec-ic-methods-sub"
+                                    >epubsc_subscribe</a></code>", "<code><a href="#sec-ic-methods-unsub"
+                                    >epubsc_unsubscribe</a></code>" or "<code><a href="#sec-ic-methods-publish"
+                                    >epubsc_publish</a></code>".</li>
+
+                        <li id="propdef-topic"><code>topic</code> &#8212; The REQUIRED <code class="markup"
+                            >topic</code> property identifies the name of the channel the message is being published to. The
+                            value MUST be a topic name, as defined in <a href="#sec-ic-topics-names">4.4.2 Topic
+                            Names</a> and <a href="#sec-ic-topics-reserved">4.4.3 Reserved Topic Names</a>.</li>
+
+                        <li id="propdef-topicData"><code>topicData</code> &#8212; The OPTIONAL <code class="markup"
+                                >topicData</code> property is included in a message when the <code class="markup"
+                                >topic</code> requires additional data. If present, the value MUST be a JSON object
+                            [[!RFC4627]].</li>
+                    </ul>
+
+                    <aside class="example">
+                        <p>Example of a message that passes temperature information on to another Scriptable Component.</p>
+
+                        <pre>{
+        "componentId": "b33ef720-556a-11e4-8ed6-0800200c9a66",
+        "messageId": "b33ef720-556a-11e4-8ed6-0800200c9a66+1",
+        "timestamp": 1413488477617,
+        "type": "epubsc_message",
+        "method": "epubsc_publish",
+        "topic": "current_temperature",
+        "topicData": {
+                "location": "Toronto, Ontario",
+                "currentTemp": 21,
+                "tempFormat": "Celsius"
+        }
+};</pre>
+                    </aside>
+                </section>
+
+                <section id="sec-ic-pubsub-timing">
+                    <h4>Timing</h4>
+
+                    <p>Due to the distributed nature of the protocol defined in this section, the order in which messages are
+                        received by a subscriber cannot be guaranteed.</p>
+
+                    <p>Scriptable Components consequently SHOULD NOT be designed to be dependent on an orderly arrival of
+                        messages from separate components. Scriptable Components SHOULD rely on the ordering of messages from
+                        a unique instance of a component. Message timing information SHOULD be extracted from the <a
+                            href="#propdef-timestamp"><code>timestamp</code> property</a>.</p>
+                </section>
+            </section>
+
+            <section id="sec-ic-methods">
+                <h3>Methods</h3>
+
+                <section id="sec-ic-methods-impl">
+                    <h4>Implementation</h4>
+
+                    <p>Scriptable Components MUST implement the methods defined in this section to facilitate communication
+                        over the PubSub Communication Bridge.</p>
+                </section>
+
+                <section id="sec-ic-methods-sub">
+                    <h4>Subscribe ("<code>epubsc_subscribe</code>")</h4>
+
+                    <p>The <code>epubsc_subscribe</code> method provides the mechanism for a Scriptable Component to
+                        subscribe to a topic.</p>
+
+                    <p>This method needs to be aware of the topic to begin listening.</p>
+                </section>
+
+                <section id="sec-ic-methods-unsub">
+                    <h4>Unsubscribe ("<code>epubsc_unsubscribe</code>")</h4>
+
+                    <p>The <code>epubsc_unsubscribe</code> method provides the mechanism for a Scriptable Component to
+                        terminate listening to a particular topic.</p>
+
+                    <p>This method needs to be aware of the topic string value to facilitate this lookup and removal.</p>
+                </section>
+
+                <section id="sec-ic-methods-publish">
+                    <h4>Publish ("<code>epubsc_publish</code>")</h4>
+
+                    <p>The <code>epubsc_publish</code> method allows a ready Scriptable Component to publish a message on a
+                        previously subscribed topic.</p>
+
+                    <p>This method needs to be aware of the topic name, and the message object to be passed.</p>
+                </section>
+            </section>
+
+            <section id="sec-ic-topics">
+                <h3>Topics</h3>
+
+                <section id="sec-ic-topics-comm">
+                    <h4>Communication</h4>
+
+                    <p>All topic subscriptions and publications MUST be propagated up to the Component Parent, regardless of
+                        subscription</p>
+
+                    <p>The component MUST send published topics to all subscribed children. If the sender is also subscribed,
+                        it MUST also receive the topic.</p>
+
+                    <p>A component MAY subscribe to a topic multiple times. </p>
+
+                    <p>A component MAY unsubscribe from a topic by removing a specific handler.</p>
+                </section>
+
+                <section id="sec-ic-topics-names">
+                    <h4>Topic Names</h4>
+
+                    <p>Topic names are used to identify what data is carried by a specific publish request.</p>
+
+                    <p>Topic names MUST<span> </span>start with an alphanumeric character and MUST NOT contain whitespace
+                        characters, which are defined as the following:</p>
+
+                    <ul>
+                        <li>CHARACTER TABULATION (<code>U+0009</code>)</li>
+                        <li>LINE FEED (<code>U+000A</code>)</li>
+                        <li>FORM FEED (<code>U+000C</code>)</li>
+                        <li>CARRIAGE RETURN (<code>U+000D</code>)</li>
+                        <li>SPACE (<code>U+0020</code>)</li>
+                    </ul>
+
+                    <p>Implementations can define their own topic names, but such names MUST NOT<span> </span>begin with the
+                        text "<code>epubsc</code>", as this prefix is reserved for <a href="#sec-ic-topics-reserved">topics
+                            defined by this specification</a>. The colon character ("<code>:</code>", <code>U+003A</code>) is
+                        reserved by this specification for future use and MUST NOT be used in custom topic names. However,
+                        the inclusion of the character MUST NOT be considered an error by Reading Systems implementing this
+                        version of the specification.</p>
+
+                    <p>Other than the reserved names, this specification does not define the meaning of any topic names.</p>
+                </section>
+
+                <section id="sec-ic-topics-reserved">
+                    <h4>Reserved Topic Names</h4>
+
+                    <section id="sec-ic-topics-ready">
+                        <h5>Ready ("<code>epubsc_ready</code>")</h5>
+
+                        <p>The topic "<code>epubsc_ready</code>" is reserved to indicate that a component has entered its
+                            ready state and is able to receive messages.</p>
+
+                        <p>At startup, a Scriptable Component MUST announce that it is ready to handle messages (topic
+                            subscriptions and publications) by publishing a message with the <code class="markup"
+                                >epubsc_ready</code> topic.</p>
+
+                        <p>The Scriptable Component also has to be able to store and maintain a list of participating
+                            Scriptable Components using their <a href="#propdef-componentId">Component IDs</a>.</p>
+                    </section>
+
+                    <section id="sec-ic-topics-pause">
+                        <h5>Pause ("<code>epubsc_pause</code>")</h5>
+
+                        <p>The topic "<code>epubsc_pause</code>" is reserved to indicate that a component should enter its
+                            paused state (e.g., when it is no longer on a visible page or when the reading system is not the
+                            frontmost application).</p>
+                    </section>
+
+                    <section id="sec-ic-topics-resume">
+                        <h5>Resume ("<code>epubsc_resume</code>")</h5>
+
+                        <p>The topic "<code>epubsc_resume</code>" is reserved to indicate that a component should resume its
+                            ready state.</p>
+                    </section>
+
+                    <section id="sec-ic-topics-load">
+                        <h5>Load ("<code>epubsc_load</code>")</h5>
+
+                        <p>The topic "<code>epubsc_load</code>" is reserved to indicate that a component has begun
+                            loading.</p>
+                    </section>
+
+                    <section id="sec-ic-topics-unload">
+                        <h5>Unload ("<code>epubsc_unload</code>")</h5>
+
+                        <p>The topic "<code>epubsc_unload</code>" is reserved to indicate that a component has begun
+                            unloading.</p>
+                    </section>
+
+                    <section id="sec-ic-topics-event">
+                        <h5>Event ("<code>epubsc_event</code>")</h5>
+
+                        <p>The topic "<code>epubsc_event</code>" is reserved for JavaScript event communication.</p>
+                    </section>
+                </section>
+            </section>
+
+            <section id="sec-ic-initialization">
+                <h3>Initialization</h3>
+
+                <p>To prepare to send and receive messages, a Scriptable Component MUST initiate the following steps during
+                    its load process:</p>
+
+                <ol>
+                    <li><p>It MUST set up the PubSub Communication Bridge, which requires that:</p>
+                        <ol>
+                            <li>All Scriptable Component's MUST be able to publish messages on the PubSub Communication
+                                Bridge.</li>
+                            <li>Scriptable Components that contain child components, or need to communicate on the PubSub
+                                Communication Bridge, MUST be able to subscribe to messages.</li>
+                        </ol>
+                        <p>This PubSub Communication Bridge is used to pass a message of a specific method type, as defined
+                            in <a href="#sec-ic-pubsub-msg">4.2.2 Message Structure</a>.</p>
+                        <p>The methods used to communicate are described in <a href="#sec-ic-methods">4.3 Methods</a>. These
+                            methods define a communication channel for specific handling.</p>
+                    </li>
+                    <li>After completing any other custom steps in its load process, it MUST publish an "<code class="markup"
+                            >epubsc_ready</code>" topic to announce to all subscribers that it is now active (refer to <a
+                            href="#sec-ic-topics-comm">4.4.1 Communication</a> for more information). At the same time, the
+                        Component MAY subscribe to its own "<code>epubsc_ready</code>" topic if it needs to receive its own
+                        updates.</li>
+                </ol>
+
+                <p>At this stage, the Component can subscribe, unsubscribe, publish, and send topics through the PubSub
+                    Communication Bridge.</p>
+            </section>
+        </section>
+        <section id="sec-component-parent-comm">
+            <h2>Component-Parent Event Communication</h2>
+
+            <section id="sec-cp-intro" class="informative">
+                <h3>Introduction</h3>
+
+                <p>Scriptable Components can receive JavaScript events that are both meaningful and meaningless to their
+                    operation.</p>
+
+                <p>For example, a key press in an input field of the Scriptable Component would typically need to be handled
+                    by the Component, but a right arrow key press might not. Whether the Scriptable Component transmits
+                    information about the event to its Parent Component, giving the parent an opportunity to respond to it,
+                    depends on the nature of the event.</p>
+
+                <p>This section defines how Scriptable Components publish these events to their parent(s),  including whether
+                    they were or were not handled.</p>
+            </section>
+
+            <section id="sec-sc-events">
+                <h3>Handling and Propagating Events</h3>
+
+                <p>Scriptable Components MUST relay [[!UIEvents]] events to their Parent Component via the PubSub
+                    Communication Bridge.</p>
+
+                <p>Communication of these events is REQUIRED whether the event has been handled by the Scriptable Component
+                    or not, and the message MUST use the <a href="#sec-ic-methods-publish"><code class="markup"
+                            >epubsc_publish</code> method</a> with the reserved topic "<code><a href="#sec-ic-topics-event"
+                            >epubsc_event</a></code>"</p>
+
+                <p>To indicate if the event has been handled, the message's <code><a href="#propdef-topicData"
+                        >topicData</a></code> MUST include the boolean property <code>handled</code>. The Component Parent
+                    SHOULD NOT respond to the event if this property is <code class="markup">true</code>.</p>
+
+                <p>The <code>topicData</code> also MUST be populated with copies of all applicable
+                    attributes [[!UIEvents]] from the original event (e.g., <code>altKey</code>, <code class="markup"
+                        >button</code>, <code>ctrlKey</code>, <code class="markup">type</code>).</p>
+
+                <aside class="example">
+                    <p>The following example shows the <code>epubsc_event</code> message a Scriptable Component might send
+                        for a click event it did not handle.</p>
+
+                    <pre>{
+        "componentId": "1e5c4271-3ad2-43be-91d3-6df78a095047",
+        "messageId": "1e5c4271-3ad2-43be-91d3-6df78a095047+1",
+        "timestamp": 1431014848368,
+        "type": "epubsc_message",
+        "method": "epubsc_publish",
+        "topic": "epubsc_event",
+        "topicData": {
+                "handled": false,
+                "type": "click",
+                "screenY": 438,
+                "screenX": 1227,
+                "offsetY": 13,
+                "offsetX": 64,
+                "clientY": 13,
+                "clientX": 64,
+                "button": 0,
+                "buttons": 1,
+                "shiftKey": false,
+                "ctrlKey": false,
+                "cancelable": true,
+                "bubbles": true,
+                "altKey": false,
+                "timeStamp": 1432258647479,
+                "relatedTarget": null,
+                "metaKey": false,
+                "eventPhase": 3
+        }
+}</pre>
+                </aside>
+
+                <p>All event messages MUST be propagated up to the Component Parent; the component MUST NOT send event
+                    messages to any of its children.</p>
+            </section>
+        </section>
+        <section id="app-schema" class="appendix">
+            <h2>Message Schema</h2>
+
+            <p>The JSON representation schema for messages:</p>
+
+            <pre>{
+   "id": "http://www.idpf.org/epub/sc/1.0/schema.json",
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "type": "object",
+   "title": "EPUB Scriptable Components Message Schema",
+   "description": "Schema validation for the message body",
+   "properties": {
+      "componentId": { "type": "string" },
+      "messageId": { "type": "string" },
+      "timestamp": { "type": "number" },
+      "type": {
+         "type": "string",
+         "enum": ["epubsc_message"]
+      },
+      "method": {
+         "type": "string",
+         "enum": ["epubsc_subscribe", "epubsc_unsubscribe", "epubsc_publish"]
+      },
+      "topic": { "type": "string" },
+      "topicData": { "type": "object" }
+   },
+   "required": ["componentId", "messageId", "timestamp", "method", "topic"],
+   "additionalProperties": false
+}</pre>
+
+            <p>Validation using this schema requires a processor that supports [[!JSON-Schema]].</p>
+        </section>
+        <section id="app-componentID" class="appendix informative">
+            <h2>ComponentID sample code</h2>
+
+            <p>The uniqueness of a component ID over a session is critically important to correct behavior of Scriptable
+                Components. An implementation of [[RFC4122]] provides sufficient uniqueness. </p>
+
+            <p>Examples include:</p>
+
+            <ul>
+                <li>Node-UUID - <a href="https://github.com/broofa/node-uuid">https://github.com/broofa/node-uuid</a></li>
+
+                <li>UUID - <a href="https://github.com/LiosK/UUID.js">https://github.com/LiosK/UUID.js</a></li>
+            </ul>
+
+
+            <p>See <a href="http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript"
+                    >http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript</a> for other examples and
+                further discussion.</p>
+
+            <aside class="example">
+                <p>The following is sample code that generates an ID that will be unique over a session (or larger
+                    scope).</p>
+
+                <pre>function generateComponentID_() {
+   var d = new Date().getTime();
+   var template = "xxxxxxxx-xxxx-Zxxx-yxxx-xxxxxxxxxxxx";
+   return template.replace(/[xy]/g, function (c) {
+       var r = (d + Math.random() * 16) % 16 | 0;
+       d = Math.floor(d/16);
+       return (c == "x" ? r : (r &amp; 0x7 | 0x8)).toString(16);
+   });
+}</pre>
+            </aside>
+        </section>
+        <section id="app-use-cases" class="appendix informative">
+            <h2>Example use cases</h2>
+
+            <p>Allow two Scriptable Components to communicate. A UI control in one component may direct a visualization
+                change in a second component.</p>
+
+            <p>An embedded Scriptable Component may contain a running video. When the EPUB document is paged or scrolled the
+                Reading System will instruct the Scriptable Component to pause the video.</p>
+
+            <p>UI events occurring in IFrames are not bubbled to parent windows. Scriptable Components will enable event
+                propagation and handling by parent windows and Reading Systems.</p>
+        </section>
+        <section id="acknowledgements" class="appendix informative">
+            <h2>Acknowledgements and Contributors</h2>
+
+            <p>EPUB has been developed by the International Digital Publishing Forum in a cooperative effort, bringing
+                together publishers, vendors, software developers, and experts in the relevant standards.</p>
+
+            <p>The EPUB Scriptable Components Packaging and Integration 1.0 specification was prepared by the International
+                Digital Publishing Forum's EPUB Working Group, operating under under the leadership of:</p>
+
+            <ul>
+                <li>Conboy, Garth (Google) <span>Co-chair</span></li>
+                <li>Manis, Will <span>Co-chair</span></li>
+            </ul>
+
+            <p>Active members of the working group at the time of publication were:</p>
+
+            <p>IDPF Members</p>
+
+            <ul>
+                <li>Albert, Paolo (PubCoder)</li>
+                <li>Baker, Mike (Houghton Mifflin Harcourt)</li>
+                <li>Chen, Mike (Inkling)</li>
+                <li>Conboy, Garth (Google)</li>
+                <li>Davis, Greg (Pearson)</li>
+                <li>DeMeglio, Marisa (DAISY)</li>
+                <li>Duga, Brady (Google)</li>
+                <li>Gylling, Markus (IDPF)</li>
+                <li>Haas, Matthew (Pearson)</li>
+                <li>Kaplansky, Jean (Aptara)</li>
+                <li>Keating, Patrick (Bluefire)</li>
+                <li>Kleinfeld, Sanders (O'Reilly)</li>
+                <li>Lehmann, Darryl (Imagineeringart.com Inc.)</li>
+                <li>Levantovsky, Vladimir (Monotype Imaging)</li>
+                <li>Severdia, Ron (Metrodigi)</li>
+                <li>Weck, Daniel (Readium)</li>
+                <li>Wright, Ric (Readium)</li>
+            </ul>
+
+            <p>Invited Experts/Observers</p>
+
+            <ul>
+                <li>Costa, John</li>
+                <li>Garrish, Matt</li>
+                <li>Manis, Will</li>
+            </ul>
+        </section>
+    </body>
+</html>

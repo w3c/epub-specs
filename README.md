@@ -19,6 +19,8 @@ HTML documents on this repository’s master branch can also be displayed in a b
 2. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
 3. [Open Annotation in EPUB](https://w3c.github.io/publ-epub-revision/oa/epub-oa.html)
 4. [Distributable Objects](https://w3c.github.io/publ-epub-revision/do/epub-do.html)
+5. [Scriptable Components](https://w3c.github.io/publ-epub-revision/sc/sc-api.html)
+6. [Scriptable Components Packaging and Integration](https://w3c.github.io/publ-epub-revision/sc/sc-packaging.html)
 
 
 ## Registries

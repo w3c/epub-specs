@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>EPUB Scriptable Components Packaging and Integration 1.0</title>
+        <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+        <script src="../common/js/biblio.js" class="remove"></script>
+        <script src="../common/js/dfn-crossref.js" class="remove"></script>
+        <script src="../common/js/confreq-permalinks.js" class="remove"></script>
+        <link href="../common/css/common.css" rel="stylesheet" type="text/css" />
+        <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-sc-pkg",
+              edDraftURI: "https://w3c.github.io/publ-epub-revision/sc/sc-packaging.html",
+              editors: [
+                  {
+                      name: "Garth Conboy",
+                      company: "Google",
+                      companyURL: "http://google.com"
+                  },
+                  {
+                      name: "Will Manis",
+                      company: "Invited Expert"
+                  },
+                  {
+                      name: "Ron Severdia",
+                      company: "Metrodigi",
+                      companyURL: "http://metrodigi.com"
+                  },
+                  {
+                      name: "Darryl Lehmann",
+                      company: "Imagineeringart.com",
+                      companyURL: "http://imagineeringart.com"
+                  },
+                  {
+                      name: "Brad Vogel",
+                      company: "Inkling",
+                      companyURL: "http://inkling.com"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+    </head>
+    <body>
+        <section id="abstract">
+            <p>EPUB Scriptable Components Packaging and Integration, defines a method for the creation and inclusion of
+                dynamic and interactive components in EPUB® Publications.</p>
+        </section>
+        <section id="sotd"></section>
+        <section id="sec-overview">
+            <h2>Overview</h2>
+
+            <section id="sec-purpose-scope" class="informative">
+                <h3>Purpose and Scope</h3>
+
+                <p>This specification, EPUB Scriptable Components Packaging and Integration, defines a method for the
+                    creation and inclusion of dynamic and interactive components in EPUB® Publications.</p>
+
+                <p>By packaging Scriptable Components as EPUB Publications for distribution, all of the following benefits
+                    are realized:</p>
+
+                <ul>
+                    <li>No new XML vocabularies are required.</li>
+
+                    <li>The epubcheck validation tool can be used to ensure validity of the Scriptable Components, and that
+                        all necessary resources are present.</li>
+
+                    <li>The Package Document can be used to store Scriptable Component metadata.</li>
+
+                    <li>Fixed-layout metadata can be used to communicate the desired aspect ratio.</li>
+
+                    <li>Standalone debugging of Scriptable Components is possible, as the Scriptable Components can be
+                        ingested into any Reading System with scripting support (a component is simply a “page” with
+                        spine-level scripting).</li>
+                </ul>
+
+                <p>Common EPUB packaging also makes it easier to integrate and use Scriptable Components in EPUB
+                    Publications, as the process is typically no more involved than copying the resources and metadata into
+                    the Destination EPUB.</p>
+            </section>
+
+            <section id="sec-rel" class="informative">
+                <h3>Relationship to Other Specifications</h3>
+
+                <section id="sec-rel-do">
+                    <h4>Relationship to Distributable Objects</h4>
+
+                    <p>This specification subsets the framework for identifying, packaging and integrating objects defined in
+                        the <a href="http://www.idpf.org/epub/do">EPUB Distributable Objects 1.0</a> specification.</p>
+                </section>
+            </section>
+
+            <section id="sec-terminology">
+                <h3>Terminology</h3>
+
+                <p>Refer to the <a href="http://idpf.org/epub/30/">EPUB Specifications</a> for definitions of EPUB-specific
+                    terminology used in this document.</p>
+
+                <p>Refer to [[!DistributableObjects]] for definitions of Distributable Object-specific terminology used in this
+                    document.</p>
+
+                <dl class="termlist">
+                    <dt><dfn data-lt="Base Documents">Base Document</dfn></dt>
+                    <dd><p>The Base Document is the Scripted Content Document integrators reference to invoke a Scriptable
+                            Component, and that conforms to the content requirements defined in
+                            [[!ScriptableComponents]].</p></dd>
+
+                    <dt><dfn data-lt="Destination EPUBs">Destination EPUB</dfn></dt>
+                    <dd>The EPUB Publication into which an Scriptable Component is integrated for use.</dd>
+
+                    <dt><dfn data-lt="Embedded Components">Embedded Component</dfn></dt>
+                    <dd><p>The <code>collection</code> element definition of the Scriptable Component created when a Packaged
+                            Component is integrated into a Destination EPUB. An Embedded Component is an Embedded Object
+                            [[!DistributableObjects]] that meets the additional requirements defined in <a
+                                href="#sec-pi-embed">3.3 Embedding Components</a>.</p></dd>
+
+                    <dt><dfn data-lt="Packaged Components">Packaged Component</dfn></dt>
+                    <dd><p>The Packaged Component is the distributable package for the Scriptable Component. A Packaged
+                            Component is a Packaged Object [[!DistributableObjects]] that meets the additional requirement
+                            defined in <a href="#sec-pi-packaged-comp">3.2 Packaged Components</a>.</p></dd>
+
+                    <dt><dfn data-lt="Scriptable Components">Scriptable Component</dfn></dt>
+                    <dd><p>A scripted Distributable Object that is distributed for use in other EPUB Publications. A
+                            Scriptable Component conforms to all content requirements in this specification and in
+                            [[!ScriptableComponents]].</p></dd>
+                </dl>
+            </section>
+            <section id="conformance"></section>
+        </section>
+        <section id="sec-conformance">
+            <h2>Conformance</h2>
+
+            <section id="sec-conf-content">
+                <h3>Content Conformance</h3>
+
+                <p>A conformant Scriptable Component MUST meet all of the following criteria:</p>
+
+                <ul class="conformance-list">
+                    <li><p id="confreq-content-package">It MUST meet the requirements for a Packaged Object
+                            [[!DistributableObjects]] with the following modifications:</p></li>
+
+                    <li><p id="confreq-content-base-doc">Its Base Document MUST be a valid XHTML Content Document ‒ content
+                            fragments are not permitted.</p></li>
+
+                    <li><p id="confreq-content-res">Its resources MUST be structured as defined in <a
+                                href="#sec-pi-pc-file-struct">3.2.2 File Structure</a>.</p></li>
+
+                    <li><p id="confreq-content-meta">It MUST adhere to the metadata differences outlined in <a
+                                href="#sec-pi-pc-meta">3.2.4 Metadata</a>.</p></li>
+
+                    <li><p id="confreq-content-base-spine">It MUST only reference the Base Document in the spine, as defined
+                            in <a href="#sec-pi-pc-spine">3.2.5 Spine</a>.</p></li>
+                </ul>
+
+                <p>An EPUB Publication that incorporates a Scriptable Component MUST meet all of the following criteria:</p>
+
+                <ul>
+                    <li><p id="confreq-pub-incorporate">It SHOULD incorporate Scriptable Component resources as defined in <a
+                                href="#sec-pi-embed-migration">3.3.2 Resource Migration</a>.</p></li>
+
+                    <li><p id="confreq-pub-collection">It MUST include a <code class="markup"
+                            >scriptable-component</code> collection conforming to the requirements in <a
+                                href="#sec-pi-embed-component">3.3.3 Scriptable Component Collection</a>.</p></li>
+                </ul>
+            </section>
+
+            <section id="sec-conf-rs">
+                <h3>Reading System Conformance</h3>
+
+                <p>A conformant Reading System MUST meet all of the following criteria:</p>
+
+                <ul class="conformance-list">
+                    <li><p id="confreq-rs-params">It MUST process parameters as defined in <a
+                                href="#sec-pi-pc-meta-props-required-params">3.2.4.3.6 The <code class="markup"
+                                    >epubsc:required-params</code> property</a>.</p>
+                    </li>
+                </ul>
+            </section>
+        </section>
+        <section id="sec-packaging-integration">
+            <h2>Packaging and Integration</h2>
+
+            <section id="sec-pi-do">
+                <h3>Distributable Objects</h3>
+
+                <p>Unless specified otherwise in the following sections, Scriptable Components inherit the framework for
+                    identifying, packaging and integrating Distributable Objects defined in [[!DistributableObjects]].</p>
+            </section>
+
+            <section id="sec-pi-packaged-comp">
+                <h3>Packaged Components</h3>
+
+                <section id="sec-pi-pc-intro" class="informative">
+                    <h4>Introduction</h4>
+
+                    <p>The first stage in the use of shared Scriptable Components is their packaging as a Packaged Object
+                        [[DistributableObjects]] for general distribution.</p>
+
+                    <p>This section builds on the requirements for Packaged Object, outlining the additional requirements
+                        necessary to create a compliant Scriptable Component.</p>
+                </section>
+
+                <section id="sec-pi-pc-file-struct">
+                    <h4>File Structure</h4>
+
+                    <p>All resources of the Scriptable Component – those that need to be copied into a Destination EPUB to
+                        utilize the Scriptable Component – SHOULD be stored in the directory <code class="markup"
+                            >/&lt;EPUB&gt;/components/&lt;ComponentAuthor&gt;/</code>, where:</p>
+
+                    <ul>
+                        <li><code>&lt;EPUB&gt;</code> is the <a
+                                href="http://www.idpf.org/epub/301/spec/epub-ocf.html#sec-container-file-and-dir-structure"
+                                >dedicated directory</a> [[!OCF301]] where EPUB Publication resources are located inside the
+                            OCF Container. This specification does not require a specific name for this directory, in keeping
+                            with [[!OCF301]], but the name "<code>EPUB</code>" is suggested.</li>
+
+                        <li><code>&lt;ComponentAuthor&gt;</code> SHOULD be the value of the <code class="markup"
+                                >dc:creator</code> metadata property.</li>
+                    </ul>
+
+                    <p>Resources that are expected to be shared between Scriptable Components provided by the same
+                        Author SHOULD be stored in a subdirectory beneath <code class="markup"
+                        >&lt;ComponentAuthor&gt;</code> with the name "<code>shared</code>".</p>
+
+                    <p>The above naming conventions are RECOMMENDED to facilitate the integration of Scriptable Components in
+                        EPUB Publications in a regularized manner that requires no internal path fix-ups (see <a
+                            href="#sec-pi-embed">3.3 Embedding Components</a>).</p>
+
+                    <p>Refer to <a href="#app-example-packaged">Appendix A.1</a> for an example of a Scriptable Component's
+                        structure.</p>
+                </section>
+
+                <section id="sec-pi-pc-ids">
+                    <h4>Identifiers</h4>
+
+                    <p>It is strongly RECOMMENDED that all <code>id</code> attribute values in the Package Document
+                        [[!Publications301]] be universally unique, since Scriptable Components are designed to be integrated
+                        into other EPUB Publications. See also <a href="http://www.idpf.org/epub/do/#h.uxg4wfg6oece">2.4
+                            Identifiers</a> [[!DistributableObjects]].</p>
+                </section>
+
+                <section id="sec-pi-pc-meta">
+                    <h4>Metadata</h4>
+
+                    <section id="sec-pi-pc-meta-id">
+                        <h5>Identification</h5>
+
+                        <p>In order to identify that an EPUB Rendition represents a Scriptable Component ‒ not a generic
+                            Distributable Object as defined in <a href="http://www.idpf.org/epub/do/#h.lbsvs3kdmbrz">2.2.2.1
+                                Package Document Structure</a> [[!DistributableObjects]] ‒ this specification defines
+                                the <code>dc:type</code> identifier "<code class="markup">scriptable-component</code>". This
+                            identifier MUST be specified.</p>
+
+                        <aside class="example">
+                            <p>The following example shows how a Scriptable Component is defined in the Package Document
+                                metadata.</p>
+                            <pre>&lt;package …&gt;
+    &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;dc:type&gt;scriptable-component&lt;/dc:type&gt;
+        …
+    &lt;/metadata&gt;
+&lt;/package&gt;</pre>
+                        </aside>
+                        <div class="note">
+                            <p>The identifier "<code>distributable-object</code>" is not used with Scriptable Components.</p>
+                        </div>
+                    </section>
+
+                    <section id="sec-pi-pc-meta-dc">
+                        <h5>Dublin Core</h5>
+
+                        <p>This specification adds the following metadata requirement to the ones outlined in <a
+                                href="http://www.idpf.org/epub/do/#h.xnfdvpff6d1">2.2.3
+                            Metadata</a> [[!DistributableObjects]]:</p>
+
+                        <ul>
+                            <li>Every Scriptable Component MUST include at least one <code>dc:creator</code>, identifying the
+                                Author(s) of the Scriptable Component.</li>
+
+                            <li>The value of the first instance of the <code>dc:title</code> and <code class="markup"
+                                    >dc:creator</code> elements in the Package Document metadata (in document order)
+                                SHOULD be suitable for use as a directory name (e.g., not contain any <a
+                                    href="http://www.idpf.org/epub/301/spec/epub-ocf.html#ocf-fn-chars">characters excluded
+                                    for use in file names</a> [[!OCF301]]). Refer to <a href="#sec-pi-embed-migration">3.3.2
+                                    Resource Migration</a> for more information on the use of these values to generate file
+                                paths.</li>
+                        </ul>
+                    </section>
+
+                    <section id="sec-pi-pc-meta-props">
+                        <h5>Scriptable Component Properties</h5>
+
+                        <section id="sec-pi-pc-meta-props-intro" class="informative">
+                            <h6>Introduction</h6>
+
+                            <p>The following subsections define properties that Authors can use to specify information
+                                specific to Scriptable Components.</p>
+
+                            <p>Only the <a href="#sec-pi-pc-meta-props-version"><code class="markup"
+                                    >epubsc:version</code> property</a> has to be specified for all Scriptable Components.
+                                The other properties are specified only when they apply.</p>
+                        </section>
+
+                        <section id="sec-pi-pc-meta-props-mapping">
+                            <h6>The <code>epubsc:</code> Prefix Mapping</h6>
+
+                            <p>The properties defined in this section are expressed in the Package Document's <code
+                                    class="markup">meta</code> element using the prefix "<code class="markup"
+                                >epubsc:</code>", which maps to the base IRI "<code><a
+                                        href="http://idpf.org/epub/vocab/widget/#"
+                                >http://idpf.org/epub/vocab/sc/#</a></code>".</p>
+
+                            <p>The <code>epubsc:</code> prefix is <a href="http://www.idpf.org/epub/vocab/package/pfx/"
+                                    >reserved for use</a> in Package Document metadata and does not need to be declared.</p>
+                        </section>
+
+                        <section id="sec-pi-pc-meta-props-version">
+                            <h6>The <code>epubsc:version</code> property</h6>
+
+                            <dl class="elemdef">
+                                <dt>Definition</dt>
+                                <dd><p>The version number of the Scriptable Component.</p></dd>
+
+                                <dt>Allowed Value(s)</dt>
+                                <dd>MUST be a decimal-separated list of integers representing the major, minor and build
+                                    numbers.</dd>
+
+                                <dt>Cardinality</dt>
+                                <dd><p>Exactly One</p></dd>
+
+                                <dt>Example</dt>
+                                <dd><pre>&lt;meta property="epubsc:version"&gt;1.0.127&lt;/meta&gt;</pre></dd>
+                            </dl>
+                        </section>
+
+                        <section id="sec-pi-pc-meta-props-storage-required">
+                            <h6>The <code>epubsc:storage-required</code> property</h6>
+
+                            <dl class="elemdef">
+                                <dt>Definition</dt>
+                                <dd><p>Indicates whether the Scriptable Component requires access to local storage (e.g.,
+                                        localStorage, sessionStorage, app cache or indexedDB).</p></dd>
+
+                                <dt>Allowed Value(s)</dt>
+                                <dd>"<code>true</code>" or "<code>false</code>". Default value is "<code>false</code>".</dd>
+
+                                <dt>Cardinality</dt>
+                                <dd><p>Zero or One</p></dd>
+
+                                <dt>Example</dt>
+                                <dd><pre>&lt;meta property="epubsc:storage-required"&gt;true&lt;/meta&gt;</pre></dd>
+                            </dl>
+                        </section>
+
+                        <section id="sec-pi-pc-meta-props-netword-access-required">
+                            <h6>The <code>epubsc:network-access-required</code> property</h6>
+
+                            <dl class="elemdef">
+                                <dt>Definition</dt>
+                                <dd><p>Indicates whether the Scriptable Component requires network access.</p></dd>
+
+                                <dt>Allowed Value(s)</dt>
+                                <dd>"<code>true</code>" or "<code>false</code>". Default value is "<code>false</code>".</dd>
+
+                                <dt>Cardinality</dt>
+                                <dd><p>Zero or One</p></dd>
+
+                                <dt>Example</dt>
+                                <dd><pre>&lt;meta property="epubsc:network-access-required"&gt;true&lt;/meta&gt;</pre></dd>
+                            </dl>
+                        </section>
+
+                        <section id="sec-pi-pc-meta-props-required-params">
+                            <h6>The <code>epubsc:required-params</code> property</h6>
+
+                            <dl class="elemdef">
+                                <dt>Definition</dt>
+                                <dd><p>Defines the datatype of a parameter that has to be provided to invoke the Scriptable
+                                        Component.</p>
+                                    <p>When invoking the Scriptable Component, the Reading System MUST provide the named
+                                        parameter with appropriately typed data.</p>
+                                </dd>
+
+                                <dt>Allowed Value(s)</dt>
+                                <dd><p>A string of the form: <strong>name</strong>=<strong>type</strong></p>
+                                    
+                                    <p>where:</p>
+                                    
+                                    <ul>
+                                        <li>name is any valid <a href="http://www.w3.org/TR/REC-xml/#NT-Name">XML
+                                            Name</a> [[!XML]]</li>
+                                        
+                                        <li>type is the name of a <a
+                                                href="http://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes"
+                                                >Primitive datatype</a> [[!XMLSCHEMA-2]] (e.g., “<code class="markup"
+                                                >string</code>”, “<code>gYearMonth</code>”, “<code class="markup"
+                                                >decimal</code>”, “<code>anyURI</code>”)</li>
+                                    </ul>
+                                </dd>
+
+                                <dt>Cardinality</dt>
+                                <dd><p>Zero or More</p></dd>
+
+                                <dt>Example</dt>
+                                <dd><pre>&lt;meta property="epubsc:required-params"&gt;startDate=date&lt;/meta&gt;</pre></dd>
+                            </dl>
+                        </section>
+                    </section>
+                </section>
+
+                <section id="sec-pi-pc-spine">
+                    <h4>Spine</h4>
+
+                    <p>The Base Document MUST be the only <a
+                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-spine-elem">spine
+                        entry</a> [[!Publications301]] in the Package Document.</p>
+                </section>
+
+                <section id="sec-pi-pc-size-ratio">
+                    <h4>Component Size and Aspect Ratio</h4>
+
+                    <p>If an Author wants to communicate a desired size or aspect ratio (e.g., to aid in scaling),
+                        the Packaged Component MAY be constructed as a Fixed Layout EPUB Publication.</p>
+
+                    <p>The fixed-layout viewport dimensions are then available for utilization by the inserting
+                        toolchain.</p>
+                </section>
+
+                <section id="sec-pi-pc-anc-res">
+                    <h4>Ancillary Resources</h4>
+
+                    <p>A Packaged Component MAY include additional resources not required for the rendering of the Scriptable
+                        Component (e.g., a built-in editor for configuring the Scriptable Component).</p>
+
+                    <p>As any such ancillary files are not Publication Resources (i.e., not intended for integration), they
+                        MUST NOT be included in the <a
+                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-manifest-elem"
+                        >manifest</a> [[!Publications301]]. These resources do not need to be <a
+                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-core-media-types">Core Media
+                            Types</a> and are not subject to <a
+                            href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-fallback-processing-flow"
+                            >fallback requirements</a> [[!Publications301]].</p>
+
+                    <p>The Scriptable Component MAY include custom metadata to identify such resources and provide any needed
+                        metadata using a <a href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-prefix-attr"
+                            >custom prefix</a> specified on the <code><a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-package-elem"
+                            >package</a></code> element [[!Publications301]]:</p>
+
+                    <aside class="example">
+                        <pre>&lt;meta property="xyz:editor"&gt;../editor/editor.htm&lt;/meta&gt;
+&lt;meta property="xyz:prop1"&gt;Value1&lt;/meta&gt;
+&lt;meta property="xyz:prop2"&gt;Value2&lt;/meta&gt;</pre>
+                    </aside>
+
+                    <p>This metadata exists to allow integrators to find and use the embedded resources; it is not defined to
+                        enable Reading System access to the resources.</p>
+                </section>
+            </section>
+
+            <section id="sec-pi-embed">
+                <h3>Embedding Components</h3>
+
+                <section id="sec-pi-embed-trans">
+                    <h4>Translating States</h4>
+
+                    <p>In order to use a Scriptable Component in an EPUB Publication, the resources and metadata in the
+                        distributable Packaged Component first have to be integrated into the Destination EPUB. The
+                        Scriptable Component can then be invoked from an [[!HTML5]] <code><a
+                                href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element"
+                            >iframe</a></code>.</p>
+
+                    <p>This specification leverages the model for integrating Packaged Objects into a Destination EPUB
+                        defined in <a href="http://www.idpf.org/epub/do/#h.df8eaxmkbisc">3.3 Packaged to
+                        Embedded</a> of [[!DistributableObjects]], adding only a few minor modifications detailed in the
+                        following subsections to handle the specific requirements of Scriptable Components.</p>
+                </section>
+
+                <section id="sec-pi-embed-migration">
+                    <h4>Resource Migration</h4>
+
+                    <p>In order to use a Scriptable Component in an EPUB Publication, the Packaged Component's resources
+                        MUST be imported into the Destination EPUB.</p>
+
+                    <p>The process of integrating the resources from a Packaged Object is defined in <a
+                            href="http://www.idpf.org/epub/do/#h.d6lp4svjcblk">3.3.3 Migrate
+                        Resources</a> [[!DistributableObjects]]. The process for Packaged Components only modifies these
+                        steps as follows:</p>
+
+                    <ol>
+                        <li>The Base Document MUST be referenced from at least one [[!HTML5]] <a
+                                href="http://www.w3.org/TR/html5/embedded-content-0.html#the-iframe-element"
+                            >iframe</a> element.</li>
+
+                        <li>If the Scriptable Component includes obfuscated fonts [[!OCF301]], the fonts MUST be
+                            de-obfuscated and then re-obfuscated using the Destination EPUB’s <a
+                                href="http://www.idpf.org/epub/301/spec/epub-publications.html#sec-opf-metadata-identifiers-uid"
+                                >Unique Identifier</a> [[!Publications301]]. The Destination EPUB's <code class="markup"
+                                >encryption.xml</code> file MUST be updated to include entries for the obfuscated fonts (see
+                                <a href="http://www.idpf.org/epub/301/spec/epub-ocf.html#obfus-specifying">4.4 Specifying
+                                Obfuscated Resources</a> [[!OCF301]]).</li>
+                    </ol>
+
+                    <p>Refer to <a href="#app-example-embedded">Appendix A.2</a> for an example of resource
+                        restructuring.</p>
+                </section>
+
+                <section id="sec-pi-embed-component">
+                    <h4>Embedded Component</h4>
+
+                    <p>When migrating a Packaged Component to a Destination EPUB, the creation of an Embedded Component
+                        [[!DistributableObjects]] is REQUIRED.</p>
+
+                    <p>The steps to produce an Embedded Object are defined in <a
+                            href="http://www.idpf.org/epub/do/#h.br96k0msbdvd">3.3.2 The distributable-object
+                        Collection</a> [[!DistributableObjects]]. Production of an Embedded Component only modifies these
+                        requirements in the following ways:</p>
+
+                    <ul>
+                        <li>The Embedded Component <code>collection</code> MUST have the <code class="markup"
+                            >role</code> attribute identifier "<code>scriptable-component</code>".</li>
+                        <li><p>The <code>collection</code> MUST not include the following metadata from the Packaged
+                                Component:</p>
+                            <ul>
+                                <li><a href="http://www.idpf.org/epub/301/spec/epub-publications.html#primary-expression"
+                                        >primary expressions</a> of identifiers (<code class="markup"
+                                    >dc:identifier</code> elements), including any expressions that <a
+                                        href="http://www.idpf.org/epub/301/spec/epub-publications.html#attrdef-meta-refines"
+                                        >refine</a> them;</li>
+                                <li>the last modified date (<code>dcterms:modified</code> property).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="note">
+                        <p>Identifiers and the last modified date are stripped as Scriptable Components are often modified
+                            for use after integration (e.g., skinned to a particular ebook). If subsequently re-extracted,
+                            the resulting Packaged Component will differ from the source and therefore a new identifier and
+                            modification date are necessary.</p>
+                    </div>
+                    <p>Refer to <a href="#app-example-embed-collection">Appendix A.2.2</a> for an example of a <code
+                            class="markup">scriptable-component</code> collection.</p>
+                </section>
+            </section>
+
+            <section id="sec-pi-extracting">
+                <h3>Extracting Components</h3>
+
+                <p>Depending on rights permissions, it might be possible to extract a Scriptable Component from one EPUB
+                    Publication and reuse it in another.</p>
+
+                <p>The [[!DistributableObjects]] specification defines the steps necessary to extract the resources and
+                    recreate a Packaged Component from an embedded definition, after which the process of embedding the
+                    Scriptable Component defined in <a href="#sec-pi-embed">3.3 Embedding Components</a> can be followed.</p>
+
+                <p>Note that in the case of Scriptable Components, as identifiers and the last modified date are stripped
+                    when integrating the Packaged Component into a Destination EPUB, any process that re-extracts the
+                    Scriptable Component will have to create new values.</p>
+            </section>
+        </section>
+        <section id="app-example" class="appendix informative">
+            <h2>Example Packaging and Integration</h2>
+
+            <p>The following subsections show the structure and metadata for an example gallery, and the transformed
+                structure and collection that results after integration.</p>
+
+            <section id="app-example-packaged">
+                <h3>Packaged Component</h3>
+
+                <p>The following subsections shows the structure and metadata of the gallery when it is packaged as a
+                    standalone EPUB Publication (i.e., prior to integration and use).</p>
+
+                <section id="app-example-packaged-container-struct">
+                    <h4>Container File Structure</h4>
+
+                    <p>The gallery resources are structured as follows when it exists as a Packaged Component, with all core
+                        resources in the <code>/Gallery</code> directory and all shared components in the
+                            <code>/shared</code> directory.</p>
+
+                    <p>Note that the <code>content.opf</code> file is stored in the content root, as it is not copied into
+                        the Embedded Object, and putting it at the root minimizes the need to change paths when the content
+                        gets integrated (assuming the Destination EPUB's Package Document is similarly located). The EPUB
+                        Navigation Document (<code>nav.xhtml</code>) is similarly located outside the components directory as
+                        it is not copied.</p>
+
+                    <div class="example">
+                        <pre>/META-INF
+/META-INF/container.xml
+/mimetype
+/EPUB/content.opf
+/EPUB/nav.xhtml
+/EPUB/components/DynamicInc/Gallery
+/EPUB/components/DynamicInc/Gallery/gallery.xhtml
+/EPUB/components/DynamicInc/Gallery/css
+/EPUB/components/DynamicInc/Gallery/css/common.sample.css
+/EPUB/components/DynamicInc/Gallery/css/gallery.css
+/EPUB/components/DynamicInc/Gallery/images
+/EPUB/components/DynamicInc/Gallery/images/image-1.png
+/EPUB/components/DynamicInc/Gallery/images/image-2.png
+/EPUB/components/DynamicInc/Gallery/images/image-3.png
+/EPUB/components/DynamicInc/Gallery/images/image-4.png
+/EPUB/components/DynamicInc/Gallery/images/image-5.png
+/EPUB/components/DynamicInc/Gallery/images/image-6.png
+/EPUB/components/DynamicInc/Gallery/js
+/EPUB/components/DynamicInc/Gallery/js/common.js
+/EPUB/components/DynamicInc/Gallery/js/gallery.js
+/EPUB/components/DynamicInc/Gallery/js/mootools-drag-touch.js
+/EPUB/components/DynamicInc/shared/js/external
+/EPUB/components/DynamicInc/shared/js/external/captionator-min.js
+/EPUB/components/DynamicInc/shared/js/external/mootools-core-1.4.5-full-nocompat-yc.js
+/EPUB/components/DynamicInc/shared/js/external/mootools-more-1.4.0.1-yc.js</pre>
+                    </div>
+                </section>
+
+                <section id="app-example-packaged-meta">
+                    <h4>Component Metadata</h4>
+
+                    <p>The Package Document metadata for the gallery includes all of the following properties (non-essential
+                        metadata, such as the identifier, have been omitted):</p>
+
+                    <div class="example">
+                        <pre class="synopsis">&lt;package …&gt;
+&lt;metadata&gt;
+&lt;dc:type&gt;scriptable-component&lt;/dc:type&gt;
+&lt;dc:title&gt;Gallery&lt;/dc:title&gt;
+&lt;dc:creator&gt;DynamicInc&lt;/dc:creator&gt;
+&lt;dc:language&gt;en&lt;/dc:language&gt;
+…
+&lt;meta property="epubsc:version"&gt;1.0&lt;/meta&gt;
+&lt;meta property="epubsc:storage-required"&gt;true&lt;/meta&gt;
+&lt;meta property="epubsc:network-access-required"&gt;true&lt;/meta&gt;
+&lt;meta property="epubsc:required-params"&gt;true&lt;/meta&gt;
+&lt;meta property="rendition:viewport"&gt;width=1200, height=900&lt;/meta&gt;
+&lt;meta property="schema:accessibilityFeature"&gt;alternativeText&lt;/meta&gt;
+&lt;meta property="schema:accessibilityFeature"&gt;longDescription&lt;/meta&gt;
+&lt;meta property="schema:accessibilityAPI"&gt;ARIA&lt;/meta&gt;
+&lt;meta property="schema:accessibilityControl"&gt;fullKeyboardControl&lt;/meta&gt;
+&lt;meta property="schema:accessibilityControl"&gt;fullMouseControl&lt;/meta&gt;
+&lt;meta property="schema:accessibilityControl"&gt;fullTouchControl&lt;/meta&gt;
+&lt;/metadata&gt;
+…
+&lt;/package&gt;</pre>
+                    </div>
+                </section>
+            </section>
+
+            <section id="app-example-embedded">
+                <h3>Embedded Component</h3>
+
+                <p>The following subsections shows the resources and metadata after the gallery has been packaged as a
+                    standalone EPUB Publication.</p>
+
+                <section id="app-example-embed-res">
+                    <h4>Integrated Resources</h4>
+
+                    <p>All of the resources in the components directory (see <a href="#app-example-packaged-container-struct"
+                            >A.1.1</a>) can be copied directly into the Destination EPUB. Note the two files that are not in
+                        this directory do not move.</p>
+
+                    <p>These resources are listed in the Destination EPUB's manifest (not all shown):</p>
+
+                    <div class="example">
+                        <pre>&lt;manifest&gt;
+        …
+        &lt;item 
+                href="components/DynamicInc/Gallery/gallery.xhtml"
+                media-type="application/xhtml+xml"/&gt;
+        &lt;item
+                href="components/DynamicInc/Gallery/css/common.sample.css"
+                media-type="text/css"/&gt;
+        &lt;item
+                href="components/DynamicInc/Gallery/css/gallery.css"
+                media-type="text/css"/&gt;
+        …
+&lt;/manifest&gt;</pre>
+                    </div>
+                </section>
+
+                <section id="app-example-embed-collection">
+                    <h4>Integrated Collection</h4>
+
+                    <p>The following example shows the <code>scriptable-component collection</code> that would be created
+                        when integrating the gallery into a Destination EPUB (not all metadata and resource links are
+                        reproduced).</p>
+
+                    <p>Note that both the package manifest and the collection manifest have to list all the resources.</p>
+
+                    <div class="example">
+                        <pre>&lt;collection role="scriptable-component"&gt;
+        &lt;metadata&gt;
+                &lt;dc:type&gt;scriptable-component&lt;/dc:type&gt;
+                &lt;dc:title&gt;Gallery&lt;/dc:title&gt;
+                &lt;dc:creator&gt;DynamicInc&lt;/dc:creator&gt;
+                &lt;dc:language&gt;en&lt;/dc:language&gt;
+                &lt;meta property="epubsc:version"&gt;1.0.1&lt;/meta&gt;
+                …
+        &lt;/metadata&gt;
+        &lt;collection role="manifest"&gt;
+                &lt;link href="components/DynamicInc/Gallery/gallery.xhtml"/&gt;
+                &lt;link href="components/DynamicInc/Gallery/css/common.sample.css"/&gt;
+                &lt;link href="components/DynamicInc/Gallery/css/gallery.css"/&gt;
+                …
+                &lt;link href="components/DynamicInc/shared/js/external/captionator-min.js"/&gt;
+                …
+        &lt;/collection&gt;
+        &lt;link href="components/DynamicInc/Gallery/gallery.xhtml"/&gt;
+&lt;/collection&gt;</pre>
+                    </div>
+                </section>
+            </section>
+        </section>
+        <section id="acknowledgements" class="appendix informative">
+            <h2>Acknowledgements and Contributors</h2>
+
+            <p>EPUB has been developed by the International Digital Publishing Forum in a cooperative effort, bringing
+                together publishers, vendors, software developers, and experts in the relevant standards.</p>
+
+            <p>The EPUB Scriptable Components Packaging and Integration 1.0 specification was prepared by the International
+                Digital Publishing Forum's EPUB Working Group, operating under under the leadership of:</p>
+
+            <ul>
+                <li>Conboy, Garth (Google) <span>Co-chair</span></li>
+                <li>Manis, Will <span>Co-chair</span></li>
+            </ul>
+
+            <p>Active members of the working group at the time of publication were:</p>
+
+            <p>IDPF Members</p>
+
+            <ul>
+                <li>Albert, Paolo (PubCoder)</li>
+                <li>Baker, Mike (Houghton Mifflin Harcourt)</li>
+                <li>Chen, Mike (Inkling)</li>
+                <li>Conboy, Garth (Google)</li>
+                <li>Davis, Greg (Pearson)</li>
+                <li>DeMeglio, Marisa (DAISY)</li>
+                <li>Duga, Brady (Google)</li>
+                <li>Gylling, Markus (IDPF)</li>
+                <li>Haas, Matthew (Pearson)</li>
+                <li>Kaplansky, Jean (Aptara)</li>
+                <li>Keating, Patrick (Bluefire)</li>
+                <li>Kleinfeld, Sanders (O'Reilly)</li>
+                <li>Lehmann, Darryl (Imagineeringart.com Inc.)</li>
+                <li>Levantovsky, Vladimir (Monotype Imaging)</li>
+                <li>Severdia, Ron (Metrodigi)</li>
+                <li>Weck, Daniel (Readium)</li>
+                <li>Wright, Ric (Readium)</li>
+            </ul>
+
+            <p>Invited Experts/Observers</p>
+
+            <ul>
+                <li>Costa, John</li>
+                <li>Garrish, Matt</li>
+                <li>Manis, Will</li>
+            </ul>
+        </section>
+    </body>
+</html>
