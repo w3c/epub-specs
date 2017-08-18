@@ -104,7 +104,7 @@ var biblio = {
       "href": "https://www.itu.int/rec/T-REC-H.264-201602-P/en",
       "date": "2016-02-13"
     },
-    "HTML": {
+    "HTML-LATEST": {
         "title": "HTML",
         "href": "https://www.w3.org/TR/html/",
         "publisher": "W3C"
