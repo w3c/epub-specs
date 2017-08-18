@@ -104,6 +104,11 @@ var biblio = {
       "href": "https://www.itu.int/rec/T-REC-H.264-201602-P/en",
       "date": "2016-02-13"
     },
+    "HTML": {
+        "title": "HTML",
+        "href": "https://www.w3.org/TR/html/",
+        "publisher": "W3C"
+    },
     "IDRegistry": {
       "title": "EPUB Identifiers Registry",
       "href": "https://www.idpf.org/epub/registries/identifiers/"
