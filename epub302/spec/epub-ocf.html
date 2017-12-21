@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+   <head>
+      <meta charset="utf-8" />
+      <title>EPUB Open Container Format (OCF) 3.1</title>
+      <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+      <script src="../../common/js/biblio.js" class="remove"></script>
+      <script src="../../common/js/dfn-crossref.js" class="remove"></script>
+      <script src="../../common/js/confreq-permalinks.js" class="remove"></script>
+      <link href="../../common/css/common.css" rel="stylesheet" type="text/css" />
+      <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-ocf",
+              prevRecURI: "https://www.idpf.org/epub/31/spec/epub-ocf-20170105.html",
+              edDraftURI: "https://w3c.github.io/publ-epub-revision/epub31/spec/epub-ocf.html",
+              editors: [
+                  {
+                      name: "James Pritchett",
+                      company: "Learning Ally",
+                      companyURL: "http://www.learningally.org/"
+                  },
+                  {
+                      name: "Markus Gylling",
+                      company: "International Digital Publishing Forum (IDPF)",
+                      companyURL: "http://idpf.org"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+              localBiblio: biblio,
+              preProcess: [fixDefinitionCrossrefs, addConformanceLinks]
+          };
+      </script>
+   </head>
+   <body>
+      <section id="abstract">
+         <p>This specification, EPUB Open Container Format (OCF) 3.1, defines a file format and processing model for
+            encapsulating a set of related resources into a single-file container.</p>
+      </section>
+      <section id="sotd"></section>
+      <section id="sec-overview">
+         <h1>Overview</h1>
+
+         <section id="sec-overview-purpose-and-scope" class="informative">
+            <h2>Purpose and Scope</h2>
+
+            <p>This specification, EPUB Open Container Format (OCF) 3.1, defines a file format and processing model for
+               encapsulating the set of related resources that comprise an <a class="glossterm"
+                  href="epub-spec.html#gloss-epub-publication">EPUB® Publication</a> into a single-file container, the <a
+                  class="glossterm" href="epub-spec.html#gloss-container">EPUB Container</a>.</p>
+
+            <p>This specification defines the rules for structuring the file collection in the abstract (the "<a
+                  href="#sec-container-abstract">abstract container</a>") and the rules for the representation of this
+               abstract container within a ZIP archive (the "<a href="#sec-container-zip">ZIP container</a>"). The rules for
+               ZIP containers build upon the ZIP technologies used by [[ODF]]. OCF also defines a standard method for
+               obfuscating embedded resources, such as fonts, for those EPUB Publications that require this
+               functionality.</p>
+
+            <p>This specification is one of a <a href="epub-spec.html#sec-epub-specs">family of specifications</a> that
+               compose [[EPUB31]], an interchange and delivery format for digital publications based on XML and Web
+               Standards. It is meant to be read and understood in concert with the other specifications that make up EPUB
+               3.1.</p>
+
+            <p>Refer to [[EPUB3Changes]] for more information on the differences between this specification and its
+               predecessor.</p>
+
+         </section>
+
+         <section id="sec-terminology">
+            <h2>Terminology</h2>
+
+            <p>Terms with meanings specific to EPUB 3.1 are capitalized in this document (e.g., "Author", "Reading System").
+               A complete list of these <a href="epub-spec.html#sec-terminology">terms and definitions</a> is provided in
+               [[!EPUB31]].</p>
+
+            <p>Only the first instance of a term in a section is linked to its definition.</p>
+
+            <p>In addition, the following terminology is defined for use in this specification:</p>
+
+            <dl class="termlist">
+               <dt><dfn data-lt="Codecs">Codec</dfn></dt>
+               <dd>
+                  <p>Codec refers to content that has intrinsic binary format qualities, such as video and audio media types
+                     which are already designed for optimum compression, or which provide optimized streaming
+                     capabilities.</p>
+               </dd>
+               <dt><dfn data-lt="Default Renditions">Default Rendition</dfn></dt>
+               <dd>
+                  <p>The <a class="glossterm" href="epub-spec.html#gloss-rendition">Rendition</a> listed in the first
+                        <code>rootfile</code> element in the <a href="#sec-container-metainf-container.xml">container.xml</a>
+                     file.</p>
+               </dd>
+               <dt><dfn data-lt="File Names">File Name</dfn></dt>
+               <dd>
+                  <p>The name of any type of file within an <a>OCF Abstract Container</a>, whether a directory or a file
+                     within a directory.</p>
+               </dd>
+               <dt><dfn data-lt="Non-Codecs">Non-Codec</dfn></dt>
+               <dd>
+                  <p>Non-Codec refers to content types that benefit from compression due to the nature of their internal data
+                     structure, such as file formats based on character strings (for example, HTML, CSS, etc.).</p>
+               </dd>
+               <dt><dfn data-lt="OCF Abstract Containers">OCF Abstract Container</dfn></dt>
+               <dd>
+                  <p>The OCF Abstract Container defines a file system model for the contents of the <a class="glossterm"
+                        href="#gloss-zip-container">OCF ZIP Container</a>, as defined in <a href="#sec-container-abstract"
+                           ><em>OCF Abstract Container</em></a>.</p>
+               </dd>
+               <dt><dfn data-lt="OCF Processors">OCF Processor</dfn></dt>
+               <dd>
+                  <p>A software application that processes <a>OCF ZIP Containers</a> according to the requirements of this
+                     specification.</p>
+               </dd>
+               <dt><dfn data-lt="OCF ZIP Containers">OCF ZIP Container</dfn></dt>
+               <dd>
+                  <p>The ZIP-based packaging and distribution format for EPUB Publications, as defined in <a
+                        href="#sec-container-zip"><em>OCF ZIP Container</em></a>.</p>
+                  <p>OCF ZIP Container and <a class="glossterm" href="epub-spec.html#gloss-container">EPUB Container</a> are
+                     synonymous.</p>
+               </dd>
+               <dt><dfn data-lt="Path Names">Path Name</dfn></dt>
+               <dd>
+                  <p>For a given directory within the <a href="#sec-container-abstract">OCF Abstract Container</a>, the
+                     string holding all directory <a>File Name</a> in the full path concatenated together with a
+                        <code>/</code> (<code>U+002F</code>) character separating the directory File Names.</p>
+                  <p>For a given file within the OCF Abstract Container, the Path Name is the string holding all directory
+                     File Names concatenated together with a <code>/</code> character separating the directory File Names,
+                     followed by a <code>/</code> character and then the File Name of the file.</p>
+               </dd>
+               <dt><dfn data-lt="Root Directories">Root Directory</dfn></dt>
+               <dd>
+                  <p>The root directory represents the base of the <a>OCF Abstract Container</a> file system. This directory
+                     is virtual in nature: a <a class="glossterm" href="epub-spec.html#gloss-epub-reading-system">EPUB
+                        Reading System</a> might or might not generate a physical root directory for the contents of the OCF
+                     Abstract Container if the contents are unzipped.</p>
+               </dd>
+            </dl>
+         </section>
+
+         <section id="conformance"></section>
+
+      </section>
+      <section id="sec-ocf-conformance">
+         <h1>OCF Conformance</h1>
+
+         <section id="ocf-conformance-container">
+            <h2>Container Conformance</h2>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-ocf-content-abstr">An OCF Abstract Container MUST meet the conformance constraints defined
+                     in <a href="#sec-container-abstract"><em>OCF Abstract Container</em></a>.</p>
+               </li>
+               <li>
+                  <p id="confreq-ocf-content-zip">An OCF ZIP Container MUST meet the conformance constraints defined in <a
+                        href="#sec-container-zip"><em>OCF ZIP Container</em></a>.</p>
+               </li>
+            </ul>
+
+         </section>
+
+         <section id="ocf-conformance-rs">
+            <h2>Reading System Conformance</h2>
+
+            <p>An <a class="glossterm" href="epub-spec.html#gloss-epub-reading-system">EPUB Reading System</a> MUST meet all
+               of the following criteria:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-ocf-rs-zip">It MUST process the OCF ZIP Container in conformance with all Reading System
+                     conformance constraints expressed in <a href="#sec-container-zip"><em>OCF ZIP Container</em></a>.</p>
+               </li>
+               <li>
+                  <p id="confreq-ocf-fobfus">If it has a <a class="glossterm" href="epub-spec.html#gloss-viewport"
+                        >Viewport</a>, it MUST support deobfuscation of resources as defined in <a
+                        href="#sec-resource-obfuscation"><em>Resource Obfuscation</em></a>.</p>
+               </li>
+            </ul>
+
+         </section>
+
+      </section>
+      <section id="sec-container-abstract">
+         <h1>OCF Abstract Container</h1>
+
+         <section id="sec-container-abstract-intro" class="informative">
+            <h2>Introduction</h2>
+
+            <p>The <a>OCF Abstract Container</a> file system model uses a single common <a>Root Directory</a> for all of the
+               contents. All <a class="glossterm" href="epub-spec.html#gloss-local-resource">Local Resources</a> for the <a
+                  class="glossterm" href="epub-spec.html#gloss-epub-publication">EPUB Publication</a> are located within the
+               directory tree headed by the Root Directory, but no specific file system structure for them is mandated by
+               this specification.</p>
+
+            <p>The file system model also includes a mandatory directory named <code>META-INF</code> that is a direct child
+               of the Root Directory and is used to store the following special files:</p>
+
+            <dl class="variablelist">
+               <dt><code>container.xml</code>
+                  <code>[required]</code></dt>
+               <dd>
+                  <p>Identifies the <a class="glossterm" href="epub-spec.html#gloss-package-document">Package Documents</a>
+                     that define each <a class="glossterm" href="epub-spec.html#gloss-rendition">Rendition</a> of the EPUB
+                     Publication.</p>
+               </dd>
+               <dt><code>signatures.xml</code>
+                  <code>[optional]</code>
+               </dt>
+               <dd>
+                  <p>Contains digital signatures for various assets.</p>
+               </dd>
+               <dt><code>encryption.xml</code>
+                  <code>[optional]</code></dt>
+               <dd>
+                  <p>Contains information about the encryption of <a class="glossterm"
+                        href="epub-spec.html#gloss-publication-resource-cmt-or-foreign">Publication Resources</a>. This file
+                     is mandatory when <a href="#sec-resource-obfuscation">obfuscation</a> is used.</p>
+               </dd>
+               <dt><code>metadata.xml</code>
+                  <code>[optional]</code></dt>
+               <dd>
+                  <p>Used to store metadata about the <a>OCF ZIP Container</a>.</p>
+               </dd>
+               <dt><code>rights.xml</code>
+                  <code>[optional]</code></dt>
+               <dd>
+                  <p>Used to store information about digital rights.</p>
+               </dd>
+               <dt><code>manifest.xml</code>
+                  <code>[optional]</code></dt>
+               <dd>
+                  <p>A manifest of container contents as allowed by Open Document Format [[ODF]].</p>
+               </dd>
+            </dl>
+
+            <p>Conformance requirements for the various files in the <code>META-INF</code> directory are defined in <a
+                  href="#sec-container-metainf"><code>META-INF</code> Directory</a>.</p>
+
+         </section>
+
+         <section id="sec-container-file-and-dir-structure">
+            <h2>File and Directory Structure</h2>
+
+            <p>The virtual file system for the <a>OCF Abstract Container</a> MUST have a single common <a>Root Directory</a>
+               for all of the contents of the container.</p>
+
+            <p> The OCF Abstract Container MUST include a directory named <code>META-INF</code> that is a direct child of the
+               container's Root Directory. Requirements for the contents of this directory are described in <a
+                  href="#sec-container-metainf"><code>META-INF</code> Directory</a>.</p>
+
+            <p>The file name <code>mimetype</code> in the Root Directory is reserved for use by <a class="glossterm"
+                  href="#gloss-zip-container">OCF ZIP Containers</a>, as explained in <a href="#sec-container-zip"><em>OCF
+                     ZIP Container</em></a>.</p>
+
+            <p>All other files within the OCF Abstract Container MAY be in any location descendant from the Root Directory,
+               provided they are not within the <code>META-INF</code> directory.</p>
+
+            <p>It is RECOMMENDED that the contents of the EPUB Publication be stored within its own dedicated directory under
+               the Root Directory.</p>
+
+         </section>
+
+         <section id="sec-container-iri">
+            <h2>Relative IRIs for Referencing Other Components</h2>
+
+            <p>Files within the <a>OCF Abstract Container</a> MUST reference each other via relative IRI references
+               ([[!RFC3987]] and [[!RFC3986]]).</p>
+
+            <aside class="example">
+               <p>The following example shows how a file named <code>image1.jpg</code> in the same directory as an <a
+                     class="glossterm" href="epub-spec.html#gloss-content-document-epub-xhtml">XHTML Content Document</a> can
+                  be referenced from an [[!HTML-LATEST]] <code>img</code> element.</p>
+               <pre>
+&lt;img src="image1.jpg" alt="…" /&gt;
+                </pre>
+            </aside>
+
+            <p>For relative IRI references, the Base IRI [[!RFC3986]] is determined by the relevant language specifications
+               for the given file formats. For example, CSS defines how relative IRI references work in the context of CSS
+               style sheets and property declarations [[!CSSSnapshot]].</p>
+
+            <div class="note">
+               <p>Some language specifications reference Requests For Comments [[RFC]] that preceded [[RFC3987]], in which
+                  case the earlier RFC applies for content in that particular language.</p>
+            </div>
+
+            <p>Unlike most language specifications, the Base IRIs for all files within the <code>META-INF</code> directory
+               use the <a>Root Directory</a> of the OCF Abstract Container as the default Base IRI.</p>
+
+            <p>For example, if <code>META-INF/container.xml</code> has the following content:</p>
+
+            <pre class="example">
+&lt;?xml version="1.0"?&gt;
+&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;rootfiles&gt;
+        &lt;rootfile full-path="EPUB/Great_Expectations.opf"
+            media-type="application/oebps-package+xml" /&gt;	
+    &lt;/rootfiles&gt;
+&lt;/container&gt;
+            </pre>
+
+            <p>then the path <code>EPUB/Great Expectations.opf</code> is relative to the root directory for the OCF Abstract
+               Container and not relative to the <code>META-INF</code> directory.</p>
+
+            <p>All relative IRI references MUST resolve to resources within the OCF Abstract Container (i.e., at or below the
+               Root Directory).</p>
+
+         </section>
+
+         <section id="sec-container-filenames">
+            <h2>File Names</h2>
+
+            <p>The <a>File Name</a> restrictions described in this section are designed to allow <a>Path Names</a> and File
+               Names to be used without modification on most commonly used operating systems. This specification does not
+               specify how an <a>OCF Processor</a> that is unable to represent OCF File and Path Names would compensate for
+               this incompatibility.</p>
+
+            <p>In the context of an <a>OCF Abstract Container</a>, <span id="ocf-fn-cs">File and Path Names are case
+                  sensitive</span> and MUST meet all of the following criteria:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="ocf-fn-encoding">File Names MUST be UTF-8 [[!Unicode]] encoded.</p>
+               </li>
+               <li>
+                  <p id="ocf-fn-length">File Names MUST NOT exceed 255 bytes.</p>
+               </li>
+               <li>
+                  <p id="ocf-pn-length">The Path Name for any directory or file within the OCF Abstract Container MUST NOT
+                     exceed 65535 bytes.</p>
+               </li>
+               <li>
+                  <p id="ocf-fn-chars">File Names MUST NOT use the following [[!Unicode]] characters, as these characters
+                     might not be supported consistently across commonly-used operating systems:</p>
+                  <ul>
+                     <li>
+                        <p>SOLIDUS: <code>/</code> (<code>U+002F</code>)</p>
+                     </li>
+                     <li>
+                        <p>QUOTATION MARK: <code>"</code> (<code>U+0022</code>)</p>
+                     </li>
+                     <li>
+                        <p>ASTERISK: <code>*</code> (<code>U+002A</code>)</p>
+                     </li>
+                     <li>
+                        <p>FULL STOP as the last character: <code>.</code> (<code>U+002E</code>)</p>
+                     </li>
+                     <li>
+                        <p>COLON: <code>:</code> (<code>U+003A</code>)</p>
+                     </li>
+                     <li>
+                        <p>LESS-THAN SIGN: <code>&lt;</code> (<code>U+003C</code>)</p>
+                     </li>
+                     <li>
+                        <p>GREATER-THAN SIGN: <code>&gt;</code> (<code>U+003E</code>)</p>
+                     </li>
+                     <li>
+                        <p>QUESTION MARK: <code>?</code> (<code>U+003F</code>)</p>
+                     </li>
+                     <li>
+                        <p>REVERSE SOLIDUS: <code>\</code> (<code>U+005C</code>)</p>
+                     </li>
+                     <li>
+                        <p>DEL (<code>U+007F</code>)</p>
+                     </li>
+                     <li>
+                        <p>C0 range (<code>U+0000 … U+001F</code>)</p>
+                     </li>
+                     <li>
+                        <p>C1 range (<code>U+0080 … U+009F</code>)</p>
+                     </li>
+                     <li>
+                        <p>Private Use Area (<code>U+E000 … U+F8FF</code>)</p>
+                     </li>
+                     <li>
+                        <p>Non characters in Arabic Presentation Forms-A (<code>U+FDDO … U+FDEF</code>)</p>
+                     </li>
+                     <li>
+                        <p>Specials (<code>U+FFF0 … U+FFFF</code>)</p>
+                     </li>
+                     <li>
+                        <p>Tags and Variation Selectors Supplement (<code>U+E0000 … U+E0FFF</code>)</p>
+                     </li>
+                     <li>
+                        <p>Supplementary Private Use Area-A (<code>U+F0000 … U+FFFFF</code>)</p>
+                     </li>
+                     <li>
+                        <p>Supplementary Private Use Area-B (<code>U+100000 … U+10FFFF</code>)</p>
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <p id="ocf-fn-cn">All File Names within the same directory MUST be unique following case normalization as
+                     described in section 3.13 of [[!Unicode]].</p>
+               </li>
+               <li>
+                  <p id="ocf-fn-an">All File Names within the same directory SHOULD be unique following NFC or NFD
+                     normalization [[!TR15]].</p>
+               </li>
+            </ul>
+
+            <div class="note">
+               <p>Some commercial ZIP tools do not support the full Unicode range and might support only the [[US-ASCII]]
+                  range for File Names. <a class="glossterm" href="epub-spec.html#gloss-author">Authors</a> who want to use
+                  ZIP tools that have these restrictions might find it is best to restrict their File Names to the
+                  [[US-ASCII]] range. If the names of files cannot be preserved during the unzipping process, it will be
+                  necessary to compensate for any name translation which took place when the files are referenced by URI from
+                  within the content.</p>
+            </div>
+
+         </section>
+
+         <section id="sec-container-metainf">
+            <h2><code>META-INF</code> Directory</h2>
+
+            <section id="sec-container-metainf-inc">
+               <h3>Inclusion</h3>
+
+               <p>All <a>OCF Abstract Containers</a> MUST include a directory called <code>META-INF</code> in their <a>Root
+                     Directory</a>.</p>
+
+               <p>This directory contains the files specified in <a href="#sec-container-metainf-files">META-INF Reserved
+                     Files</a>. Files other than the ones listed in that section MAY be included in the <code
+                     class="filename">META-INF</code> directory; <a>OCF Processors</a> MUST NOT fail when encountering such
+                  files.</p>
+
+            </section>
+
+            <section id="sec-container-metainf-files">
+               <h3>Reserved Files</h3>
+
+               <section id="sec-container-metainf-container.xml">
+                  <h4>Container File (<code>container.xml</code>)</h4>
+
+                  <p>The REQUIRED <code>container.xml</code> file in the <code>META-INF</code> directory identifies the <a
+                        class="glossterm" href="epub-spec.html#gloss-epub-package">EPUB Packages</a> in the <a>OCF Abstract
+                        Container</a>.</p>
+
+                  <p>The contents of this file MUST be valid to the schema in <a href="#app-schema-container">Schema for
+                           <code>container.xml</code></a> after removing all elements and attributes from other namespaces
+                     (including all attributes and contents of such elements).</p>
+
+                  <p id="elemdef-container-rootfile">Each <code>rootfile</code> element MUST identify the location of a <a
+                        class="glossterm" href="epub-spec.html#gloss-package-document">Package Document</a> representing one
+                        <a class="glossterm" href="epub-spec.html#gloss-rendition">Rendition</a> of the <a class="glossterm"
+                        href="epub-spec.html#gloss-epub-publication">EPUB Publication</a>.</p>
+
+                  <p id="container-default-rendition">An OCF Processor MUST consider the first <code>rootfile</code> element
+                     within the <code>rootfiles</code> element to represent the <a class="glossterm"
+                        href="#gloss-rendition-default">Default Rendition</a> for the contained EPUB Publication. <a
+                        class="glossterm" href="epub-spec.html#gloss-epub-reading-system">Reading Systems</a> are REQUIRED to
+                     present the Default Rendition, but MAY present other Renditions in the container.</p>
+
+                  <aside class="example">
+                     <p>The following example shows a sample <code>container.xml</code> for an EPUB Publication with the root
+                        file <code>EPUB/My Crazy Life.opf</code> (the Package Document):</p>
+                     <pre>
+&lt;?xml version="1.0"?&gt;
+&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;rootfiles&gt;
+        &lt;rootfile full-path="EPUB/My_Crazy_Life.opf"
+            media-type="application/oebps-package+xml" /&gt;
+    &lt;/rootfiles&gt;
+&lt;/container&gt;
+                    </pre>
+                  </aside>
+
+                  <aside class="example">
+                     <p>The following example shows SVG and XHTML Renditions bundled in the same container:</p>
+                     <pre>
+&lt;?xml version="1.0"?&gt;
+&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;rootfiles&gt;
+        &lt;rootfile full-path="SVG/Sandman.opf"
+            media-type="application/oebps-package+xml" /&gt;
+        &lt;rootfile full-path="XHTML/Sandman.opf"
+            media-type="application/oebps-package+xml" /&gt;
+    &lt;/rootfiles&gt;
+&lt;/container&gt;
+                    </pre>
+                  </aside>
+
+                  <p>The OPTIONAL <code id="elemdef-container-links">links</code> element identifies resources necessary for
+                     the processing of the <a>OCF ZIP Container</a>. Each of its child <code id="elemdef-container-link"
+                        >link</code> elements MUST include an <code>href</code> attribute whose value identifies the location
+                     of a resource. Each <code>link</code> element also MUST include a <code>rel</code> attribute whose value
+                     identifies the relationship of the resource, and MAY include a <code>media-type</code> attribute whose
+                     value MUST be a media type [[!RFC2046]] that specifies the type and format of the resource referenced by
+                     the <code>link</code>.</p>
+
+                  <p>The value of the <code>rootfile</code> element <code>full-path</code> attribute and the
+                        <code>link</code> element <code>href</code> attribute MUST contain a <em class="firstterm"
+                        id="def-path-component">path component</em> [[!RFC3986]] which MUST take the form of a <em
+                        class="firstterm" id="def-path-rootless">path-rootless</em> [[!RFC3986]] only. The path components
+                     are relative to the <a>Root Directory</a>.</p>
+
+                  <p><a>OCF Processors</a> MUST ignore foreign elements and attributes within a <code>container.xml</code>
+                     file.</p>
+
+               </section>
+
+               <section id="sec-container-metainf-encryption.xml">
+                  <h4>Encryption File (<code>encryption.xml</code>)</h4>
+
+                  <p>The OPTIONAL <code>encryption.xml</code> file in the <code>META-INF</code> directory holds all
+                     encryption information on the contents of the container. If any resource within the container is
+                     encrypted, <code>encryption.xml</code> MUST be present to indicate that the resource is encrypted and
+                     provide information on how it is encrypted.</p>
+
+                  <p>This file is an XML document whose root element is <code id="elemdef-encryption-encryption"
+                        >encryption</code>. The <code>encryption</code> element contains child elements of type
+                        <code>EncryptedKey</code> and <code>EncryptedData</code> as defined by [[!XMLENC-CORE1]]. An <code
+                        id="elemdef-encryption-EncryptedKey">EncryptedKey</code> element describes each encryption key used
+                     in the container, while an <code id="elemdef-encryption-EncryptedData">EncryptedData</code> element
+                     describes each encrypted file. Each <code>EncryptedData</code> element refers to an
+                        <code>EncryptedKey</code> element, as described in XML Encryption.</p>
+
+                  <p>The contents of the <code>encryption.xml</code> file MUST be valid to the schema in <a
+                        href="#app-schema-encryption">Schema for <code>encryption.xml</code></a>.</p>
+
+                  <p>OCF encrypts individual files independently, trading off some security for improved performance,
+                     allowing the container contents to be incrementally decrypted. Encryption in this way exposes the
+                     directory structure and file naming of the whole package.</p>
+
+                  <p>OCF uses XML Encryption [[!XMLENC-CORE1]] to provide a framework for encryption, allowing a variety of
+                     algorithms to be used. XML Encryption specifies a process for encrypting arbitrary data and representing
+                     the result in XML. Even though an <a>OCF Abstract Container</a> might contain non-XML data, XML
+                     Encryption can be used to encrypt all data in an OCF Abstract Container. OCF encryption supports only
+                     the encryption of entire files within the container, not parts of files. The <code>encryption.xml</code>
+                     file, if present, MUST NOT be encrypted.</p>
+
+                  <p>Encrypted data replaces unencrypted data in an OCF Abstract Container. For example, if an image named
+                        <code>photo.jpeg</code> is encrypted, the contents of the <code>photo.jpeg</code> resource SHOULD be
+                     replaced by its encrypted contents. Within the ZIP directory, encrypted files SHOULD be stored rather
+                     than Deflate-compressed.</p>
+
+                  <p id="encryption-obfuscation">Note that some situations require obfuscating the storage of embedded
+                     resources referenced by a <a class="glossterm" href="epub-spec.html#gloss-rendition">Rendition</a> to
+                     tie them to the "parent" EPUB Publication and make them more difficult to extract for unrestricted use
+                     (e.g., fonts). Although obfuscation is not encryption, the <code>encryption.xml</code> file is used in
+                     conjunction with the <a href="#sec-resource-obfuscation">IDPF resource obfuscation algorithm</a> to
+                     identify resources that need to be de-obfuscated before they can be used.</p>
+
+                  <p id="encryption-restrictions">The following files MUST NOT be encrypted, regardless of whether default or
+                     specific encryption is requested:</p>
+
+                  <ul class="nomark">
+                     <li><code>mimetype</code></li>
+                     <li><code>META-INF/container.xml</code></li>
+                     <li><code>META-INF/encryption.xml</code></li>
+                     <li><code>META-INF/manifest.xml</code></li>
+                     <li><code>META-INF/metadata.xml</code></li>
+                     <li><code>META-INF/rights.xml</code></li>
+                     <li><code>META-INF/signatures.xml</code></li>
+                     <li><a class="glossterm" href="epub-spec.html#gloss-package-document"><code>Package
+                        Document</code></a></li>
+                  </ul>
+
+                  <p>Signed resources MAY subsequently be encrypted using the Decryption Transform for XML Signature
+                     [[!XMLENC-DECRYPT]]. This feature enables an application such as an OCF agent to distinguish data that
+                     was encrypted before signing from data that was encrypted after signing. Only data that was encrypted
+                     after signing MUST be decrypted before computing the digest used to validate the signature.</p>
+
+                  <aside class="example">
+                     <p>In the following example, adapted from <a
+                           href="https://www.w3.org/TR/2002/REC-xmlenc-core-20021210/#sec-eg-Symmetric-Key">Section 2.2.1
+                        </a> of [[!XMLENC-CORE1]] the resource <code>image.jpeg</code> is encrypted using a symmetric key
+                        algorithm (AES) and the symmetric key is further encrypted using an asymmetric key algorithm (RSA)
+                        with a key of John Smith.</p>
+                     <pre>
+&lt;encryption
+    xmlns ="urn:oasis:names:tc:opendocument:xmlns:container"
+    xmlns:enc="http://www.w3.org/2001/04/xmlenc#"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"&gt;
+    &lt;enc:EncryptedKey Id="EK"&gt;
+        &lt;enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/&gt;
+        &lt;ds:KeyInfo&gt;
+            &lt;ds:KeyName&gt;John Smith&lt;/ds:KeyName&gt;
+        &lt;/ds:KeyInfo&gt;
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherValue&gt;xyzabc&lt;/enc:CipherValue&gt;
+        &lt;/enc:CipherData&gt;
+    &lt;/enc:EncryptedKey&gt;
+    &lt;enc:EncryptedData Id="ED1"&gt;
+        &lt;enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes128"/&gt;
+        &lt;ds:KeyInfo&gt;
+            &lt;ds:RetrievalMethod URI="#EK"
+                Type="http://www.w3.org/2001/04/xmlenc#EncryptedKey"/&gt;
+        &lt;/ds:KeyInfo&gt;
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherReference URI="image.jpeg"/&gt;
+        &lt;/enc:CipherData&gt;
+    &lt;/enc:EncryptedData&gt;
+&lt;/encryption&gt;
+                    </pre>
+                  </aside>
+
+                  <h4>Order of Compression and Encryption</h4>
+
+                  <p>When stored in a ZIP container, streams of data with <a>Non-Codec</a> content types SHOULD be compressed
+                     before they are encrypted, and Deflate compression MUST be used. This practice ensures that file entries
+                     stored in the ZIP container have a smaller size.</p>
+
+                  <p>Streams of data with <a>Codec</a> content types SHOULD NOT be compressed before they are encrypted. In
+                     such cases, additional compression would introduce unnecessary processing overhead at production time
+                     (especially with large resource files), and would impact audio/video playback performance at consumption
+                     time. In some cases, the combination of compression with some encryption schemes might even compromise
+                     the ability of Reading Systems to handle partial content requests (e.g. HTTP byte ranges), due to the
+                     technical impossibility to determine the length of the full resource ahead of media playback (e.g. HTTP
+                     Content-Length header).</p>
+
+                  <p>Streams of data that are compressed before they are encrypted SHOULD provide additional
+                        <code>EncryptionProperties</code> metadata to specify the size of the initial resource (i.e., before
+                     compression and encryption), as per the <code>Compression</code> XML element defined below. Streams of
+                     data that are not compressed before they are encrypted MAY provide the additional
+                        <code>EncryptionProperties</code> metadata to specify the size of the initial resource (i.e., before
+                     encryption).</p>
+
+                  <dl class="elemdef">
+                     <dt>Element Name</dt>
+                     <dd>
+                        <p>
+                           <code>Compression</code></p>
+                     </dd>
+                     <dt>Namespace</dt>
+                     <dd>
+                        <p><code>http://www.idpf.org/2016/encryption#compression</code></p>
+                     </dd>
+                     <dt>Usage</dt>
+                     <dd>
+                        <p>OPTIONAL child of <code>EncryptionProperty</code>.</p>
+                     </dd>
+                     <dt>Attributes</dt>
+                     <dd>
+                        <dl class="variablelist">
+                           <dt>Method <code>[required]</code></dt>
+                           <dd>
+                              <p>Identifies the compression method used.</p>
+                              <p>Value is either "<code>0</code>" (no compression) or "<code>8</code>" (Deflate
+                                 algorithm).</p>
+                           </dd>
+                           <dt>OriginalLength <code>[required]</code></dt>
+                           <dd>
+                              <p>Represents the size of the initial resource (number of bytes).</p>
+                              <p>Value is a positive integer.</p>
+                           </dd>
+                        </dl>
+                     </dd>
+                     <dt>Content Model</dt>
+                     <dd>
+                        <p>Empty</p>
+                     </dd>
+                  </dl>
+
+                  <aside class="example">
+                     <p>The following example shows an MP4 file that that has been Deflate compressed and whose original size
+                        was 3500000 bytes.</p>
+                     <pre>&lt;encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;enc:EncryptedData xmlns:enc="http://www.w3.org/2001/04/xmlenc#"&gt;
+        ...
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherReference URI="OEPBS/video.mp4"/&gt;
+        &lt;/enc:CipherData&gt;
+        &lt;enc:EncryptionProperties&gt;
+            &lt;enc:EncryptionProperty xmlns:ns="http://www.idpf.org/2016/encryption#compression"&gt;
+                &lt;ns:Compression Method="8" OriginalLength="3500000"/&gt;
+            &lt;/enc:EncryptionProperty&gt;
+        &lt;/enc:EncryptionProperties&gt;
+        ...
+    &lt;/enc:EncryptedData&gt;
+&lt;/encryption&gt;</pre>
+                  </aside>
+
+               </section>
+
+               <section id="sec-container-metainf-manifest.xml">
+                  <h4>Manifest File (<code>manifest.xml</code>)</h4>
+
+                  <p>The OPTIONAL <code>manifest.xml</code> file in the <code>META-INF</code> directory provides a manifest
+                     of files in the Container.</p>
+
+                  <p>The OCF specification does not mandate a format for the manifest.</p>
+
+                  <p>Note that the <code>manifest</code> element contained within a <a class="glossterm"
+                        href="epub-spec.html#gloss-package-document">Package Document</a> specifies the one and only manifest
+                     used for processing a given Rendition. Ancillary manifest information contained in the ZIP archive or in
+                     the OPTIONAL <code>manifest.xml</code> file MUST NOT be used for processing the Rendition.</p>
+
+               </section>
+
+               <section id="sec-container-metainf-metadata.xml">
+                  <h4>Metadata File (<code>metadata.xml</code>)</h4>
+
+                  <p>The OPTIONAL <code>META-INF/metadata.xml</code> file in the <code>META-INF</code> directory, if present,
+                     MUST be used for container-level metadata.</p>
+
+                  <p>If the <code>metadata.xml</code> file is present, its contents SHOULD be only namespace-qualified
+                     elements [[!XML-NAMES]]. The file SHOULD contain the root element <code>metadata</code> in the namespace
+                        <code>http://www.idpf.org/2013/metadata</code>, but other root elements are allowed for backwards
+                     compatibility. Reading Systems SHOULD ignore <code>metadata.xml</code> files with unrecognized root
+                     elements.</p>
+
+                  <p>This version of the OCF specification does not define metadata for use in the <code>metadata.xml</code>
+                     file. Container-level metadata MAY be defined in future versions of this specification and in
+                     IDPF-defined EPUB extension specifications.</p>
+
+               </section>
+
+               <section id="sec-container-metainf-rights.xml">
+                  <h4>Rights Management File (<code>rights.xml</code>)</h4>
+
+                  <p>The OPTIONAL <code>rights.xml</code> file in the <code>META-INF</code> directory is reserved for digital
+                     rights management (DRM) information for trusted exchange of EPUB Publications among rights holders,
+                     intermediaries, and users.</p>
+
+                  <p>This version of the OCF specification does not require a specific format for DRM information, but a
+                     future version might. The contents of the <code>rights.xml</code> SHOULD be only namespace-qualified
+                     elements [[!XML-NAMES]] to avoid collision with a future format.</p>
+
+                  <p>When the <code>rights.xml</code> file is not present, no part of the container is rights governed at the
+                     container level. Rights expressions might exist within the contained Renditions.</p>
+
+                  <p>If the <code>rights.xml</code> file is not present, no part of the OCF Abstract Container is rights
+                     governed.</p>
+
+               </section>
+
+               <section id="sec-container-metainf-signatures.xml">
+                  <h4>Digital Signatures File (<code>signatures.xml</code>)</h4>
+
+                  <p>The OPTIONAL <code>signatures.xml</code> file in the <code>META-INF</code> directory holds digital
+                     signatures for the container and its contents. The contents of this file MUST be valid to the schema in
+                        <a href="#app-schema-signatures">Schema for <code>signatures.xml</code></a>.</p>
+
+                  <p>The root element of the <code>signatures.xml</code> file is the <code>signatures</code> element. This
+                     element contains child elements of type <code>Signature</code>, as defined by [[!XMLDSIG-CORE1]].
+                     Signatures can be applied to an EPUB Publication as a whole or to its parts, and can specify the signing
+                     of any kind of data (i.e., not just XML).</p>
+
+                  <p>When the <code>signatures.xml</code> file is not present, no part of the container is digitally signed
+                     at the container level. Digital signing might exist within the <a class="glossterm"
+                        href="epub-spec.html#gloss-epub-publication">EPUB Publication</a>.</p>
+
+                  <p id="sig-container">When a data signature is created for the container, the signature SHOULD be added as
+                     the last child <code>Signature</code> element of the <code>signatures</code> element.</p>
+
+                  <div class="note">
+                     <p>Each <code>Signature</code> in the <code>signatures.xml</code> file identifies by IRI the data to
+                        which the signature applies, using the [[XMLDSIG-CORE1]] <code>Manifest</code> element and its
+                           <code>Reference</code> sub-elements. Individual contained files might be signed separately or
+                        together. Separately signing each file creates a digest value for the resource that can be validated
+                        independently. This approach might make a Signature element larger. If files are signed together, the
+                        set of signed files can be listed in a single XML Signature <code>Manifest</code> element and
+                        referenced by one or more <code>Signature</code> elements.</p>
+                  </div>
+
+                  <p id="sig-restrictions">Any or all files in the container can be signed in their entirety with the
+                     exception of the <code>signatures.xml</code> file since that file will contain the computed signature
+                     information. Whether and how the <code>signatures.xml</code> file is signed depends on the objective of
+                     the signer.</p>
+
+                  <p>If the signer wants to allow signatures to be added or removed from the container without invalidating
+                     the signer’s signature, the <code>signatures.xml</code> file SHOULD NOT be signed.</p>
+
+                  <p>If the signer wants any addition or removal of a signature to invalidate the signer’s signature, the
+                     Enveloped Signature transform defined in <a
+                        href="https://www.w3.org/TR/2008/REC-xmldsig-core-20080610/#sec-EnvelopedSignature">Section 6.6.4</a>
+                     of [[!XMLDSIG-CORE1]] can be used to sign the entire preexisting signature file excluding the
+                        <code>Signature</code> being created. This transform would sign all previous signatures, and it would
+                     become invalid if a subsequent signature was added to the package.</p>
+
+                  <div class="note">
+                     <p>If the signer wants the removal of an existing signature to invalidate the signer’s signature, but
+                        also wants to allow the addition of signatures, an XPath transform could be used to sign just the
+                        existing signatures. The details of such a transform are outside the scope of this specification,
+                        however.</p>
+                  </div>
+
+                  <p>The [[!XMLDSIG-CORE1]] specification does not associate any semantics with a signature; an agent might
+                     include semantic information, for example, by adding information to the Signature element that describes
+                     the signature. The [[!XMLDSIG-CORE1]] specification describes how additional information can be added to
+                     a signature, such as by use the <code>SignatureProperties</code> element.</p>
+
+                  <aside class="example">
+                     <p>The following XML expression shows the content of an example <code>signatures.xml</code> file, and is
+                        based on the examples found in <a
+                           href="https://www.w3.org/TR/2008/REC-xmldsig-core-20080610/#sec-Overview">Section 2</a> of
+                        [[!XMLDSIG-CORE1]]. It contains one signature, and the signature applies to two resources, <code
+                           class="filename">EPUB/book.xhtml</code> and <code>EPUB/images/cover.jpeg</code>, in the
+                        container.</p>
+                     <pre>
+&lt;signatures xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;Signature Id="sig" xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;
+        &lt;SignedInfo&gt;
+            &lt;CanonicalizationMethod 
+                Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;
+            &lt;SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;
+            &lt;Reference URI="#Manifest1"&gt;
+                &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                &lt;DigestValue&gt;j6lwx3rvEPO0vKtMup4NbeVu8nk=&lt;/DigestValue&gt;
+            &lt;/Reference&gt;
+        &lt;/SignedInfo&gt;
+        &lt;SignatureValue&gt;…&lt;/SignatureValue&gt;
+        &lt;KeyInfo&gt;
+            &lt;KeyValue&gt;
+                &lt;DSAKeyValue&gt;
+                    &lt;P&gt;…&lt;/P&gt;&lt;Q&gt;…&lt;/Q&gt;&lt;G&gt;…&lt;/G&gt;&lt;Y&gt;…&lt;/Y&gt; 
+                &lt;/DSAKeyValue&gt;
+            &lt;/KeyValue&gt;
+        &lt;/KeyInfo&gt;
+        &lt;Object&gt;
+            &lt;Manifest Id="Manifest1"&gt;
+                &lt;Reference URI="EPUB/book.xhtml"&gt;                    
+                    &lt;Transforms&gt;                                                
+                        &lt;Transform
+                            Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;                        
+                    &lt;/Transforms&gt;
+                    &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                    &lt;DigestValue&gt;&lt;/DigestValue&gt;
+                &lt;/Reference&gt;
+                &lt;Reference URI="EPUB/images/cover.jpeg"&gt;
+                    &lt;Transforms&gt;                                                
+                        &lt;Transform
+                            Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;                        
+                    &lt;/Transforms&gt;
+                    &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                    &lt;DigestValue&gt;&lt;/DigestValue&gt;
+                &lt;/Reference&gt;
+            &lt;/Manifest&gt;
+        &lt;/Object&gt;
+    &lt;/Signature&gt; 
+&lt;/signatures&gt;
+                    </pre>
+                  </aside>
+
+               </section>
+
+            </section>
+
+         </section>
+
+      </section>
+      <section id="sec-container-zip">
+         <h1>OCF ZIP Container</h1>
+
+         <section id="sec-container-zip-intro" class="informative">
+            <h2>Introduction</h2>
+
+            <p>An <a>OCF ZIP Container</a> is a physical single-file manifestation of an <a>OCF Abstract Container</a>. The
+               Container is used:</p>
+
+            <ul>
+               <li>
+                  <p>to exchange in-progress <a class="glossterm" href="epub-spec.html#gloss-epub-publication">EPUB
+                        Publication</a> between different individuals and/or different organizations;</p>
+               </li>
+               <li>
+                  <p>to provide EPUB Publications from a publisher or conversion house to the distribution or sales channel;
+                     and</p>
+               </li>
+               <li>
+                  <p>to deliver EPUB Publications to <a class="glossterm" href="epub-spec.html#gloss-epub-reading-system"
+                        >EPUB Reading Systems</a> or users.</p>
+               </li>
+            </ul>
+
+         </section>
+
+         <section id="sec-zip-container-zipreqs">
+            <h2>ZIP File Requirements</h2>
+
+            <p>An <a>OCF ZIP Container</a> uses the ZIP format as specified by [[!ZIPAPPNOTE633]], but with the following
+               constraints and clarifications:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-zip-abstr">The contents of the OCF ZIP Container MUST be a conforming <a
+                        href="#sec-container-abstract">OCF Abstract Container</a>.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-mult">OCF ZIP Containers MUST NOT use the features in the ZIP application note
+                     [[!ZIPAPPNOTE633]] that allow ZIP files to be split across multiple storage media. <a class="glossterm"
+                        href="#gloss-ocf-processor">OCF Processors</a> MUST treat any OCF files that specify that the ZIP
+                     file is split across multiple storage media as being in error.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-comp"> OCF ZIP Containers MUST include only stored (uncompressed) and Deflate-compressed
+                     ZIP entries within the ZIP archive. OCF Processors MUST treat any OCF Containers that use compression
+                     techniques other than Deflate as being in error.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-64">OCF ZIP Containers MAY use the ZIP64 extensions defined as "Version 1" in section V,
+                     subsection G of the application note [[!ZIPAPPNOTE633]] and SHOULD use only those extensions when the
+                     content requires them. OCF Processors MUST support the ZIP64 extensions defined as "Version 1".</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-enc">OCF ZIP Containers MUST NOT use the encryption features defined by the ZIP format;
+                     instead, encryption MUST be done using the features described in <a
+                        href="#sec-container-metainf-encryption.xml">Encryption File (<code>encryption.xml</code>)</a>. OCF
+                     Processors MUST treat any other OCF ZIP Containers that use ZIP encryption features as being in
+                     error.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-preserve">It is not a requirement that OCF Processors preserve information from an OCF
+                     ZIP Container through load and save operations that is not defined within the OCF Abstract Container; in
+                     particular, an OCF Processor does not have to preserve CRC values, comment fields or fields that hold
+                     file system information corresponding to a particular operating system (e.g., <em class="firstterm"
+                        >External file attributes</em> and <em class="firstterm">Extra field</em>).</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-utf8">OCF ZIP Containers MUST encode File System Names using UTF-8 [[!Unicode]].</p>
+               </li>
+            </ul>
+
+            <p>The following constraints apply to particular fields in the OCF ZIP Container archive:</p>
+
+            <ul class="conformance-list">
+               <li>
+                  <p id="confreq-zip-fld-version">In the local file header table, OCF ZIP Containers MUST set the <code
+                        class="literal">version needed to extract</code> fields to the values <code>10</code>,
+                        <code>20</code> or <code>45</code> in order to match the maximum version level needed by the given
+                     file (e.g., <code>20</code> if Deflate is needed, <code>45</code> if ZIP64 is needed). OCF Processors
+                     MUST treat any other values as being in error.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-fld-comp">In the local file header table, OCF ZIP Containers MUST set the <code
+                        class="literal">compression</code> method field to the values <code>0</code> or <code>8</code>. OCF
+                     Processors MUST treat any other values as being in error.</p>
+               </li>
+               <li>
+                  <p id="confreq-zip-fld-er">OCF Processors MUST treat OCF ZIP Containers with an <code>Archive decryption
+                        header</code> or an <code>Archive extra data record</code> as being in error.</p>
+               </li>
+            </ul>
+
+         </section>
+
+         <section id="sec-zip-container-mime">
+            <h2>OCF ZIP Container Media Type Identification</h2>
+
+            <p>The first file in the <a>OCF ZIP Container</a> MUST be the <code>mimetype</code> file. The contents of this
+               file MUST be the MIME media type [[!RFC2046]] string <code>application/epub+zip</code> encoded in US-ASCII
+               [[!US-ASCII]].</p>
+
+            <p>The contents of the <code>mimetype</code> file MUST NOT contain any leading padding or white space, MUST NOT
+               begin with the Unicode signature (or Byte Order Mark), and the case of the media type string MUST be exactly
+               as presented above. The <code>mimetype</code> file additionally MUST NOT be compressed or encrypted, and there
+               MUST NOT be an extra field in its ZIP header.</p>
+
+            <div class="note">
+               <p>Refer to <a href="#app-media-type">Appendix C, <em>The <code>application/epub+zip</code> Media
+                     Type</em></a> for further information about the <code>application/epub+zip</code> media type.</p>
+            </div>
+
+         </section>
+
+      </section>
+      <section id="sec-resource-obfuscation">
+         <h1>Resource Obfuscation</h1>
+
+         <section id="fobfus-intro" class="informative">
+            <h2>Introduction</h2>
+
+            <p>Since an <a>OCF ZIP Container</a> is fundamentally a ZIP file, commonly available ZIP tools can be used to
+               extract any unencrypted content stream from the package. Moreover, the nature of ZIP files means that their
+               contents might appear like any other native container on some systems (e.g., a folder).</p>
+
+            <p>While this simplicity of ZIP files is quite useful, it also poses a problem when ease of extraction of
+               resources is not a desired side-effect of not encrypting them. An <a class="glossterm"
+                  href="epub-spec.html#gloss-author">Author</a> who wishes to include a third-party font, for example,
+               typically does not want that font extracted and re-used by others. More critically, many commercial fonts
+               allow embedding, but embedding a font implies making it an integral part of the EPUB Publication, not just
+               providing the original font file along with the content.</p>
+
+            <p>Since integrated ZIP support is so ubiquitous in modern operating systems, simply placing a font in the ZIP
+               archive is insufficient to signify that it is not intended to be reused in other contexts. This uncertainty
+               can undermine the otherwise very useful font embedding capability of EPUB Publications.</p>
+
+            <p>In order to discourage reuse of the font, some font vendors might only allow use of their fonts in EPUB
+               Publications if those fonts are bound in some way to the EPUB Publication. That is, if the font file cannot be
+               installed directly for use on an operating system with the built-in tools of that computing device, and it
+               cannot be directly used by other EPUB Publications.</p>
+
+            <p>It is beyond the scope of this specification to provide a digital rights management or enforcement system for
+               such resources. This section instead defines a method of obfuscation that will require additional work on the
+               part of the final OCF recipient to gain general access to any obfuscated resources.</p>
+
+            <p>Note that no claim is made in this specification, or by the IDPF, that this constitutes encryption, nor does
+               it guarantee that the resource will be secure from copyright infringement. It is the hope of the IDPF,
+               however, that this algorithm will meet the requirements of most vendors who require some assurance that their
+               resources cannot simply be extracted by unzipping the Container.</p>
+
+            <p>In the case of fonts, the primary use case for obfuscation, the defined mechanism will simply provide a
+               stumbling block for those who are unaware of the license details. It will not prevent a determined user from
+               gaining full access to the font. Given an OCF Container, it is possible to apply the algorithms defined to
+               extract the raw font file. Whether this method of obfuscation satisfies the requirements of individual font
+               licenses remains a question for the licensor and licensee.</p>
+
+         </section>
+
+         <section id="obfus-keygen">
+            <h2>Obfuscation Key</h2>
+
+            <p>The key used in the obfuscation algorithm is derived from the <a class="glossterm"
+                  href="epub-spec.html#gloss-unique-identifier">Unique Identifier</a> of the <a class="glossterm"
+                  href="#gloss-rendition-default">Default Rendition</a>.</p>
+
+            <p>All white space characters, as defined in <a
+                  href="https://www.w3.org/TR/2008/REC-xml-20081126/#sec-common-syn">section 2.3 of the XML 1.0
+                  specification</a> [[!XML]], MUST be removed from this identifier — specifically, the Unicode code points
+                  <code>U+0020</code>, <code>U+0009</code>, <code>U+000D</code> and <code>U+000A</code>.</p>
+
+            <p>A SHA-1 digest of the UTF-8 representation of the resulting string SHOULD be generated as specified by the
+               Secure Hash Standard [[!FIPS-180-3]]. This digest is then directly used as the key for the algorithm.</p>
+
+         </section>
+
+         <section id="obfus-algorithm">
+            <h2>Obfuscation Algorithm</h2>
+
+            <p>The algorithm employed to obfuscate resource consists of modifying the first 1040 bytes (~1KB) of the file. In
+               the unlikely event that the file is less than 1040 bytes, then the entire file will be modified.</p>
+
+            <p>To obfuscate the original data, the result of performing a logical exclusive or (XOR) on the first byte of the
+               raw file and the first byte of the <a href="#obfus-keygen">obfuscation key</a> is stored as the first byte of
+               the embedded resource.</p>
+
+            <p>This process is repeated with the next byte of source and key, and continues until all bytes in the key have
+               been used. At this point, the process continues starting with the first byte of the key and 21st byte of the
+               source. Once 1040 bytes have been encoded in this way (or the end of the source is reached), any remaining
+               data in the source is directly copied to the destination.</p>
+
+            <p>Obfuscation of resources MUST occur before they are compressed and added to the OCF Container. Note that as
+               obfuscation is not encryption, this requirement is not a violation of the one in <a
+                  href="#sec-container-metainf-encryption.xml">Encryption File (<code>encryption.xml</code>)</a> to compress
+               resources before encrypting them.</p>
+
+            <aside class="example">
+               <p>The following pseudo-code exemplifies the obfuscation algorithm.</p>
+               <pre class="programlisting">
+set ocf to OCF container file
+set source to file
+set destination to obfuscated file
+set keyData to key for file
+set outer to 0
+while outer &lt; 52 and not (source at EOF)
+    set inner to 0
+    while inner &lt; 20 and not (source at EOF)
+        read 1 byte from source     //Assumes read advances file position
+        set sourceByte to result of read
+        set keyByte to byte inner of keyData
+        set obfuscatedByte to (sourceByte XOR keyByte)
+        write obfuscatedByte to destination
+        increment inner
+    end while
+    increment outer
+end while
+if not (source at EOF) then
+    read source to EOF
+    write result of read to destination
+end if
+Deflate destination
+store destination as source in ocf
+            </pre>
+            </aside>
+
+            <p>To get the original font data back, the process is simply reversed: the source file becomes the obfuscated
+               data and the destination file will contain the raw data.</p>
+
+            <div class="note">
+               <p>The obfuscation of fonts was allowed prior to EPUB 3.0.1, but the order of obfuscation and compression was
+                  not specified. As a result, invalid fonts might be encountered after decompression and de-obfuscation. In
+                  such instances, de-obfuscating the data before inflating it might return a valid font. This specification
+                  does not require support for this method of retrieval, as it is not compliant with this version of this
+                  specification, but it needs to be considered when supporting EPUB 3 content generally.</p>
+            </div>
+
+         </section>
+
+         <section id="obfus-specifying">
+            <h2>Specifying Obfuscated Resources</h2>
+
+            <p>Although not technically encrypted data, all obfuscated resources MUST have an entry in the <code
+                  class="filename">encryption.xml</code> file accompanying the EPUB Publication (see <a
+                  href="#sec-container-metainf-encryption.xml">Encryption File (<code>encryption.xml</code>)</a>).</p>
+
+            <p>An <code>EncryptionMethod</code> element MUST be included for each obfuscated resource. Each MUST include a
+               child <code>EncryptedData</code> element whose <code>Algorithm</code> attribute is set to the value
+                  <code>http://www.idpf.org/2008/embedding</code>. The presence of this attribute signals the use of the
+               algorithm described in this specification. The path to the obfuscated resource MUST be listed in the
+                  <code>CipherReference</code> child of the <code>CipherData</code> element.</p>
+
+            <aside class="example">
+               <p>The following example shows an entry for an obfuscated font in the <code>encryption.xml</code> file.</p>
+               <pre>
+&lt;encryption 
+    xmlns="urn:oasis:names:tc:opendocument:xmlns:container" 
+    xmlns:enc="http://www.w3.org/2001/04/xmlenc#"&gt;
+    &lt;enc:EncryptedData&gt; 
+        &lt;enc:EncryptionMethod Algorithm="http://www.idpf.org/2008/embedding"/&gt; 
+        &lt;enc:CipherData&gt; 
+            &lt;enc:CipherReference URI="EPUB/Fonts/BKANT.TTF"/&gt;  
+        &lt;/enc:CipherData&gt; 
+    &lt;/enc:EncryptedData&gt;  
+&lt;/encryption&gt; 
+
+                </pre>
+            </aside>
+
+            <p>To prevent trivial copying of the embedded resource to other EPUB Publications, the <a href="#obfus-keygen"
+                  >obfuscation key</a> MUST NOT be provided in the <code>encryption.xml</code> file.</p>
+
+         </section>
+
+      </section>
+      <section class="appendix" id="app-schemas">
+         <h1>Schemas</h1>
+
+         <section id="app-schema-container">
+            <h2>Schema for <code>container.xml</code></h2>
+
+            <p>The schema for <code>container.xml</code> files is available at <a class="uri"
+                  href="http://www.idpf.org/epub/31/schema/ocf-container-31.rnc"
+                     ><code>http://www.idpf.org/epub/31/schema/ocf-container-31.rnc</code></a>.</p>
+
+            <p>Validation using this schema requires a processor that supports [[!RelaxNG-Schema]] and [[!XMLSCHEMA-2]].</p>
+
+         </section>
+
+         <section id="app-schema-encryption">
+            <h2>Schema for <code>encryption.xml</code></h2>
+
+            <p>The schema for <code>encryption.xml</code> files is included in [[!XMLSEC-RNGSCHEMA-20130411]].</p>
+
+         </section>
+
+         <section id="app-schema-signatures">
+            <h2>Schema for <code>signatures.xml</code></h2>
+
+            <p>The schema for <code>signatures.xml</code> files is included in [[!XMLSEC-RNGSCHEMA-20130411]].</p>
+
+         </section>
+
+      </section>
+      <section class="appendix" id="example">
+         <h1>Example</h1>
+         <p>The following example demonstrates the use of this OCF format to contain a signed and encrypted EPUB Publication
+            within an <a>OCF ZIP Container</a>.</p> Ordered list of files in the OCF ZIP Container
+         <pre>
+mimetype
+META-INF/container.xml
+META-INF/signatures.xml
+META-INF/encryption.xml
+EPUB/As You Like It.opf
+EPUB/book.html
+EPUB/nav.html
+EPUB/images/cover.png</pre>
+         The contents of the <code>mimetype</code> file <code>application/epub+zip</code> The contents of the
+            <code>META-INF/container.xml</code> file
+         <pre>&lt;?xml version="1.0"?&gt;
+&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;rootfiles&gt;
+        &lt;rootfile full-path="EPUB/As_You_Like_It.opf"
+            media-type="application/oebps-package+xml" /&gt;
+    &lt;/rootfiles&gt;
+&lt;/container&gt;</pre>
+         The contents of the <code>META-INF/signatures.xml</code> file
+         <pre>&lt;signatures xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+    &lt;Signature Id="AsYouLikeItSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"&gt;
+        
+        &lt;!-- 
+             SignedInfo is the information that is actually signed.
+             In this case the SHA1 algorithm is used to sign the 
+             canonical form of the XML documents enumerated in the
+             Object element below
+        --&gt;
+        &lt;SignedInfo&gt;
+            &lt;CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;
+            &lt;SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/&gt;
+            &lt;Reference URI="#AsYouLikeIt"&gt;
+                &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                &lt;DigestValue&gt;…&lt;/DigestValue&gt;
+            &lt;/Reference&gt;
+        &lt;/SignedInfo&gt;
+        
+        &lt;!-- 
+             The signed value of the digest above using the DSA 
+             algorithm
+        --&gt;
+        &lt;SignatureValue&gt;…&lt;/SignatureValue&gt;
+        
+        &lt;!-- The key to use to validate the signature --&gt;
+        &lt;KeyInfo&gt;
+            &lt;KeyValue&gt;
+                &lt;DSAKeyValue&gt;
+                    &lt;P&gt;…&lt;/P&gt;
+                    &lt;Q&gt;…&lt;/Q&gt;
+                    &lt;G&gt;…&lt;/G&gt;
+                    &lt;Y&gt;…&lt;/Y&gt;
+                &lt;/DSAKeyValue&gt;
+            &lt;/KeyValue&gt;
+        &lt;/KeyInfo&gt;
+        
+        &lt;!-- 
+             The list documents to sign. Note that the canonical 
+             form of XML documents is signed while the binary form
+             of the other documents is used
+        --&gt;
+        &lt;Object&gt;
+            &lt;Manifest Id="AsYouLikeIt"&gt;
+                &lt;Reference URI="EPUB/As You Like It.opf"&gt;
+                    &lt;Transforms&gt;
+                        &lt;Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;
+                    &lt;/Transforms&gt;
+                    &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                    &lt;DigestValue&gt;&lt;/DigestValue&gt;
+                &lt;/Reference&gt;
+                &lt;Reference URI="EPUB/book.html"&gt;
+                    &lt;Transforms&gt;
+                        &lt;Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/&gt;
+                    &lt;/Transforms&gt;
+                    &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                    &lt;DigestValue&gt;&lt;/DigestValue&gt;
+                &lt;/Reference&gt;
+                &lt;Reference URI="EPUB/images/cover.png"&gt;
+                    &lt;DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/&gt;
+                    &lt;DigestValue&gt;&lt;/DigestValue&gt;
+                &lt;/Reference&gt;
+            &lt;/Manifest&gt;
+        &lt;/Object&gt;        
+    &lt;/Signature&gt;
+&lt;/signatures&gt;</pre>
+         The contents of the <code>META-INF/encryption.xml</code> file
+         <pre>&lt;?xml version="1.0"?&gt;
+&lt;encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container"
+    xmlns:enc="http://www.w3.org/2001/04/xmlenc#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"&gt;
+
+    &lt;!--
+         The RSA encrypted AES-128 symmetric key used to encrypt
+         the data
+    --&gt;
+    &lt;enc:EncryptedKey Id="EK"&gt;
+        &lt;enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/&gt;
+        &lt;ds:KeyInfo&gt;
+            &lt;ds:KeyName&gt;John Smith&lt;/ds:KeyName&gt;
+        &lt;/ds:KeyInfo&gt;
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherValue&gt;xyzabc…&lt;/enc:CipherValue&gt;
+        &lt;/enc:CipherData&gt;
+    &lt;/enc:EncryptedKey&gt;
+
+    &lt;!-- 
+         Each EncryptedData block identifies a single document
+         that has been encrypted using the AES-128 algorithm.
+         The data remains stored in its encrypted form in the
+         original file within the container.
+    --&gt;
+    &lt;enc:EncryptedData Id="ED1"&gt;
+        &lt;enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes128"/&gt;
+        &lt;ds:KeyInfo&gt;
+            &lt;ds:RetrievalMethod URI="#EK" Type="http://www.w3.org/2001/04/xmlenc#EncryptedKey"/&gt;
+        &lt;/ds:KeyInfo&gt;
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherReference URI="EPUB/book.html"/&gt;
+        &lt;/enc:CipherData&gt;
+    &lt;/enc:EncryptedData&gt;
+
+    &lt;enc:EncryptedData Id="ED2"&gt;
+        &lt;enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes128"/&gt;
+        &lt;ds:KeyInfo&gt;
+            &lt;ds:RetrievalMethod URI="#EK" Type="http://www.w3.org/2001/04/xmlenc#EncryptedKey"/&gt;
+        &lt;/ds:KeyInfo&gt;
+        &lt;enc:CipherData&gt;
+            &lt;enc:CipherReference URI="EPUB/images/cover.png"/&gt;
+        &lt;/enc:CipherData&gt;
+    &lt;/enc:EncryptedData&gt;
+
+&lt;/encryption&gt;</pre>
+         The contents of the <code>EPUB/As You Like It.opf</code> file
+         <pre>&lt;?xml version="1.0"?&gt;
+&lt;package version="3.1" 
+         xml:lang="en"
+         xmlns="http://www.idpf.org/2007/opf" 
+         unique-identifier="pub-id"&gt;
+    
+    &lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;dc:identifier 
+              id="pub-id"&gt;urn:uuid:B9B412F2-CAAD-4A44-B91F-A375068478A0&lt;/dc:identifier&gt;
+        
+        &lt;dc:language&gt;en&lt;/dc:language&gt;
+        
+        &lt;dc:title&gt;As You Like It&lt;/dc:title&gt;
+        
+        &lt;dc:creator id="creator"&gt;William Shakespeare&lt;/dc:creator&gt;
+        
+        &lt;meta property="dcterms:modified"&gt;2000-03-24T00:00:00Z&lt;/meta&gt;
+        
+        &lt;dc:publisher&gt;Project Gutenberg&lt;/dc:publisher&gt;
+        
+        &lt;dc:date&gt;2000-03-24&lt;/dc:date&gt;
+        
+        &lt;meta property="dcterms:dateCopyrighted"&gt;9999-01-01&lt;/meta&gt;
+        
+        &lt;dc:identifier 
+              id="isbn13"&gt;urn:isbn:9780741014559&lt;/dc:identifier&gt;
+        
+        &lt;dc:identifier id="isbn10"&gt;0-7410-1455-6&lt;/dc:identifier&gt;
+        
+        &lt;link rel="xml-signature" 
+              href="../META-INF/signatures.xml#AsYouLikeItSignature"/&gt;
+    &lt;/metadata&gt;
+    
+    &lt;manifest&gt;
+        &lt;item id="r4915" 
+              href="book.html" 
+              media-type="application/xhtml+xml"/&gt;
+        &lt;item id="r7184" 
+              href="images/cover.png" 
+              media-type="image/png"/&gt;
+        &lt;item id="nav" 
+              href="nav.html" 
+              media-type="application/xhtml+xml" 
+              properties="nav"/&gt;
+    &lt;/manifest&gt;
+    
+    &lt;spine&gt;
+        &lt;itemref idref="r4915"/&gt;
+    &lt;/spine&gt;
+&lt;/package&gt;
+</pre>
+      </section>
+      <section class="appendix" id="app-media-type">
+         <h1>The <code>application/epub+zip</code> Media Type</h1>
+
+         <p>This appendix registers the media type <code>application/epub+zip</code> for the EPUB Open Container Format
+            (OCF).</p>
+
+         <p>An OCF file is a container technology based on the ZIP archive format. It is used to encapsulate the Renditions
+            of EPUB Publications. OCF and its related standards are maintained and defined by the International Digital
+            Publishing Forum (IDPF).</p>
+
+         <dl class="variablelist">
+            <dt>MIME media type name:</dt>
+            <dd>
+               <p><code>application</code></p>
+            </dd>
+            <dt>MIME subtype name:</dt>
+            <dd>
+               <p><code>epub+zip</code></p>
+            </dd>
+            <dt>Required parameters:</dt>
+            <dd>
+               <p>None.</p>
+            </dd>
+            <dt>Optional parameters:</dt>
+            <dd>
+               <p>None.</p>
+            </dd>
+            <dt>Encoding considerations:</dt>
+            <dd>
+               <p>OCF files are binary files in ZIP (<a class="uri"
+                     href="http://www.iana.org/assignments/media-types/application/zip"
+                        ><code>http://www.iana.org/assignments/media-types/application/zip</code></a>) format.</p>
+            </dd>
+            <dt>Security considerations:</dt>
+            <dd>
+               <p>All processors that read OCF files should rigorously check the size and validity of data retrieved.</p>
+               <p>In addition, because of the various content types that can be embedded in OCF files, it is possible that
+                     <code>application/epub+zip</code> may describe content that has security implications beyond those
+                  described here. However, only in the case where the processor recognizes and processes the additional
+                  content, or where further processing of that content is dispatched to other processors, would security
+                  issues potentially arise. And in that case, they would fall outside the domain of this registration
+                  document.</p>
+               <p>Security considerations that apply to <a class="media-type"
+                     href="http://www.iana.org/assignments/media-types/application/zip"><code>application/zip</code></a> also
+                  apply to OCF files.</p>
+            </dd>
+            <dt>Interoperability considerations:</dt>
+            <dd>
+               <p>None.</p>
+            </dd>
+            <dt>Published specification:</dt>
+            <dd>
+               <p>This media type registration is for the EPUB Open Container Format (OCF), as described by the EPUB Open
+                  Container Format (OCF) 3.0 specification located at <a class="uri"
+                     href="http://www.idpf.org/epub/30/spec/epub30-ocf.html"
+                        ><code>http://www.idpf.org/epub/30/spec/epub30-ocf.html</code></a>.</p>
+               <p>The EPUB OCF 3.0 specification supersedes the Open Container Format 2.0.1 specification, which is located
+                  at <a class="uri" href="http://www.idpf.org/doc_library/epub/OCF_2.0.1_draft.doc"
+                        ><code>http://www.idpf.org/doc_library/epub/OCF_2.0.1_draft.doc</code></a> and which also uses the
+                     <code class="media-type">application/epub+zip</code> media type.</p>
+            </dd>
+            <dt>Applications which use this media type:</dt>
+            <dd>
+               <p>This media type is in wide use for the distribution of ebooks in the EPUB format. The following list of
+                  applications is not exhaustive.</p>
+               <ul>
+                  <li>
+                     <p>Adobe Digital Editions</p>
+                  </li>
+                  <li>
+                     <p>Aldiko</p>
+                  </li>
+                  <li>
+                     <p>Azardi</p>
+                  </li>
+                  <li>
+                     <p>Apple iBooks</p>
+                  </li>
+                  <li>
+                     <p>Barnes &amp; Noble Nook</p>
+                  </li>
+                  <li>
+                     <p>Calibre</p>
+                  </li>
+                  <li>
+                     <p>Google Books</p>
+                  </li>
+                  <li>
+                     <p>Ibis Reader</p>
+                  </li>
+                  <li>
+                     <p>MobiPocket reader</p>
+                  </li>
+                  <li>
+                     <p>Sony Reader</p>
+                  </li>
+                  <li>
+                     <p>Stanza</p>
+                  </li>
+               </ul>
+            </dd>
+            <dt>Additional information:</dt>
+            <dd>
+               <dl class="variablelist">
+                  <dt>Magic number(s):</dt>
+                  <dd>
+                     <p>0: <code>PK 0x03 0x04</code>, 30: <code>mimetype</code>, 38: <code>application/epub+zip</code></p>
+                  </dd>
+                  <dt>File extension(s):</dt>
+                  <dd>
+                     <p>OCF files are most often identified with the extension <code>.epub</code>.</p>
+                  </dd>
+                  <dt>Macintosh File Type Code(s):</dt>
+                  <dd>
+                     <p>ZIP</p>
+                  </dd>
+                  <dt>Fragment Identifiers:</dt>
+                  <dd>
+                     <p>The IDPF maintains a registry of linking schemes at <a class="uri"
+                           href="http://www.idpf.org/epub/linking/"><code>http://www.idpf.org/epub/linking/</code></a>. Some
+                        of these schemes define custom fragment identifiers that resolve to <code>application/epub+zip</code>
+                        and <code>application/oebps-package+xml</code> documents.</p>
+                  </dd>
+               </dl>
+            </dd>
+            <dt>Person &amp; email address to contact for further information:</dt>
+            <dd>
+               <p>William McCoy, <a href="mailto:bmccoy@idpf.org">bmccoy@idpf.org</a></p>
+            </dd>
+            <dt>Intended usage:</dt>
+            <dd>
+               <p>COMMON</p>
+            </dd>
+            <dt>Author/Change controller:</dt>
+            <dd>
+               <p>International Digital Publishing Forum (<a href="http://www.idpf.org">http://www.idpf.org</a>)</p>
+            </dd>
+         </dl>
+
+      </section>
+      <div data-include="shared/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"></div>
+   </body>
+</html>
