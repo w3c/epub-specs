@@ -35,9 +35,13 @@ var biblio = {
       "title": "EPUB Content Documents 3",
       "href": "http://www.idpf.org/epub3/latest/contentdocs"
     },
+    "ContentDocs32": {
+      "title": "EPUB Content Documents 3.2",
+      "href": "epub-contentdocs.html"
+    },
     "ContentDocs31": {
       "title": "EPUB Content Documents 3.1",
-      "href": "epub-contentdocs.html"
+      "href": "http://www.idpf.org/epub/31/spec/epub-contentdocs.html"
     },
     "ContentDocs301": {
       "title": "EPUB Content Documents 3.0.1",
@@ -79,16 +83,20 @@ var biblio = {
       "title": "EPUB Canonical Fragment Identifier (epubcfi) Specification",
       "href": "http://www.idpf.org/epub/linking/cfi/epub-cfi.html"
     },
+    "EPUB32": {
+    	"title": "EPUB 3.2",
+    	"href": "epub-spec.html"
+    },
     "EPUB31": {
       "title": "EPUB 3.1",
-      "href": "epub-spec.html"
+      "href": "http://www.idpf.org/epub/31/spec/epub-spec.html"
     },
     "EPUB3Changes": {
-      "title": "EPUB 3.1 Differences from EPUB 3.0.1",
+      "title": "EPUB 3.2 Differences from EPUB 3.1",
       "href": "epub-changes.html"
     },
     "EPUB3Overview": {
-      "title": "EPUB 3.1 Overview",
+      "title": "EPUB 3.2 Overview",
       "href": "epub-overview.html"
     },
     "EPUBAccessibility": {
@@ -153,9 +161,13 @@ var biblio = {
       "title": "EPUB Media Overlays 3.1",
       "href": "http://www.idpf.org/epub3/latest/mediaoverlays"
     },
+    "MediaOverlays32": {
+      "title": "EPUB Media Overlays 3.2",
+      "href": "epub-mediaoverlays.html"
+    },
     "MediaOverlays31": {
       "title": "EPUB Media Overlays 3.1",
-      "href": "epub-mediaoverlays.html"
+      "href": "http://www.idpf.org/epub/31/spec/epub-mediaoverlays.html"
     },
     "MediaOverlays301": {
       "title": "EPUB Media Overlays 3.0.1",
@@ -175,9 +187,13 @@ var biblio = {
       "href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c038615_ISO_IEC_19757-4_2006(E).zip",
       "date": "2006-06-01"
     },
+    "OCF32": {
+      "title": "Open Container Format (OCF) 3.2",
+      "href": "epub-ocf.html"
+    },
     "OCF31": {
       "title": "Open Container Format (OCF) 3.1",
-      "href": "epub-ocf.html"
+      "href": "http://www.idpf.org/epub/31/spec/epub-ocf.html"
     },
     "OCF301": {
       "title": "EPUB Open Container Format (OCF) 3.0.1",
@@ -212,9 +228,13 @@ var biblio = {
       "title": "EPUB Packages 3",
       "href": "http://www.idpf.org/epub3/latest/packages"
     },
+    "Packages32": {
+      "title": "EPUB Packages 3.2",
+      "href": "epub-packages.html"
+    },
     "Packages31": {
       "title": "EPUB Packages 3.1",
-      "href": "epub-packages.html"
+      "href": "http://www.idpf.org/epub/31/spec/epub-packages.html"
     },
     "Previews": {
       "title": "EPUB Previews",
