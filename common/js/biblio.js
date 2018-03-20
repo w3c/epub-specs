@@ -46,6 +46,10 @@ var biblio = {
       "title": "EPUB Content Documents 3.0.1",
       "href": "http://www.idpf.org/epub/301/spec/epub-contentdocs.html"
     },
+    "ContentDocs30": {
+      "title": "EPUB Content Documents 3.0",
+      "href": "http://www.idpf.org/epub/30/spec/epub30-contentdocs.html"
+    },
     "ContentDocsPrefixes": {
       "title": "EPUB Content Documents Reserved Prefixes",
       "href": "http://www.idpf.org/epub/vocab/structure/pfx"
@@ -90,11 +94,11 @@ var biblio = {
       "title": "EPUB 3.1",
       "href": "http://www.idpf.org/epub/31/spec/epub-spec.html"
     },
-    "EPUB3Changes": {
-      "title": "EPUB 3.2 Differences from EPUB 3.1",
+    "EPUB32Changes": {
+      "title": "EPUB 3.2 Changes",
       "href": "epub-changes.html"
     },
-    "EPUB3Overview": {
+    "EPUB32Overview": {
       "title": "EPUB 3.2 Overview",
       "href": "epub-overview.html"
     },
@@ -173,6 +177,10 @@ var biblio = {
       "title": "EPUB Media Overlays 3.0.1",
       "href": "http://www.idpf.org/epub/301/spec/epub-mediaoverlays.html"
     },
+    "MediaOverlays30": {
+      "title": "EPUB Media Overlays 3.0",
+      "href": "http://www.idpf.org/epub/30/spec/epub30-mediaoverlays.html"
+    },
     "MetaVocab": {
       "title": "EPUB Meta Properties Vocabulary",
       "href": "http://www.idpf.org/epub/vocab/package/meta"
@@ -198,6 +206,14 @@ var biblio = {
     "OCF301": {
       "title": "EPUB Open Container Format (OCF) 3.0.1",
       "href": "http://www.idpf.org/epub/301/spec/epub-ocf.html"
+    },
+    "OCF30": {
+      "title": "EPUB Open Container Format (OCF) 3.0",
+      "href": "http://www.idpf.org/epub/30/spec/epub30-ocf.html"
+    },
+    "OCF2": {
+      "title": "EPUB Open Container Format (OCF) 2.0.1",
+      "href": "http://www.idpf.org/epub/20/spec/OCF_2.0.1_draft.doc"
     },
     "ODF": {
       "title": "Open Document Format for Office Applications (OpenDocument) v1.0",
@@ -243,6 +259,10 @@ var biblio = {
     "Publications301": {
       "title": "EPUB Publications 3.0.1",
       "href": "http://www.idpf.org/epub/301/spec/epub-publications.html"
+    },
+    "Publications30": {
+    	"title": "EPUB Publications 3.0",
+    	"href": "http://www.idpf.org/epub/30/spec/epub30-publications.html"
     },
     "RegionNav": {
       "title": "EPUB Region-Based Navigation",
