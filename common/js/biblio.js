@@ -1,5 +1,4 @@
 var biblio = {
-
     "A11YTestSuite": {
       "title": "EPUB Accessibility Tests",
       "href": "https://github.com/daisy/epub-accessibility-tests"
@@ -112,9 +111,10 @@ var biblio = {
       "href": "https://www.itu.int/rec/T-REC-H.264-201602-P/en",
       "date": "2016-02-13"
     },
-    "HTML-LATEST": {
+    "HTML": {
         "title": "HTML",
         "href": "https://www.w3.org/TR/html/",
+        "status": "W3C Recommendation",
         "publisher": "W3C"
     },
     "IDRegistry": {
