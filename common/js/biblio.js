@@ -94,6 +94,10 @@ var biblio = {
       "title": "EPUB 3.1",
       "href": "http://www.idpf.org/epub/31/spec/epub-spec.html"
     },
+    "EPUB3": {
+      "title": "EPUB 3",
+      "href": "http://www.idpf.org/epub/latest"
+    },
     "EPUB32Changes": {
       "title": "EPUB 3.2 Changes",
       "href": "epub-changes.html"
@@ -318,9 +322,15 @@ var biblio = {
       "title": "Unicode Normalization Forms",
       "href": "http://www.unicode.org/reports/tr15/"
     },
+    "TrueType": {
+      "title": "Apple TrueType Reference Manual",
+      "href": "https://developer.apple.com/fonts/TrueType-Reference-Manual/"
+    },
     "TypesRegistry": {
       "title": "EPUB Publication Types Registry",
-      "href": "http://www.idpf.org/epub/vocab/package/types"
+      "href": "http://www.idpf.org/epub/vocab/package/types",
+      "publisher": "Apple",
+      "date": "2002"
     },
     "US-ASCII": {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
