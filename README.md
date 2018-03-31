@@ -7,11 +7,11 @@ HTML documents on this repository’s master branch can also be displayed in a b
 ## EPUB 3.2
 ### Draft Specifications
 
-1. [EPUB 3.1 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
-2. [EPUB 3.1 Specification](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-spec.html)
-3. [EPUB Packages 3.1](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-packages.html)
-4. [EPUB Content Documents 3.1](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-contentdocs.html)
-5. [EPUB Media Overlays 3.1](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-mediaoverlays.html)
+1. [EPUB 3.2 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
+2. [EPUB 3.2 Specification](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-spec.html)
+3. [EPUB Packages 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-packages.html)
+4. [EPUB Content Documents 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-contentdocs.html)
+5. [EPUB Media Overlays 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-mediaoverlays.html)
 6. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-ocf.html)
 7. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
 8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
