@@ -4,16 +4,16 @@ Repository for EPUB 3 specification documents of the [EPUB 3 Community Group](ht
 
 HTML documents on this repository’s master branch can also be displayed in a browser via the `https://w3c.github.io/publ-epub-revision/...` URLs. 
 
-## EPUB 3.2
+## EPUB 3.2 Revision Documents
 ### Draft Specifications
 
-1. [EPUB 3.2 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
-2. [EPUB 3.2 Specification](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-spec.html)
-3. [EPUB Packages 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-packages.html)
-4. [EPUB Content Documents 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-contentdocs.html)
-5. [EPUB Media Overlays 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-mediaoverlays.html)
-6. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-ocf.html)
-7. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
+1. [EPUB 3.2 Specification](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-spec.html)
+2. [EPUB Packages 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-packages.html)
+3. [EPUB Content Documents 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-contentdocs.html)
+4. [EPUB Media Overlays 3.2](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-mediaoverlays.html)
+5. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-ocf.html)
+6. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
+7. [EPUB 3.2 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
 8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
 
 ### Draft Core Media Types
