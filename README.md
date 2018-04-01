@@ -1,8 +1,10 @@
-# EPUB 3 Community Group Repository - EPUB 3 Revision
+# Repository for EPUB 3 Revisions in W3C
 
-Repository for EPUB 3 specification documents of the [EPUB 3 Community Group](https://www.w3.org/community/epub3/)
+The next revision of EPUB 3 will be EPUB 3.2, which seeks to update EPUB 3.1 to make a successor that is compatible with [EPUB 3.0.1](http://www.idpf.org/epub/301/spec/epub-publications.html) (i.e., that reverts the package document version number change introduced in 3.1).
 
-HTML documents on this repository’s master branch can also be displayed in a browser via the `https://w3c.github.io/publ-epub-revision/...` URLs. 
+Creators of EPUB content are advised __not to implement 3.1__, but to continue to create content compatible with EPUB 3.0.1 until work on EPUB 3.2 is complete.
+
+To participate in this revision, please join the [EPUB 3 Community Group](https://www.w3.org/community/epub3/).
 
 ## EPUB 3.2 Revision Documents
 ### Draft Specifications
@@ -18,9 +20,12 @@ HTML documents on this repository’s master branch can also be displayed in a b
 
 ### Draft Core Media Types
 
-[EPUB 3 CMTs](https://idpf.github.io/epub-cmt/v3/cmt-v3.html)
+1. [EPUB 3 CMTs](https://idpf.github.io/epub-cmt/v3/cmt-v3.html)
+
+Located at: https://github.com/IDPF/epub-cmt
 
 ### Draft Vocabularies
+
 1. [EPUB Accessibility Vocabulary](https://idpf.github.io/epub-vocabs/package/a11y/a11y.html)
 2. [EPUB Manifest Properties Vocabulary](https://idpf.github.io/epub-vocabs/package/item/item.html)
 3. [EPUB Meta Properties Vocabulary](https://idpf.github.io/epub-vocabs/package/meta/meta.html)
@@ -31,10 +36,14 @@ HTML documents on this repository’s master branch can also be displayed in a b
 8. [EPUB 3 Magazine Navigation Vocabulary](https://idpf.github.io/epub-vocabs/structure/magazine/magazine.html)
 9. [Media Overlays Vocabulary](https://idpf.github.io/epub-vocabs/overlays/overlays.html)
 
+Located at: https://github.com/IDPF/epub-vocabs
+
 ### Draft Prefixes
 
 1. [EPUB Packages Reserved Prefixes](https://idpf.github.io/epub-prefixes/packages/packages.html)
 2. [EPUB Content Documents Reserved Prefixes](https://idpf.github.io/epub-prefixes/contentdocs/contentdocs.html)
+
+Located at: https://github.com/IDPF/epub-prefixes
 
 ### Draft Registries
 
@@ -43,6 +52,8 @@ HTML documents on this repository’s master branch can also be displayed in a b
 3. [EPUB Optimized Publication Standards Registry](http://idpf.github.io/epub-registries/optimizations/optimizations.html)
 4. [EPUB Publication Types Registry](http://idpf.github.io/epub-registries/types/types.html)
 5. [EPUB Subject Authorities Registry](http://idpf.github.io/epub-registries/authorities/authorities.html)
+
+Located at: https://github.com/IDPF/epub-registries
 
 ---
 
