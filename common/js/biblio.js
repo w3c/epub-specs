@@ -324,13 +324,13 @@ var biblio = {
     },
     "TrueType": {
       "title": "Apple TrueType Reference Manual",
-      "href": "https://developer.apple.com/fonts/TrueType-Reference-Manual/"
+      "href": "https://developer.apple.com/fonts/TrueType-Reference-Manual/",
+      "publisher": "Apple",
+      "date": "2002"
     },
     "TypesRegistry": {
       "title": "EPUB Publication Types Registry",
-      "href": "http://www.idpf.org/epub/vocab/package/types",
-      "publisher": "Apple",
-      "date": "2002"
+      "href": "http://www.idpf.org/epub/vocab/package/types"
     },
     "US-ASCII": {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
