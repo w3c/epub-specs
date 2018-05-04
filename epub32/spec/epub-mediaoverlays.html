@@ -1056,6 +1056,11 @@
 							><code>playback-active-class</code></a> [[!OverlaysVocab]]. The class names are then
 					discoverable by Reading Systems.</p>
 
+				<p>The <code>active-class</code> and <code>playback-active-class</code> properties MUST NOT be used in
+					conjunction with a <a href="epub-packages.html#attrdef-meta-refines"><code>refines</code>
+						attribute</a> [[!Packages32]], as they are always considered to apply to the entire
+					Rendition.</p>
+
 				<p>This example demonstrates how Authors can associate style information with the currently-playing EPUB
 					Content Document.</p>
 
@@ -1120,30 +1125,28 @@ html.-epub-media-overlay-playing * {
 				<section id="sec-package-including">
 					<h3>Including Media Overlays</h3>
 
-					<p><a class="glossterm" href="epub-spec.html#gloss-manifest">Manifest</a>
-						<a href="epub-packages.html#elemdef-package-item"><code>item</code> elements</a> [[!Packages32]]
-						that reference <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB
-							Content Documents</a> MAY specify a Media Overlay via the <a
-							href="epub-packages.html#attrdef-item-media-overlay"><code>media-overlay</code>
-							attribute</a>. The attribute MUST reference the ID [[!XML]] of the manifest
-							<code>item</code> for the corresponding Media Overlay Document.</p>
+					<p>If an <a class="glossterm" href="epub-spec.html#gloss-content-document-epub">EPUB Content
+							Document</a> is wholly or partially referenced by a Media Overlay, then its <a
+							class="glossterm" href="epub-spec.html#gloss-manifest">manifest</a>
+						<a href="epub-packages.html#elemdef-package-item"><code>item</code> element</a> [[!Packages32]]
+						MUST include a <code>media-overlay</code> attribute. The attribute MUST reference the ID
+						[[!XML]] of the manifest <code>item</code> for the corresponding Media Overlay Document.</p>
+
+					<p>The <code>media-overlay</code> attribute MUST NOT be attached to manifest <code>item</code>
+						elements that do not reference <a class="glossterm"
+							href="epub-spec.html#gloss-content-document-epub">EPUB Content Documents</a>.</p>
 
 					<p>Manifest items for Media Overlay Documents MUST have the media type
 							<code>application/smil+xml</code>.</p>
 
-					<p>The duration of an EPUB Content Document MUST be specified in a <a
-							href="epub-packages.html#attrdef-item-duration"><code>duration</code> attribute</a>
-						[[!Packages32]] on its manifest <code>item</code>.</p>
-
 					<aside class="example">
-						<p>The following example shows how to include Media Overlays in the manifest of a Package
-							Document.</p>
+						<p>The following example shows the entries for an EPUB Content Document and its associated Media
+							Overlay in the manifest of a Package Document.</p>
 						<pre>&lt;manifest&gt;
    &lt;item id="ch1" 
          href="chapter1.xhtml" 
          media-type="application/xhtml+xml" 
-         media-overlay="ch1_audio"
-         duration="0:32:29"/&gt;
+         media-overlay="ch1_audio"/&gt;
    
    &lt;item id="ch1_audio" 
          href="chapter1_audio.smil" 
@@ -1151,14 +1154,6 @@ html.-epub-media-overlay-playing * {
    …
 &lt;/manifest&gt;</pre>
 					</aside>
-
-					<p>If an EPUB Content Document is wholly or partially referenced by a Media Overlay, then its
-						manifest <code>item</code> entry MUST include a <code>media-overlay</code> attribute.</p>
-
-					<p>The <code>media-overlay</code> attribute MUST NOT be attached to manifest <code>item</code>
-						elements that do not reference <a class="glossterm"
-							href="epub-spec.html#gloss-content-document-epub">EPUB Content Documents</a>.</p>
-
 				</section>
 
 				<section id="sec-package-metadata">
@@ -1168,7 +1163,13 @@ html.-epub-media-overlay-playing * {
 						include the duration of the entire <a class="glossterm" href="epub-spec.html#gloss-rendition"
 							>Rendition</a> in a <a href="epub-packages.html#elemdef-package-item"><code>meta</code>
 							element</a> with the <a href="http://www.idpf.org/epub/vocab/overlays/#duration"
-								><code>duration</code> [<abbr class="abbrev">Overlays Vocab</abbr>] property</a>.</p>
+								><code>duration</code> property</a> [[!OverlaysVocab]].</p>
+
+					<p>In addition, the duration of each EPUB Content Document with an associated Media Overlay MUST be
+						provided. The <a href="epub-packages.html#attrdef-meta-refines"><code>refines</code>
+							attribute</a> [[!Packages32]] is used to associate each duration declaration to the
+						corresponding <a class="glossterm" href="epub-spec.html#gloss-manifest">manifest</a>
+						<a href="epub-packages.html#elemdef-package-item"><code>item</code></a> [[!Packages32]].</p>
 
 					<p><a class="glossterm" href="epub-spec.html#gloss-author">Authors</a> also MAY include <a
 							href="http://www.idpf.org/epub/vocab/overlays/#narrator"><code>narrator</code></a>
@@ -1180,6 +1181,9 @@ html.-epub-media-overlay-playing * {
 						<p>The following example shows a Package Document with metadata about Media Overlays.</p>
 						<pre>&lt;metadata&gt;
    …
+   &lt;meta property="media:duration" refines="#ch1_audio">0:32:29&lt;/meta>
+   &lt;meta property="media:duration" refines="#ch2_audio">0:34:02&lt;/meta>
+   &lt;meta property="media:duration" refines="#ch3_audio">0:29:49&lt;/meta>
    &lt;meta property="media:duration"&gt;1:36:20&lt;/meta&gt;
    &lt;meta property="media:narrator"&gt;Joe Speaker&lt;/meta&gt;
    &lt;meta property="media:active-class"&gt;-epub-media-overlay-active&lt;/meta&gt;
@@ -1378,8 +1382,8 @@ html.-epub-media-overlay-playing * {
 						<li>
 							<p>All referenced audio and video media embedded within an EPUB Content Document MUST be
 								initialized to their "stopped" state, and be ready to be played from the zero-position
-								within their content stream (possibly displaying the image specified using the
-								[[!HTML]] <a
+								within their content stream (possibly displaying the image specified using the [[!HTML]]
+									<a
 									href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
 										><code>poster</code></a> attribute). This requirement overrides the default
 								behavior defined by the [[!HTML]] <a
@@ -1444,8 +1448,7 @@ html.-epub-media-overlay-playing * {
 							<p>When a <code>text</code> element becomes inactive in the Media Overlay, and when it
 								points to embedded video or audio media, that referenced media MUST be reset to its
 								initial "stopped" state, ready to be played from the zero-position within their content
-								stream (possibly displaying the poster image specified using the [[!HTML]]
-								markup).</p>
+								stream (possibly displaying the poster image specified using the [[!HTML]] markup).</p>
 						</li>
 					</ul>
 
