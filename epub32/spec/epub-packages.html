@@ -780,28 +780,22 @@
 
 							<p id="attrdef-identifier-scheme">For additional precision (e.g., if the scheme cannot be
 								determined from the value or could lead to an ambiguous result), Authors MAY attach an
-									<a href="#attrdef-opf-scheme"><code>opf:scheme</code></a> attribute to assist in
-								Reading System identification. This attribute identifies the system or authority that
-								generated or assigned the value of the element. Its value MUST be either:</p>
-
-							<ul>
-								<li>
-									<p>a <a href="http://www.idpf.org/epub/vocab/package/id/">reserved identifier
-											value</a> [[!IDRegistry]] (case-insensitive); or</p>
-								</li>
-								<li>
-									<p>an absolute IRI [[!RFC3987]] that identifies the scheme. The IRI SHOULD refer to
-										a resource that provides more information about the scheme.</p>
-								</li>
-							</ul>
+									<a href="http://www.idpf.org/epub/vocab/package/meta/#identifier-type"
+										><code>identifier-type</code> property</a> [[!MetaVocab]] to assist in Reading
+								System identification. When included, the <code>identifier-type</code> property should
+								take precedence over value parsing the identifier.</p>
 
 							<aside class="example">
-								<p>The following example shows the <code>opf:scheme</code> attribute used to indicate a
-										<code>dc:identifier</code> element contains an ISBN.</p>
-								<pre>&lt;dc:identifier opf:scheme="isbn"&gt;9780123456789&lt;/dc:identifier&gt;</pre>
+								<p>The following example shows how an identifier can be additionally marked as a DOI
+									using the identifier-type property.</p>
+								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    &lt;dc:identifier id="pub-id">urn:doi:10.1016/j.iheduc.2008.03.001&lt;/dc:identifier>
+    &lt;meta refines="#pub-id" property="identifier-type" scheme="onix:codelist5">06&lt;/meta>
+    …
+&lt;/metadata></pre>
 							</aside>
 
-							<p>When included, the <code>opf:scheme</code> value SHOULD take precedence over value
+							<p>When included, the <code>identifier-type</code> value SHOULD take precedence over value
 								parsing the identifier. This specification does not require or endorse the use of any
 								particular scheme for identifiers.</p>
 
@@ -867,9 +861,8 @@
 
 							<aside class="example">
 								<p>The following example shows a multi-part title.</p>
-								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
-          xmlns:opf="http://www.idpf.org/2007/opf"&gt;
-    &lt;dc:title opf:file-as="Fellowship of the Ring"&gt;
+								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+    &lt;dc:title&gt;
         THE LORD OF THE RINGS, Part One: The Fellowship of the Ring
     &lt;/dc:title&gt;
     …
@@ -1040,31 +1033,41 @@
 							<h5>The <code>creator</code> Element</h5>
 
 							<p>The [[!DC11]] <code>creator</code> element represents the name of a person, organization,
-								etc. responsible for the creation of the content of the <a>Rendition</a>.</p>
+								etc. responsible for the creation of the content of the <a>Rendition</a>. The <a
+									href="http://www.idpf.org/epub/vocab/package/meta/#role"><code>role</code>
+									property</a> [[!MetaVocab]] can be attached to the element to indicate the function
+								the creator played in the creation of the content.</p>
+
+							<aside class="example">
+								<p>The following example shows how to represent a creator as an author using a MARC
+									relators term.</p>
+								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    …
+    &lt;dc:creator id="creator">Haruki Murakami&lt;/dc:creator>
+    &lt;meta refines="#creator" property="role" scheme="marc:relators" id="role">aut&lt;/meta>
+    …
+&lt;/metadata></pre>
+							</aside>
 
 							<p>The <code>creator</code> element SHOULD contain the name of the creator as a Reading
-								System will present it to a user. The <a href="#attrdef-opf-file-as"
-										><code>opf:file-as</code></a> attribute MAY be attached to include a normalized
-								form of the name, and the <a href="#attrdef-opf-alt-rep"><code>opf:alt-rep</code></a>
-								attribute MAY be used to represent a creator's name in another language or script (as
-								indicated in the <a href="#attrdef-opf-alt-rep-lang"><code>opf:alt-rep-lang</code></a>
-								attribute).</p>
-
-							<p>The <a href="#attrdef-opf-role"><code>role</code></a> attribute MAY be attached to
-								distinguish the role the creator played in the creation of the content (e.g., an author
-								or illustrator).</p>
+								System will present it to a user. The <a
+									href="http://www.idpf.org/epub/vocab/package/meta/#file-as"><code>file-as</code>
+									property</a> MAY be attached to include a normalized form of the name, and the <a
+									href="http://www.idpf.org/epub/vocab/package/meta/#alternate-script"
+										><code>alternate-script</code> property</a> to represent a creator's name in
+								another language or script. [[!MetaVocab]]</p>
 
 							<aside class="example">
 								<p>The following example shows how a creator name can be included to facilitate sorting
 									and rendering.</p>
-								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
-          xmlns:opf="http://www.idpf.org/2007/opf"&gt;
+								<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     …
-    &lt;dc:creator id="creator" opf:file-as="Murakami, Haruki"&gt;
-        Haruki Murakami
-    &lt;/dc:creator&gt;
+    &lt;dc:creator id="creator">Haruki Murakami&lt;/dc:creator>
+    &lt;meta refines="#creator" property="role" scheme="marc:relators" id="role">aut&lt;/meta>
+    &lt;meta refines="#creator" property="alternate-script" xml:lang="ja">村上 春樹&lt;/meta>
+    &lt;meta refines="#creator" property="file-as">Murakami, Haruki&lt;/meta>
     …
-&lt;/metadata&gt;</pre>
+&lt;/metadata></pre>
 							</aside>
 
 							<p>If an EPUB Publication has more than one creator, each SHOULD be included in a separate
@@ -1130,50 +1133,37 @@
 							<h5>The <code>subject</code> Element</h5>
 
 							<p>The [[!DC11]] <code>subject</code> element identifies the subject of the EPUB
-								Publication.</p>
+								Publication. The value of the element SHOULD be the human-readable heading or label, but
+								MAY be the code value if the subject taxonomy does not provide a separate descriptive
+								label.</p>
 
-							<p id="attrdef-opf-authority">In addition to the attributes listed in the <a
-									href="#sec-opf-dcmes-optional-def">general definition</a>, the element takes an
-								OPTIONAL <code>opf:authority</code> attribute that identifies the system or scheme the
-								element's value is drawn from. The value of the attribute MUST be either:</p>
+							<p>Authors MAY identify the system or scheme the element's value is drawn from using the <a
+									href="http://www.idpf.org/epub/vocab/package/meta/#authority"><code>authority</code>
+									property</a> [[!MetaVocab]].</p>
 
-							<ul>
-								<li>
-									<p>a <a href="http://idpf.org/epub/registries/authorities/">reserved authority
-											value</a> [[!AuthorityRegistry]] (case-insensitive); or</p>
-								</li>
-								<li>
-									<p>an absolute IRI [[!RFC3987]] that identifies the scheme. The IRI SHOULD refer to
-										a resource that provides more information about the scheme.</p>
-								</li>
-							</ul>
-
-							<p id="attrdef-opf-term">When a scheme is identified in the <code>opf:authority</code>
-								attribute, the subject code MUST be included in an <code>opf:term</code> attribute. The
-								value of the element SHOULD be the human-readable heading or label, but MAY be the code
-								value if the subject taxonomy does not provide a separate descriptive label.</p>
+							<p>When a scheme is identified, a subject code MUST be attached using the <a
+									href="http://www.idpf.org/epub/vocab/package/meta/#term"><code>term</code>
+									property</a>.</p>
 
 							<aside class="example">
 								<p>The following example shows a BISAC code and heading.</p>
-								<pre>&lt;dc:subject opf:authority="BISAC" opf:term="FIC024000"&gt;
-    FICTION / Occult &amp;amp; Supernatural
-&lt;/dc:subject&gt;</pre>
+								<pre>&lt;dc:subject id="subject01"&gt;FICTION / Occult &amp;amp; Supernatural&lt;/dc:subject&gt;
+&lt;meta refines="#subject01" property="authority">BISAC&lt;/meta>
+&lt;meta refines="#subject01" property="term">FIC024000&lt;/meta></pre>
 							</aside>
 
 							<aside class="example">
 								<p>The following example shows the use of an IRI for the scheme.</p>
-								<pre>&lt;dc:subject opf:authority="http://www.ams.org/msc/msc2010.html"
-            opf:term="11"&gt;
-    Number Theory
-&lt;/dc:subject&gt;</pre>
+								<pre>&lt;dc:subject id="sbj01"&gt;Number Theory&lt;/dc:subject&gt;
+&lt;meta refines="#sbj01" property="authority">http://www.ams.org/msc/msc2010.html&lt;/meta>
+&lt;meta refines="#sbj01" property="term">11&lt;/meta></pre>
 							</aside>
 
-							<p>The <code>opf:term</code> attribute MUST NOT occur on a <code>subject</code> element that
-								does not specify a scheme.</p>
+							<p>The <code>term</code> property MUST NOT be attached to a <code>subject</code> element
+								that does not specify a scheme.</p>
 
-							<p>The values of the <code>subject</code> element and <code>opf:term</code> attribute are
-								case sensitive only when the designated scheme requires.</p>
-
+							<p>The values of the <code>subject</code> element and <code>term</code> property are case
+								sensitive only when the designated scheme requires.</p>
 						</section>
 
 						<section id="sec-opf-dctype">
