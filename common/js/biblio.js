@@ -128,8 +128,8 @@ var biblio = {
     },
     "H264": {
       "title": "H.264 : Advanced video coding for generic audiovisual services",
-      "href": "https://www.itu.int/rec/T-REC-H.264-201602-P/en",
-      "date": "2016-02-13"
+      "href": "https://www.itu.int/ITU-T/recommendations/rec.aspx?rec=13189",
+      "date": "2017-04-13"
     },
     "HTML": {
         "title": "HTML",
