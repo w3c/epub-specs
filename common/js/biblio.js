@@ -102,8 +102,20 @@ var biblio = {
       "title": "EPUB 3.2 Changes",
       "href": "epub-changes.html"
     },
-    "EPUB32Overview": {
-      "title": "EPUB 3.2 Overview",
+    "EPUB31Changes": {
+      "title": "EPUB 3.1 Changes from 3.0.1",
+      "href": "http://www.idpf.org/epub/31/spec/epub-changes.html"
+    },
+    "EPUB301Changes": {
+      "title": "EPUB 3.0.1 Changes from 3.0",
+      "href": "http://www.idpf.org/epub/301/spec/epub-changes.html"
+    },
+    "EPUB3Changes": {
+      "title": "EPUB 3 Changes from 2.0.1",
+      "href": "http://www.idpf.org/epub/30/spec/epub30-changes.html"
+    },
+    "EPUB3Overview": {
+      "title": "EPUB 3 Overview",
       "href": "epub-overview.html"
     },
     "EPUBAccessibility": {
