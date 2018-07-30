@@ -242,11 +242,11 @@ var biblio = {
     },
     "OPF2": {
       "title": "Open Packaging Format 2.0.1",
-      "href": "http://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm"
+      "href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm"
     },
     "OPS2": {
       "title": "Open Publication Structure 2.0.1",
-      "href": "http://idpf.org/epub/20/spec/OPS_2.0.1_draft.htm"
+      "href": "http://www.idpf.org/epub/20/spec/OPS_2.0.1_draft.htm"
     },
     "OverlaysVocab": {
       "title": "EPUB 3.1 Media Overlays Vocabulary",
@@ -270,7 +270,7 @@ var biblio = {
     },
     "Previews": {
       "title": "EPUB Previews",
-      "href": "http://www.idpf.org/epub/previews"
+      "href": "http://www.idpf.org/epub/previews/"
     },
     "Publications301": {
       "title": "EPUB Publications 3.0.1",
@@ -290,7 +290,7 @@ var biblio = {
     },
     "RFC": {
       "title": "Request for Comments",
-      "href": "https://www.ietf.org/rfc.html"
+      "href": "https://www.ietf.org/standards/rfcs/"
     },
     "RoleExtensions": {
       "title": "EPUB Collection Element Role Extensions",
