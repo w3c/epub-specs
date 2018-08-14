@@ -16,7 +16,7 @@ To participate in this revision, please join the [EPUB 3 Community Group](https:
 5. [EPUB Open Container Format](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-ocf.html)
 6. [EPUB Accessibility](https://w3c.github.io/publ-epub-revision/a11y/accessibility.html)
 7. [EPUB 3.2 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
-8. [Alternate Style Sheets](https://w3c.github.io/publ-epub-revision/altss-tags/altss-tags.html)
+8. [EPUB 3.2 Changes from 3.0.1](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-changes.html)
 
 ### Draft Core Media Types
 
