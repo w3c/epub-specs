@@ -54,10 +54,6 @@ var biblio = {
       "title": "EPUB Content Documents Reserved Prefixes",
       "href": "http://www.idpf.org/epub/vocab/structure/pfx"
     },
-    "CoreMediaTypes": {
-      "title": "EPUB 3 Core Media Types",
-      "href": "https://www.idpf.org/epub/cmt/v3/"
-    },
     "CSSSnapshot": {
       "title": "CSS Snapshot",
       "href": "https://www.w3.org/TR/CSS/"
