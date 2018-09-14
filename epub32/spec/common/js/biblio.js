@@ -343,6 +343,10 @@ var biblio = {
     "US-ASCII": {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
     },
+    "WEBIDL": {
+      "title": "WebIDL",
+      "href": "https://www.w3.org/TR/WebIDL/"
+    },
     "W3CProcess": {
       "title": "World Wide Web Consortium Process Document",
       "href": "https://www.w3.org/2015/Process-20150901/",
