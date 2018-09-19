@@ -58,6 +58,12 @@ var biblio = {
       "title": "CSS Snapshot",
       "href": "https://www.w3.org/TR/CSS/"
     },
+    "CSS2": {
+      "title": "CSS 2",
+      "href": "https://www.w3.org/TR/CSS2/",
+      "status": "W3C Recommendation",
+      "publisher": "W3C"
+    },
     "CSS-Text-3-20160119": {
       "title": "CSS Text Level 3 (20160119)",
       "href": "https://drafts.csswg.org/date/2016-01-19T17:23:23/css-text/",
@@ -321,6 +327,11 @@ var biblio = {
       "title": "EPUB Spine Properties Vocabulary",
       "href": "http://www.idpf.org/epub/vocab/package/itemref"
     },
+    "SVG": {
+        "title": "SVG",
+        "href": "https://www.w3.org/TR/SVG/",
+        "publisher": "W3C"
+    },
     "SWF": {
       "title": "SWF File Format Specification</link> Version 19",
       "href": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf",
@@ -342,10 +353,6 @@ var biblio = {
     },
     "US-ASCII": {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
-    },
-    "WEBIDL": {
-      "title": "WebIDL",
-      "href": "https://www.w3.org/TR/WebIDL/"
     },
     "W3CProcess": {
       "title": "World Wide Web Consortium Process Document",
