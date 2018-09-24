@@ -1,0 +1,18 @@
+default namespace = "urn:oasis:names:tc:opendocument:xmlns:container"
+namespace epub_xenc_compress = "http://www.idpf.org/2016/encryption#compression"
+
+start =
+    element encryption {
+        grammar {
+            include "http://www.w3.org/TR/2013/NOTE-xmlsec-rngschema-20130411/Lenient-Encryption11-ghc.rnc" {
+                start = xenc_EncryptedData | xenc_EncryptedKey
+            }
+            xenc_EncryptionMethodOtherParams |= attribute Algorithm { xsd:anyURI "http://www.idpf.org/2008/embedding" }
+            xenc_EncryptionAlgorithms |= xsd:anyURI "http://www.idpf.org/2008/embedding"
+            xenc_EncryptionProperty_child |= epub_xenc_Compression?
+            epub_xenc_Compression = element epub_xenc_compress:Compression { epub_xenc_CompressionType }
+            epub_xenc_CompressionType =
+                attribute Method { "0" | "8" },
+                attribute OriginalLength { xsd:nonNegativeInteger }
+        }+
+    }
