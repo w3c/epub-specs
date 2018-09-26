@@ -1,5 +1,13 @@
 # Repository for EPUB 3 Revisions in W3C
 
+# EPUBCheck Needs Your Help!
+
+---
+
+The W3C is raising money to fund further development of EPUBCheck, so that it can support EPUB 3.2. Please [contribute](https://www.w3.org/publishing/epubcheck_fundraising) if you can. Thank you!
+
+---
+
 The next revision of EPUB 3 will be EPUB 3.2, which seeks to update EPUB 3.1 to make a successor that is compatible with [EPUB 3.0.1](http://www.idpf.org/epub/301/spec/epub-publications.html) (i.e., that reverts the package document version number change introduced in 3.1).
 
 Creators of EPUB content are advised __not to implement 3.1__, but to continue to create content compatible with EPUB 3.0.1 until work on EPUB 3.2 is complete.
@@ -18,11 +26,6 @@ To participate in this revision, please join the [EPUB 3 Community Group](https:
 7. [EPUB 3.2 Overview](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-overview.html)
 8. [EPUB 3.2 Changes from 3.0.1](https://w3c.github.io/publ-epub-revision/epub32/spec/epub-changes.html)
 
-### Draft Core Media Types
-
-1. [EPUB 3 CMTs](https://idpf.github.io/epub-cmt/v3/cmt-v3.html)
-
-Located at: https://github.com/IDPF/epub-cmt
 
 ### Draft Vocabularies
 
@@ -57,4 +60,4 @@ Located at: https://github.com/IDPF/epub-registries
 
 ---
 
-For any further help, contact either [Bill McCoy](bmccoy@w3.org) or [Ivan Herman](ivan@w3.org).
+For any further help, contact  [Ivan Herman](ivan@w3.org) or [Dave Cramer](dauwhe@gmail.com).
