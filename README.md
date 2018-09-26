@@ -1,8 +1,9 @@
 # Repository for EPUB 3 Revisions in W3C
 
-# EPUBCheck Needs Your Help!
-
 ---
+
+## EPUBCheck Needs Your Help!
+
 
 The W3C is raising money to fund further development of EPUBCheck, so that it can support EPUB 3.2. Please [contribute](https://www.w3.org/publishing/epubcheck_fundraising) if you can. Thank you!
 
