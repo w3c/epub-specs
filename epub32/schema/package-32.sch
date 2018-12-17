@@ -139,6 +139,63 @@
         </rule>
     </pattern>
     
-    <include href="./mod/id-unique.sch"/>     
-
+    <include href="./mod/id-unique.sch"/>
+	
+	<!-- EPUB 3.2 New Checks -->
+	
+	<pattern id="opf.spine.duplicate.refs">
+		<rule context="opf:itemref[@idref = preceding-sibling::opf:itemref/@idref]">
+			<report test=".">Itemref refers to the same manifest entry as a previous itemref</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.subject.authority-term">
+		<rule context="opf:metadata/dc:subject">
+			<let name="id" value="./@id"/>
+			<let name="authority" value="//opf:meta[@property='authority'][substring(@refines, 2) = $id]"/>
+			<let name="term" value="//opf:meta[@property='term'][substring(@refines, 2) = $id]"/>
+			<report test="(count($authority) = 1 and count($term) = 0)">A term property must be associated with a dc:subject when an authority is specified</report>
+			<report test="(count($authority) = 0 and count($term) = 1)">An authority property must be associated with a dc:subject when a term is specified</report>
+			<report test="(count($authority) &gt; 1 or count($term) &gt; 1)">Only one pair of authority and term properties can be associated with a dc:subject</report>
+		</rule>
+	</pattern>
+	
+	<!-- EPUB 3.2 Deprecated Features -->
+	
+	<pattern id="opf.bindings.deprecated">
+		<rule context="opf:package">
+			<report test="opf:bindings">Use of the bindings element is deprecated</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.meta.viewport.deprecated">
+		<rule context="opf:metadata/opf:meta[@property='rendition:viewport']">
+			<report test=".">Use of the rendition:viewport property is deprecated</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.meta.spread.portrait.deprecated">
+		<rule context="opf:metadata/opf:meta[@property='rendition:spread']">
+			<report test=". = 'portrait'">Use of the rendition:spread value 'portrait' is deprecated in favour of the value 'both'</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.itemref.spread.portrait.deprecated">
+		<rule context="opf:spine/opf:itemref[@properties]">
+			<report test="(some $token in tokenize(@properties,' ') satisfies (normalize-space($token) eq 'rendition:spread-portrait'))">Use of the 'rendition:spread-portrait' spine override is deprecated in favour of 'rendition:spread-both'</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.meta.meta-auth.deprecated">
+		<rule context="opf:metadata/opf:meta[@property='meta-auth']">
+			<report test=".">Use of the meta-auth property is deprecated</report>
+		</rule>
+	</pattern>
+	
+	<pattern id="opf.meta.display-seq.deprecated">
+		<rule context="opf:metadata/opf:meta[@property='display-seq']">
+			<report test=".">Use of the display-seq property is deprecated</report>
+		</rule>
+	</pattern>
+	
 </schema>
