@@ -180,7 +180,7 @@ var biblio = {
       "href": "http://www.loc.gov/marc/relators/"
     },
     "MediaOverlays": {
-      "title": "EPUB Media Overlays 3.1",
+      "title": "EPUB Media Overlays 3",
       "href": "http://www.idpf.org/epub3/latest/mediaoverlays"
     },
     "MediaOverlays32": {
