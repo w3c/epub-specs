@@ -1,4 +1,4 @@
-# Decentralized Identifier Working Group
+# EPUB 3 Working Group
 
 Contributions to this repository are intended to become part of Recommendation-track documents governed by the
 [W3C Patent Policy](https://www.w3.org/Consortium/Patent-Policy-20040205/) and
