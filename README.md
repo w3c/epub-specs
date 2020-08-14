@@ -11,11 +11,9 @@ The W3C is raising money to fund further development of EPUBCheck, so that it ca
 
 ## EPUB 3.2
 
-On May 8, 2019, the EPUB 3 Community Group published [EPUB 3.2](https://www.w3.org/publishing/epub32/). 
+On May 8, 2019, the EPUB 3 Community Group published [EPUB 3.2](https://www.w3.org/publishing/epub32/).  
 
-
-
-To participate in the future of EPUB, please join the [EPUB 3 Community Group](https://www.w3.org/community/epub3/).
+On August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) has been formed, which is now the maintainer of the EPUB 3 specification. For joining, participation, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
 
 
