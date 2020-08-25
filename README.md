@@ -1,21 +1,49 @@
+![W3C Logo](https://www.w3.org/Icons/w3c_home)
+
 # Repository for EPUB 3 Revisions in W3C
 
 ---
 
-## EPUBCheck Needs Your Help!
+As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) is now the maintainer of the EPUB 3 specifications.
 
+## EPUB 3
 
-The W3C is raising money to fund further development of EPUBCheck, so that it can support EPUB 3.2. Please [contribute](https://www.w3.org/publishing/epubcheck_fundraising) if you can. Thank you!
+### EPUB 3.X
 
----
+**A new revision of EPUB 3 is set to officially begin on September 11, 2020.**
 
-## EPUB 3.2
+For more information about the meeting schedule, how to join or participate, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
-On May 8, 2019, the EPUB 3 Community Group published [EPUB 3.2](https://www.w3.org/publishing/epub32/).  
+### Current Version of EPUB
 
-On August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) has been formed, which is now the maintainer of the EPUB 3 specification. For joining, participation, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
+The current vrsion of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32/).
 
+This version was published on May 8, 2019, by the former EPUB 3 Community Group.  
 
+## Repository Structure
+
+This repository currently hosts a number of the specification documents previously published by the IDPF. The contents of each folder are as follows:
+
+- [`a11y`](https://github.com/w3c/publ-epub-revision/tree/master/a11y) -- The EPUB Accessibility specification and Techniques document.
+- [`altss-tags`](https://github.com/w3c/publ-epub-revision/tree/master/altss-tags) -- The Alternate Style Sheets specification.
+- [`do`](https://github.com/w3c/publ-epub-revision/tree/master/do) -- The Distributable Objects specification.
+- `epub3x` -- The core EPUB specifications for each revision.
+- [`epubcfi`](https://github.com/w3c/publ-epub-revision/tree/master/epubcfi) -- The EPUB Canonical Fragment Identifiers specification.
+- [`oa`](https://github.com/w3c/publ-epub-revision/tree/master/oa) -- The Open Annotation in EPUB specification.
+- [`registries`](https://github.com/w3c/publ-epub-revision/tree/master/registries) -- The registry documents cited by the EPUB specifications.
+- [`sc`](https://github.com/w3c/publ-epub-revision/tree/master/sc) -- The Scriptable Components packaging and API specifications.
+
+## Contributing to the Repository
+
+Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative—by including the issue or bug number for example.
+
+Editorial changes that improve the readability of the spec or correct spelling or grammatical mistakes are welcome.
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md), about licensing contributions.
+
+## Code of Conduct
+
+W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
 
 ---
 
