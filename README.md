@@ -16,7 +16,7 @@ For more information about the meeting schedule, how to join or participate, etc
 
 ### Current Version of EPUB
 
-The current vrsion of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32/).
+The current version of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32/).
 
 This version was published on May 8, 2019, by the former EPUB 3 Community Group.  
 
