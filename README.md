@@ -1,6 +1,6 @@
 ![W3C Logo](https://www.w3.org/Icons/w3c_home)
 
-# Repository for EPUB 3 Revisions in W3C
+# Repository for EPUB 3 Revisions
 
 ---
 
