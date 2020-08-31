@@ -20,6 +20,14 @@ The current version of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32
 
 This version was published on May 8, 2019, by the former EPUB 3 Community Group.  
 
+## Open Issues
+
+Refer to the following links for filtered views of the currently open issues:
+
+- [EPUB 3 core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
+- [EPUB Accessibility specification](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
+- [Non-core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
+
 ## Repository Structure
 
 This repository currently hosts the EPUB 3 and related specification documents. The contents of each folder are as follows:
@@ -32,14 +40,6 @@ This repository currently hosts the EPUB 3 and related specification documents. 
 - [`oa`](https://github.com/w3c/publ-epub-revision/tree/master/oa) -- The Open Annotation in EPUB specification.
 - [`registries`](https://github.com/w3c/publ-epub-revision/tree/master/registries) -- The registry documents cited by the EPUB specifications.
 - [`sc`](https://github.com/w3c/publ-epub-revision/tree/master/sc) -- The Scriptable Components packaging and API specifications.
-
-## Open Issues
-
-Refer to the following links for filtered views of the currently open issues:
-
-- [EPUB 3 core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
-- [EPUB Accessibility specification](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
-- [Non-core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
 
 ## Contributing to the Repository
 
