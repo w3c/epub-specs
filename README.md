@@ -22,7 +22,7 @@ This version was published on May 8, 2019, by the former EPUB 3 Community Group.
 
 ## Repository Structure
 
-This repository currently hosts a number of the specification documents previously published by the IDPF. The contents of each folder are as follows:
+This repository currently hosts the EPUB 3 and related specification documents. The contents of each folder are as follows:
 
 - [`a11y`](https://github.com/w3c/publ-epub-revision/tree/master/a11y) -- The EPUB Accessibility specification and Techniques document.
 - [`altss-tags`](https://github.com/w3c/publ-epub-revision/tree/master/altss-tags) -- The Alternate Style Sheets specification.
@@ -32,6 +32,14 @@ This repository currently hosts a number of the specification documents previous
 - [`oa`](https://github.com/w3c/publ-epub-revision/tree/master/oa) -- The Open Annotation in EPUB specification.
 - [`registries`](https://github.com/w3c/publ-epub-revision/tree/master/registries) -- The registry documents cited by the EPUB specifications.
 - [`sc`](https://github.com/w3c/publ-epub-revision/tree/master/sc) -- The Scriptable Components packaging and API specifications.
+
+## Open Issues
+
+Refer to the following links for filtered views of the currently open issues:
+
+- [EPUB 3 core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
+- [EPUB Accessibility specification](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
+- [Non-core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
 
 ## Contributing to the Repository
 
