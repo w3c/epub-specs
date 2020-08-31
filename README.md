@@ -14,7 +14,7 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
-### Current Version of EPUB
+### Current Version
 
 The current version of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32/).
 
@@ -48,6 +48,17 @@ Use the standard fork, branch, and pull request workflow to propose changes to t
 Editorial changes that improve the readability of the spec or correct spelling or grammatical mistakes are welcome.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md), about licensing contributions.
+
+## Historical Records
+
+See the following for access to meeting minutes, sub-group work, discussions, etc. for past revisions:
+
+- [EPUB 3.0](https://github.com/w3c/publ-epub-revision/tree/wiki) = Available as a set of markdown files in the wiki branch of this repository.
+- [EPUB 3.0.1](https://drive.google.com/drive/u/0/folders/0B9g8D2Y-6aPLMFI2X1kxRzN1amc) - Available as document files from Google Drive.
+- [EPUB 3.1](https://drive.google.com/drive/u/0/folders/0B_r69cPgzjHjODJyTjlaeTVrSDQ) - Available as document files from Google Drive.
+- [EPUB 3.2](https://github.com/w3c/publ-cg/wiki) - Available from the EPUB 3 Community Group wiki.
+
+Refer to the [EPUB 3 Working Group's home page](https://www.w3.org/publishing/groups/epub-wg) for information about the current revision.
 
 ## Code of Conduct
 
