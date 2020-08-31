@@ -53,7 +53,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md), about licensing contributions.
 
 See the following for access to meeting minutes, sub-group work, discussions, etc. for past revisions:
 
-- [EPUB 3.0](https://github.com/w3c/publ-epub-revision/tree/wiki) - Available as a set of markdown files in the wiki branch of this repository.
+- [EPUB 3.0](https://github.com/w3c/publ-epub-revision/tree/master/archive/EPUB30_docs) - Available as a set of markdown files in the archive directory of this repository.
 - [EPUB 3.0.1](https://drive.google.com/drive/u/0/folders/0B9g8D2Y-6aPLMFI2X1kxRzN1amc) - Available as document files from Google Drive.
 - [EPUB 3.1](https://drive.google.com/drive/u/0/folders/0B_r69cPgzjHjODJyTjlaeTVrSDQ) - Available as document files from Google Drive.
 - [EPUB 3.2](https://github.com/w3c/publ-cg/wiki) - Available from the EPUB 3 Community Group wiki.
