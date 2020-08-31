@@ -22,7 +22,7 @@ This version was published on May 8, 2019, by the former EPUB 3 Community Group.
 
 ## Open Issues
 
-Refer to the following links for filtered views of the currently open issues:
+The following links provide filtered views of the currently open issues:
 
 - [EPUB 3 core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
 - [EPUB Accessibility specification](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
