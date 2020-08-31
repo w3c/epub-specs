@@ -51,7 +51,7 @@ The id portion of the URI will only be specified when a link refers to a specifi
 Following is the canonical form a URI that may be used reference an EPUB. The segments contained within “{}” brackets may be omitted.
 
 ```
-    scheme:://authority/path/unique-identifier{/version}{{/file}#id}
+    scheme:://authority/path/unique-identifier{/version}{ {/file}#id }
 ```
 
 ## Example URIs ##
