@@ -1,0 +1,1 @@
+Minutes are now being kept on Google Docs. Please see https://docs.google.com/document/pub?id=1J5G3WKuFIlDKs71JkWJpCD5Yv9P_ODgLnleyRGmVX_k for a published version of the minutes.
