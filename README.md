@@ -32,14 +32,10 @@ The following links provide filtered views of the currently open issues:
 
 This repository currently hosts the EPUB 3 and related specification documents. The contents of each folder are as follows:
 
-- [`a11y`](https://github.com/w3c/publ-epub-revision/tree/master/a11y) -- The EPUB Accessibility specification and Techniques document.
-- [`altss-tags`](https://github.com/w3c/publ-epub-revision/tree/master/altss-tags) -- The Alternate Style Sheets specification.
-- [`do`](https://github.com/w3c/publ-epub-revision/tree/master/do) -- The Distributable Objects specification.
-- `epub3x` -- The core EPUB specifications for each revision.
-- [`epubcfi`](https://github.com/w3c/publ-epub-revision/tree/master/epubcfi) -- The EPUB Canonical Fragment Identifiers specification.
-- [`oa`](https://github.com/w3c/publ-epub-revision/tree/master/oa) -- The Open Annotation in EPUB specification.
+- [`a11y`](/a11y) -- The EPUB Accessibility specification and Techniques document.
+- [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
+- [`epub32`] -- The core EPUB specifications for the 3.2 revision.
 - [`registries`](https://github.com/w3c/publ-epub-revision/tree/master/registries) -- The registry documents cited by the EPUB specifications.
-- [`sc`](https://github.com/w3c/publ-epub-revision/tree/master/sc) -- The Scriptable Components packaging and API specifications.
 
 ## Contributing to the Repository
 
