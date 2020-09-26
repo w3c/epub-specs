@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+   <head>
+      <meta charset="utf-8" />
+      <title>EPUB Accessibility Techniques 1.0</title>
+      <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+      <script src="../common/js/biblio.js" class="remove"></script>
+      <script src="../common/js/confreq-permalinks.js" class="remove"></script>
+      <script src="../common/js/copyright.js" class="remove"></script>
+      <link href="../common/css/common.css" rel="stylesheet" type="text/css" />
+      <script class="remove">
+          var respecConfig = {
+              wg: "EPUB 3 Community Group",
+              wgURI: "https://www.w3.org/community/epub3/",
+              wgPublicList: "public-epub3",
+              specStatus: "CG-DRAFT",
+              noRecTrack: true,
+              shortName: "epub-a11y-techs",
+              prevRecURI: "https://www.idpf.org/epub/a11y/accessibility/techniques/techniques-20170105.html",
+              edDraftURI: "https://w3c.github.io/publ-epub-revision/a11y/techniques/techniques.html",
+              editors: [
+                  {
+                      name: "Matt Garrish",
+                      company: "Invited Expert"
+                  },
+                  {
+                      name: "George Kerscher",
+                      company: "DAISY Consortium",
+                      companyURL: "http://daisy.org"
+                  },
+                  {
+                      name: "Charles LaPierre",
+                      company: "Benetech",
+                      companyURL: "http://benetech.org"
+                  },
+                  {
+                      name: "Avneesh Singh",
+                      company: "DAISY Consortium",
+                      companyURL: "http://daisy.org"
+                  }
+              ],
+              authors: [
+                  {
+                      name: "Romain Deltour",
+                      company: "DAISY Consortium",
+                      companyURL: "http://daisy.org"
+                  },
+                  {
+                      name: "Markus Gylling",
+                      company: "International Digital Publishing Forum (IDPF)",
+                      companyURL: "http://idpf.org"
+                  },
+                  {
+                      name: "Bernhard Heinser",
+                      company: "Access for All",
+                      companyURL: "http://access-for-all.ch"
+                  },
+                  {
+                      name: "Madeleine Rothberg",
+                      company: "Invited Expert"
+                  },
+                  {
+                      name: "Tzviya Siegman",
+                      company: "John Wiley &amp; Sons",
+                      companyURL: "http://wiley.com"
+                  },
+                  {
+                      name: "Jason White",
+                      company: "Invited Expert"
+                  }
+              ],
+              processVersion: 2017,
+              includePermalinks: true,
+              permalinkEdge:     true,
+              permalinkHide:     false,
+              diffTool:          "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+			  github:			 {
+				  repoURL: "https://github.com/w3c/publ-epub-revision",
+				  branch: "master"
+			  },
+              localBiblio: biblio,
+              preProcess: [addConformanceLinks],
+              postProcess: [fixCopyright]
+          };
+      </script>
+   </head>
+   <body>
+      <section id="abstract">
+         <p>EPUB Accessibility Techniques defines discovery and content accessibility requirements for EPUB Publications.</p>
+      </section>
+      <section id="sotd"></section>
+      <section id="sec-overview">
+         <h1>Overview</h1>
+
+         <section id="sec-purpose-scope" class="informative">
+            <h2>Purpose and Scope</h2>
+
+            <p>This document, EPUB Accessibility Techniques, provides guidance on how to meet the
+               [[EPUBAccessibility]] discovery and accessibility requirements for <a data-lt="EPUB Publications">EPUB®
+                  Publications</a>.</p>
+
+            <p>This document does not cover techniques and best practices already addressed in [[WCAG20]] and
+               [[WAI-ARIA-1.1]] for which no substantive differences in application exist.</p>
+
+         </section>
+
+         <section id="sec-terminology">
+            <h2>Terminology</h2>
+
+            <dl class="termlist">
+               <dt><dfn data-lt="Assistive Technologies">Assistive Technology</dfn></dt>
+               <dd>
+                  <p>This specification adopts the meaning of an <a href="https://www.w3.org/TR/WCAG20/#atdef">assistive
+                        technology</a> from [[WCAG20]].</p>
+                  <p>Note that an assistive technology is not always a separate application from a Reading System. Reading
+                     Systems often integrate features of standalone assistive technologies, such as text-to-speech
+                     playback.</p>
+               </dd>
+               <dt><dfn data-lt="Authors">Author</dfn></dt>
+               <dd>
+                  <p>The person(s) or organization responsible for the creation of an <a>EPUB Publication</a>. The Author is
+                     not necessarily the creator of the content.</p>
+               </dd>
+               <dt><dfn data-lt="Default Renditions">Default Rendition</dfn></dt>
+               <dd>
+                  <p>The Rendition listed in the first <code>rootfile</code> element in the
+                        <code>META-INF/container.xml</code> file.</p>
+               </dd>
+               <dt><dfn data-lt="EPUB Content Documents">EPUB Content Document</dfn></dt>
+               <dd>
+                  <p>A document that conforms to one of the EPUB Content Document definitions.</p>
+               </dd>
+               <dt><dfn data-lt="EPUB Navigation Documents">EPUB Navigation Document</dfn></dt>
+               <dd>
+                  <p>A specialized XHTML <a data-lt="EPUB Content Documents">Content Document</a> that contains human- and
+                     machine-readable global navigation information.</p>
+               </dd>
+               <dt><dfn data-lt="EPUB Publications">EPUB Publication</dfn></dt>
+               <dd>
+                  <p>A collection of one or more <a>Renditions</a> that represents a single intellectual or artistic
+                     work.</p>
+               </dd>
+               <dt><dfn data-lt="Package Documents">Package Document</dfn></dt>
+               <dd>
+                  <p>The Package Document describes one <a>Rendition</a> of an <a>EPUB Publication</a>. It carries meta
+                     information, provides a manifest of resources and defines the default reading order.</p>
+               </dd>
+               <dt><dfn data-lt="Reading Systems">Reading System</dfn></dt>
+               <dd>
+                  <p>A system that processes <a>EPUB Publications</a> for presentation to a user.</p>
+               </dd>
+               <dt><dfn data-lt="Renditions">Rendition</dfn></dt>
+               <dd>
+                  <p>A logical document entity that represents one rendering of an <a>EPUB Publication</a>.</p>
+               </dd>
+            </dl>
+
+            <div class="note">
+               <p>Some terms have more precise meanings for a given version of EPUB. Refer to the appropriate specification
+                  for more information.</p>
+            </div>
+
+         </section>
+      </section>
+      <section id="sec-about">
+         <h1>About the Techniques</h1>
+
+         <p>The accessibility techniques described in this document are advisory in nature. They are intended to help
+               <a>Authors</a> create <a>EPUB Publications</a> that conform to the requirements in [[EPUBAccessibility]], but
+            they are not all applicable in all situations and there may be other ways to meet the requirements of that
+            specification. As a result, this document should not be read as providing prescriptive requirements.</p>
+
+         <p>These techniques also do not address issues in digital publishing for which no universally accessible solutions
+            exist. The W3C's Digital Publishing Interest Group has published a note that outlines many of these issues
+            [[DPUB-Accessibility]]. As solutions become available, they will be incorporated into the appropriate document,
+            whether this one or one it refers to.</p>
+
+         <p>If Authors encounter issues that are not covered in these or related techniques, they are encouraged to report
+            the issue to the appropriate community for guidance on how to meet accessibility standards. The <a
+               href="https://www.w3.org/WAI/IG/">W3C Web Accessibility Interest Group</a> has a public mailing list where
+            issues meeting [[WCAG20]] and [[WAI-ARIA-1.1]] requirements can be raised. The IDPF similarly has an <a
+               href="http://idpf.org/forums/epub-accessibility">accessibility forum</a> where EPUB-related issues can be
+            raised.</p>
+
+      </section>
+      <section id="sec-discovery">
+         <h1>Discovery Metadata Techniques</h1>
+
+         <section class="suppress-numbering" id="meta-001">
+            <h2>META-001: Identify primary access modes</h2>
+
+            <p>An access mode is defined as a "human sense perceptual system or cognitive faculty through which a user may
+               process or perceive the content of a digital resource." [[ISO24751-3]] For example, if an <a>EPUB
+                  Publication</a> contains images and video, visual perception is required to consume the content exactly as
+               it was created.</p>
+
+            <p>There are four access modes that are typically specified for EPUB Publications:</p>
+
+            <ul>
+               <li>
+                  <p><strong>textual</strong> — the publication contains text content (headings, paragraphs, etc.).</p>
+               </li>
+               <li>
+                  <p><strong>visual</strong> — the publication contains visual content such as images, graphics, diagrams,
+                     animations and video.</p>
+               </li>
+               <li>
+                  <p><strong>auditory</strong> — the publication contains auditory content such as standalone audio clips and
+                     audio soundtracks for video content.</p>
+               </li>
+               <li>
+                  <p><strong>tactile</strong> — the publication contains tactile content such as embedded braille and tactile
+                     diagrams.</p>
+               </li>
+            </ul>
+
+            <p>In order for a user to determine whether an EPUB Publication is suitable for their needs, they need to know
+               which of these access modes are required to consume the content. List all applicable access modes in the
+                  [[schema.org]] <a href="https://schema.org/accessMode"><code>accessMode</code> property</a>, repeating the
+               property for each applicable mode.</p>
+
+            <aside class="example">
+               <p>The following example shows the metadata entries for an EPUB 3 Publication that has textual and visual
+                  access modes.</p>
+               <pre>&lt;meta property="schema:accessMode"&gt;textual&lt;/meta&gt;
+&lt;meta property="schema:accessMode"&gt;visual&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>Note that the access modes of the content do not reflect any adaptations that have been provided. For example,
+               if a comic book also includes alternative text for each image, it does not have a textual access mode. See the
+               following section on <a href="#meta-002">sufficient access modes</a> for how to indicate that the available
+               adaptations allow the content to be consumed in another mode.</p>
+
+            <p>Refer to the <a href="https://schema.org/accessMode"><code>accessMode</code></a> definition in [[schema.org]]
+               for more information about this property and its values.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-002">
+            <h2>META-002: Identify sufficient access modes</h2>
+
+            <p>The access modes sufficient to consume an <a>EPUB Publication</a> express a broader picture of the potential
+               usability than do the <a href="#meta-001">basic access modes</a>. Where the basic access modes identify the
+               default nature of the media used in the publication, sufficient access modes identify which modes, or sets of
+               modes, a user requires to read the publication. Sufficient access modes take into account the affordances and
+               adaptations that have been provided, allowing a user to determine whether the content will be usable
+               regardless of its default nature.</p>
+
+            <p>Sufficient access modes are identified in the [[schema.org]] <a href="https://schema.org/accessModeSufficient"
+                     ><code>accessModeSufficient</code> property</a>. Repeat the property for each set of sufficient access
+               modes.</p>
+
+            <p>For example, consider an EPUB Publication that contains graphics and charts, as well as descriptions for all
+               these images. The publication has both textual and visual content, so the <a>Author</a> will include the
+               following metadata entries to indicate this:</p>
+
+            <div class="example">
+               <pre>&lt;meta property="schema:accessMode"&gt;textual&lt;/meta&gt;
+&lt;meta property="schema:accessMode"&gt;visual&lt;/meta&gt;</pre>
+            </div>
+
+            <p>This metadata does not make clear whether a textual access mode is sufficient to read the entire publication,
+               or whether a visual one is, only that two modes are required by default. This discrepancy is why sufficiency
+               is also important to know.</p>
+
+            <p>The first set of sufficiency metadata the Author inputs will establish the textual and visual requirement:</p>
+
+            <div class="example">
+               <pre>&lt;meta property="schema:accessModeSufficient"&gt;textual,visual&lt;/meta&gt;</pre>
+            </div>
+
+            <p>The order in which the access modes are listed is not important. The only requirement is that they be
+               separated by commas.</p>
+
+            <p>Since the Author has also included descriptions for all the images, she can also indicate that a purely
+               textual access mode is sufficient to read the content:</p>
+
+            <div class="example">
+               <pre>&lt;meta property="schema:accessModeSufficient"&gt;textual&lt;/meta&gt;</pre>
+            </div>
+
+            <p>Without this metadata, users would not have known that they could read the publication only via its text
+               content.</p>
+
+            <p>The full set of entries in this example is as follows:</p>
+
+            <div class="example">
+               <pre>&lt;meta property="schema:accessMode"&gt;textual&lt;/meta&gt;
+&lt;meta property="schema:accessMode"&gt;visual&lt;/meta&gt;
+&lt;meta property="schema:accessModeSufficient"&gt;textual,visual&lt;/meta&gt;
+&lt;meta property="schema:accessModeSufficient"&gt;textual&lt;/meta&gt;
+</pre>
+            </div>
+
+            <p>Note that sufficiency of access is often a subjective determination of the Author based on their understanding
+               of what information is essential to comprehending the text. Some information loss occurs by not being able to
+               view a video, for example, but the Author might regard the visual or auditory losses as inconsequential if a
+               transcript provides all the necessary information to understand the concepts being conveyed.</p>
+
+            <p>Refer to the <a href="https://schema.org/accessModeSufficient"
+               ><code>accessModeSufficient</code></a> definition in [[schema.org]] for more information about this property
+               and its values.</p>
+
+            <div class="note">
+               <p>The <code>accessModeSufficient</code> property, as defined in [[schema.org]], allows more complicated
+                  expressions than can be represented in the EPUB 2 or 3 Package Document (e.g., defininition of lists of
+                  values and inclusion of a human-readable description). A future version of EPUB might allow for richer
+                  metadata, but the basic expression shown in this section is sufficient for discovery purposes.</p>
+            </div>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-003">
+            <h2>META-003: Identify accessibility features</h2>
+
+            <p>Identifying all the accessibility features and adaptations included in an <a>EPUB Publication</a> allows users
+               to determine whether the content is usable at a more fine-grained level than the access modes do.</p>
+
+            <p>For example, a math textbook might have a textual access mode, but that in itself does not indicate whether
+               MathML markup is available. Whether a visual work only provides alternative text or whether it includes
+               extended descriptions is also important to know when gauging its usability.</p>
+
+            <p>Accessibility features are identified in the [[schema.org]] <a href="https://schema.org/accessibilityFeature"
+                     ><code>accessibilityFeature</code> property</a>. Repeat this property for each feature.</p>
+
+            <aside class="example">
+               <p>The following example shows the metadata entries for an EPUB 3 Publication that has both MathML and
+                  alternative text.</p>
+               <pre>&lt;meta property="schema:accessibilityFeature"&gt;MathML&lt;/meta&gt;
+&lt;meta property="schema:accessibilityFeature"&gt;alternativeText&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>The EPUB format requires that some accessibility features will always be present (e.g., a table of contents).
+               Do not exclude these features from the accessibility metadata, as users typically are not aware what features
+               are built into a format. Failing to include entries will reduce the discoverability of the publication when
+               users search for specific features.</p>
+
+            <p>Refer to the <a href="https://schema.org/accessibilityFeature"
+               ><code>accessibilityFeature</code></a> definition in [[schema.org]] for more information about this property
+               and its values.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-004">
+            <h2>META-004: Identify accessibility hazards</h2>
+
+            <p>There are three widely-recognized hazards that can affect readers of digital content:</p>
+
+            <ul>
+               <li>
+                  <p>flashing — if a resource flashes more than three times a second, it can cause seizures (e.g., videos and
+                     animations). See also [[WCAG20]] <a href="http://www.w3.org/TR/WCAG20/#seizure">Guideline 2.3</a>.</p>
+               </li>
+               <li>
+                  <p>motion simulation — if a resource simulates motion, it can cause a user to become nauseated (e.g., a
+                     video game drawn on the [[HTML]] <a
+                        href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element"
+                        ><code>canvas</code> element</a>).</p>
+               </li>
+               <li>
+                  <p>sound — certain sound patterns, such as ringing and buzzing, can cause seizures.</p>
+               </li>
+            </ul>
+
+            <p><a>Authors</a> have to report whether or not their <a>EPUB Publications</a> contain resources that present any
+               of these hazards to users, as they can have real physical effects.</p>
+
+            <p>Hazards are identified in the [[schema.org]] <a href="https://schema.org/accessibilityHazard"
+                     ><code>accessibilityHazard</code> property</a>. Repeat this property for each hazard.</p>
+
+            <p>Unlike other accessibility properties, the presence of hazards can be expressed both positively and
+               negatively. This design decision was made because users most often search for content that is free from
+               hazards that affect them, but also want to know what dangers are present in any publications they
+               discover.</p>
+
+            <aside class="example">
+               <p>The following example shows the metadata entries for an EPUB 3 Publication that has a flashing hazard but
+                  no motion simulation or sound hazards.</p>
+               <pre>&lt;meta property="schema:accessibilityHazard"&gt;flashing&lt;/meta&gt;
+&lt;meta property="schema:accessibilityHazard"&gt;noMotionSimulationHazard&lt;/meta&gt;
+&lt;meta property="schema:accessibilityHazard"&gt;noSoundHazard&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>Do not skip reporting hazards just because an EPUB Publication does not contain any content that could present
+               risks. Users cannot infer a meaning when no metadata is present. The value "<code>none</code>" can be used in
+               such cases instead of repeating each non-hazard.</p>
+
+            <p>If an EPUB Publication contains a hazard, provide additional information about its source and nature in the <a
+                  href="#meta-005">accessibility summary</a>.</p>
+
+            <p>If hazards cannot be definitively determined, report the value "<code>unknown</code>".</p>
+
+            <p>Refer to the <a href="https://schema.org/accessibilityHazard"><code>accessibilityHazard</code></a> definition
+               in [[schema.org]] for more information about this property and its values.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-005">
+            <h2>META-005: Include an accessibility summary</h2>
+
+            <p>An accessibility summary provides a brief, human-readable description of the accessibility characteristics of
+               an <a>EPUB Publication</a>, or lack thereof.</p>
+
+            <p>If an EPUB Publication does not meet the requirements for content accessibility in [[EPUBAccessibility]], the
+               reason(s) it fails should be noted in the summary.</p>
+
+            <p>An accessibility summary is provided using the [[schema.org]] <a
+                  href="https://schema.org/accessibilitySummary"><code>accessibilitySummary</code> property</a>.</p>
+
+            <aside class="example">
+               <p>The following example shows an accessibility summary for an EPUB 3 Publication that failed to meet the
+                  content accessibility requirements.</p>
+               <pre>&lt;meta property="schema:accessibilitySummary"&gt;
+   The publication is missing alternative text for complex diagrams.
+   The publication otherwise meets WCAG 2.0 Level A.
+&lt;/meta&gt;</pre>
+            </aside>
+
+            <aside class="example">
+               <p>The following example shows an accessibility summary for an EPUB 3 Publication with a motion simulation
+                  hazard.</p>
+               <pre>&lt;meta property="schema:accessibilitySummary"&gt;
+   Chapter four contains a first-person interactive game that could cause
+   motion sickness in certain individuals. The game is only provided for
+   illustrative purposes, so readers unable to interact with it will not
+   be at a disadvantage.
+&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>Do not repeat this property unless it contains the summary in another language. In the case of multiple
+               summaries, use the <code>xml:lang</code> attribute to differentiate the language.</p>
+
+            <p>Refer to the <a href="https://schema.org/accessibilitySummary"
+               ><code>accessibilitySummary</code></a> definition in [[schema.org]] for more information about this
+               property.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-006">
+            <h2>META-006: Identify ARIA Conformance</h2>
+
+            <p>Users of <a>Assistive Technologies</a> are able to interact with <a>EPUB Publications</a> through the
+               accessibility APIs built into whichever platform they use (Windows, Mac, iOS, Linux, etc.). These APIs allow
+               the Assistive Technology to communicate with the <a>Reading System</a> to read the text or control the
+               interface, as needed.</p>
+
+            <p><a>Authors</a> of static content do not have to worry about this interaction, as the user's Reading System
+               exposes the necessary information to the accessibility APIs (provided it has been developed to be accessible).
+               Authors who create EPUB Publications that contain dynamic content — such as scripting and custom controls — do
+               need to pay attention to the compatibility of such content, as Assistive Technologies may not receive
+               sufficient information to provide an accessible interface.</p>
+
+            <p>In the case of scripted content, the static picture of the content that an Assistive Technology initially
+               generates will not get updated unless the Author follows the accessibility practices in [[WAI-ARIA-1.1]].
+               Similarly, although Assistive Technologies have access to information about native [[HTML]] form elements
+               (e.g., buttons and inputs), Authors often create custom elements whose state is opaque without correct use of
+               [[WAI-ARIA-1.1]] roles, state and properties  (e.g., checkboxes made out of images). Users want to know that
+               such content has been made compatible with Reading System that support ARIA.</p>
+
+            <p>ARIA compatibility is identified in the [[schema.org]] <a href="https://schema.org/accessibilityAPI"
+                     ><code>accessibilityAPI</code> property</a>.</p>
+
+            <aside class="example">
+               <p>The following example shows that an EPUB Publication contains scripted content that is ARIA compatible.</p>
+               <pre>&lt;meta property="schema:accessibilityAPI"&gt;ARIA&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>Refer to the <a href="https://schema.org/accessibilityAPI"><code>accessibilityAPI</code></a> definition in
+               [[schema.org]] for more information about this property and its values.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="meta-007">
+            <h2>META-007: Identify Input Control Methods</h2>
+
+            <p>Not everyone who reads an <a>EPUB Publication</a> uses the same input control methods. Not only will the
+               device affect the input method (e.g., mobile or desktop), but so will the user's physical abilities. Users
+               might use any number of input methods, from touch to mice to keyboards to voice controls and on.</p>
+
+            <p>As a result, all users need to know what input controls work with the content, as it will affect not only
+               whether they can operate the content but on what devices.</p>
+
+            <p>Similar to the <a href="#meta-006">accessibility APIs</a>, the input control methods that can be used to read
+               an EPUB Publication are greatly influenced by the accessibility of the <a>Reading System</a>. It is only when
+                  <a>Authors</a> include dynamic content that they assume a responsibility for ensuring that such is
+               accessible to different input control methods.</p>
+
+            <p>Compatible input controls are identified in the [[schema.org]] <a
+                  href="https://schema.org/accessibilityControl"><code>accessibilityControl</code> property</a>. Repeat this
+               property for each input control method.</p>
+
+            <aside class="example">
+               <p>The following example shows that an EPUB Publication contains content that is touch, mouse and keyboard
+                  compatible.</p>
+               <pre>&lt;meta property="schema:accessibilityControl"&gt;fullTouchControl&lt;/meta&gt;
+&lt;meta property="schema:accessibilityControl"&gt;fullMouseControl&lt;/meta&gt;
+&lt;meta property="schema:accessibilityControl"&gt;fullKeyboardControl&lt;/meta&gt;</pre>
+            </aside>
+
+            <p>Refer to the <a href="https://schema.org/accessibilityControl"
+               ><code>accessibilityControl</code></a> definition in [[schema.org]] for more information about this property
+               and its values.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="sec-meta-ex">
+            <h2>Examples</h2>
+
+            <p>The following examples show the metadata that would be added to an <a>EPUB Publication</a> that has textual
+               and visual access modes, is sufficient for reading by text, contains alternative text and MathML markup, and
+               has a flashing hazard.</p>
+
+            <aside class="example">
+               <p>EPUB 3</p>
+               <pre>&lt;package … &gt;
+   &lt;metadata&gt;
+      …
+      &lt;meta property="schema:accessMode"&gt;textual&lt;/meta&gt;
+      &lt;meta property="schema:accessMode"&gt;visual&lt;/meta&gt;
+      &lt;meta property="schema:accessModeSufficient"&gt;textual,visual&lt;/meta&gt;
+      &lt;meta property="schema:accessModeSufficient"&gt;textual&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityFeature"&gt;transcript&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityFeature"&gt;MathML&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityFeature"&gt;alternativeText&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityHazard"&gt;flashing&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityHazard"&gt;noMotionSimulationHazard&lt;/meta&gt;
+      &lt;meta property="schema:accessibilityHazard"&gt;noSoundHazard&lt;/meta&gt;
+      &lt;meta property="schema:accessibilitySummary"&gt;
+         The video in chapter 2 presents a flashing hazard. A transcript is
+         provided that covers all the essential information contained in the
+         video. The publication otherwise meets WCAG 2.0 Level A.
+      &lt;/meta&gt;
+   &lt;/metadata&gt;
+   …
+&lt;/package&gt;</pre>
+            </aside>
+
+
+            <aside>
+               <p>EPUB 2</p>
+               <pre>&lt;package … &gt;
+    &lt;metadata&gt;
+       …
+       &lt;meta name="schema:accessMode" content="textual"/&gt;
+       &lt;meta name="schema:accessMode" content="visual"/&gt;
+       &lt;meta name="schema:accessModeSufficient" content="textual,visual"/&gt;
+       &lt;meta name="schema:accessModeSufficient" content="textual"/&gt;
+       &lt;meta name="schema:accessibilityFeature" content="transcript"/&gt;
+       &lt;meta name="schema:accessibilityFeature" content="MathML"/&gt;
+       &lt;meta name="schema:accessibilityFeature" content="alternativeText"/&gt;
+       &lt;meta name="schema:accessibilityHazard" content="flashing"/&gt;
+       &lt;meta name="schema:accessibilityHazard" content="noMotionSimulationHazard"/&gt;
+       &lt;meta name="schema:accessibilityHazard" content="noSoundHazard"/&gt;
+       &lt;meta name="schema:accessibilitySummary" content="The video in chapter 2 presents a flashing hazard. A transcript is provided that covers all the essential information contained in the video. The publication otherwise meets WCAG 2.0 Level AA."/&gt;
+    &lt;/metadata&gt;
+    …
+&lt;/package&gt;</pre>
+            </aside>
+         </section>
+
+      </section>
+      <section id="sec-wcag">
+         <h1>WCAG Techniques</h1>
+
+         <section id="sec-wcag-general">
+            <h2>General Guidance</h2>
+
+            <p>Techniques for meeting the requirements of the [[WCAG20]] are defined in [[WCAG20-TECHS]]. This document does
+               not repeat these techniques.</p>
+
+            <p>In general, the differences between the application of WCAG techniques to Web pages and their application to
+                  <a>EPUB Content Documents</a> is minimal, but the following sections outline some key differences.</p>
+
+            <p>One point to note is that the WCAG techniques cover a greater range of technologies and content types than are
+               typically found in an <a>EPUB Publication</a>, so many are not applicable.</p>
+
+            <p>The following sets of techniques are the most broadly applicable to EPUB Content Documents:</p>
+
+            <ul>
+               <li>
+                  <p>
+                     <a href="https://www.w3.org/TR/WCAG20-TECHS/general.html">General Techniques</a></p>
+               </li>
+               <li>
+                  <p>
+                     <a href="https://www.w3.org/TR/WCAG20-TECHS/html.html">HTML and XHTML Techniques</a></p>
+               </li>
+               <li>
+                  <p>
+                     <a href="https://www.w3.org/TR/WCAG20-TECHS/css.html">CSS Techniques</a></p>
+               </li>
+               <li>
+                  <p>
+                     <a href="https://www.w3.org/TR/WCAG20-TECHS/client-side-script.html">Client-Side Scripting
+                        Techniques</a></p>
+               </li>
+               <li>
+                  <p>
+                     <a href="https://www.w3.org/TR/WCAG20-TECHS/aria.html">ARIA Techniques</a></p>
+               </li>
+            </ul>
+
+            <p>Other techniques will apply depending on the technologies used (e.g., a [[SWF]] video in EPUB 2) or any
+               alternative formats embedded in the EPUB Publication (e.g., a PDF form).</p>
+
+            <section class="suppress-numbering" id="sec-wcag-general-res">
+               <h3>Helpful Resources</h3>
+
+               <p><a>Authors</a> not familiar with [[WCAG20-TECHS]] may find the number of techniques daunting, as they are
+                  intended to provide broad coverage of possible solutions.</p>
+
+               <p>Assistance applying these techniques to <a>EPUB Content Documents</a> is available from the following
+                  sources:</p>
+
+               <ul>
+                  <li>
+                     <p><a href="http://www.idpf.org/accessibility/guidelines/">EPUB 3 Accessibility Guidelines</a> —
+                        compendium of best practices by content type, with links to the applicable WCAG techniques.</p>
+                  </li>
+                  <li>
+                     <p><a href="https://www.bisg.org/publications/bisg-quick-start-guide-accessible-publishing">BISG
+                           Quickstart Guide to Accessible Publishing</a> — includes a set of top practices for making content
+                        accessible.</p>
+                  </li>
+               </ul>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-content-access">
+            <h2>Content Access</h2>
+
+            <section class="suppress-numbering" id="access-001">
+               <h3>ACCESS-001: Ensure linear reading order of the publication</h3>
+
+               <p>[[WCAG20]] <a href="https://www.w3.org/TR/WCAG20/#content-structure-separation-sequence">Success Criterion
+                     1.3.2</a> specifies that each Web page have a meaningful order, but the content of an <a>EPUB
+                     Publication</a> typically spans multiple documents. It is consequently essential not only that each
+                     <a>EPUB Content Document</a> has a meaningful order, but that the order is meaningful from document to
+                  document.</p>
+
+               <p><a>Authors</a> need to ensure that all EPUB Content Documents are included in the <a
+                     href="http://www.idpf.org/epub3/latest/packages#sec-spine-elem">spine</a> [[Packages]] and put in
+                  sequence so that the reading order is preserved.</p>
+
+               <aside class="example">
+                  <p>The following example shows the linear progression of chapter references in an EPUB spine.</p>
+                  <pre>&lt;package …&gt;
+   …
+   &lt;manifest&gt;
+      …
+      &lt;item id="chap01" href="xhtml/chapter01.xhtml" …/&gt;
+      &lt;item id="chap02" href="xhtml/chapter02.xhtml" …/&gt;
+      &lt;item id="chap03" href="xhtml/chapter03.xhtml" …/&gt;
+      …
+   &lt;/manifest&gt;
+   &lt;spine&gt;
+      …
+      &lt;itemref idref="chap01"/&gt;
+      &lt;itemref idref="chap02"/&gt;
+      &lt;itemref idref="chap03"/&gt;
+      …
+   &lt;/spine&gt;
+&lt;/package&gt;</pre>
+               </aside>
+
+               <p>Authors also need to ensure that they identify whether items in the spine contain primary or supplementary
+                  information using the <a href="http://www.idpf.org/epub3/latest/packages#attrdef-itemref-linear"
+                        ><code>linear</code> attribute</a> [[Packages]] so that the Reading System can optimally present such
+                  content.</p>
+
+               <aside class="example">
+                  <p>The following example shows a non-linear answer key between two chapters.</p>
+                  <pre>&lt;spine&gt;
+   …
+   &lt;itemref idref="chap01"/&gt;
+   &lt;itemref idref="answers01" linear="no"/&gt;
+   &lt;itemref idref="chap02"/&gt;
+   …
+&lt;/spine&gt;</pre>
+               </aside>
+
+            </section>
+
+            <section class="suppress-numbering" id="access-002">
+               <h3>ACCESS-002: Provide multiple ways to access the content</h3>
+
+               <p>[[WCAG20]] <a href="https://www.w3.org/TR/WCAG20/#navigation-mechanisms-mult-loc">Success Criterion
+                     2.4.5</a> requires there be more than one way to locate a Web page within a set of Web pages. By
+                  default, <a>EPUB Publications</a> meet this WCAG requirement so long as <a>Authors</a> follow the EPUB
+                  requirements to <a href="http://www.idpf.org/epub3/latest/packages#sec-spine-elem">include all EPUB Content
+                     Documents in the spine</a> and <a href="http://www.idpf.org/epub3/latest/packages#sec-itemref-elem"
+                     >ensure access to all non-linear documents</a> [[Packages]].</p>
+
+               <p>The reason an EPUB Publication passes by meeting these requirements has to do with differences in how a
+                  user interacts with the set of documents in an EPUB Publication. In particular, although an EPUB
+                  Publication typically consists of many <a data-lt="EPUB Content Documents">Content Documents</a>,
+                     <a>Reading Systems</a> automatically provide the ability for the user to move seamlessly from one
+                  document to the next, so long as they are listed in the <a
+                     href="http://www.idpf.org/epub3/latest/packages#sec-spine-elem">spine</a> [[Packages]]. To the user, an
+                  EPUB Publication is a single document they have complete access to, not a set of disconnected pages that
+                  they need links to move through.</p>
+
+               <p>The required table of contents provides a second method to access the major headings of the publication.
+                  The user can jump to any heading and continue to navigate from there, regardless of how the publication is
+                  chunked.</p>
+
+               <p>Following these two requirements therefore satisfies the need for multiple ways to access the content.
+                  Reading Systems also typically provide search capabilities, something the Author cannot provide, so users
+                  also have a third option available in most cases.</p>
+
+               <p>Although Authors only need to follow EPUB requirements to meet this criteria, they are still encouraged to
+                  provide additional methods to improve access beyond the minimum. Some suggestions include:</p>
+
+               <ul>
+                  <li>
+                     <p>adding at least one link to every Content Document in the spine to the table of contents, when
+                        feasible;</p>
+                  </li>
+                  <li>
+                     <p>adding an index to locate major topics;</p>
+                  </li>
+                  <li>
+                     <p>adding additional navigation aids to the <a>EPUB Navigation Document</a> (e.g., lists of figures and
+                        tables).</p>
+                  </li>
+               </ul>
+
+               <section class="suppress-numbering" id="sec-access-002-toc">
+                  <h4>Note About the Table of Contents</h4>
+
+                  <p>A common question about the EPUB table of contents is what completeness it needs to have with respect to
+                     the headings of the publication. Although the obvious answer seems like it should be a simple
+                     aggregation of all headings for all sections, practically there are a number of usability challenges to
+                     this approach.</p>
+
+                  <p>Factors such as device screen sizes can make the table of contents for publications with a deep
+                     hierarchy of headings unreadable, so <a>Authors</a> will trim headings below a certain depth to improve
+                     the readability. Further, <a>Reading Systems</a> do not always provide structured access to the headings
+                     in the table of contents, or provide shortcuts to navigate the links. The result is that users have to
+                     listen to each link one at a time to find where they want to go, a tedious and time-consuming
+                     process.</p>
+
+                  <p>Although it is expected that Reading Systems will improve access to the table of contents as
+                     accessibility support for EPUB evolves — making complete tables of contents usable by everyone — there
+                     are legitimate usability reasons why they are not provided now.</p>
+
+                  <p>When Authors choose not to provide links to all the headings, however, they should optimize the linking
+                     they do provide for the best overall reading experience. Some considerations on how to achieve this
+                     include:</p>
+
+                  <ul>
+                     <li>
+                        <p>ensuring that there is at least one link to every <a>EPUB Content Document</a> — allowing the user
+                           to reach each document simplifies navigation to the minor headings within them;</p>
+                     </li>
+                     <li>
+                        <p>only omitting minor headings from the table of contents — although a subjective decision, there is
+                           often a level of diminishing value for navigation (e.g., fourth level and lower headings often
+                           only delimit short subsections on a topic).</p>
+                     </li>
+                  </ul>
+
+               </section>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-semantics">
+            <h2>Semantics</h2>
+
+            <section class="suppress-numbering" id="sem-001">
+               <h3>SEM-001: Include ARIA and EPUB semantics</h3>
+
+               <p>The [[WAI-ARIA-1.1]] <a href="https://www.w3.org/TR/wai-aria-1.1/#roles"><code>role</code> attribute</a> is
+                  used to provide additional semantic information about the host markup to <a>Assistive Technologies</a>. The
+                  use of roles allows Assistive Technologies to automatically scan the markup and compile a list of <a
+                     href="#sem-003">landmarks</a> for users, enabling quick access to key features of the content.
+                     <a>Authors</a> can attach this attribute to any element.</p>
+
+               <aside class="example">
+                  <p>The following example shows a generic landmark role. The name to use for this landmark is specified by
+                     the [[WAI-ARIA-1.1]] <a href="https://www.w3.org/TR/wai-aria-1.1/#aria-labelledby"
+                           ><code>aria-labelledby</code> attribute</a>.</p>
+                  <pre>&lt;section role="region" aria-labelledby="puz01"&gt;
+   &lt;h2 id="puz01"&gt;Puzzles and Games&lt;h2&gt;
+   …
+&lt;/section&gt;</pre>
+               </aside>
+
+               <p>The <code>role</code> attribute is similar in nature to the <a
+                     href="http://www.idpf.org/epub/31/spec/epub-contentdocs.html#sec-epub-type-attribute"
+                     ><code>type</code> attribute</a> [[ContentDocs]], which provides additional semantic information to
+                  enable EPUB Reading System behaviors.</p>
+
+               <aside class="example">
+                  <p>The following example shows the <code>epub:type</code> attribute used to provide additional semantic
+                     information.</p>
+                  <pre>&lt;section epub:type="learning-objectives"&gt;
+   &lt;h2&gt;Objectives&lt;h2&gt;
+   …
+&lt;/section&gt;</pre>
+               </aside>
+
+               <p>The key difference between these attributes is that the <code>role</code> attribute bridges accessibility
+                  while the <code>type</code> attribute provides hooks to enable Reading System behaviors. Omitting roles
+                  lessens the accessibility for users of Assistive Technologies, in other words, while omitting types
+                  diminishes certain functionality in <a>Reading Systems</a> (e.g., pop-up footnotes or special presentations
+                  of the content).</p>
+
+               <p>Since each attribute offers different advantages, it is recommended that both be used whenever applicable
+                  to provide the best reading experience for all readers.</p>
+
+               <p>It is often the case that the attributes will have have corresponding semantics. In these situations, it is
+                  recommended that both attributes be attached to an element.</p>
+
+               <aside class="example">
+                  <p>The following example shows a footnote identified in both the <code>epub:type</code> and
+                        <code>role</code> attributes.</p>
+                  <pre>&lt;aside epub:type="footnote" role="doc-footnote"&gt;
+   …
+&lt;/aside&gt;</pre>
+               </aside>
+
+               <section class="suppress-numbering" id="sec-sem-001-res">
+                  <h4>Helpful Resources</h4>
+
+                  <p>The following documents list the semantics that are available for use with each attribute:</p>
+
+                  <ul>
+                     <li>
+                        <p>The Digital Publishing WAI-ARIA Module [[DPUB-ARIA-1.0]] provides a set of core publishing roles,
+                           but any roles from [[WAI-ARIA-1.1]] can be used in the <code>role</code> attribute.</p>
+                     </li>
+                     <li>
+                        <p>The EPUB Structural Semantics Vocabulary [[EPUB-SSV]] provides the default values that can be used
+                           with the <code>type</code> attribute, but the attribute is extensible to allow semantics from
+                           other vocabularies.</p>
+                     </li>
+                  </ul>
+
+                  <p>The following documents explain the application of ARIA roles for Authors already familiar with the use
+                     of the EPUB 3 <code>type</code> attribute for semantic inflection:</p>
+
+                  <ul>
+                     <li>
+                        <p><a href="https://www.idpf.org/epub/guides/epub-aria-authoring/">EPUB Type to ARIA Roles Authoring
+                              Guide</a> — guide to notable authoring differences between the two attributes.</p>
+                     </li>
+                     <li>
+                        <p><a href="https://www.idpf.org/epub/guides/aria-mapping/">EPUB Structural Semantics to ARIA Roles
+                              Mapping Guide</a> — mapping table of semantics in the EPUB Structural Semantics Vocabulary to
+                           equivalent ARIA roles in [[DPUB-ARIA-1.0]] and [[WAI-ARIA-1.1]].</p>
+                     </li>
+                  </ul>
+
+               </section>
+
+            </section>
+
+            <section class="suppress-numbering" id="sem-002">
+               <h3>SEM-002: Do not repeat semantics across chunked content</h3>
+
+               <p>Although <a>EPUB Publications</a> appear as single contiguous documents to users when read, they are
+                  typically composed of many individual <a>EPUB Content Documents</a>. This practice keeps the amount of
+                  markup that has to be rendered small to reduce the load time in <a>Reading Systems</a> (i.e., to minimize
+                  the time the user has to wait for a document to appear). It is rare, at least for books, for an EPUB
+                  Publication to contain only one Content Document with all the content in it.</p>
+
+               <p>When content is chunked in this way, it often requires the Author to make decisions about how best to
+                  restructure the information. A part, for example, will typically not include all the chapters that belong
+                  to it. The Author will instead separate the part heading from each chapter, putting each into a separate
+                  document.</p>
+
+               <p>Although visually these restructuring decisions can be hidden from readers, they impact the functionality
+                  of <a>Assistive Technologies</a>. In the case of [[WAI-ARIA-1.1]] roles, the result is that only the subset
+                  present in the currently-loaded EPUB Content Document are exposed to users. An Assistive Technology cannot
+                  provide a list of landmarks for the whole publication, as it cannot see outside the current document.</p>
+
+               <p>To counteract this destructuring effect, <a>Authors</a> sometimes think to re-add or re-identify structures
+                  in the belief that having this information in every document will be helpful to users (e.g., adding an
+                  extra [[HTML]] <code>section</code> element around a chapter to indicate it belongs to a part, or putting
+                  the part semantic on the <code>body</code> tag). All this practice does, however, is add repetition that is
+                  not only disruptive when reading, but can actually make the structure of the publication harder to follow.
+                  Authors are therefore advised not to attempt to rebuild structures in these ways.</p>
+
+               <p>For example, consider a book that has five parts and each part contains five chapters. Structurally, each
+                  chapter belongs to its part (i.e., is grouped with it), as in the following markup:</p>
+
+               <div class="example">
+                  <pre>&lt;section role="doc-part"&gt;
+   &lt;h1&gt;Part 1&lt;/h1&gt;
+   
+   &lt;section role="doc-chapter"&gt;
+      &lt;h2&gt;Chapter 1&lt;/h2&gt;
+      …
+   &lt;/section&gt;
+   …
+&lt;/section&gt;</pre>
+               </div>
+
+               <p>Since this would lead to a large content file, the part heading is typically split out into its own Content
+                  Document so that it will appear on its own page:</p>
+
+               <div class="example">
+                  <pre>&lt;html … &gt;
+   …
+   &lt;body role="doc-part"&gt;
+      &lt;h1&gt;Part 1&lt;/h1&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </div>
+
+               <p>Each chapter is then separated into a separate Content Document:</p>
+
+               <div class="example">
+                  <pre>&lt;html … &gt;
+   …
+   &lt;body role="doc-chapter"&gt;
+      &lt;h2&gt;Chapter 1&lt;/h2&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </div>
+
+               <p>It is not necessary to add a part wrapper to each chapter, as in the following example:</p>
+
+               <div class="example">
+                  <pre>&lt;html … &gt;
+   …
+   &lt;body role="doc-part"&gt;
+      &lt;section role="doc-chapter"&gt;
+         &lt;h2&gt;Chapter 1&lt;/h2&gt;
+         …
+      &lt;/section&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </div>
+
+               <p>Doing so introduces a new <code>part</code> landmark into each document, which will cause an Assistive
+                  Technology to inform the user that the landmark is available to navigate to.</p>
+
+            </section>
+
+            <section class="suppress-numbering" id="sem-003">
+               <h3>SEM-003: Include EPUB landmarks</h3>
+
+               <p>[[WAI-ARIA-1.1]] <a href="https://www.w3.org/TR/wai-aria-1.1/#dfn-landmark">landmarks</a> are similar in
+                  nature to <a href="http://www.idpf.org/epub3/latest/packages#sec-nav-landmarks">EPUB
+                  landmarks</a> [[Packages]]: both are designed to provide users with quick access to the major structures of
+                  a document, such as chapters, glossaries and indexes. ARIA landmarks are compiled automatically by
+                     <a>Assistive Technologies</a> from the <a href="#sem-001">roles</a> that have been applied to the
+                  markup, so <a>Authors</a> only need to follow the requirement to include roles for the landmarks to be made
+                  available to users.</p>
+
+               <p>Although automatic generation of ARIA landmarks simplifies authoring, it also means that ARIA landmarks are
+                  limited to how the <a>EPUB Publication</a> has been chunked up into <a data-lt="EPUB Content Documents"
+                     >Content Documents</a>. An Assistive Technology can only present the landmarks available in the
+                  currently-loaded document; it cannot provide a complete picture of all the landmarks in a multi-document
+                  publication (see the <a href="#sem-002">previous section</a> for more discussion about content
+                  chunking).</p>
+
+               <p>EPUB landmarks, on the other hand, are compiled by the Author prior to distribution, and are not directly
+                  linked to the use of the <a href="http://www.idpf.org/epub3/latest/contentdocs#sec-epub-type-attribute"
+                        ><code>type</code> attribute</a> [[ContentDocs]] in the content. They are designed to simplify
+                  linking to major sections of the publication in a machine-readable way, as <a>Reading Systems</a> do not
+                  scan the entire publication for landmarks, either. EPUB landmarks are typically not as numerous as ARIA
+                  landmarks, as Reading Systems only expose so many of these navigation aids.</p>
+
+               <p>Given these differences in application, however, it is important to include EPUB landmarks and not rely
+                  only on the presence of ARIA roles to facilitate navigation, and vice versa. Each aids navigation in its
+                  own way.</p>
+
+               <p>The EPUB specification does not require that Authors include a specific set of landmarks, but it is
+                  recommended to include a link to the start of the body matter as well as to any major reference sections
+                  (e.g., table of contents, endnotes, bibliography, glossary, index).</p>
+
+               <aside class="example">
+                  <p>The following example shows the EPUB 3 landmarks as expressed in the <a>EPUB Navigation
+                     Document</a>.</p>
+                  <pre>&lt;nav epub:type="landmarks"&gt;
+   &lt;ol&gt;
+      &lt;li&gt;
+         &lt;a epub:type="toc" href="toc.xhtml"&gt;
+            Table of Contents
+         &lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+         &lt;a epub:type="bodymatter" href="chap01.xhtml"&gt;
+            Start reading
+         &lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+         &lt;a epub:type="endnotes" href="notes.xhtml"&gt;
+            Notes
+         &lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+         &lt;a epub:type="bibliography" href="bibliography.xhtml"&gt;
+            Bibliography
+         &lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+         &lt;a epub:type="glossary" href="glossary.xhtml"&gt;
+            Glossary
+         &lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+         &lt;a epub:type="index" href="index.xhtml"&gt;
+            Index
+         &lt;/a&gt;
+      &lt;/li&gt;
+   &lt;/ol&gt;
+&lt;/nav&gt;</pre>
+               </aside>
+
+               <aside class="example">
+                  <p>The following example shows the EPUB 2 landmarks as expressed in the <a>Package Document</a>
+                     <code>guide</code> element.</p>
+                  <pre>&lt;guide&gt;
+   &lt;reference type="toc" href="toc.xhtml"/&gt;
+   &lt;reference type="text" href="chap01.xhtml"/&gt;
+   &lt;reference type="endnotes" href="notes.xhtml"/&gt;
+   &lt;reference type="bibliogrpahy" href="biblio.xhtml"/&gt;
+   &lt;reference type="glossary" href="glossary.xhtml"/&gt;
+   &lt;reference type="index" href="index.xhtml"/&gt;
+&lt;/guide&gt;</pre>
+               </aside>
+
+               <section class="suppress-numbering" id="sec-sem-003-res">
+                  <h4>Helpful Resources</h4>
+
+                  <p>The following resources explain EPUB and ARIA landmarks in more detail.</p>
+
+                  <ul>
+                     <li>
+                        <p>EPUB 2 <a href="http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm#Section2.6">guide
+                           element</a></p>
+                     </li>
+                     <li>
+                        <p>EPUB 3 <a href="http://www.idpf.org/epub3/latest/packages#sec-nav-landmarks">landmarks nav</a></p>
+                     </li>
+                     <li>
+                        <p>ARIA 1.1 <a href="https://www.w3.org/TR/wai-aria-1.1/#landmark_roles">landmarks</a></p>
+                     </li>
+                  </ul>
+
+               </section>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-titles">
+            <h2>Titles and Headings</h2>
+
+            <section class="suppress-numbering" id="titles-001">
+               <h3>TITLES-001: Include publication and document titles</h3>
+
+               <p>[[WCAG20]] <a href="https://www.w3.org/TR/WCAG20/#navigation-mechanisms-title">Success Criterion
+                  2.4.2</a> requires that each Web page include a title. EPUB has a similar requirement for <a>EPUB
+                     Publications</a>: publications require a [[DC11]] <code>title</code> element in the <a>Package
+                     Document</a> metadata. The [[WCAG20]] requirement is not satisfied by the EPUB requirement, however.</p>
+
+               <p>When authoring an EPUB Publication each <a>EPUB Content Document</a> also requires a descriptive title that
+                  describes its content. If not provided, <a>Assistive Technologies</a> often will announce the name of the
+                  file to users.</p>
+
+               <aside class="example">
+                  <p>The following example shows a title for an EPUB Content Document.</p>
+                  <pre>&lt;html …&gt;
+   &lt;head&gt;
+      &lt;title&gt;Chapter 1&lt;/title&gt;
+      …
+   &lt;/head&gt;
+   &lt;body&gt;
+      &lt;h1&gt;Chapter 1: Loomings&lt;/h1&gt;
+      …
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </aside>
+
+               <p>If the title includes structural context (e.g., the part heading a chapter belongs to, or the name of the
+                  publication), order the title such that the most precise description of the current document comes
+                  first.</p>
+
+               <aside class="example">
+                  <p>The following example shows a structured title.</p>
+                  <pre>&lt;html …&gt;
+   &lt;head&gt;
+      &lt;title&gt;
+         III. The Night Shadows —
+         Book the First—Recalled to Life — 
+         A Tale of Two Cities
+      &lt;/title&gt;
+      …
+   &lt;/head&gt;
+   &lt;body&gt;
+      &lt;h1&gt;III. The Night Shadows&lt;/h1&gt;
+      …
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </aside>
+
+               <p>For more information about titles, see <a href="https://www.w3.org/TR/WCAG20-TECHS/html.html#H25">Technique
+                     H25</a> [[WCAG20-TECHS]].</p>
+
+            </section>
+
+            <section class="suppress-numbering" id="titles-002">
+               <h3>TITLES-002: Ensure numbered headings reflect publication hierarchy</h3>
+
+               <p>To a user, an <a>EPUB Publication</a> appears as a single document that they read from beginning to end,
+                  even though the content is often split across numerous <a>EPUB Content Documents</a>. As a result, their
+                  natural expectation is that the headings reflect their position in the overall hierarchy of the
+                  publication, despite the publication not actually being a single document (e.g., if a part heading is
+                  expressed in an [[HTML]] <code>h1</code> element, each chapter that belongs to the part will have
+                     an <code>h2</code> heading).</p>
+
+               <p>[[WCAG20-TECHS]] <a href="https://www.w3.org/TR/WCAG20-TECHS/G141.html">G141: Organizing a page using
+                     headings</a> instructs <a>Authors</a> on correctly using numbered headings within a document, but with
+                  EPUB Publications the numbered headings also need to remain consistent across documents. Practically, this
+                  means that each EPUB Content Document does not have to begin with an <code>h1</code> heading unless the
+                  first heading is a top-level heading — the first heading needs to have a numbered heading element that
+                  reflects its actual position in the publication.</p>
+
+               <p>Authors also to need chunk their content so that the first heading in a document always has the highest
+                  number. For example, if a document starts with an <code>h3</code> heading, there shouldn't be
+                     an <code>h2</code> heading later in the document (e.g., do not include the start of a new section with
+                  the trailing subsections of the previous). It is acceptable for there to be subsequent headings at the same
+                  level as the first (e.g., multiple subsections in one document could all have <code>h3</code>
+                  headings).</p>
+
+               <aside class="example">
+                  <p>The following example shows two consecutive EPUB Content Documents in a textbook. The first contains a
+                     section heading (<code>h2</code>) and the first two subsections (<code>h3</code>). The second contains
+                     the final two subsections (<code>h3</code>).</p>
+                  <pre>&lt;html …&gt;
+   …
+   &lt;body&gt;
+      &lt;section&gt;
+         &lt;h2&gt;Section 1.1 - Conquest&lt;/h2&gt;
+         
+         &lt;section&gt;
+            &lt;h3&gt;Section 1.1.1 - First Encounter&lt;/h3&gt;
+            …
+         &lt;/section&gt;
+         
+         &lt;section&gt;
+            &lt;h3&gt;Section 1.1.2 - Tensions Rise&lt;/h3&gt;
+            …
+         &lt;/section&gt;
+      &lt;/section&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+                  <pre>&lt;html …&gt;
+   …
+   &lt;body&gt;
+      &lt;section&gt;
+         &lt;h3&gt;Section 1.1.3 - War&lt;/h3&gt;
+         …
+      &lt;/section&gt;
+      
+      &lt;section&gt;
+         &lt;h3&gt;Section 1.1.4 - Aftermath&lt;/h3&gt;
+         …
+      &lt;/section&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+               </aside>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-descriptions">
+            <h2>Descriptions</h2>
+
+            <section class="suppress-numbering" id="desc-001">
+               <h3>DESC-001: Include alternative text descriptions</h3>
+
+               <p>[[WCAG20]] <a href="https://www.w3.org/TR/WCAG20/#text-equiv-all">Success Criterion 1.1.1</a> requires a
+                  text alternative for all non-text content. In the case of image content, the provision of alternative text
+                  (e.g., in an [[HTML]] <code>alt</code> attribute) is sufficient for meeting the requirements of the
+                  [[EPUBAccessibility]] specification.</p>
+
+               <p><a>Authors</a> are strongly encouraged to include extended descriptions, but the utility of extended
+                  descriptions often depends on the needs of the user. Until the publishing ecosystem matures, making it
+                  easier for Authors to include extended descriptions and write them to optimally meet the needs of the
+                  greatest number of users, they are not required.</p>
+
+               <p>If extended descriptions are not included, note the omission in the <a href="#meta-005">accessibility
+                     summary</a>.</p>
+
+               <div class="note">
+                  <p>The requirement for a text alternative does not apply to decorative images that contribute no
+                     information to the text. These are identified by an empty <code>alt</code> attribute.</p>
+               </div>
+
+               <div class="caution">
+
+                  <p>This guidance applies to the evaluation of <a>EPUB Publications</a> strictly for achieving conformance
+                     to the [[EPUBAccessibility]] specification. If an EPUB Publication is distributed in an environment
+                     where extended descriptions are required, this guidance for conformance will not be sufficient.</p>
+
+                  <p>The use of alternative text as a sufficient description for all images may be removed in a future
+                     version of these techniques.</p>
+
+               </div>
+
+               <section class="suppress-numbering" id="sec-desc-001-res">
+                  <h4>Helpful Resources</h4>
+
+                  <p>The following documents provide guidance on including extended descriptions:</p>
+
+                  <ul>
+                     <li>
+                        <p><a href="http://diagramcenter.org/59-image-guidelines-for-epub-3.html">DIAGRAM Image Guidelines
+                              for EPUB 3</a> — recommendations for the inclusion of alternative text and extended
+                           descriptions.</p>
+                     </li>
+                  </ul>
+
+               </section>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-text">
+            <h2>Text</h2>
+
+            <section id="text-001">
+               <h3>TEXT-001 - Use Unicode for text content</h3>
+
+               <p>[[WCAG20]] <a href="https://www.w3.org/TR/WCAG20/#text-equiv-all">Success Criterion 1.1.1</a> requires that
+                  text equivalents be provided for all non-text content to meet Level A. In some regions (e.g., Asia), it is
+                  not uncommon to find images of individual text characters, despite the availability of Unicode character
+                  equivalents. This practice occurs for various reasons, such as ease of translation of older documents and
+                  for compatibility across <a>Reading Systems</a>.The use of images in most instances leads to the text not
+                  being accessible to non-visual users, however.</p>
+
+               <p>When individual characters are replaced by images, there is invariably a negative effect on text-to-speech
+                  playback, even when alternative text is provided (e.g., if single characters within a word are replaced by
+                  images, the word will not be read as a single unit of text). It is also problematic for visual users, as
+                  the images often scale poorly and the characters cannot be changed to different font families to meet user
+                  preferences.</p>
+
+               <p>The use of Unicode characters for all text content avoids this problem, allowing content to successfully
+                  meet the minimum requirement for Level A.</p>
+
+               <p>For compliance with Level AA, Authors are directed to <a
+                     href="https://www.w3.org/TR/WCAG20/#visual-audio-contrast-text-presentation">Success Criterion 1.4.5</a>
+                  which further restricts the use of images of text to only a set of essential cases.</p>
+
+            </section>
+
+         </section>
+
+         <section id="sec-wcag-alt">
+            <h2>Accessible Alternatives</h2>
+
+            <p>As <a>EPUB Publications</a> can be composed of more than one <a>Rendition</a>, it is possible that different
+               versions of the content will have different levels of accessibility. For example, an image-based version of
+               the content that lacks alternative text or descriptions could be bundled with a WCAG-compliant text-based
+               serialization. This type of accessible bundling is acceptable, as [[WCAG20]] allows non-conforming content
+               provided a <a href="https://www.w3.org/TR/WCAG20/#conforming-alternate-versiondef">conforming alternate
+                  version</a> is available.</p>
+
+            <p>The [[MultipleRenditions]] specification defines a set of features for creating these types of EPUB
+               Publications. In particular, it specifies a set of attributes that allow a <a>Reading System</a> to
+               automatically select a preferred Rendition for the user, or to provide the user the option to manually select
+               between the available options. This functionality technically meets the requirements of [[WCAG20]] in terms of
+               ensuring the user can access the accessible version.</p>
+
+            <p>In practice, however, the [[MultipleRenditions]] specification is not broadly supported in Reading Systems at
+               the time of publication. As a result, a user who obtains an EPUB Publication that contains more than one
+               Rendition will only have access to the <a>Default Rendition</a>. Unless this Rendition is the accessible one,
+               the EPUB Publication might not be readable by them.</p>
+
+            <p><a>Authors</a> therefore need to use their best discretion when implementing this functionality to meet
+               accessibility requirements. EPUB Publications that contain multiple renditions are conformant to the
+               [[EPUBAccessibility]] specification if at least one Rendition meets all the content requirements, but Authors
+               at a minimum need to note that a Reading System that supports multiple renditions is required in their <a
+                  href="#meta-005">accessibility summary</a>. Any other methods the Author can use to make this dependence
+               known is advisable (e.g., in the <a href="#dist-002">distribution metadata</a>).</p>
+
+            <p>This section will be updated with techniques for using multiple renditions when there is enough support in
+               Reading Systems to broadly recommend their use.</p>
+
+         </section>
+
+      </section>
+      <section id="sec-epub">
+         <h1>EPUB Techniques</h1>
+
+         <section id="sec-epub-page-markers">
+            <h2>Page Markers</h2>
+
+            <section class="suppress-numbering" id="page-001">
+               <h3>PAGE-001: Provide page break markers</h3>
+
+               <p>Both the EPUB Structural Semantics Vocabulary [[EPUB-SSV]] and Digital Publishing WAI-ARIA 1.0 Module
+                  [[DPUB-ARIA-1.0]] include a semantic for static page breaks: <a
+                     href="http://www.idpf.org/epub/vocab/structure/#pagebreak">pagebreak</a> and <a
+                     href="https://www.w3.org/TR/dpub-aria-1.0/#doc-pagebreak">doc-pagebreak</a>, respectively.</p>
+
+               <p>It is recommended that both semantics be applied to EPUB 3 content to ensure maximum compatibility with
+                     <a>Reading Systems</a> and <a>Assistive Technologies</a>.</p>
+
+               <aside class="example">
+                  <p>The following example shows an HTML5 <code>span</code> element identified as a pagebreak.</p>
+                  <pre>&lt;span id="page001" epub:type="pagebreak" role="doc-pagebreak"/&gt;</pre>
+               </aside>
+
+               <p>A <code>title</code> or <code>aria-label</code> attribute is required on the element, as it provides the
+                  value that is announced to the user. Do not include the page number as text content, as this practice
+                  forces the user to hear it announced wherever it occurs (e.g., without any context in the middle of a
+                  sentence).</p>
+
+               <p>EPUB 2 does not include markup to identify static page break marks in the content. Page break destinations
+                  can be included to enable hyperlinking, but the <a href="#page-003">page list</a> is the only way a user
+                  can jump to the locations.</p>
+
+               <aside class="example">
+                  <p>The following example shows an XHTML 1.1 <code>span</code> element used as a hyperlink destination.</p>
+                  <pre>&lt;span id="page001"/&gt;</pre>
+               </aside>
+
+               <p>Do not use the [[HTML]] <a href="https://www.w3.org/TR/html5/text-level-semantics.html#the-a-element"
+                        ><code>a</code> element</a> to identify page break locations in EPUB 3 Publications. Although this
+                  element was previously defined as the anchor for a hyperlink destination, its purpose has been changed in
+                  [[HTML]] for use solely as a link.</p>
+
+            </section>
+
+            <section class="suppress-numbering" id="page-002">
+               <h3>PAGE-002: Identify pages in audio playback</h3>
+
+               <p>Readers rarely stop reading to review each new page number, so when page numbers are read aloud in the
+                  audio playback of a publication it is not only distracting, but can be confusing, as well (e.g., the number
+                  could be read out in the middle of a sentence).</p>
+
+               <p>To mitigate this potential annoyance to readers, Authors need to identify page announcements in the EPUB 3
+                  media overlays document when they are included. Identification allows a Reading System to provide a
+                  playback experience where the numbers are automatically skipped.</p>
+
+               <p>To identify page numbers in EPUB 3 Publications, attach an <code>epub:type</code> attribute with the value
+                     "<a href="http://www.idpf.org/epub/vocab/structure/#pagebreak"><code>pagebreak</code></a>" [[EPUB-SSV]]
+                  to each <a href="http://www.idpf.org/epub3/latest/mediaoverlays#sec-smil-par-elem"><code>par</code>
+                     element</a> [[MediaOverlays]] that identifies a page number in the media overlay documents.</p>
+
+               <aside class="example">
+                  <p>The following example shows a page number identified in a media overlays document.</p>
+                  <pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" 
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      version="3.0"&gt;
+    &lt;body&gt;
+        &lt;!-- a paragraph --&gt;
+        &lt;par id="id1"&gt;
+            &lt;text src="chapter1.xhtml#para1"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:23:22.000"
+                   clipEnd="0:24:15.000"/&gt;
+        &lt;/par&gt;
+
+        &lt;!-- a page number --&gt;
+        &lt;par id="id2" epub:type="pagebreak"&gt;
+            &lt;text src="chapter1.xhtml#pgbreak1"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:24:15.000"
+                   clipEnd="0:24:18.123"/&gt;
+        &lt;/par&gt;
+
+        &lt;!-- another paragraph --&gt;
+        &lt;par id="id3"&gt;
+            &lt;text src="chapter1.xhtml#para2"/&gt;
+            &lt;audio src="chapter1_audio.mp3"
+                   clipBegin="0:24:18.123"
+                   clipEnd="0:25:28.530"/&gt;
+        &lt;/par&gt;
+    &lt;/body&gt;
+&lt;/smil&gt;
+</pre>
+               </aside>
+
+               <p>Note that as EPUB 2 does not provide text and audio synchronization, this technique does not apply.</p>
+
+            </section>
+
+            <section class="suppress-numbering" id="page-003">
+               <h3>PAGE-003: Provide a page list</h3>
+
+               <p>A page list — a list of hyperlinks to the static page break locations — is the most effective way for users
+                  to find static page locations. Without a page list, the user would have to navigate each page marker in the
+                  text, provided they are available and the <a>Reading System</a> provides such functionality.</p>
+
+               <p>When a page list is included, <a>Reading Systems</a> can provide users direct access to the list or use it
+                  to provide automatic page jump functionality.</p>
+
+               <p>The <a>EPUB Navigation Document</a> allows the inclusion of a <a
+                     href="http://www.idpf.org/epub3/latest/packages#sec-nav-pagelist"><code>page-list
+                  nav</code></a> [[Packages]], while the EPUB 2 NCX file provides the same functionality through the <a
+                     href="http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm#Section2.4.1.2"
+                     ><code>pageList</code> element</a> [[OPF2]].</p>
+
+               <aside class="example">
+                  <p>The following example shows an EPUB 3 <code>page-list nav</code> element that contains a list of links
+                     to the static page breaks.</p>
+                  <pre>&lt;nav epub:type="page-list"&gt;
+   &lt;ol&gt;
+      &lt;li&gt;&lt;a href="georgia.xhtml#page001"&gt;1&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="georgia.xhtml#page002"&gt;2&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="georgia.xhtml#page003"&gt;3&lt;/a&gt;&lt;/li&gt;
+      …
+   &lt;/ol&gt;
+&lt;/nav&gt;</pre>
+               </aside>
+
+               <aside class="example">
+                  <p>The following example shows an EPUB 2 NCX that contains a list of page break locations in its
+                        <code>pageList</code>.</p>
+                  <pre>&lt;ncx xmlns="http://www.daisy.org/z3986/2005/ncx/"
+     version="2005-1"
+     xml:lang="en-US"&gt;
+   …
+   &lt;pageList&gt;
+      &lt;pageTarget id="p1" type="normal" value="1"&gt;
+         &lt;navLabel&gt;&lt;text&gt;1&lt;/text&gt;&lt;/navLabel&gt;
+         &lt;content src="content.html#p001"/&gt;
+      &lt;/pageTarget&gt;
+      &lt;pageTarget id="p2" type="normal" value="2"&gt;
+         &lt;navLabel&gt;&lt;text&gt;2&lt;/text&gt;&lt;/navLabel&gt;
+         &lt;content src="content.html#p002"/&gt;
+      &lt;/pageTarget&gt;
+   &lt;/pageList&gt;
+&lt;/ncx&gt;</pre>
+               </aside>
+
+            </section>
+
+            <section class="suppress-numbering" id="page-004">
+               <h3>PAGE-004: Identify the pagination source</h3>
+
+               <p>Users typically want to know the source of the page break markers included in an <a>EPUB Publication</a>
+                  when they are derived from a static media. Considerations like which printing, by which publisher or
+                  imprint, and whether the pagination comes from the hard or soft cover edition will affect decisions about
+                  its usefulness (e.g., does it exactly match the pagination of a print book used in a classroom).</p>
+
+               <p>To allow users to determine the suitability of the pagination, identify the ISBN of the source work in the
+                  Package Document metadata.</p>
+
+               <aside class="example">
+                  <p>The following example shows a <code>dc:source</code> element containing the ISBN of the print source of
+                     pagination. This example is valid for both EPUB 2 and 3.</p>
+                  <pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+   …
+   &lt;dc:source&gt;urn:isbn:9780375704024&lt;/dc:source&gt;
+   …
+&lt;/metadata&gt;</pre>
+               </aside>
+
+               <p>If an ISBN is not available, include as much information as possible about the source publication (e.g.,
+                  the publisher, date, edition, and binding).</p>
+
+               <aside class="example">
+                  <p>The following example shows a <code>dc:source</code> element containing a text description of the
+                     source.</p>
+                  <pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+   …
+   &lt;dc:source&gt;ACME Publishing, 1945, 2nd Edition, Softcover&lt;/dc:source&gt;
+   …
+&lt;/metadata&gt;</pre>
+               </aside>
+
+               <p>If the page break markers are unique to the EPUB Publication, do not identify a print source.</p>
+
+            </section>
+
+         </section>
+
+      </section>
+      <section id="sec-distribution">
+         <h1>Distribution Techniques</h1>
+
+         <section class="suppress-numbering" id="dist-001">
+            <h2>DIST-001: Do not restrict access through digital rights management</h2>
+
+            <p><a>EPUB Publications</a> typically require preservation of the publisher's and author's intellectual property
+               when distributed (e.g., so that they can be made available for individual sale through online bookstores or
+               distributed through library systems). The most common way to address this need has been through the
+               application of digital rights management (DRM) schemes to the packaged EPUB Publication. DRM enables a variety
+               of security features that aren't native to the EPUB format, such as the ability to limit access to a single
+               user and to limit the length of time the person can access the publication (e.g., library loans).</p>
+
+            <p>In general, DRM can be made to work interoperably with <a>Assistive Technologies</a>, but problems arise when
+               DRM restrictions remove direct access to an EPUB Publication or restrict access to the content within it.
+               Unless the Reading System implementing the DRM provides API level access to the content, it can prove
+               difficult, or even impossible, to generate text-to-speech playback, or for a refreshable braille display to
+               have access to the underlying text, as well as cause other accessibility issues.</p>
+
+            <p>The application of digital rights management therefore must not impair or impede the functionality of
+               Assistive Technologies on EPUB Publications users have the right to access.</p>
+
+         </section>
+
+         <section class="suppress-numbering" id="dist-002">
+            <h2>DIST-002: Include accessibility metadata in distribution records</h2>
+
+            <p>When an <a>EPUB Publication</a> is ingested into a distribution system, such as a bookstore or library, a
+               metadata record is often provided separately to the distributor. In these scenarios, the metadata used to
+               enable discovery of the publication typically comes from the distribution record alone, not from the metadata
+               in the Package Document.</p>
+
+            <p>The result is that it is necessary to include as much accessibility metadata in distribution records as their
+               vocabularies allow.</p>
+
+            <div class="note">
+               <p>The use of distribution records does not remove the requirement to include accessibility metadata in the
+                  Package Document. The metadata in the Package Document ensures accessibility information is always
+                  available with the publication.</p>
+            </div>
+
+            <aside class="example">
+               <p>The following example shows an ONIX record with accessibility metadata that states that the EPUB
+                  Publication has no accessibility features disabled (10), a table of contents (11) and a correct reading
+                  order (13).</p>
+               <pre>&lt;ONIXMessage release="3.0"&gt;
+   &lt;Header&gt;
+      …
+   &lt;/Header&gt;
+   &lt;Product&gt;
+      …
+      &lt;DescriptiveDetail&gt;
+         &lt;ProductFormFeature&gt;
+            &lt;ProductFormFeatureType&gt;09&lt;/ProductFormFeatureType&gt;
+            &lt;ProductFormFeatureValue&gt;10&lt;/ProductFormFeatureValue&gt;
+         &lt;/ProductFormFeature&gt;
+         &lt;ProductFormFeature&gt;
+            &lt;ProductFormFeatureType&gt;09&lt;/ProductFormFeatureType&gt;
+            &lt;ProductFormFeatureValue&gt;11&lt;/ProductFormFeatureValue&gt;
+         &lt;/ProductFormFeature&gt;
+         &lt;ProductFormFeature&gt;
+            &lt;ProductFormFeatureType&gt;09&lt;/ProductFormFeatureType&gt;
+            &lt;ProductFormFeatureValue&gt;13&lt;/ProductFormFeatureValue&gt;
+         &lt;/ProductFormFeature&gt;
+      &lt;/DescriptiveDetail&gt;
+      …
+      &lt;TitleDetail&gt;
+         &lt;TitleType&gt;01&lt;/TitleType&gt;
+         &lt;TitleElement&gt;
+            &lt;TitleElementLevel&gt;01&lt;/TitleElementLevel&gt;
+            &lt;TitleText&gt;Accessible EPUB 3&lt;/TitleText&gt;
+         &lt;/TitleElement&gt;
+      &lt;/TitleDetail&gt;
+      …
+   &lt;/Product&gt;
+&lt;/ONIXMessage&gt;</pre>
+            </aside>
+
+            <section class="suppress-numbering" id="sec-dist-002-res">
+               <h3>Helpful Resources</h3>
+
+               <p>See the following resources for more information about including accessibility metadata in distribution
+                  records:</p>
+
+               <ul>
+                  <li>
+                     <p>
+                        <a href="http://www.a11ymetadata.org/the-specification/metadata-crosswalk/">Accessibility Metadata
+                           Crosswalk</a></p>
+                  </li>
+                  <li>
+                     <p>
+                        <a href="http://www.editeur.org/ONIX/book/codelists/current.html#codelist196">ONIX Code List
+                        196</a></p>
+                  </li>
+               </ul>
+
+            </section>
+
+         </section>
+
+      </section>
+      <div data-include="../shared/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"></div>
+   </body>
+</html>
