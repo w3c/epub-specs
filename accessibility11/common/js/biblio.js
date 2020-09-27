@@ -30,7 +30,7 @@ var biblio = {
       "title": "Using collection Elements as Embedded Package Documents",
       "href": "http://www.idpf.org/epub/guides/collection-as-package"
     },
-    "ContentDocs": {
+    "ContentDocs3": {
       "title": "EPUB Content Documents 3",
       "href": "http://www.idpf.org/epub3/latest/contentdocs"
     },
