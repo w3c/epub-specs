@@ -32,7 +32,7 @@ function fixDefinitionCrossrefs() {
         var link_txt = link.hasAttribute('data-lt') ? link.getAttribute('data-lt').trim().replace(/\s+/g,' ').toLowerCase() : link.textContent.trim().replace(/\s+/g,' ').toLowerCase();
         
         if (dfn.hasOwnProperty(link_txt)) {
-            link.setAttribute('href','epub-core.html#dfn-'+dfn[link_txt]);
+            link.setAttribute('href','../core/index.html#dfn-'+dfn[link_txt]);
         }
     });
 }
@@ -42,14 +42,14 @@ function getSpecSrc() {
     try {
         var xmlhttp = new XMLHttpRequest();
         
-        xmlhttp.open('GET', 'epub-core.html', false);
+        xmlhttp.open('GET', '../core/index.html', false);
         xmlhttp.send();
         
         if (xmlhttp.status == 200) {
            return xmlhttp.responseText;
         }
         else {
-           console.error('Failed to read definition source file epub-core.html. Returned status: ' + xmlhttp.status);
+           console.error('Failed to read definition source file ../core/index.html. Returned status: ' + xmlhttp.status);
            return '';
         }
     }
