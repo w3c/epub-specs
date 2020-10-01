@@ -24,7 +24,7 @@ var biblio = {
     },
     "AuthorityRegistry": {
       "title": "EPUB Subject Authorities Registry",
-      "href": "https://www.idpf.org/epub/registries/authorities/"
+      "href": "http://www.idpf.org/epub/registries/authorities/"
     },
     "CollectionPackageDoc": {
       "title": "Using collection Elements as Embedded Package Documents",
@@ -153,7 +153,7 @@ var biblio = {
     },
     "IDRegistry": {
       "title": "EPUB Identifiers Registry",
-      "href": "https://www.idpf.org/epub/registries/identifiers/"
+      "href": "http://www.idpf.org/epub/registries/identifiers/"
     },
     "Indexes": {
       "title": "EPUB Indexes",
