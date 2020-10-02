@@ -88,6 +88,10 @@ var biblio = {
       "title": "EPUB Canonical Fragment Identifier (epubcfi) Specification",
       "href": "http://www.idpf.org/epub/linking/cfi/epub-cfi.html"
     },
+    "EPUB201": {
+      "title": "Open Packaging Format 2.0.1",
+      "href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm"
+    },
     "EPUB33": {
     	"title": "EPUB 3.3",
     	"href": "epub-core.html"
@@ -102,7 +106,7 @@ var biblio = {
     },
     "EPUB3": {
       "title": "EPUB 3",
-      "href": "http://www.idpf.org/epub/latest"
+      "href": "https://www.w3.org/publishing/epub3/core/"
     },
     "EPUB33Changes": {
       "title": "EPUB 3.3 Changes",
