@@ -8,9 +8,9 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 ## EPUB 3
 
-### EPUB 3.X
+### EPUB 3.3
 
-**A new revision of EPUB 3 is set to officially begin on September 11, 2020.**
+**The EPUB 3.3 revision started on September 11, 2020.**
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
@@ -34,7 +34,7 @@ This repository currently hosts the EPUB 3 and related specification documents. 
 
 - [`a11y`](/a11y) -- The EPUB Accessibility specification and Techniques document.
 - [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
-- [`epub32`](/epub32) -- The core EPUB specifications for the 3.2 revision.
+- [`epub33`](/epub33) -- The core EPUB specifications for the 3.3 revision.
 - [`registries`](/registries) -- The registry documents cited by the EPUB specifications.
 
 ## Contributing to the Repository
