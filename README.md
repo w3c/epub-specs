@@ -15,7 +15,7 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 Editor's Drafts
 
 - [EPUB 3.3](https://w3c.github.io/publ-epub-revision/epub33/core/)
-- [EPUB 3.3 Reading Systems](https://w3c.github.io/publ-epub-revision/epub33/core/)
+- [EPUB 3.3 Reading Systems](https://w3c.github.io/publ-epub-revision/epub33/rs/)
 - [EPUB 1.1 Accessibility](https://w3c.github.io/publ-epub-revision/epub33/a11y/)
 - [EPUB 1.1 Accessibility Techniques](https://w3c.github.io/publ-epub-revision/epub33/a11y-tech/)
 - [EPUB 3.3 Overview](https://w3c.github.io/publ-epub-revision/epub33/overview/)
