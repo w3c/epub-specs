@@ -11,11 +11,11 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 Editor's Drafts
 
 - [EPUB 3.3](https://w3c.github.io/publ-epub-revision/epub33/core/)
-- [EPUB 3.3 Reading Systems](https://w3c.github.io/publ-epub-revision/epub33/rs/)
-- [EPUB 3.3 Overview](https://w3c.github.io/publ-epub-revision/epub33/overview/)
-- [EPUB 3.3 Changes](https://w3c.github.io/publ-epub-revision/epub33/changes/)
-- [EPUB 1.1 Accessibility](https://w3c.github.io/publ-epub-revision/epub33/a11y/)
-- [EPUB 1.1 Accessibility Techniques](https://w3c.github.io/publ-epub-revision/epub33/a11y-tech/)
+- [EPUB Reading Systems 3.3](https://w3c.github.io/publ-epub-revision/epub33/rs/)
+- [EPUB Overview 3.3](https://w3c.github.io/publ-epub-revision/epub33/overview/)
+- [EPUB Changes 3.3](https://w3c.github.io/publ-epub-revision/epub33/changes/)
+- [EPUB Accessibility 1.1](https://w3c.github.io/publ-epub-revision/epub33/a11y/)
+- [EPUB Accessibility Techniques 1.1](https://w3c.github.io/publ-epub-revision/epub33/a11y-tech/)
 
 The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
