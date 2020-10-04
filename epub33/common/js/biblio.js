@@ -441,14 +441,14 @@ var biblio = {
         "title": "EPUB Changes 3.3",
         "href": "https://www.w3.org/TR/epub-changes-33/"
     },
-    "EPUB-OVERVIEW-3": {
+    "EPUB-OVERVIEW-33": {
         "authors": [
         	"Garth Conboy",
             "Matt Garrish",
             "MURATA Makoto",
             "Daniel Weck"
         ],
-        "title": "EPUB Changes 3",
-        "href": "https://www.w3.org/TR/epub-overview-3/"
+        "title": "EPUB 3 Overview",
+        "href": "https://www.w3.org/TR/epub-overview-33/"
     }
 }
