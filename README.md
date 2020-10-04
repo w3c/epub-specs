@@ -6,9 +6,7 @@
 
 As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) is now the maintainer of the EPUB 3 specifications.
 
-## EPUB 3
-
-### EPUB 3.3
+## EPUB 3.3
 
 **The EPUB 3.3 revision started on September 11, 2020.**
 
@@ -23,7 +21,7 @@ Editor's Drafts
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
-### Current Version
+## EPUB 3 Current Version
 
 The current version of EPUB 3 is [EPUB 3.2](https://www.w3.org/publishing/epub32/).
 
