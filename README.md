@@ -8,8 +8,6 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 ## EPUB 3.3
 
-**The EPUB 3.3 revision started on September 11, 2020.**
-
 Editor's Drafts
 
 - [EPUB 3.3](https://w3c.github.io/publ-epub-revision/epub33/core/)
@@ -18,6 +16,8 @@ Editor's Drafts
 - [EPUB 3.3 Changes](https://w3c.github.io/publ-epub-revision/epub33/changes/)
 - [EPUB 1.1 Accessibility](https://w3c.github.io/publ-epub-revision/epub33/a11y/)
 - [EPUB 1.1 Accessibility Techniques](https://w3c.github.io/publ-epub-revision/epub33/a11y-tech/)
+
+The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [group's home page](https://www.w3.org/publishing/groups/epub-wg), or contribute to this repository via issues and comments.
 
