@@ -388,12 +388,8 @@ var biblio = {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
     },
     "W3CProcess": {
-      "title": "World Wide Web Consortium Process Document",
-      "href": "https://www.w3.org/2015/Process-20150901/",
-      "authors": [
-        "Charles McCathie-Nevile"
-      ],
-      "date": "1 September 2015"
+      "title": "W3C Process Document",
+      "href": "https://www.w3.org/Consortium/Process/"
     },
     "XPTRSH": {
       "title": "XPointer Shorthand Notation",
@@ -420,7 +416,8 @@ var biblio = {
             "Daniel Weck"
         ],
         "title": "EPUB 3.3",
-        "href": "https://www.w3.org/TR/epub-33/"
+        "href": "https://www.w3.org/TR/epub-33/",
+        "publisher": "W3C"
     },
     "EPUB-RS-33": {
         "authors": [
@@ -431,7 +428,8 @@ var biblio = {
             "Daniel Weck"
         ],
         "title": "EPUB Reading Systems 3.3",
-        "href": "https://www.w3.org/TR/epub-rs-33/"
+        "href": "https://www.w3.org/TR/epub-rs-33/",
+        "publisher": "W3C"
     },
     "EPUB-CHANGES-33": {
         "authors": [
@@ -439,7 +437,8 @@ var biblio = {
             "Dave Cramer"
         ],
         "title": "EPUB Changes 3.3",
-        "href": "https://www.w3.org/TR/epub-changes-33/"
+        "href": "https://www.w3.org/TR/epub-changes-33/",
+        "publisher": "W3C"
     },
     "EPUB-OVERVIEW-33": {
         "authors": [
@@ -449,6 +448,7 @@ var biblio = {
             "Daniel Weck"
         ],
         "title": "EPUB 3 Overview",
-        "href": "https://www.w3.org/TR/epub-overview-33/"
+        "href": "https://www.w3.org/TR/epub-overview-33/",
+        "publisher": "W3C"
     }
 }
