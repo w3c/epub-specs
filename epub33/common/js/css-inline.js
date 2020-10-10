@@ -6,7 +6,7 @@ function inlineCustomCSS() {
     if (customCSS == '') { return; }
     
     var style = document.createElement('style');
-    	style.innerHTML = customCSS;
+    	style.textContent = customCSS;
     
     document.getElementsByTagName('head')[0].appendChild(style);
     
