@@ -37,11 +37,10 @@ The following links provide filtered views of the currently open issues:
 
 ## Repository Structure
 
-This repository currently hosts the EPUB 3 and related specification documents. The contents of each folder are as follows:
+The contents of each folder are as follows:
 
-- [`a11y`](/a11y) -- The EPUB Accessibility specification and Techniques document.
 - [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
-- [`epub33`](/epub33) -- The core EPUB specifications for the 3.3 revision.
+- [`epub33`](/epub33) -- The specifications being revised as part of the 3.3 revision.
 - [`registries`](/registries) -- The registry documents cited by the EPUB specifications.
 
 ## Contributing to the Repository
