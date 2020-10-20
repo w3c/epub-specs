@@ -10,12 +10,12 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 Editor's Drafts
 
-- [EPUB 3.3](https://w3c.github.io/publ-epub-revision/epub33/core/)
-- [EPUB Reading Systems 3.3](https://w3c.github.io/publ-epub-revision/epub33/rs/)
-- [EPUB Overview 3.3](https://w3c.github.io/publ-epub-revision/epub33/overview/)
-- [EPUB Changes 3.3](https://w3c.github.io/publ-epub-revision/epub33/changes/)
-- [EPUB Accessibility 1.1](https://w3c.github.io/publ-epub-revision/epub33/a11y/)
-- [EPUB Accessibility Techniques 1.1](https://w3c.github.io/publ-epub-revision/epub33/a11y-tech/)
+- [EPUB Overview 3.3](https://w3c.github.io/epub-specs/epub33/overview/)
+- [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/)
+- [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/)
+- [EPUB Changes 3.3](https://w3c.github.io/pepub-specs/epub33/changes/)
+- [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
+- [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 
 The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
@@ -31,9 +31,9 @@ This version was published on May 8, 2019, by the former EPUB 3 Community Group.
 
 The following links provide filtered views of the currently open issues:
 
-- [EPUB 3 core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
-- [EPUB Accessibility specification](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
-- [Non-core specifications](https://github.com/w3c/publ-epub-revision/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
+- [EPUB 3 core specifications](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
+- [EPUB Accessibility specification](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
+- [Non-core specifications](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
 
 ## Repository Structure
 
@@ -68,4 +68,4 @@ W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
 
 ---
 
-For any further help, contact  [Ivan Herman](ivan@w3.org) or [Dave Cramer](dauwhe@gmail.com).
+For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), [Dave Cramer](dauwhe@gmail.com), or [Matt Garrish](matt.garrish@gmail.com).
