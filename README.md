@@ -10,7 +10,7 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 Editor's Drafts
 
-- [EPUB Overview 3.3](https://w3c.github.io/epub-specs/epub33/overview/)
+- [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub33/overview/)
 - [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/)
 - [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/)
 - [EPUB Changes 3.3](https://w3c.github.io/pepub-specs/epub33/changes/)
