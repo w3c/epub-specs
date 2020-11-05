@@ -54,6 +54,26 @@
 				postProcess:[addConformanceLinks]
 			};//]]>
       </script>
+		<style>
+			dd > ul.conformance-list,
+			li > ul.conformance-list {
+				margin-left: 2rem;
+			}
+			
+			dl.conformance-list > dt {
+				font-size: 105%;
+				color: rgb(0, 90, 156);
+			}
+			
+			dl.conformance-list > dd > dl.conformance-list > dt {
+				font-size: 100%;
+				color: rgb(0, 0, 0);
+			}
+			
+			dl.conformance-list > dd > dl.conformance-list > dd > dl.conformance-list > dt {
+				font-style: italic !important;
+				font-size: 95%;
+			}</style>
 	</head>
 	<body>
 		<section id="abstract">
@@ -607,483 +627,448 @@
 				</section>
 			</section>
 		</section>
-		<section id="sec-epub-conf">
-			<h2>Conformance Criteria</h2>
+		<section id="sec-publications">
+			<h2>EPUB Publications</h2>
 
-			<p>An <a>EPUB Publication</a> has to meet the following criteria:</p>
+			<section id="sec-epub-conf">
+				<h3>Conformance Criteria</h3>
 
-			<dl class="conformance-list">
-				<dt id="sec-epub-package-conformance">Packages</dt>
-				<dd>
-					<p id="confreq-renditions">It MUST include one or more <a>EPUB Packages</a>, each of which MUST
-						conform to the requirements defined in <a href="#sec-packages"></a>.</p>
-				</dd>
-				<dt id="sec-epub-a11y">Accessibility</dt>
-				<dd>
-					<p id="confreq-a11y">It SHOULD conform to the accessibility requirements defined in
-						[[!EPUBAccessibility-10]].</p>
-				</dd>
-				<dt id="sec-epub-pub-conformance-all">Publication Resources</dt>
-				<dd>
-					<p id="confreq-manifest">All <a>Publication Resources</a> MUST adhere to the <a
-							href="#sec-publication-resources">constraints for Core Media Type and Foreign Resources</a>
-						and be located as per <a href="#sec-resource-locations"></a>.</p>
-				</dd>
-				<dt id="sec-epub-pub-conformance-container">Container</dt>
-				<dd>
-					<p id="confreq-ocf">It MUST be packaged in a <a>EPUB Container</a> as defined in <a href="#sec-ocf"
-						></a>.</p>
-				</dd>
-			</dl>
+				<p>The basic requirements for an EPUB Publication are that:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-packages">It MUST include one or more <a href="#sec-packages">EPUB
+							Packages</a>.</p>
+					</li>
+					<li>
+						<p id="confreq-a11y">It SHOULD conform to the accessibility requirements defined in
+							[[!EPUBAccessibility-10]].</p>
+					</li>
+					<li>
+						<p id="confreq-ocf">It MUST be packaged in an <a href="#sec-ocf">OCF Container</a>.</p>
+					</li>
+				</ul>
+
+				<p>Specific conformance details are covered in the rest of this specification.</p>
+			</section>
+
+			<section id="sec-publication-resources">
+				<h3>Publication Resources</h3>
+
+				<section id="sec-core-media-types">
+					<h4>Core Media Types</h4>
+
+					<section id="sec-cmt-intro">
+						<h5>Introduction</h5>
+
+						<p>Each <a>Rendition</a> of an <a>EPUB Publication</a> typically consists of many <a>Publication
+								Resources</a>. These resources are divided into two categories: those that can be
+							included without fallbacks (<a>Core Media Type Resources</a>) and those that cannot
+								(<a>Foreign Resources</a>).</p>
+
+						<p>Formats are typically only included as Core Media Type Resources when it can be shown that
+							they have broad support in web browser cores &#8212; the rendering engines on which EPUB 3
+							Reading Systems are built. They are an agreement between Reading System developers and
+								<a>Authors</a> to ensure the predictability of rendering of EPUB Publications.</p>
+
+						<p>Inclusion as a Core Media Type Resource does not mean that all Reading Systems will support
+							the rendering of a resource, however. Only Reading Systems that are capable of rendering the
+							type of resource have to (e.g., a Reading System with a <a>Viewport</a> has to support image
+							Core Media Type Resources, but a Reading System without a Viewport does not). Refer to <a
+								href="https://www.w3.org/TR/epub-rs-33/#sec-rs-conf-general">Conformance
+								Requirements</a> [[EPUB-RS-33]] for more information about which Reading Systems
+							rendering capabilities require support for which Core Media Type Resources.</p>
+
+						<p>Foreign Resources come with no guarantee of rendering support, which is why they require a
+							fallback to a Core Media Type Resource. EPUB Publications are designed to be fully
+							consumable on any compliant Reading System, so providing a fallback is necessary to ensure
+							that the use of Foreign Resources does not impact on the ability of the user to consume the
+							content.</p>
+
+						<p>This section lists the <a href="#sec-cmt-supported">set of Core Media Type Resources</a> and
+							identifies <a href="#sec-foreign-restrictions">fallback mechanisms</a> that can be used to
+							satisfy the consumability requirement.</p>
+
+						<div class="note">
+							<p>EPUB also exempts some [[HTML]] elements from support requirements (see <a
+									href="#sec-xhtml-fallbacks"></a>). Resources referenced from these elements are
+								neither Core Media Type Resources nor Foreign Resources &#8212; they do not require
+								fallbacks, but they also have no support requirements.</p>
+						</div>
+					</section>
+
+					<section id="sec-cmt-supported">
+						<h5>Supported Media Types</h5>
+
+						<p><a>Publication Resources</a> that conform to the following MIME media type [[!RFC2046]]
+							specifications can be included in an EPUB Publication without fallbacks.</p>
+
+						<p>The columns in the following table represent the following information:</p>
+
+						<ul>
+							<li>
+								<p><strong>Media Type</strong>—The MIME media type [[!RFC2046]] used to represent the
+									given Publication Resource in the <a href="#sec-manifest-elem">manifest</a>.</p>
+								<p>If more than one media type is listed, the first one is the preferred media type. The
+									preferred media type is strongly encouraged for all new EPUB Publications.</p>
+							</li>
+
+							<li><strong>Content Type Definition</strong>—The specification to which the given Core Media
+								Type Resource has to conform.</li>
+
+							<li><strong>Applies to</strong>—The Publication Resource type(s) that the Media Type and
+								Content Type Definition applies to.</li>
+						</ul>
+
+						<table id="tbl-core-media-types">
+							<thead>
+								<tr>
+									<th id="tbl-cmt-string">Media Type</th>
+									<th id="tbl-cmt-def">Content Type Definition</th>
+									<th id="tbl-cmt-appl">Applies to</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th colspan="3" id="cmt-grp-image" class="tbl-group">Images</th>
+								</tr>
+								<tr>
+									<td id="cmt-gif">
+										<code>image/gif</code>
+									</td>
+									<td> [[!GIF]] </td>
+									<td>GIF Images</td>
+								</tr>
+
+								<tr>
+									<td id="cmt-jpeg">
+										<code>image/jpeg</code>
+									</td>
+									<td> [[!JPEG]] </td>
+									<td>JPEG Images</td>
+								</tr>
+								<tr>
+									<td id="cmt-png">
+										<code>image/png</code>
+									</td>
+									<td> [[!PNG]] </td>
+									<td>PNG Images</td>
+								</tr>
+								<tr>
+									<td id="cmt-svg">
+										<code>image/svg+xml</code>
+									</td>
+									<td>
+										<a href="#sec-svg">SVG Content Documents</a>
+									</td>
+									<td>SVG documents</td>
+								</tr>
 
 
-		</section>
-		<section id="sec-publication-resources">
-			<h2>Publication Resources</h2>
+								<tr>
+									<th colspan="3" id="cmt-grp-audio" class="tbl-group">Audio</th>
+								</tr>
+								<tr>
+									<td id="cmt-mp3">
+										<code>audio/mpeg</code>
+									</td>
+									<td> [[!MP3]] </td>
+									<td>MP3 audio</td>
+								</tr>
+								<tr>
+									<td id="cmt-mp4-aac">
+										<code>audio/mp4</code>
+									</td>
+									<td> [[!MPEG4-Audio]], [[!MP4]] </td>
+									<td>AAC LC audio using MP4 container</td>
+								</tr>
+								<tr>
+									<td id="cmt-ogg-opus">
+										<code>audio/opus</code>
+									</td>
+									<td>[[!RFC7845]]</td>
+									<td>OPUS audio using OGG container</td>
+								</tr>
+								<tr>
+									<th colspan="3" id="cmt-grp-video" class="tbl-group">Video</th>
+								</tr>
+								<tr>
+									<td colspan="3" id="cmt-vide-note">EPUB 3 allows any video codecs to be included
+										without fallbacks, although none are technically considered Core Media Type
+										Resources. Refer to the note in <a
+											href="https://www.w3.org/TR/epub-rs-33/#note-video-codecs">Conformance —
+											General Requirements</a> [[EPUB-RS-33]] for informative recommendations on
+										support for video codecs in EPUB Publications. </td>
+								</tr>
+								<tr>
+									<th colspan="3" id="cmt-grp-text" class="tbl-group">Style</th>
+								</tr>
+								<tr>
+									<td id="cmt-css">
+										<code>text/css</code>
+									</td>
+									<td>
+										<a href="#sec-css">CSS Style Sheets</a>
+									</td>
+									<td>CSS Style Sheets.</td>
+								</tr>
+								<tr>
+									<th colspan="3" id="cmt-grp-font" class="tbl-group">Fonts</th>
+								</tr>
+								<tr>
+									<td colspan="3" id="cmt-font-note"> EPUB 3 allows any font resource to be included
+										without a fallback, as CSS already defines fallback rules for fonts. Refer to
+										the <a href="https://www.w3.org/TR/epub-rs-33/#confreq-css-rs-fonts">Reading
+											System support requirements for fonts</a> [[!EPUB-RS-33]] for more
+										information.</td>
+								</tr>
+								<tr>
+									<td id="cmt-sfnt">
+										<code>font/ttf</code>
+										<br />
+										<code>application/font-sfnt</code>
+									</td>
+									<td>[[!TrueType]] </td>
+									<td>TrueType fonts</td>
+								</tr>
+								<tr>
+									<td id="cmt-otf">
+										<code>font/otf</code>
+										<br />
+										<code>application/font-sfnt</code>
+										<br />
+										<code>application/vnd.ms-opentype</code>
+									</td>
+									<td>[[!OpenType]]</td>
+									<td>OpenType fonts</td>
 
-			<section id="sec-core-media-types">
-				<h3>Core Media Types</h3>
+								</tr>
+								<tr>
+									<td id="cmt-woff">
+										<code>font/woff</code>
+										<br />
+										<code>application/font-woff</code>
+									</td>
+									<td> [[!WOFF]] </td>
+									<td>WOFF fonts</td>
+								</tr>
+								<tr>
+									<td id="cmt-woff2">
+										<code>font/woff2</code>
+									</td>
+									<td> [[!WOFF2]] </td>
+									<td>WOFF2 fonts</td>
+								</tr>
+								<tr>
+									<th colspan="3" id="cmt-grp-other" class="tbl-group">Other</th>
+								</tr>
 
-				<section id="sec-cmt-intro">
-					<h4>Introduction</h4>
+								<tr>
+									<td id="cmt-xhtml">
+										<code>application/xhtml+xml</code>
+									</td>
+									<td>
+										<a href="#sec-xhtml">XHTML Content Documents</a>
+									</td>
+									<td><a>XHTML Content Documents</a> that use the <a
+											href="https://www.w3.org/TR/html/xhtml.html#xhtml">XHTML syntax</a>
+										[[!HTML]]. </td>
+								</tr>
+								<tr>
+									<td id="cmt-js">
+										<code>application/javascript</code>
+										<br />
+										<code>text/javascript</code>
+									</td>
+									<td> [[!RFC4329]] </td>
+									<td>Scripts.</td>
+								</tr>
+								<tr>
+									<td id="cmt-ncx">
+										<code>application/x-dtbncx+xml</code>
+									</td>
+									<td> [[!OPF-201]] </td>
+									<td>The <a href="#legacy">legacy</a> NCX.</td>
+								</tr>
 
-					<p>Each <a>Rendition</a> of an <a>EPUB Publication</a> typically consists of many <a>Publication
-							Resources</a>. These resources are divided into two categories: those that can be included
-						without fallbacks (<a>Core Media Type Resources</a>) and those that cannot (<a>Foreign
-							Resources</a>).</p>
+								<tr>
+									<td id="cmt-smil">
+										<code>application/smil+xml</code>
+									</td>
+									<td>
+										<a href="#sec-media-overlays">Media Overlays</a>
+									</td>
+									<td>EPUB Media Overlay documents</td>
+								</tr>
+								<tr>
+									<td id="cmt-pls">
+										<code>application/pls+xml</code>
+									</td>
+									<td> [[!PRONUNCIATION-LEXICON]] </td>
+									<td><a>Text-to-Speech</a> (TTS) Pronunciation lexicons</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="issue" data-number="645">
+							<p>Although, OPUS/OGG has good support in Android, MacOS, Windows, and Linux, Apple,
+								starting with iOS 11, only supports the OPUS codec in a CAF container. The working group
+								will monitor support for OPUS in iOS, and may remove OPUS as a core media type if the
+								level of support is inadequate.</p>
+						</div>
+					</section>
 
-					<p>Formats are typically only included as Core Media Type Resources when it can be shown that they
-						have broad support in web browser cores &#8212; the rendering engines on which EPUB 3 Reading
-						Systems are built. They are an agreement between Reading System developers and <a>Authors</a> to
-						ensure the predictability of rendering of EPUB Publications.</p>
+					<section id="sec-foreign-restrictions">
+						<h5>Foreign Resources</h5>
 
-					<p>Inclusion as a Core Media Type Resource does not mean that all Reading Systems will support the
-						rendering of a resource, however. Only Reading Systems that are capable of rendering the type of
-						resource have to (e.g., a Reading System with a <a>Viewport</a> has to support image Core Media
-						Type Resources, but a Reading System without a Viewport does not). Refer to <a
-							href="https://www.w3.org/TR/epub-rs-33/#sec-rs-conf-general">Conformance Requirements</a>
-						[[EPUB-RS-33]] for more information about which Reading Systems rendering capabilities require
-						support for which Core Media Type Resources.</p>
+						<p id="confreq-foreign-no-fallback">Foreign Resources MAY be included in an EPUB Publication
+							without a fallback provided they are not referenced from <a href="#sec-itemref-elem">spine
+									<code>itemref</code> elements</a> or directly rendered in their native format in
+							EPUB Content Documents (e.g., via [[!HTML]] <a
+								href="https://www.w3.org/TR/html/dom.html#embedded-content">embedded content</a> and
+							[[!SVG]] <a href="https://www.w3.org/TR/SVG/struct.html#ImageElement"><code>image</code></a>
+							and <a href="https://www.w3.org/TR/SVG/extend.html#ForeignObjectElement"
+									><code>foreignObject</code></a> elements).</p>
 
-					<p>Foreign Resources come with no guarantee of rendering support, which is why they require a
-						fallback to a Core Media Type Resource. EPUB Publications are designed to be fully consumable on
-						any compliant Reading System, so providing a fallback is necessary to ensure that the use of
-						Foreign Resources does not impact on the ability of the user to consume the content.</p>
+						<p class="note">This exception allows Authors to include resources in the <a>EPUB Container</a>
+							that are not for use by EPUB Reading Systems. The primary case for this exception is to
+							allow data files to travel with an EPUB Publication, whether for use by scripts in its
+							constituent EPUB Content Documents or for use by external applications (e.g., a scientific
+							journal might include a data set with instructions on how to extract it from the EPUB
+							Container).</p>
 
-					<p>This section lists the <a href="#sec-cmt-supported">set of Core Media Type Resources</a> and
-						identifies <a href="#sec-foreign-restrictions">fallback mechanisms</a> that can be used to
-						satisfy the consumability requirement.</p>
+						<p id="confreq-cmt">When a <a>Foreign Resource</a> is included in the spine or directly rendered
+							in its native format in an EPUB Content Document, a fallback <a>Core Media Type Resource</a>
+							MUST be included. Fallbacks take one of the two following forms:</p>
+
+						<ul>
+							<li>
+								<p>intrinsic fallback mechanisms provided by the host format (e.g., [[HTML]] elements
+									often provide the ability to reference more than one media type or to display an
+									alternate embedded message when a media type cannot be rendered);</p>
+							</li>
+							<li>
+								<p><a href="#sec-foreign-restrictions-manifest">manifest fallbacks</a>.</p>
+							</li>
+						</ul>
+
+						<p>Manifest fallbacks are a feature of the <a>Package Document</a> that create fallback chains
+							to Core Media Type Resources. They are used to create fallbacks for Foreign Resources in the
+								<a href="#sec-spine-elem">spine</a> and when intrinsic fallback capabilities are not
+							available (e.g., for the [[!HTML]] <a
+								href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-img-element"
+									><code>img</code></a> element).</p>
+
+						<p>Refer to the [[!HTML]] and [[!SVG]] specifications for the intrinsic fallback capabilities
+							their elements provide.</p>
+					</section>
+				</section>
+
+				<section id="sec-resource-locations">
+					<h4>Resource Locations</h4>
+
+					<p>All <a>Publication Resources</a> MUST be <a href="#sec-container-iri">located in the EPUB
+							Container</a>, with the following exceptions:</p>
+
+					<ul class="conformance-list">
+						<li>
+							<p id="sec-resource-locations-audio"><a href="#cmt-grp-audio">Audio resources</a> MAY be
+								located outside the EPUB Container.</p>
+						</li>
+						<li>
+							<p id="sec-resource-locations-video"><a href="#cmt-grp-video">Video resources</a> MAY be
+								located outside the EPUB Container.</p>
+						</li>
+						<li>
+							<p id="sec-resource-locations-script">Resources retrieved by scripts MAY be located outside
+								the EPUB Container.</p>
+						</li>
+						<li>
+							<p id="sec-resource-locations-fonts"><a href="#cmt-grp-font">Font resources</a> MAY be
+								located outside the EPUB Container.</p>
+						</li>
+					</ul>
+
+					<aside class="example">
+						<p>The following example shows a reference to an audio file in an <a>XHTML Content Document</a>
+							that is located inside the EPUB Container.</p>
+						<pre>&lt;audio src="audio/ch01.mp4" controls="controls"/&gt;</pre>
+					</aside>
+
+					<aside class="example">
+						<p>The following example shows a reference to an audio file in an XHTML Content Document that is
+							located outside the EPUB Container.</p>
+						<pre>&lt;audio src="http://www.example.com/book/audio/ch01.mp4" controls="controls"/&gt;</pre>
+					</aside>
 
 					<div class="note">
-						<p>EPUB also exempts some [[HTML]] elements from support requirements (see <a
-								href="#sec-xhtml-fallbacks"></a>). Resources referenced from these elements are neither
-							Core Media Type Resources nor Foreign Resources &#8212; they do not require fallbacks, but
-							they also have no support requirements.</p>
+						<p>Authors are encouraged to locate audio, video and script resources inside the EPUB Container
+							whenever feasible to allow users access to the entire presentation regardless of
+							connectivity status.</p>
 					</div>
+
+					<div class="note">
+						<p>The rules in this section for Publication Resource locations apply regardless of whether the
+							given resource is a <a>Core Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
+					</div>
+
+					<div class="note">
+						<p>The inclusion of Remote Resources in an <a>EPUB Publication</a> is indicated via the <a
+								href="#remote-resources"><code>remote-resources</code> property</a> on the
+								<a>manifest</a>
+							<a href="#sec-item-elem"><code>item</code> element</a>.</p>
+					</div>
+
 				</section>
 
-				<section id="sec-cmt-supported">
-					<h4>Supported Media Types</h4>
+				<section id="sec-xml-constraints">
+					<h4>XML Conformance</h4>
 
-					<p><a>Publication Resources</a> that conform to the following MIME media type [[!RFC2046]]
-						specifications can be included in an EPUB Publication without fallbacks.</p>
+					<p>Any <a>Publication Resource</a> that is an XML-Based Media Type has to meet the following
+						constraints:</p>
 
-					<p>The columns in the following table represent the following information:</p>
-
-					<ul>
+					<ul class="conformance-list">
 						<li>
-							<p><strong>Media Type</strong>—The MIME media type [[!RFC2046]] used to represent the given
-								Publication Resource in the <a href="#sec-manifest-elem">manifest</a>.</p>
-							<p>If more than one media type is listed, the first one is the preferred media type. The
-								preferred media type is strongly encouraged for all new EPUB Publications.</p>
-						</li>
-
-						<li><strong>Content Type Definition</strong>—The specification to which the given Core Media
-							Type Resource has to conform.</li>
-
-						<li><strong>Applies to</strong>—The Publication Resource type(s) that the Media Type and Content
-							Type Definition applies to.</li>
-					</ul>
-
-					<table id="tbl-core-media-types">
-						<thead>
-							<tr>
-								<th id="tbl-cmt-string">Media Type</th>
-								<th id="tbl-cmt-def">Content Type Definition</th>
-								<th id="tbl-cmt-appl">Applies to</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th colspan="3" id="cmt-grp-image" class="tbl-group">Images</th>
-							</tr>
-							<tr>
-								<td id="cmt-gif">
-									<code>image/gif</code>
-								</td>
-								<td> [[!GIF]] </td>
-								<td>GIF Images</td>
-							</tr>
-
-							<tr>
-								<td id="cmt-jpeg">
-									<code>image/jpeg</code>
-								</td>
-								<td> [[!JPEG]] </td>
-								<td>JPEG Images</td>
-							</tr>
-							<tr>
-								<td id="cmt-png">
-									<code>image/png</code>
-								</td>
-								<td> [[!PNG]] </td>
-								<td>PNG Images</td>
-							</tr>
-							<tr>
-								<td id="cmt-svg">
-									<code>image/svg+xml</code>
-								</td>
-								<td>
-									<a href="#sec-svg">SVG Content Documents</a>
-								</td>
-								<td>SVG documents</td>
-							</tr>
-
-
-							<tr>
-								<th colspan="3" id="cmt-grp-audio" class="tbl-group">Audio</th>
-							</tr>
-							<tr>
-								<td id="cmt-mp3">
-									<code>audio/mpeg</code>
-								</td>
-								<td> [[!MP3]] </td>
-								<td>MP3 audio</td>
-							</tr>
-							<tr>
-								<td id="cmt-mp4-aac">
-									<code>audio/mp4</code>
-								</td>
-								<td> [[!MPEG4-Audio]], [[!MP4]] </td>
-								<td>AAC LC audio using MP4 container</td>
-							</tr>
-							<tr>
-								<td id="cmt-ogg-opus">
-									<code>audio/opus</code>
-								</td>
-								<td>[[!RFC7845]]</td>
-								<td>OPUS audio using OGG container</td>
-							</tr>
-							<tr>
-								<th colspan="3" id="cmt-grp-video" class="tbl-group">Video</th>
-							</tr>
-							<tr>
-								<td colspan="3" id="cmt-vide-note">EPUB 3 allows any video codecs to be included without
-									fallbacks, although none are technically considered Core Media Type Resources. Refer
-									to the note in <a href="https://www.w3.org/TR/epub-rs-33/#note-video-codecs"
-										>Conformance — General Requirements</a> [[EPUB-RS-33]] for informative
-									recommendations on support for video codecs in EPUB Publications. </td>
-							</tr>
-							<tr>
-								<th colspan="3" id="cmt-grp-text" class="tbl-group">Style</th>
-							</tr>
-							<tr>
-								<td id="cmt-css">
-									<code>text/css</code>
-								</td>
-								<td>
-									<a href="#sec-css">CSS Style Sheets</a>
-								</td>
-								<td>CSS Style Sheets.</td>
-							</tr>
-							<tr>
-								<th colspan="3" id="cmt-grp-font" class="tbl-group">Fonts</th>
-							</tr>
-							<tr>
-								<td colspan="3" id="cmt-font-note"> EPUB 3 allows any font resource to be included
-									without a fallback, as CSS already defines fallback rules for fonts. Refer to the <a
-										href="https://www.w3.org/TR/epub-rs-33/#confreq-css-rs-fonts">Reading System
-										support requirements for fonts</a> [[!EPUB-RS-33]] for more information.</td>
-							</tr>
-							<tr>
-								<td id="cmt-sfnt">
-									<code>font/ttf</code>
-									<br />
-									<code>application/font-sfnt</code>
-								</td>
-								<td>[[!TrueType]] </td>
-								<td>TrueType fonts</td>
-							</tr>
-							<tr>
-								<td id="cmt-otf">
-									<code>font/otf</code>
-									<br />
-									<code>application/font-sfnt</code>
-									<br />
-									<code>application/vnd.ms-opentype</code>
-								</td>
-								<td>[[!OpenType]]</td>
-								<td>OpenType fonts</td>
-
-							</tr>
-							<tr>
-								<td id="cmt-woff">
-									<code>font/woff</code>
-									<br />
-									<code>application/font-woff</code>
-								</td>
-								<td> [[!WOFF]] </td>
-								<td>WOFF fonts</td>
-							</tr>
-							<tr>
-								<td id="cmt-woff2">
-									<code>font/woff2</code>
-								</td>
-								<td> [[!WOFF2]] </td>
-								<td>WOFF2 fonts</td>
-							</tr>
-							<tr>
-								<th colspan="3" id="cmt-grp-other" class="tbl-group">Other</th>
-							</tr>
-
-							<tr>
-								<td id="cmt-xhtml">
-									<code>application/xhtml+xml</code>
-								</td>
-								<td>
-									<a href="#sec-xhtml">XHTML Content Documents</a>
-								</td>
-								<td><a>XHTML Content Documents</a> that use the <a
-										href="https://www.w3.org/TR/html/xhtml.html#xhtml">XHTML syntax</a> [[!HTML]].
-								</td>
-							</tr>
-							<tr>
-								<td id="cmt-js">
-									<code>application/javascript</code>
-									<br />
-									<code>text/javascript</code>
-								</td>
-								<td> [[!RFC4329]] </td>
-								<td>Scripts.</td>
-							</tr>
-							<tr>
-								<td id="cmt-ncx">
-									<code>application/x-dtbncx+xml</code>
-								</td>
-								<td> [[!OPF-201]] </td>
-								<td>The <a href="#legacy">legacy</a> NCX.</td>
-							</tr>
-
-							<tr>
-								<td id="cmt-smil">
-									<code>application/smil+xml</code>
-								</td>
-								<td>
-									<a href="#sec-media-overlays">Media Overlays</a>
-								</td>
-								<td>EPUB Media Overlay documents</td>
-							</tr>
-							<tr>
-								<td id="cmt-pls">
-									<code>application/pls+xml</code>
-								</td>
-								<td> [[!PRONUNCIATION-LEXICON]] </td>
-								<td><a>Text-to-Speech</a> (TTS) Pronunciation lexicons</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class="issue" data-number="645">
-						<p>Although, OPUS/OGG has good support in Android, MacOS, Windows, and Linux, Apple, starting
-							with iOS 11, only supports the OPUS codec in a CAF container. The working group will monitor
-							support for OPUS in iOS, and may remove OPUS as a core media type if the level of support is
-							inadequate.</p>
-					</div>
-				</section>
-
-				<section id="sec-foreign-restrictions">
-					<h4>Foreign Resources</h4>
-
-					<p id="confreq-foreign-no-fallback">Foreign Resources MAY be included in an EPUB Publication without
-						a fallback provided they are not referenced from <a href="#sec-itemref-elem">spine
-								<code>itemref</code> elements</a> or directly rendered in their native format in EPUB
-						Content Documents (e.g., via [[!HTML]] <a
-							href="https://www.w3.org/TR/html/dom.html#embedded-content">embedded content</a> and
-						[[!SVG]] <a href="https://www.w3.org/TR/SVG/struct.html#ImageElement"><code>image</code></a> and
-							<a href="https://www.w3.org/TR/SVG/extend.html#ForeignObjectElement"
-								><code>foreignObject</code></a> elements).</p>
-
-					<p class="note">This exception allows Authors to include resources in the <a>EPUB Container</a> that
-						are not for use by EPUB Reading Systems. The primary case for this exception is to allow data
-						files to travel with an EPUB Publication, whether for use by scripts in its constituent EPUB
-						Content Documents or for use by external applications (e.g., a scientific journal might include
-						a data set with instructions on how to extract it from the EPUB Container).</p>
-
-					<p id="confreq-cmt">When a <a>Foreign Resource</a> is included in the spine or directly rendered in
-						its native format in an EPUB Content Document, a fallback <a>Core Media Type Resource</a> MUST
-						be included. Fallbacks take one of the two following forms:</p>
-
-					<ul>
-						<li>
-							<p>intrinsic fallback mechanisms provided by the host format (e.g., [[HTML]] elements often
-								provide the ability to reference more than one media type or to display an alternate
-								embedded message when a media type cannot be rendered);</p>
+							<p id="confreq-xml-wellformed"> It MUST be a conformant XML 1.0 Document as defined in <a
+									href="https://www.w3.org/TR/2009/REC-XML-NAMES-20091208/#Conformance">Conformance of
+									Documents</a> [[!XML-NAMES]].</p>
 						</li>
 						<li>
-							<p><a href="#sec-foreign-restrictions-manifest">manifest fallbacks</a>.</p>
+							<p id="confreq-xml-extmarkupdecl">
+								<a href="https://www.w3.org/TR/2008/REC-xml-20081126/#NT-ExternalID">External
+									identifiers</a> MUST NOT appear in the document type declaration [[!XML]].</p>
+						</li>
+						<li>
+							<p id="confreq-xml-xinc"> It MUST NOT make use of XInclude [[!XInclude]].</p>
+						</li>
+						<li>
+							<p id="confreq-xml-enc"> It MUST be encoded in UTF-8 or UTF-16 [[!Unicode]].</p>
 						</li>
 					</ul>
 
-					<p>Manifest fallbacks are a feature of the <a>Package Document</a> that create fallback chains to
-						Core Media Type Resources. They are used to create fallbacks for Foreign Resources in the <a
-							href="#sec-spine-elem">spine</a> and when intrinsic fallback capabilities are not available
-						(e.g., for the [[!HTML]] <a
-							href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-img-element"
-								><code>img</code></a> element).</p>
+					<p>The above constraints apply regardless of whether the given Publication Resource is a <a>Core
+							Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
 
-					<p>Refer to the [[!HTML]] and [[!SVG]] specifications for the intrinsic fallback capabilities their
-						elements provide.</p>
 				</section>
-			</section>
-
-			<section id="sec-resource-locations">
-				<h3>Resource Locations</h3>
-
-				<p>All <a>Publication Resources</a> MUST be <a href="#sec-container-iri">located in the EPUB
-						Container</a>, with the following exceptions:</p>
-
-				<ul class="conformance-list">
-					<li>
-						<p id="sec-resource-locations-audio"><a href="#cmt-grp-audio">Audio resources</a> MAY be located
-							outside the EPUB Container.</p>
-					</li>
-					<li>
-						<p id="sec-resource-locations-video"><a href="#cmt-grp-video">Video resources</a> MAY be located
-							outside the EPUB Container.</p>
-					</li>
-					<li>
-						<p id="sec-resource-locations-script">Resources retrieved by scripts MAY be located outside the
-							EPUB Container.</p>
-					</li>
-					<li>
-						<p id="sec-resource-locations-fonts"><a href="#cmt-grp-font">Font resources</a> MAY be located
-							outside the EPUB Container.</p>
-					</li>
-				</ul>
-
-				<aside class="example">
-					<p>The following example shows a reference to an audio file in an <a>XHTML Content Document</a> that
-						is located inside the EPUB Container.</p>
-					<pre>&lt;audio src="audio/ch01.mp4" controls="controls"/&gt;</pre>
-				</aside>
-
-				<aside class="example">
-					<p>The following example shows a reference to an audio file in an XHTML Content Document that is
-						located outside the EPUB Container.</p>
-					<pre>&lt;audio src="http://www.example.com/book/audio/ch01.mp4" controls="controls"/&gt;</pre>
-				</aside>
-
-				<div class="note">
-					<p>Authors are encouraged to locate audio, video and script resources inside the EPUB Container
-						whenever feasible to allow users access to the entire presentation regardless of connectivity
-						status.</p>
-				</div>
-
-				<div class="note">
-					<p>The rules in this section for Publication Resource locations apply regardless of whether the
-						given resource is a <a>Core Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
-				</div>
-
-				<div class="note">
-					<p>The inclusion of Remote Resources in an <a>EPUB Publication</a> is indicated via the <a
-							href="#remote-resources"><code>remote-resources</code> property</a> on the <a>manifest</a>
-						<a href="#sec-item-elem"><code>item</code> element</a>.</p>
-				</div>
-
-			</section>
-
-			<section id="sec-xml-constraints">
-				<h3>XML Conformance</h3>
-
-				<p>Any <a>Publication Resource</a> that is an XML-Based Media Type has to meet the following
-					constraints:</p>
-
-				<ul class="conformance-list">
-					<li>
-						<p id="confreq-xml-wellformed"> It MUST be a conformant XML 1.0 Document as defined in <a
-								href="https://www.w3.org/TR/2009/REC-XML-NAMES-20091208/#Conformance">Conformance of
-								Documents</a> [[!XML-NAMES]].</p>
-					</li>
-					<li>
-						<p id="confreq-xml-extmarkupdecl">
-							<a href="https://www.w3.org/TR/2008/REC-xml-20081126/#NT-ExternalID">External
-								identifiers</a> MUST NOT appear in the document type declaration [[!XML]].</p>
-					</li>
-					<li>
-						<p id="confreq-xml-xinc"> It MUST NOT make use of XInclude [[!XInclude]].</p>
-					</li>
-					<li>
-						<p id="confreq-xml-enc"> It MUST be encoded in UTF-8 or UTF-16 [[!Unicode]].</p>
-					</li>
-				</ul>
-
-				<p>The above constraints apply regardless of whether the given Publication Resource is a <a>Core Media
-						Type Resource</a> or a <a>Foreign Resource</a>.</p>
-
 			</section>
 		</section>
 		<section id="sec-packages">
 			<h2>EPUB Packages</h2>
 
-			<section id="sec-package-conformance">
-				<h3>Conformance Criteria</h3>
+			<section id="sec-package-construction">
+				<h3>Package Construction</h3>
 
-				<p>A conformant <a>EPUB Package</a> has to meet the following criteria:</p>
+				<p>An EPUB Package has the following requirements:</p>
 
-				<dl class="conformance-list">
-					<dt id="sec-package-conformance-packagedoc">Package Document</dt>
-					<dd>
-						<p id="confreq-package">It MUST contain exactly one <a>Package Document</a>, which MUST conform
-							to the content requirements defined in <a href="#sec-package-content-conf"></a>.</p>
-					</dd>
-					<dt id="sec-epub-rendition-content-conformance-all">Publication Resources</dt>
-					<dd>
-						<p id="confreq-rendition-manifest">All <a>Publication Resources</a> associated with the Package
-							MUST be listed in the Package Document (as defined in <a href="#sec-manifest-elem"
-							></a>).</p>
-					</dd>
-					<dt id="sec-package-conformance-nav">EPUB Navigation Document</dt>
-					<dd>
-						<p id="confreq-nav-occur">It MUST contain exactly one <a>EPUB Navigation Document</a>, which
-							MUST conform to the content requirements defined in <a href="#sec-package-nav-content-conf"
-							></a>.</p>
-					</dd>
-					<dt id="sec-package-conformance-contentdocs">Content Documents</dt>
-					<dd>
-						<p id="confreq-cd">It MUST contain one or more <a>EPUB Content Documents</a>, each of which MUST
-							conform to the content requirements defined in <a href="#sec-contentdocs"></a>.</p>
-					</dd>
-					<dt id="sec-package-conformance-css">CSS Style Sheets</dt>
-					<dd>
-						<p id="confreq-css">It MAY contain zero or more CSS Style Sheets, each of which MUST conform to
-							the content requirements defined in <a href="#sec-css-content-conf"></a>.</p>
-					</dd>
-					<dt id="sec-package-conformance-pls">Pronunciation Lexicons</dt>
-					<dd>
-						<p id="confreq-pls">It MAY contain zero or more PLS Documents, each of which MUST conform to the
-							content requirements defined in <a href="#sec-pls-conf-content"></a>.</p>
-					</dd>
-					<dt id="sec-package-conformance-media-overlays">Media Overlay Documents</dt>
-					<dd>
-						<p id="confreq-mo">It MAY contain zero or more <a>Media Overlay Documents</a>, each of which
-							MUST conform to the content requirements defined in <a href="#sec-media-overlays"></a>.</p>
-					</dd>
-					<dt id="sec-package-conformance-additional">Additional Resources</dt>
-					<dd>
-						<p id="confreq-additional">It MAY contain zero or more <a>Publication Resources</a> in addition
-							to those listed above, each of which MUST adhere to the requirements in <a
-								href="#sec-epub-pub-conformance-all">Publication Resources</a>.</p>
-					</dd>
-				</dl>
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-package">It MUST contain exactly one <a>Package Document</a>, including all
+							content requirements defined in <a href="#sec-package-doc"></a>.</p>
+					</li>
+					<li>
+						<p id="confreq-nav">It MUST contain exactly one <a href="#sec-nav-doc">EPUB Navigation
+								Document</a>.</p>
+					</li>
+				</ul>
 			</section>
 
 			<section id="sec-package-doc">
@@ -1125,34 +1110,6 @@
 								rendering.</p>
 						</li>
 					</ul>
-
-				</section>
-
-				<section id="sec-package-content-conf">
-					<h4>Content Conformance</h4>
-
-					<p>A <a>Package Document</a> has to meet the following criteria:</p>
-
-					<dl class="conformance-list">
-						<dt id="confreq-package-docprops">Document Properties</dt>
-						<dd>
-							<p id="confreq-package-xml"> It MUST meet the conformance constraints for XML documents
-								defined in <a href="#sec-xml-constraints"></a>. </p>
-							<p id="confreq-package-docprops-schema">It MUST conform to all content conformance
-								constraints expressed in <a href="#sec-package-def"></a>.</p>
-							<p class="note">Some of the content conformance constraints can be checked by validating
-								content documents against the schemas provided in <a href="#app-package-schema"
-								></a>.</p>
-						</dd>
-						<dt id="confreq-package-fileprops">File Properties</dt>
-						<dd>
-							<p id="confreq-package-fileprops-name">The Package Document filename SHOULD use the file
-								extension <code class="filename">.opf</code>.</p>
-						</dd>
-					</dl>
-
-					<p id="media-type">Package Documents have the MIME media type
-							<code>application/oebps-package+xml</code> [[!RFC4839]].</p>
 				</section>
 
 				<section id="sec-package-def">
@@ -1429,9 +1386,9 @@
 								<code>refines</code>
 							</dt>
 							<dd>
-								<p>Identifies the expression or resource augmented by the element. The value of the
-									attribute must be a relative IRI [[!RFC3987]] referencing the resource or element
-									being described.</p>
+								<p>Establishes an association between the current expression and the element or resource
+									identified by its value. The value of the attribute must be a relative IRI
+									[[!RFC3987]] that references the resource or element being described.</p>
 								<p>The <code>refines</code> attribute is OPTIONAL depending on the type of metadata
 									being expressed. When omitted, the element defines a <a href="#primary-expression"
 										>primary expression</a>.</p>
@@ -1981,9 +1938,9 @@
 
 								<p>The [[!DC11]] <code>creator</code> element represents the name of a person,
 									organization, etc. responsible for the creation of the content of the
-										<a>Rendition</a>. The <a href="#role"><code>role</code> property</a> can be
-									attached to the element to indicate the function the creator played in the creation
-									of the content.</p>
+										<a>Rendition</a>. The <a href="#role"><code>role</code> property</a> can be <a
+										href="#subexpression">associated with the element</a> to indicate the function
+									the creator played in the creation of the content.</p>
 
 								<aside class="example">
 									<p>The following example shows how to represent a creator as an author using a <a
@@ -1999,9 +1956,10 @@
 
 								<p>The <code>creator</code> element SHOULD contain the name of the creator as the Author
 									intends it to be displayed to a user. The <a href="#file-as"><code>file-as</code>
-										property</a> MAY be attached to include a normalized form of the name, and the
-										<a href="#alternate-script"><code>alternate-script</code> property</a> to
-									represent a creator's name in another language or script.</p>
+										property</a> MAY be <a href="#subexpression">associated with the element</a> to
+									include a normalized form of the name, and the <a href="#alternate-script"
+											><code>alternate-script</code> property</a> to represent a creator's name in
+									another language or script.</p>
 
 								<aside class="example">
 									<p>The following example shows how a creator name can be included to facilitate
@@ -2084,8 +2042,9 @@
 								<p>Authors MAY identify the system or scheme the element's value is drawn from using the
 										<a href="#authority"><code>authority</code> property</a>.</p>
 
-								<p>When a scheme is identified, a subject code MUST be attached using the <a
-										href="#term"><code>term</code> property</a>.</p>
+								<p>When a scheme is identified, a subject code MUST be <a href="#subexpression"
+										>associated with the element</a> using the <a href="#term"><code>term</code>
+										property</a>.</p>
 
 								<aside class="example">
 									<p>The following example shows a BISAC code and heading.</p>
@@ -2101,8 +2060,8 @@
 &lt;meta refines="#sbj01" property="term">11&lt;/meta></pre>
 								</aside>
 
-								<p>The <code>term</code> property MUST NOT be attached to a <code>subject</code> element
-									that does not specify a scheme.</p>
+								<p>The <code>term</code> property MUST NOT be <a href="#subexpression">associated with a
+											<code>subject</code> element</a> that does not specify a scheme.</p>
 
 								<p>The values of the <code>subject</code> element and <code>term</code> property are
 									case sensitive only when the designated scheme requires.</p>
@@ -2214,10 +2173,10 @@
 									defines a primary expression.</li>
 
 								<li id="subexpression">A <em>subexpression</em> is one in which the expression defined
-									in the <code>meta</code> element enhances the meaning of the expression or resource
-									referenced in its <code>refines</code> attribute. A subexpression might refine a
-									media clip, for example, by expressing its duration, or refine a creator or
-									contributor expression by defining the role of the person.</li>
+									in the <code>meta</code> element is associated with another expression or resource
+									using the <code>refines</code> attribute to enhance its meaning. A subexpression
+									might refine a media clip, for example, by expressing its duration, or refine a
+									creator or contributor expression by defining the role of the person.</li>
 							</ul>
 
 							<p>Subexpressions are not limited to refining only primary expressions and resources; they
@@ -2498,13 +2457,15 @@
 								</dd>
 							</dl>
 
+							<p id="confreq-rendition-manifest">All <a>Publication Resources</a> associated with the
+								Package MUST be listed in the <code>manifest</code>.</p>
+
 							<div class="note">
 								<p>This specification supports internationalized resource naming, so elements and
 									attributes that reference Publication Resources accept IRIs as their value. For
 									compatibility with older Reading Systems that only accept URIs, resource names need
 									to be restricted to the ASCII character set.</p>
 							</div>
-
 						</section>
 
 						<section id="sec-item-elem">
@@ -2875,7 +2836,10 @@ Manifest:
 								</dd>
 							</dl>
 
-							<p id="spine-inclusion-req">All <a>Publication Resources</a> that are hyperlinked to from
+							<p id="confreq-pub-resource">The <code>spine</code> MUST include at least one <a>Publication
+									Resource</a>.</p>
+
+							<p id="spine-inclusion-req">All Publication Resources that are hyperlinked to from
 								Publication Resources in the <code>spine</code> MUST themselves be listed in the
 									<code>spine</code>, where hyperlinking is defined to be any linking mechanism that
 								requires the user to navigate away from the current resource. Common hyperlinking
@@ -2997,8 +2961,8 @@ Manifest:
 									href="#sec-foreign-restrictions-manifest">fallback chain</a>.</p>
 
 							<div class="note">
-								<p>Although EPUB Publications <a href="#confreq-nav-occur">have to include</a> an
-										<a>EPUB Navigation Document</a>, it is not mandatory to include it in the
+								<p>Although EPUB Publications <a href="#confreq-nav">have to include</a> an <a>EPUB
+										Navigation Document</a>, it is not mandatory to include it in the
 										<code>spine</code>.</p>
 							</div>
 
@@ -3285,6 +3249,15 @@ Manifest:
 					</section>
 				</section>
 
+				<section id="sec-package-file">
+					<h4>Package Document File Properties</h4>
+
+					<p id="confreq-package-fileprops-name">The Package Document filename SHOULD use the file extension
+							<code class="filename">.opf</code>.</p>
+
+					<p id="media-type">Package Documents have the MIME media type
+							<code>application/oebps-package+xml</code> [[!RFC4839]].</p>
+				</section>
 			</section>
 
 			<section id="sec-package-metadata">
@@ -4376,37 +4349,36 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 						and processing behaviors from the [[!HTML]] specification.</p>
 				</section>
 
-				<section id="sec-xhtml-conf-content">
-					<h4>Content Conformance</h4>
+				<section id="sec-xhtml-req">
+					<h4>XHTML Requirements</h4>
 
-					<p>An <a>XHTML Content Document</a> has to meet the following criteria:</p>
+					<p>An XHTML Content Document has to meet the following basic requirements:</p>
 
-					<dl class="conformance-list">
-						<dt id="confreq-cd-html-docprops">Document Properties</dt>
-						<dd>
+					<ul class="conformance-list">
+						<li>
 							<p id="confreq-cd-html-docprops-syntax">It MUST be an [[!HTML]] document that conforms to
 								the <a href="https://www.w3.org/TR/html/xhtml.html#xhtml">XHTML</a> syntax.</p>
-							<p id="confreq-cd-html-xml">It MUST meet the conformance constraints for XML documents
-								defined in <a href="#sec-xml-constraints"></a>.</p>
-							<p id="confreq-cd-html-docprops-html">For all document constructs used that are defined by
-								[[!HTML]], it MUST conform to the conformance criteria defined for those constructs in
-								that specification, unless explicitly overridden in <a href="#sec-xhtml-deviations"
-								></a>.</p>
+						</li>
+						<li>
+							<p id="confreq-cd-html-docprops-html">It MUST conform to the conformance criteria for all
+								document constructs defined by [[!HTML]] unless explicitly overridden in <a
+									href="#sec-xhtml-deviations"></a>.</p>
+						</li>
+						<li>
 							<p id="confreq-cd-html-docprops-schema">It MAY include extensions to the [[!HTML]] grammar
 								as defined in <a href="#sec-xhtml-extensions"></a>, and MUST conform to all content
 								conformance constraints defined therein.</p>
-							<div class="note">
-								<p>The recommendation that EPUB Publications follow the accessibility requirements in
-									[[EPUBAccessibility-10]] applies to XHTML Content Documents. See <a
-										href="#sec-epub-a11y">Accessibility</a>.</p>
-							</div>
-						</dd>
-						<dt id="confreq-cd-html-fileprops">File Properties</dt>
-						<dd>
-							<p id="confreq-cd-xhtml-fileprops-name">The XHTML Content Document filename SHOULD use the
-								file extension <code>.xhtml</code></p>
-						</dd>
-					</dl>
+						</li>
+						<li>
+							<p id="confreq-cd-xhtml-fileprops-name">It SHOULD use the file extension
+								<code>.xhtml</code></p>
+						</li>
+					</ul>
+					<div class="note">
+						<p>The recommendation that EPUB Publications follow the accessibility requirements in
+							[[EPUBAccessibility-10]] applies to XHTML Content Documents. See <a href="#confreq-a11y"
+								>Accessibility</a>.</p>
+					</div>
 				</section>
 
 				<section id="sec-xhtml-extensions">
@@ -4834,59 +4806,46 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 					<section id="sec-xhtml-mathml">
 						<h5>Embedded MathML</h5>
 
-						<section id="sec-xhtml-mathml-intro" class="informative">
-							<h6>Introduction</h6>
+						<p>XHTML Content Documents support embedded [[MATHML3]]. Occurrences of MathML markup MUST
+							conform to the constraints expressed in the MathML specification [[!MATHML3]], with the
+							following additional restrictions:</p>
 
-							<p>XHTML Content Documents support embedded [[MATHML3]] but limit its usage to a restricted
-								subset of the full MathML markup language.</p>
+						<dl class="conformance-list">
+							<dt id="math-pres">Presentation MathML</dt>
+							<dd>
+								<p id="confreq-mathml-pres">The <code>math</code> element MUST contain only <a
+										href="https://www.w3.org/TR/MathML3/chapter3.html">Presentation MathML</a>, with
+									the exception of the <code>annotation-xml</code> element.</p>
+							</dd>
+							<dt id="math-cont">Content MathML</dt>
+							<dd>
+								<p id="confreq-mathml-annot-cont"><a href="https://www.w3.org/TR/MathML3/chapter4.html"
+										>Content MathML</a> MAY be included within MathML markup in XHTML Content
+									Documents, and, when present, MUST occur within an <code>annotation-xml</code> child
+									element of a <code>semantics</code> element.</p>
+								<p id="confreq-mathml-annot-cont-attrs">When Content MathML is included as per the
+									previous condition, the given <code>annotation-xml</code> element's
+										<code>encoding</code> attribute MUST be set to either of the
+									functionally-equivalent values <code>MathML-Content</code> or
+										<code>application/mathml-content+xml</code>, and its <code>name</code> attribute
+									MUST be set to <code>contentequiv</code>.</p>
+							</dd>
+							<dt id="math-deprecated">Deprecated MathML</dt>
+							<dd>
+								<p id="confreq-mathml-deprecated">Elements and attributes marked as deprecated in
+									[[!MATHML3]] MUST NOT be included within MathML markup in XHTML Content
+									Documents.</p>
+							</dd>
+						</dl>
 
-							<p>This subset is designed to ease the implementation burden on Reading Systems and to
-								promote accessibility, while retaining compatibility with [[HTML]] user agents.</p>
+						<p>This subset is designed to ease the implementation burden on Reading Systems and to promote
+							accessibility, while retaining compatibility with [[HTML]] user agents.</p>
 
-							<div class="note">
-								<p>The <a href="#mathml"><code>mathml</code> property</a> of the <a>manifest</a>
-									<code>item</code> element indicates that an XHTML Content Document contains embedded
-									MathML.</p>
-							</div>
-
-						</section>
-
-						<section id="sec-xhtml-mathml-conf-content">
-							<h6>Content Conformance</h6>
-
-							<p>Any occurrence of MathML markup in XHTML Content Documents MUST conform to the
-								constraints expressed in the MathML specification [[!MATHML3]], with the following
-								additional restrictions:</p>
-
-							<dl class="conformance-list">
-								<dt id="math-pres">Presentation MathML</dt>
-								<dd>
-									<p id="confreq-mathml-pres">The <code>math</code> element MUST contain only <a
-											href="https://www.w3.org/TR/MathML3/chapter3.html">Presentation MathML</a>,
-										with the exception of the <code>annotation-xml</code> element.</p>
-								</dd>
-								<dt id="math-cont">Content MathML</dt>
-								<dd>
-									<p id="confreq-mathml-annot-cont"><a
-											href="https://www.w3.org/TR/MathML3/chapter4.html">Content MathML</a> MAY be
-										included within MathML markup in XHTML Content Documents, and, when present,
-										MUST occur within an <code>annotation-xml</code> child element of a
-											<code>semantics</code> element.</p>
-									<p id="confreq-mathml-annot-cont-attrs">When Content MathML is included as per the
-										previous condition, the given <code>annotation-xml</code> element's
-											<code>encoding</code> attribute MUST be set to either of the
-										functionally-equivalent values <code>MathML-Content</code> or
-											<code>application/mathml-content+xml</code>, and its <code>name</code>
-										attribute MUST be set to <code>contentequiv</code>.</p>
-								</dd>
-								<dt id="math-deprecated">Deprecated MathML</dt>
-								<dd>
-									<p id="confreq-mathml-deprecated">Elements and attributes marked as deprecated in
-										[[!MATHML3]] MUST NOT be included within MathML markup in XHTML Content
-										Documents.</p>
-								</dd>
-							</dl>
-						</section>
+						<div class="note">
+							<p>The <a href="#mathml"><code>mathml</code> property</a> of the <a>manifest</a>
+								<code>item</code> element indicates that an XHTML Content Document contains embedded
+								MathML.</p>
+						</div>
 					</section>
 
 					<section id="sec-xhtml-svg">
@@ -5077,37 +5036,30 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 								href="#sec-xhtml-svg"></a> for the conformance requirements for SVG embedded in XHTML
 							Content Documents.</p>
 					</div>
-
 				</section>
 
-				<section id="sec-svg-content-conf">
-					<h4>Content Conformance</h4>
-					<p>An <a>SVG Content Document</a> has to meet the following criteria:</p>
+				<section id="sec-svg-req">
+					<h4>SVG Requirements</h4>
 
-					<dl class="conformance-list">
-						<dt id="confreq-svg-docprops">Document Properties</dt>
-						<dd>
-							<p id="confreq-cd-svg-xml">It MUST meet the conformance constraints for XML documents
-								defined in <a href="#sec-xml-constraints"></a>.</p>
-							<p id="confreq-resources-svg-fallback">It MAY include references to <a>Foreign Resources</a>
-								provided a fallback to a <a>Core Media Type Resource</a> is included.</p>
+					<p>An SVG Content Document has to meet the following requirements:</p>
+
+					<ul>
+						<li>
 							<p id="confreq-cd-svg-docprops-schema">It MUST be an <a
 									href="https://www.w3.org/TR/SVG/intro.html#TermSVGDocumentFragment">SVG document
 									fragment</a> [[!SVG]], and conform to all content conformance constraints expressed
 								in <a href="#sec-svg-restrictions"></a>.</p>
-							<div class="note">
-								<p>The recommendation that EPUB Publications follow the accessibility requirements in
-									[[EPUBAccessibility-10]] applies to SVG Content Documents. See <a
-										href="#sec-epub-a11y">Accessibility</a>.</p>
-							</div>
-						</dd>
+						</li>
+						<li>
+							<p id="confreq-svg-fileprops-name">It SHOULD use the file extension <code>.svg</code>.</p>
+						</li>
+					</ul>
 
-						<dt id="confreq-svg-fileprops">File Properties</dt>
-						<dd>
-							<p id="confreq-svg-fileprops-name">The SVG Content Document filename SHOULD use the file
-								extension <code>.svg</code>.</p>
-						</dd>
-					</dl>
+					<div class="note">
+						<p>The recommendation that EPUB Publications follow the accessibility requirements in
+							[[EPUBAccessibility-10]] applies to SVG Content Documents. See <a href="#confreq-a11y"
+								>Accessibility</a>.</p>
+					</div>
 				</section>
 
 				<section id="sec-svg-restrictions">
@@ -5137,7 +5089,7 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 								<li>
 									<p id="confreq-svg-foreignObject-xhtml-frag">Its content MUST be a valid document
 										fragment that conforms to the XHTML Content Document model defined in <a
-											href="#sec-xhtml-conf-content"></a>.</p>
+											href="#sec-xhtml-req"></a>.</p>
 								</li>
 								<li>
 									<p id="confreq-svg-foreignObject-reqext">Its <code>requiredExtensions</code>
@@ -5149,18 +5101,20 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 						<li>
 							<p id="confreq-svg-title">The [[!SVG]] <a
 									href="https://www.w3.org/TR/SVG/struct.html#TitleElement"><code>title</code></a>
-								element MUST contain only valid <a href="#confreq-cd-html-docprops">XHTML Content
-									Document Phrasing content</a>.</p>
+								element MUST contain only valid <a href="#sec-xhtml-req">XHTML Content Document Phrasing
+									content</a>.</p>
 						</li>
 					</ul>
 				</section>
 
 				<section id="sec-svg-semantic-inflection">
 					<h4>Semantic Inflection</h4>
+
 					<p>The syntax and semantics defined in <a href="#sec-xhtml-semantic-inflection"></a> are inherited
 						for use of the <a href="#attrdef-epub-type"><code>epub:type</code></a> and <a
 							href="#sec-contentdocs-prefix-attr"><code>epub:prefix</code></a> attributes in <a>SVG
 							Content Documents</a>.</p>
+
 					<p>The use of the <code>epub:prefix</code> attribute is only valid on the root <code>svg</code>
 						element in SVG Content Documents. Prefixes used in <a href="#sec-xhtml-svg">embedded SVG</a>
 						MUST be declared on the [[!HTML]] root <a
@@ -5183,12 +5137,28 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 						longer recommends the use of prefixed properties, this specification has to maintain some
 						prefixed properties to avoid breaking existing content. But with the minor exceptions defined in
 						this section, EPUB defers to the W3C to define CSS.</p>
+
+					<div class="note">
+						<p>Keep in mind that some <a>Reading Systems</a> will not support all desired features of CSS.
+							In particular, the following are known to be problematic:</p>
+						<ul>
+							<li>
+								<p>Reading System-induced pagination can interact poorly with style sheets. Pagination
+									is sometimes done using columns, which can result in incorrect values for viewport
+									sizes. Fixed and absolute positioning are particularly problematic.</p>
+							</li>
+							<li>
+								<p>Some types of screens will render animations and transitions poorly (e.g., those with
+									high latency).</p>
+							</li>
+						</ul>
+					</div>
 				</section>
 
-				<section id="sec-css-content-conf">
-					<h4>Content Conformance</h4>
+				<section id="sec-css-req">
+					<h4>CSS Requirements</h4>
 
-					<p>A conformant CSS style sheet has to meet the following criteria:</p>
+					<p>A CSS style sheets has to meet the following requirements:</p>
 
 					<ul class="conformance-list">
 						<li>
@@ -5222,22 +5192,6 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 							<p id="confreq-css-encoding">It MUST be encoded in UTF-8 or UTF-16 [[!Unicode]].</p>
 						</li>
 					</ul>
-
-					<div class="note">
-						<p>Keep in mind that some <a>Reading Systems</a> will not support all desired features of CSS.
-							In particular, the following are known to be problematic:</p>
-						<ul>
-							<li>
-								<p>Reading System-induced pagination can interact poorly with style sheets. Pagination
-									is sometimes done using columns, which can result in incorrect values for viewport
-									sizes. Fixed and absolute positioning are particularly problematic.</p>
-							</li>
-							<li>
-								<p>Some types of screens will render animations and transitions poorly (e.g., those with
-									high latency).</p>
-							</li>
-						</ul>
-					</div>
 				</section>
 
 				<section id="sec-css-prefixed">
@@ -5616,6 +5570,12 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 						instances of [[!HTML]] <a href="https://www.w3.org/TR/html/sec-forms.html#sec-forms"
 						>forms</a>.</p>
 
+					<div class="note">
+						<p>The <a href="#scripted"><code>scripted</code> property</a> of the <a>manifest</a>
+							<code>item</code> element indicates that an EPUB Content Document is a <a>Scripted Content
+								Document</a>.</p>
+					</div>
+
 					<p id="sec-scripted-content-models">This specification defines two contexts in which scripts MAY
 						appear:</p>
 
@@ -5659,8 +5619,8 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 						difference to the executing context.</p>
 
 					<p>Which context a script is used in determines the rights and restrictions that a Reading System
-						places on it. Refer to <a href="#sec-scripted-content-content-reqs"></a> and <a
-							href="https://www.w3.org/TR/epub-rs-33/#sec-scripted-content-rs-reqs">Scripting
+						places on it. Refer to <a href="sec-scripted-container-constrained">the following sections</a>
+						and <a href="https://www.w3.org/TR/epub-rs-33/#sec-scripted-content-rs-reqs">Scripting
 							Conformance</a> [[EPUB-RS-33]] for some specific requirements that have to be adhered to
 						(not all Reading Systems will provide the same scripting functionality).</p>
 
@@ -5738,99 +5698,71 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 					</aside>
 				</section>
 
-				<section id="sec-scripted-content-content-reqs">
-					<h4>Content Conformance</h4>
+				<section id="sec-scripted-container-constrained">
+					<h4>Container-Constrained Scripts</h4>
 
-					<dl class="conformance-list">
-						<dt>Container-constrained scripts</dt>
-						<dd>
-							<p id="confreq-cd-scripted-container">A container-constrained script MUST NOT contain
-								instructions for modifying the DOM of the parent Content Document or other contents in
-								the EPUB Publication, and MUST NOT contain instructions for manipulating the size of its
-								containing rectangle.</p>
-						</dd>
-						<dt>Spine-level scripts</dt>
-						<dd>
-							<p id="confreq-cd-scripted-spine">EPUB Content Documents that include <a
-									href="#sec-scripted-content-type-spine-level">spine-level</a> scripting MUST utilize
-								the <em>progressive enhancement technique</em>, which for the purposes of this
-								specification has the following definition: when the document is rendered by a Reading
-								System without scripting support or with scripting support disabled, the <a>Top-level
-									Content Document</a> MUST retain its integrity, remaining consumable by the user
-								without any information loss or other significant deterioration.</p>
-						</dd>
-						<dt>Accessibility</dt>
-						<dd>
-							<p id="confreq-cd-scripted-a11y">EPUB Content Documents that <a
-									href="#sec-scripted-content-models">include scripting</a> SHOULD employ relevant
-								[[!WAI-ARIA]] accessibility techniques to ensure that the content remains consumable by
-								all users.</p>
-						</dd>
-						<dt id="confreq-cd-scripted-flbk">Fallbacks</dt>
-						<dd>
-							<p id="confreq-cd-scripted-fallback">EPUB Content Documents that <a
-									href="#sec-scripted-content-models">include scripting</a> MAY provide fallbacks for
-								such content, either by using intrinsic fallback mechanisms (such as those available for
-								the [[!HTML]] <a
-									href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-object-element"
-										><code>object</code></a> and <a
-									href="https://www.w3.org/TR/html/semantics-scripting.html#the-canvas-element"
-										><code>canvas</code></a> elements) or, when an intrinsic fallback is not
-								applicable, by using a <a href="#sec-foreign-restrictions-manifest">manifest-level
-									fallback</a>.</p>
-							<p id="confreq-cd-scripted-foreign-resources">Authors MUST ensure that scripts only generate
-									<a href="#sec-core-media-types">Core Media Type Resources</a> or fragments
-								thereof.</p>
-						</dd>
-					</dl>
+					<p id="confreq-cd-scripted-container">A <a href="sec-scripted-type-container-constrained"
+							>container-constrained script</a> MUST NOT contain instructions for modifying the DOM of the
+						parent Content Document or other contents in the EPUB Publication, and MUST NOT contain
+						instructions for manipulating the size of its containing rectangle.</p>
+				</section>
 
-					<div class="note">
-						<p>The <a href="#scripted"><code>scripted</code> property</a> of the <a>manifest</a>
-							<code>item</code> element indicates that an EPUB Content Document is a <a>Scripted Content
-								Document</a>.</p>
-					</div>
+				<section id="sec-scripted-spine">
+					<h4>Spine-Level Scripts</h4>
+
+					<p id="confreq-cd-scripted-spine">EPUB Content Documents that include <a
+							href="#sec-scripted-content-type-spine-level">spine-level scripting</a> MUST utilize the
+							<em>progressive enhancement technique</em>, which for the purposes of this specification has
+						the following definition: when the document is rendered by a Reading System without scripting
+						support or with scripting support disabled, the <a>Top-level Content Document</a> MUST retain
+						its integrity, remaining consumable by the user without any information loss or other
+						significant deterioration.</p>
+				</section>
+
+				<section id="sec-scripted-a11y">
+					<h4>Scripting Accessibility</h4>
+
+					<p id="confreq-cd-scripted-a11y">EPUB Content Documents that <a href="#sec-scripted-content-models"
+							>include scripting</a> SHOULD employ relevant [[!WAI-ARIA]] accessibility techniques to
+						ensure that the content remains consumable by all users.</p>
+				</section>
+
+				<section id="sec-scripted-fallbacks">
+					<h4 id="confreq-cd-scripted-flbk">Scripting Fallbacks</h4>
+
+					<p id="confreq-cd-scripted-fallback">EPUB Content Documents that <a
+							href="#sec-scripted-content-models">include scripting</a> MAY provide fallbacks for such
+						content, either by using intrinsic fallback mechanisms (such as those available for the
+						[[!HTML]] <a
+							href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-object-element"
+								><code>object</code></a> and <a
+							href="https://www.w3.org/TR/html/semantics-scripting.html#the-canvas-element"
+								><code>canvas</code></a> elements) or, when an intrinsic fallback is not applicable, by
+						using a <a href="#sec-foreign-restrictions-manifest">manifest-level fallback</a>.</p>
+					<p id="confreq-cd-scripted-foreign-resources">Authors MUST ensure that scripts only generate <a
+							href="#sec-core-media-types">Core Media Type Resources</a> or fragments thereof.</p>
 				</section>
 			</section>
 
 			<section id="sec-fixed-layouts">
 				<h3>Fixed Layouts</h3>
 
-				<section id="sec-fxl-overview" class="informative">
-					<h4>Introduction</h4>
+				<p><a>Fixed-Layout Documents</a> are <a>EPUB Content Documents</a> marked as <code>pre-paginated</code>
+					in the <a>Package Document</a>.</p>
 
-					<p>This section defines rules for the expression and interpretation of dimensional properties of
-							<a>Fixed-Layout Documents</a> — <a>EPUB Content Documents</a> marked as
-							<code>pre-paginated</code> in the <a>Package Document</a>.</p>
+				<div class="note">
+					<p>Refer to <a href="#sec-package-metadata-fxl"></a> for information on how to designate that a
+							<a>Rendition</a>, or its individual spine items, are to be rendered in a pre-paginated
+						manner (i.e., with fixed width and height dimensions).</p>
+				</div>
 
-					<div class="note">
-						<p>Refer to <a href="#sec-package-metadata-fxl"></a> for information on how to designate that a
-								<a>Rendition</a>, or its individual spine items, are to be rendered in a pre-paginated
-							manner (i.e., with fixed width and height dimensions).</p>
-					</div>
+				<p id="confreg-fxl-icb">Fixed-Layout Documents specify their <a
+						href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial containing
+						block</a> [[!CSS2]] in the manner applicable to their format:</p>
 
-				</section>
-
-				<section id="sec-fxl-content-conf">
-					<h4>Content Conformance</h4>
-
-					<p>A conformant <a>Fixed-Layout Document</a> has to meet the following criteria:</p>
-
-					<ul class="conformance-list">
-						<li>
-							<p id="confreg-fxl-icb">It MUST specify its <a
-									href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-									containing block</a> [[!CSS2]] as defined in <a href="#sec-fxl-html-svg-dimensions"
-								></a>.</p>
-						</li>
-					</ul>
-				</section>
-
-				<section id="sec-fxl-html-svg-dimensions">
-					<h4>Initial Containing Block Dimensions</h4>
-
-					<section id="sec-fxl-icb-html">
-						<h5>Expressing in HTML</h5>
-
+				<dl class="conformance-list" id="sec-fxl-html-svg-dimensions">
+					<dt id="sec-fxl-icb-html">Expressing in XHTML</dt>
+					<dd>
 						<p>For XHTML <a>Fixed-Layout Documents</a>, the <a
 								href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
 								containing block</a> [[!CSS2]] dimensions MUST be expressed in a <code>viewport</code>
@@ -5846,11 +5778,10 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
    …
 &lt;/head&gt;</pre>
 						</aside>
-					</section>
+					</dd>
 
-					<section id="sec-fxl-icb-svg">
-						<h5>Expressing in SVG</h5>
-
+					<dt id="sec-fxl-icb-svg">Expressing in SVG</dt>
+					<dd>
 						<p>For SVG <a>Fixed-Layout Documents</a>, the ICB dimensions MUST be expressed using the <a
 								href="http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute"><code>viewBox</code>
 								attribute</a> [[!SVG]].</p>
@@ -5865,74 +5796,40 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
    …
 &lt;/svg&gt;</pre>
 						</aside>
-					</section>
-				</section>
+					</dd>
+				</dl>
 			</section>
 
 			<section id="sec-pls">
 				<h3>Pronunciation Lexicons</h3>
 
-				<section id="sec-pls-intro" class="informative">
-					<h4>Introduction</h4>
+				<p>The W3C Pronunciation Lexicon Specification (PLS) [[PRONUNCIATION-LEXICON]] defines syntax and
+					semantics for XML-based pronunciation lexicons to be used by Automatic Speech Recognition and
+						<a>Text-to-Speech</a> (TTS) engines.</p>
 
-					<p>The W3C Pronunciation Lexicon Specification (PLS) [[PRONUNCIATION-LEXICON]] defines syntax and
-						semantics for XML-based pronunciation lexicons to be used by Automatic Speech Recognition and
-							<a>Text-to-Speech</a> (TTS) engines.</p>
+				<p id="confreq-cd-pls-docprops-schema">PLS Documents MUST be valid to the RELAX NG schema available at
+					the URI <a class="uri" href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng"
+							><code>https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/</code></a>
+					[[!PRONUNCIATION-LEXICON]].</p>
 
-					<p>The following sections define conformance criteria for PLS documents when included in <a>EPUB
-							Publications</a>, and rules for associating PLS documents with <a>XHTML Content
-							Documents</a>.</p>
+				<p id="confreq-cd-pls-xht">A PLS Document MAY be associated with <a>XHTML Content Documents</a>. Each
+					XHTML Content Document MAY contain zero or more PLS document associations.</p>
 
-					<div class="note">
-						<p>For more information on EPUB 3 features related to synthetic speech, refer to <a
-								href="epub-overview.html#sec-tts">Text-to-speech</a> [[EPUB-OVERVIEW-33]].</p>
-					</div>
+				<p id="confreq-cd-pls-assoc">A PLS Document MUST be associated with the <a>XHTML Content Document</a> to
+					which it applies using the [[!HTML]] <a
+						href="https://www.w3.org/TR/html/document-metadata.html#the-link-element"><code>link</code></a>
+					element with its <code>rel</code> attribute set to "<code>pronunciation</code>" and its
+						<code>type</code> attribute set to the media type "<code>application/pls+xml</code>".</p>
 
-				</section>
+				<p id="confreq-cd-pls-assoc-lang">The <code>link</code> element <code>hreflang</code> attribute SHOULD
+					be specified on each <code>link</code>, and its value MUST match <a
+						href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/#S4.1">the language for
+						which the pronunciation lexicon is relevant</a> [[!PRONUNCIATION-LEXICON]] when specified.</p>
 
-				<section id="sec-pls-conf-pub">
-					<h4>EPUB Publication Conformance</h4>
-
-					<p>A conformant <a>Rendition</a> of an <a>EPUB Publication</a> has to meet the following criteria
-						for inclusion of <abbr title="Pronunciation Lexicon Specification">PLS</abbr> documents:</p>
-
-					<ul class="conformance-list">
-						<li>
-							<p id="confreq-cd-pls-xht">PLS Documents MAY be associated with <a>XHTML Content
-									Documents</a>. Each XHTML Content Document MAY contain zero or more PLS document
-								associations.</p>
-						</li>
-						<li>
-							<p id="confreq-cd-pls-assoc">PLS documents MUST be associated with the <a>XHTML Content
-									Document</a> to which they apply using the [[!HTML]] <a
-									href="https://www.w3.org/TR/html/document-metadata.html#the-link-element"
-										><code>link</code></a> element with its <code>rel</code> attribute set to
-									"<code>pronunciation</code>" and its <code>type</code> attribute set to the media
-								type "<code>application/pls+xml</code>".</p>
-							<p id="confreq-cd-pls-assoc-lang">The <code>link</code> element <code>hreflang</code>
-								attribute SHOULD be specified on each <code>link</code>, and its value MUST match <a
-									href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/#S4.1">the
-									language for which the pronunciation lexicon is relevant</a>
-								[[!PRONUNCIATION-LEXICON]] when specified.</p>
-						</li>
-						<li>
-							<p id="confreq-pls-pub-cont">PLS documents MUST meet the content conformance criteria
-								defined in <a href="#sec-pls-conf-content"></a>.</p>
-						</li>
-						<li>
-							<p id="confreq-pls-pub-manif">PLS documents MUST be represented and located as defined in <a
-									href="#sec-package-conformance"></a>.</p>
-						</li>
-					</ul>
-
-					<section id="pls-examples">
-						<h5>Examples</h5>
-
-						<aside class="example">
-							<p>The following example shows two <abbr title="Pronunciation Lexicon Specification"
-									>PLS</abbr> documents (one for Chinese and one for Mongolian) associated with an
-								XHTML Content Document.</p>
-							<pre>
+				<aside class="example">
+					<p>The following example shows two <abbr title="Pronunciation Lexicon Specification">PLS</abbr>
+						documents (one for Chinese and one for Mongolian) associated with an XHTML Content Document.</p>
+					<pre>
 &lt;html … &gt;    
     &lt;head&gt;
         …
@@ -5941,34 +5838,15 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
     &lt;/head&gt;        
     …
 &lt;/html&gt;</pre>
-						</aside>
-					</section>
-				</section>
+				</aside>
 
-				<section id="sec-pls-conf-content">
-					<h4>Content Conformance</h4>
+				<p id="confreq-cd-pls-fileprops-name">PLS Documents SHOULD use the file extension <code class="filename"
+						>.pls</code>.</p>
 
-					<p>A <abbr title="Pronunciation Lexicon Specification">PLS</abbr> document has to meet the following
-						criteria:</p>
-
-					<dl class="conformance-list">
-						<dt id="confreq-cd-pls-docprops">Document Properties</dt>
-						<dd>
-							<p id="confreq-cd-pls-xml">It MUST meet the conformance constraints for XML documents
-								defined in <a href="#sec-xml-constraints"></a>.</p>
-							<p id="confreq-cd-pls-docprops-schema">It MUST be valid to the RELAX NG schema for PLS
-								documents available at the URI <a class="uri"
-									href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng"
-										><code>https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/</code></a>
-								[[!PRONUNCIATION-LEXICON]].</p>
-						</dd>
-						<dt id="confreq-cd-pls-fileprops">File Properties</dt>
-						<dd>
-							<p id="confreq-cd-pls-fileprops-name">The PLS document filename SHOULD use the file
-								extension <code class="filename">.pls</code>.</p>
-						</dd>
-					</dl>
-				</section>
+				<div class="note">
+					<p>For more information on EPUB 3 features related to synthetic speech, refer to <a
+							href="epub-overview.html#sec-tts">Text-to-speech</a> [[EPUB-OVERVIEW-33]].</p>
+				</div>
 			</section>
 		</section>
 		<section id="sec-package-nav">
@@ -6458,22 +6336,6 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 		</section>
 		<section id="sec-ocf">
 			<h2>Open Container Format</h2>
-
-			<section id="sec-ocf-conformance">
-				<h3>OCF Conformance</h3>
-
-				<ul class="conformance-list">
-					<li>
-						<p id="confreq-ocf-content-abstr">An OCF Abstract Container MUST meet the conformance
-							constraints defined in <a href="#sec-container-abstract"></a>.</p>
-					</li>
-					<li>
-						<p id="confreq-ocf-content-zip">An OCF ZIP Container MUST meet the conformance constraints
-							defined in <a href="#sec-container-zip"></a>.</p>
-					</li>
-				</ul>
-
-			</section>
 
 			<section id="sec-container-abstract">
 				<h3>OCF Abstract Container</h3>
@@ -7452,72 +7314,64 @@ store destination as source in ocf
 		<section id="sec-media-overlays">
 			<h2>Media Overlays</h2>
 
-			<section id="sec-media-overlays-document-definition">
-				<h3>Media Overlay Document Definition</h3>
+			<section id="sec-overlays-introduction" class="informative">
+				<h4>Introduction</h4>
 
-				<section id="sec-overlays-introduction" class="informative">
-					<h4>Introduction</h4>
+				<p>Synchronized audio narration is found in mainstream ebooks, educational tools and ebooks formatted
+					for persons with print disabilities. In EPUB 3, these types of books are created using Media Overlay
+					Documents to describe the timing for the pre-recorded audio narration and how it relates to the EPUB
+					Content Document markup. The file format for Media Overlays is defined as a subset of [[SMIL3]], a
+					W3C recommendation for representing synchronized multimedia information in XML.</p>
 
-					<p>Synchronized audio narration is found in mainstream ebooks, educational tools and ebooks
-						formatted for persons with print disabilities. In EPUB 3, these types of books are created using
-						Media Overlay Documents to describe the timing for the pre-recorded audio narration and how it
-						relates to the EPUB Content Document markup. The file format for Media Overlays is defined as a
-						subset of [[SMIL3]], a W3C recommendation for representing synchronized multimedia information
-						in XML.</p>
+				<p>The text and audio synchronization enabled by Media Overlays provides enhanced accessibility for any
+					user who has difficulty following the text of a traditional book. Media Overlays also provide a
+					continuous listening experience for readers who are unable to read the text for any reason,
+					something that traditional audio embedding techniques cannot offer. They are even useful for
+					purposes not traditionally considered accessibility concerns (e.g., for language learning or reading
+					of commercial audio books).</p>
 
-					<p>The text and audio synchronization enabled by Media Overlays provides enhanced accessibility for
-						any user who has difficulty following the text of a traditional book. Media Overlays also
-						provide a continuous listening experience for readers who are unable to read the text for any
-						reason, something that traditional audio embedding techniques cannot offer. They are even useful
-						for purposes not traditionally considered accessibility concerns (e.g., for language learning or
-						reading of commercial audio books).</p>
+				<p>The Media Overlays feature is designed to be transparent to <a>EPUB Reading Systems</a> that do not
+					support the feature. The inclusion of Media Overlays in an EPUB Publication has no impact on the
+					ability of Media Overlay-unaware Reading Systems to render the EPUB Publication as though the Media
+					Overlays are not present.</p>
 
-					<p>The Media Overlays feature is designed to be transparent to <a>EPUB Reading Systems</a> that do
-						not support the feature. The inclusion of Media Overlays in an EPUB Publication has no impact on
-						the ability of Media Overlay-unaware Reading Systems to render the EPUB Publication as though
-						the Media Overlays are not present.</p>
+				<p>Although future versions of this specification might incorporate support for video media (e.g.,
+					synchronized text/sign-language books), this version supports only synchronizing audio media with
+					the EPUB Content Document.</p>
+			</section>
 
-					<p>Although future versions of this specification might incorporate support for video media (e.g.,
-						synchronized text/sign-language books), this version supports only synchronizing audio media
-						with the EPUB Content Document.</p>
-				</section>
+			<section id="sec-overlay-docs">
+				<h3>Media Overlay Documents</h3>
 
-				<section id="sec-overlays-content-conf">
-					<h4>Content Conformance</h4>
+				<section id="sec-overlay-req">
+					<h4>Media Overlay Document Requirements</h4>
 
-					<p>A <a>Media Overlay Document</a> has to meet the following criteria:</p>
+					<p>A <a>Media Overlay Document</a> has to meet the following requirements:</p>
 
-					<dl class="conformance-list">
-						<dt id="confreq-mo-docprops">Document Properties</dt>
-						<dd>
-							<p id="confreq-mo-xml"> It MUST meet the conformance constraints for XML documents defined
-								in <a href="#sec-xml-constraints"></a>.</p>
+					<ul class="conformance-list">
+						<li>
 							<p id="confreq-mo-docprops-schema">It MUST be valid to the Media Overlays schema as defined
 								in <a href="#app-schema-overlays"></a> and conform to all content conformance
 								constraints expressed in <a href="#sec-overlays-def"></a>.</p>
-							<p id="confreq-mo-docprops-structure">It MUST be authored to reflect the structure of the
-									<a>EPUB Content Document</a> with which it is associated, as stated in <a
-									href="#sec-media-overlays-structure"></a>.</p>
+						</li>
+						<li>
 							<p id="confreq-mo-docprops-references">It MAY refer to more than one EPUB Content Document,
 								but an EPUB Content Document MUST NOT be referenced by more than one Media Overlay
 								Document.</p>
-							<p id="confreq-mo-docprops-embed">It MUST adhere to the requirements for <a
-									href="#sec-audio-video">Embedded Media</a>.</p>
-							<p id="confreq-mo-docprops-semantics">It SHOULD use semantic markup where appropriate, as
-								described in <a href="#sec-docs-semantic-inflection"></a>.</p>
-							<p id="confreq-mo-docprops-package">It MUST be packaged with the <a>EPUB Publication</a> as
-								shown in <a href="#sec-docs-package"></a>.</p>
-						</dd>
-						<dt id="confreq-mo-fileprops">File Properties</dt>
-						<dd>
-							<p id="confreq-mo-fileprops-name">The Media Overlay Document filename SHOULD use the file
-								extension <code class="filename">.smil</code>.</p>
-						</dd>
-					</dl>
+						</li>
+						<li>
+							<p id="confreq-mo-docprops-semantics">It SHOULD use <a href="#sec-docs-semantic-inflection"
+									>semantic markup</a> where appropriate.</p>
+						</li>
+						<li>
+							<p id="confreq-mo-fileprops-name">It SHOULD use the file extension <code class="filename"
+									>.smil</code>.</p>
+						</li>
+					</ul>
 				</section>
 
 				<section id="sec-overlays-def">
-					<h4>Media Overlay Document Definition</h4>
+					<h3>Media Overlay Document Definition</h3>
 
 					<p>All elements [[!XML]] defined in this section are in the <code>https://www.w3.org/ns/SMIL</code>
 						namespace [[!XML-NAMES]] unless otherwise specified.</p>
@@ -8018,7 +7872,7 @@ store destination as source in ocf
 				</section>
 			</section>
 
-			<section id="sec-overlay-docs">
+			<section id="sec-overlay-doc-create">
 				<h3>Creating Media Overlays</h3>
 
 				<section id="sec-docs-intro" class="informative">
@@ -9260,7 +9114,7 @@ EPUB/images/cover.png</pre>
 				</li>
 				<li id="idx-mo">
 					<p>
-						<a href="#sec-media-overlays-document-definition">Media Overlays Documents</a>
+						<a href="#sec-media-overlays">Media Overlays Documents</a>
 					</p>
 					<ul>
 						<li>
