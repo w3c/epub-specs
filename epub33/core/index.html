@@ -997,7 +997,6 @@
 								<a>manifest</a>
 							<a href="#sec-item-elem"><code>item</code> element</a>.</p>
 					</div>
-
 				</section>
 
 				<section id="sec-xml-constraints">
@@ -1013,9 +1012,18 @@
 									Documents</a> [[!XML-NAMES]].</p>
 						</li>
 						<li>
-							<p id="confreq-xml-extmarkupdecl">
-								<a href="https://www.w3.org/TR/2008/REC-xml-20081126/#NT-ExternalID">External
-									identifiers</a> MUST NOT appear in the document type declaration [[!XML]].</p>
+							<p id="confreq-xml-identifiers">It MAY only include a <a
+									href="https://www.w3.org/TR/2008/REC-xml-20081126/#dt-doctype">document type
+									declaration</a> that references an <a
+									href="https://www.w3.org/TR/2008/REC-xml-20081126/#NT-ExternalID">external
+									identifier</a> appropriate for its media type &#8212; as defined in <a
+									href="#app-identifiers-allowed"></a> &#8212; or that omits external identifiers
+								[[!XML]].</p>
+						</li>
+						<li>
+							<p id="confreq-xml-entities">It MUST NOT contain <a
+									href="https://www.w3.org/TR/2008/REC-xml-20081126/#dt-extent">external entity</a>
+								declarations in the internal DTD subset [[!XML]].</p>
 						</li>
 						<li>
 							<p id="confreq-xml-xinc"> It MUST NOT make use of XInclude [[!XInclude]].</p>
@@ -1027,7 +1035,6 @@
 
 					<p>The above constraints apply regardless of whether the given Publication Resource is a <a>Core
 							Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
-
 				</section>
 			</section>
 		</section>
@@ -5361,6 +5368,8 @@ urn:uuid:A1B0D67E-2E81-4DF5-9E67-A64CBE366809@2011-01-01T12:00:00Z
 &lt;spine&gt;
     &lt;itemref idref="titlepage" properties="page-spread-right rendition:layout-pre-paginated"/&gt;
 &lt;/spine&gt;</pre>
+						<p>Note that the alias <a href="#page-spread"><code>rendition:page-spread-right</code></a> could
+							be used in place of <code>page-spread-right</code>.</p>
 					</aside>
 
 					<section id="spread-overrides">
@@ -7812,6 +7821,55 @@ html.-epub-media-overlay-playing * {
 					requirement.</p>
 			</section>
 		</section>
+		<section id="app-identifiers-allowed" class="appendix">
+			<h2>Allowed External Identifiers</h2>
+
+			<p>The following table lists the <a aria-label="public identifiers"
+					href="https://www.w3.org/TR/2008/REC-xml-20081126/#dt-pubid">public </a> and <a
+					href="https://www.w3.org/TR/2008/REC-xml-20081126/#dt-sysid">system identifiers</a> [[!XML]] allowed
+				in <a href="https://www.w3.org/TR/2008/REC-xml-20081126/#dt-doctype">document type declarations</a>.
+				[[!XML]]</p>
+
+			<p>These external identifiers MAY be used only in <a>Publication Resources</a> with the listed media types
+				specified in their <a href="#sec-manifest-elem">manifest</a> declarations. (Refer to <a
+					href="#sec-xml-constraints"></a> for more information.)</p>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Media Type(s)</th>
+						<th>Public Identifier</th>
+						<th>System Identifier</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="flat">
+								<li><code>application/mathml+xml</code></li>
+								<li><code>application/mathml-presentation+xml</code></li>
+								<li><code>application/mathml-content+xml</code></li>
+							</ul>
+						</td>
+						<td>
+							<code>-//W3C//DTD MathML 3.0//EN</code>
+						</td>
+						<td>
+							<code>http://www.w3.org/Math/DTD/mathml3/mathml3.dtd</code>
+						</td>
+					</tr>
+					<tr>
+						<td><code>application/svg+xml</code></td>
+						<td>
+							<code>-//W3C//DTD SVG 1.1//EN</code>
+						</td>
+						<td>
+							<code>http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd</code>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
 		<section id="app-semantic-inflection">
 			<h2>Semantic Inflection</h2>
 
@@ -8160,6 +8218,21 @@ html.-epub-media-overlay-playing * {
    …
 &lt;/html></pre>
 					</aside>
+
+					<div class="note">
+						<p>Although the <code>prefix</code> attribute is modeled on the identically named
+								<code>prefix</code> attribute in [[RDFA-CORE]], Authors cannot use the attributes
+							interchangeably. The <code>prefix</code> attribute without a namespace in EPUB Content
+							Documents is the RDFa attribute.</p>
+
+						<p>It is common for both attributes to appear in EPUB Content Documents that also include RDFa
+							expressions.</p>
+
+						<pre>&lt;html … prefix="…"
+        xmlns:epub="http://www.idpf.org/2007/ops"
+        epub:prefix="…">   …
+&lt;/html></pre>
+					</div>
 
 					<p>Note that for <a href="#sec-xhtml-svg">embedded SVG</a>, prefixes MUST be declared on the
 						[[!HTML]] root <a href="https://www.w3.org/TR/html/semantics.html#the-html-element"
@@ -8884,17 +8957,21 @@ EPUB/images/cover.png</pre>
 					<li>6-Nov-2020: Clarified that HTML <code>script</code> elements that contain <a
 							href="#sec-scripted-context">data blocks are not instances of scripting</a>. See <a
 							href="https://github.com/w3c/epub-specs/issues/1352">issue 1352</a>.</li>
-					<li>5-Nov-2020: Generalized the restriction on custom attribute namespace URIs to exclude all of
-						idpf.org and w3.org. See <a href="https://github.com/w3c/epub-specs/issues/1388">issue
-						1388</a>.</li>
-					<li>12-Oct-2020: Added OPUS to the audio core media types with a warning that it is still subject to
-						review depending on support in Mac/iOS. See <a
+					<li>6-Nov-2020: A <a href="#app-identifiers-allowed">restricted set of external identifiers</a> are
+							now allowed in publication resources. <a href="#sec-xml-constraints">References to external
+							entities</a> from the internal DTD subset remain restricted, however. See <a
+							href="https://github.com/w3c/epub-specs/issues/1338">issue 1338</a>.</li>
+					<li>5-Nov-2020: Generalized the restriction on <a href="#sec-xhtml-custom-attributes">custom
+							attribute namespace URIs</a> to exclude all of idpf.org and w3.org. See <a
+							href="https://github.com/w3c/epub-specs/issues/1388">issue 1388</a>.</li>
+					<li>12-Oct-2020: Added OPUS to the <a href="#cmt-grp-audio">audio core media types</a> with a
+							warning that it is still subject to review depending on support in Mac/iOS. See <a
 							href="https://github.com/w3c/epub-specs/issues/645">issue 645</a>.</li>
 					<li>30-Sept-2020: The structure of the EPUB core specifications has been simplified to ease
-						understanding and access to information. This specification now consolidates the authoring
-						requirements from the EPUB 3.2 specification together with the Packages, Content Documents, OCF
-						and Media Overlays specifications. A separate document, EPUB Reading Systems 3.3, consolidates
-						the reading system requirements from those documents.</li>
+							understanding and access to information. This specification now consolidates the authoring
+							requirements from the EPUB 3.2 specification together with the Packages, Content Documents, OCF
+							and Media Overlays specifications. A separate document, EPUB Reading Systems 3.3, consolidates
+							the reading system requirements from those documents.</li>
 				</ul>
 			</section>
 
