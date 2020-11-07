@@ -387,6 +387,14 @@ var biblio = {
     "US-ASCII": {
       "title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
     },
+    "WebP-Container": {
+      "title": "WebP Container Specification",
+      "href": "https://developers.google.com/speed/webp/docs/riff_container"
+    },
+    "WebP-LB": {
+      "title": "WebP Lossless Bitstream Specification",
+      "href": "https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification"
+    },
     "W3CProcess": {
       "title": "W3C Process Document",
       "href": "https://www.w3.org/Consortium/Process/"
