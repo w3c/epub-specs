@@ -129,10 +129,10 @@
 			</section>
 		</section>
 		<section id="sec-rs-conf-general">
-			<h2>Conformance Requirements</h2>
+			<h2>EPUB Publications</h2>
 
-			<p>An <a>EPUB Reading System</a> is conformant with this specification if it meets the following
-				requirements:</p>
+			<p>An <a>EPUB Reading System</a> is conformant with this specification if it meets the following processing
+				requirements for <a>EPUB Publications</a>:</p>
 
 			<dl class="conformance-list">
 				<dt id="sec-epub-rs-conf-epub3">EPUB 3 Processing</dt>
@@ -198,7 +198,7 @@
 					<ul class="conformance-list">
 						<li>
 							<p id="confreq-rs-a11y">It SHOULD meet the accessibility requirements for Reading Systems in
-								[[!EPUBAccessibility-10]].</p>
+								[[!EPUB-A11Y-10]].</p>
 						</li>
 					</ul>
 				</dd>
@@ -285,12 +285,12 @@
 					</li>
 					<li>
 						<p id="confreq-rs-epub3-fxl-meta">It MUST process fixed layout metadata, as expressed in <a
-								href="#sec-package-metadata-fxl"></a>.</p>
+								href="#sec-fxl-props"></a>.</p>
 					</li>
 					<li>
 						<p id="confreq-rs-epub3-fxl-conflicts">It MUST ignore proprietary metadata properties that
 							pertain to layout expressions if they conflict behaviorally with the property semantics
-							defined in <a href="#sec-package-metadata-fxl"></a>.</p>
+							defined in <a href="#sec-fxl-props"></a>.</p>
 					</li>
 					<li>
 						<p id="confreq-rendition-rs-manifest">It MUST NOT use any resources not listed in the Package
@@ -481,303 +481,6 @@
 					</dd>
 				</dl>
 			</section>
-
-			<section id="sec-vocab-assoc">
-				<h3>Vocabulary Association Mechanisms</h3>
-
-				<dl class="conformance-list">
-					<dt id="sec-metadata-reserved-prefixes">Reserved Prefixes</dt>
-					<dd>
-						<p>Reading Systems MUST resolve all reserved prefixes used in Package Documents using their
-							predefined URIs unless a local <a href="#sec-prefix-attr">prefix</a> is declared. Reading
-							Systems MUST use locally-overriden prefixes in the <code>prefix</code> attribute when
-							encountered.</p>
-
-						<p>As changes to the reserved prefixes and updates to Reading Systems are not always going
-							happen in synchrony, Reading Systems MUST NOT fail when encountering unrecognized prefixes
-							(i.e., not reserved and not declared using the <code>prefix</code> attribute).</p>
-					</dd>
-
-					<dt id="sec-prefix-attr">The <code>prefix</code> attribute</dt>
-					<dd>
-						<p>If the <code>prefix</code> attribute includes a declaration for a <a
-								href="#sec-metadata-reserved-prefixes">predefined prefix</a>, Reading Systems MUST use
-							the URI mapping defined in the <code>prefix</code> attribute, regardless of whether of it
-							maps to the same URI as the predefined prefix.</p>
-					</dd>
-
-					<dt id="sec-property-datatype">The <code>property</code> Data Type</dt>
-					<dd>
-						<p>A Reading System MUST use the following rules to create an IRI [[!RFC3987]] from a
-							property:</p>
-
-						<ul>
-							<li>
-								<p>If the property consists only of a reference, the IRI is obtained by concatenating
-									the IRI stem associated with the <a
-										href="https://www.w3.org/TR/epub-33/#sec-metadata-default-vocab">default
-										vocabulary</a> [[!EPUB-33]] to the reference.</p>
-							</li>
-							<li>
-								<p>If the property consists of a prefix and reference, the IRI is obtained by
-									concatenating the IRI stem associated with the prefix to the reference. If no
-									matching prefix has been defined, the property is invalid and MUST be ignored.</p>
-							</li>
-						</ul>
-
-						<p>The resulting IRI MUST be valid to [[!RFC3987]]. Reading Systems do not have to resolve this
-							IRI, however.</p>
-					</dd>
-				</dl>
-			</section>
-
-			<section id="sec-package-metadata-rendering">
-				<h3>Package Rendering Metadata</h3>
-
-				<section id="sec-package-metadata-general">
-					<h4>General Properties</h4>
-
-					<section id="flow">
-						<h5>The <code>rendition:flow</code> Property</h5>
-
-						<p>If a Reading System supports the specified rendering, it SHOULD use that method to handle
-							overflow content, but MAY provide the option for users to override the requested
-							rendering.</p>
-
-						<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if
-							no <code>meta</code> element carrying this property occurs in the <a
-								href="https://www.w3.org/TR/epub-33/#elemdef-opf-metadata"><code>metadata</code>
-								section</a> [[!EPUB-33]]. Reading Systems MAY support only this default value.</p>
-
-						<p>If a Reading Systems supports the <a href="#layout"><code>rendition:layout</code></a>
-							property, it MUST ignore the <code>rendition:flow</code> property when it has been set on a
-							spine item that also specifies the <a href="#layout"><code>rendition:layout</code></a> value
-								<code>pre-paginated</code>.</p>
-
-						<p>The <code>rendition:flow</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt id="paginated">paginated</dt>
-							<dd>
-								<p>The Reading System SHOULD dynamically paginate all overflow content.</p>
-							</dd>
-							<dt id="scrolled-continuous">scrolled-continuous</dt>
-							<dd>
-								<p>The Reading System SHOULD render all Content Documents such that overflow content is
-									scrollable, and the EPUB Publication represented by the given <a>Rendition</a>
-									SHOULD be presented as one continuous scroll from spine item to spine item (except
-									where <a href="https://www.w3.org/TR/epub-33/#layout-property-flow-overrides"
-										>locally overridden</a> [[!EPUB-33]]).</p>
-							</dd>
-							<dt id="scrolled-doc">scrolled-doc</dt>
-							<dd>
-								<p>The Reading System SHOULD render all Content Documents such that overflow content is
-									scrollable, and each spine item SHOULD be presented as a separate scrollable
-									document.</p>
-							</dd>
-							<dt id="auto">auto</dt>
-							<dd>
-								<p>The Reading System MAY render overflow content using its default method or a user
-									preference, whichever is applicable.</p>
-							</dd>
-						</dl>
-
-						<p>For the <code>rendition:flow-scrolled-continuous</code> property, the scroll direction is
-							defined relative to the block flow direction of the root element of the XHTML Content
-							Document referenced by the <a href="https://www.w3.org/TR/epub-33/#elemdef-spine-itemref"
-									><code>itemref</code> element</a> [[!EPUB-33]]. The scroll direction is vertical if
-							the block flow direction is downward (top-to-bottom). It is horizontal if the block flow
-							direction of the root element is rightward (left-to-right) or leftward (right-to-left).</p>
-					</section>
-
-					<section id="align-x-center">
-						<h5>The <code>rendition:align-x-center</code> Property</h5>
-
-						<p>When the <a href="#align-x-center"><code>rendition:align-x-center</code> property</a> is set
-							on a spine item, Reading Systems SHOULD reneder the content centered horizontally within the
-								<a>Viewport</a> or spread, as applicable. This property does not affect the rendering of
-							the spine item, only the placement of the resulting content box.</p>
-
-						<p>For reflowable content, Reading Systems that support this property MUST center each virtual
-							page.</p>
-
-						<p>This version of this specification does not define a default rendering behavior when this
-							property is not supported or specified. Reading Systems MAY render spine items by their own
-							design.</p>
-					</section>
-				</section>
-
-				<section id="sec-package-metadata-fxl">
-					<h4>Fixed-Layout Properties</h4>
-
-					<section id="layout">
-						<h5>The <code>rendition:layout</code> Property</h5>
-
-						<p>The default value <code>reflowable</code> MUST be assumed by <a>EPUB Reading Systems</a> as
-							the global value if no <code>meta</code> element carrying this property occurs in the <a
-								href="https://www.w3.org/TR/epub-33/#elemdef-opf-metadata"><code>metadata</code>
-								section</a> [[!EPUB-33]].</p>
-
-						<p>When the <code>rendition:layout</code> property is set to <code>pre-paginated</code>, Reading
-							Systems MUST NOT include space between the adjacent content slots when rendering
-								<a>Synthetic Spreads</a>.</p>
-
-						<p>The <code>rendition:layout</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt id="def-layout-reflowable">reflowable</dt>
-							<dd>
-								<p>Reading Systems MAY apply dynamic pagination when rendering.</p>
-							</dd>
-							<dt id="def-layout-pre-paginated">pre-paginated</dt>
-							<dd>
-								<p>Reading Systems MUST produce exactly one page per spine <a
-										href="https://www.w3.org/TR/epub-33/#elemdef-spine-itemref"
-										><code>itemref</code></a> [[!EPUB-33]] when rendering.</p>
-							</dd>
-						</dl>
-					</section>
-
-					<section id="orientation">
-						<h5>The <code>rendition:orientation</code> Property</h5>
-
-						<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if
-							no <code>meta</code> element carrying this property occurs in the <code>metadata</code>
-							section.</p>
-
-						<p>Reading Systems that support multiple orientations SHOULD convey the intended orientation to
-							the user, unless the given value is <code>auto</code>. The means by which the intent is
-							conveyed is implementation-specific.</p>
-					</section>
-
-					<section id="spread">
-						<h5>The <code>rendition:spread</code> Property</h5>
-
-						<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if
-							no <code>meta</code> element carrying this property occurs in the <code>metadata</code>
-							section.</p>
-
-						<p>The <code>rendition:spread</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt>none</dt>
-							<dd>
-								<p>Reading Systems MUST NOT incorporate spine items in a Synthetic Spread.</p>
-							</dd>
-							<dt>landscape</dt>
-							<dd>
-								<p>Reading Systems SHOULD render a Synthetic Spread for spine items only when the device
-									is in landscape orientation.</p>
-							</dd>
-							<dt>portrait (deprecated)</dt>
-							<dd>
-								<p>Reading Systems SHOULD treat the value "<code>portrait</code>" as a synonym of
-										"<code>both</code>" and create spreads regardless of orientation.</p>
-							</dd>
-							<dt>both</dt>
-							<dd>
-								<p>Reading Systems SHOULD render a Synthetic Spread regardless of device
-									orientation.</p>
-							</dd>
-							<dt>auto</dt>
-							<dd>
-								<p>Reading Systems MAY use Synthetic Spreads in specific or all device orientations as
-									part of a <a>Content Display Area</a> utilization optimization process.</p>
-							</dd>
-						</dl>
-					</section>
-
-					<section id="page-spread">
-						<h5>The <code>rendition:page-spread-*</code> Properties</h5>
-
-						<p>The <code>rendition:page-spread-left</code> property indicates that the given spine item
-							SHOULD be rendered in the left-hand slot in the spread, and
-								<code>rendition:page-spread-right</code> that it SHOULD be rendered in the right-hand
-							slot. The <code>rendition:page-spread-center</code> property indicates that the synthetic
-							spread mode SHOULD be overridden and a single viewport rendered and positioned at the center
-							of the screen.</p>
-
-						<p>The <code>rendition:page-spread-left</code>, <code>rendition:page-spread-right</code> and
-								<code>rendition:page-spread-center</code> properties apply to both pre-paginated and
-							reflowable content, and they only apply when the Reading System is creating Synthetic
-							Spreads.</p>
-
-						<p>The <code>rendition:page-spread-*</code> properties take precedence over whatever value of
-							the <a href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
-									><code>page-break-before</code> property</a> [[!CSSSnapshot]] has been set for an
-								<a>XHTML Content Document</a>.</p>
-
-						<div class="note">
-							<p>The presence of <code>rendition:page-spread-center</code> does not change the viewport
-								dimensions. In particular, it does not indicate that a viewport with the size of the
-								whole spread has to be created. This is important so that the scale factor stays
-								consistent between regular and center-spread pages.</p>
-						</div>
-
-						<p>When a <a href="#def-layout-reflowable">reflowable</a> spine item follows a <a
-								href="#def-layout-pre-paginated">pre-paginated</a> one, the reflowable one SHOULD start
-							on the next page (as defined by the <a
-								href="https://www.w3.org/TR/epub-33/#attrdef-spine-page-progression-direction"
-									><code>page-progression-direction</code></a> [[EPUB-33]]) when it lacks a
-								<code>rendition:page-spread-*</code> property value. If the reflowable spine item has a
-								<code>rendition:page-spread-*</code> specification, it MUST be honored (e.g., by
-							inserting a blank page).</p>
-
-						<p>Similarly, when a pre-paginated spine item follows a reflowable one, the pre-paginated one
-							SHOULD start on the next page (as defined by the <code>page-progression-direction</code>)
-							when it lacks a <code>rendition:page-spread-*</code> property value. If the pre-paginated
-							spine item has a <code>rendition:page-spread-*</code> specification, it MUST be honored
-							(e.g., by inserting a blank page).</p>
-
-						<p>When a Reading System encounters two spine items that represent a true spread (i.e., two
-							adjacent spine items with the <code>rendition:page-spread-left</code> and
-								<code>rendition:page-spread-right</code> properties), it SHOULD create the spread with
-							no space between the adjacent pages.</p>
-					</section>
-				</section>
-			</section>
-
-			<section id="sec-package-nav">
-				<h3>Navigation Document</h3>
-
-				<section id="sec-package-nav-rs-conf">
-					<h4>Navigation Document Conformance</h4>
-
-					<p>A conformant <a>EPUB Reading System</a> has to meet the following criteria for processing <a>EPUB
-							Navigation Documents</a>:</p>
-
-					<ul class="conformance-list">
-						<li>
-							<p id="confreq-nav-access">When requested by a user, it MUST provide access to the links and
-								link labels in <a href="https://www.w3.org/TR/epub-33/#sec-package-nav-def-types">the
-										<code>nav</code> elements</a> [[!EPUB-33]] of the EPUB Navigation Document in a
-								fashion that allows the user to activate the links.</p>
-						</li>
-						<li>
-							<p id="confreq-nav-activation">When a link is activated, it MUST relocate the application's
-								current reading position to the destination identified by that link.</p>
-						</li>
-						<li>
-							<p id="confreq-nav-spine">It MUST honor the above requirements irrespective of whether the
-								EPUB Navigation Document is part of the <a href="#sec-spine-elem">spine</a>.</p>
-						</li>
-					</ul>
-				</section>
-
-				<section id="sec-package-nav-def-model">
-					<h4>The <code>nav</code> Element: Restrictions</h4>
-
-					<p id="confreq-nav-ol-style">In the context of this specification, the default display style of list
-						items within <code>nav</code> elements MUST be equivalent to the <a
-							href="https://www.w3.org/TR/CSS2/generate.html#propdef-list-style"><code>list-style:
-								none</code> property</a> [[!CSSSnapshot]]. Reading Systems MUST NOT show list item
-						numbering on these lists when presenting the Navigation Document outside of the spine,
-						regardless of their support for CSS.</p>
-				</section>
-			</section>
 		</section>
 		<section id="contentdocs">
 			<h2>Content Document Processing</h2>
@@ -828,56 +531,34 @@
 					<section id="sec-xhtml-semantic-inflection">
 						<h5>Semantic Inflection</h5>
 
-						<p>A Reading System has to process the <code>epub:type</code> attribute as follows:</p>
+						<p>In addition to the requirements in <a href="#sec-semantic-inflection"></a>, a Reading System
+							has to process the <code>epub:type</code> attribute as follows in XHTML Content
+							Documents:</p>
 
 						<ul class="conformance-list">
 							<li>
-								<p id="confreq-rs-epubtype-beh">It MAY associate behaviors with none, some or all of the
-									terms defined in the <a
-										href="https://www.w3.org/TR/epub-33/#sec-contentdocs-default-vocab">default
-										vocabulary</a> [[EPUB-33]].</p>
-							</li>
-							<li>
-								<p id="confreq-rs-epubtype-oth">It MAY associate behaviors with terms from other
-									vocabularies.</p>
-							</li>
-							<li>
-								<p id="confreq-rs-epubtype-ign">It MUST ignore terms that it does not recognize.</p>
-							</li>
-							<li>
-								<p id="confreq-rs-epubtype-conflict">It MUST <a href="#confreq-rs-epubtype-prec">ignore
-										inflected semantics</a> that conflict with the carrying element.</p>
-							</li>
-							<li>
 								<p id="confreq-rs-epubtype-head">It MUST ignore semantics expressed on the [[!HTML]] <a
-										href="https://www.w3.org/TR/html/document-metadata.html#the-head-element"
+										href="https://html.spec.whatwg.org/multipage/semantics.html#the-head-element"
 											><code>head</code></a> element or its descendants.</p>
 							</li>
 						</ul>
-
-						<p id="confreq-rs-epubtype-prec">When Reading System behavior associated with a given
-								<code>epub:type</code> value conflicts with an element's native behavior, the behavior
-							associated with the element MUST be given precedence.</p>
 					</section>
-					<section id="sec-xhtml-semantic-enrichment">
-						<h5>Semantic Enrichment</h5>
 
-						<dl class="conformance-list">
-							<dt id="sec-xhtml-sementic-enrichment-rdfa">RDFa</dt>
-							<dd>
-								<p><a>EPUB Reading System</a> support for the <a
-										href="https://www.w3.org/TR/2015/REC-rdfa-core-20150317/#s_model">attribute
-										processing model</a> [[!RDFA-CORE]] is OPTIONAL.</p>
-							</dd>
+					<section id="sec-xhtml-rdfa">
+						<h5>RDFa</h5>
 
-							<dt id="sec-xhtml-sementic-enrichment-microdata">Microdata</dt>
-							<dd>
-								<p><a>EPUB Reading System</a> support for the <a
-										href="https://www.w3.org/TR/microdata/#encoding-microdata">attribute processing
-										model</a> is OPTIONAL, as is the <a href="https://www.w3.org/TR/microdata/#json"
-										>conversion to JSON</a> [[!Microdata]].</p>
-							</dd>
-						</dl>
+						<p><a>EPUB Reading System</a> support for the <a
+								href="https://www.w3.org/TR/2015/REC-rdfa-core-20150317/#s_model">attribute processing
+								model</a> [[!RDFA-CORE]] is OPTIONAL.</p>
+					</section>
+
+					<section id="sec-xhtml-microdata">
+						<h5>Microdata</h5>
+
+						<p><a>EPUB Reading System</a> support for the <a
+								href="https://www.w3.org/TR/microdata/#encoding-microdata">attribute processing
+								model</a> is OPTIONAL, as is the <a href="https://www.w3.org/TR/microdata/#json"
+								>conversion to JSON</a> [[!Microdata]].</p>
 					</section>
 
 					<section id="sec-xhtml-ssml-attrib">
@@ -920,9 +601,29 @@
 					<section id="sec-xhtml-custom-attributes">
 						<h5>Custom Attributes</h5>
 
-						<p><a>Reading Systems</a> MAY introduce functionality not defined in this specification to
-							enhance the rendering of <a>EPUB Publications</a>. To facilitate this experimentation,
-							vendors MAY define custom attributes for use in <a>XHTML Content Documents</a>.</p>
+						<p>Vendors MAY introduce functionality not defined in this specification to enhance the
+							rendering of <a>EPUB Publications</a>.</p>
+
+						<p>To facilitate this experimentation, vendors MAY define custom attributes for use in <a>XHTML
+								Content Documents</a> provided they are from a foreign namespace, which is defined as a
+							namespace [[!XML-NAMES]] that does not include either of the following domains in its URI's
+							authority component [[!RFC3986]]:</p>
+
+						<ul>
+							<li>
+								<p>
+									<code>w3.org</code>
+								</p>
+							</li>
+							<li>
+								<p>
+									<code>idpf.org</code>
+								</p>
+							</li>
+						</ul>
+
+						<p>Custom attributes, and the behaviors associated with them, MUST NOT alter the integrity of an
+							EPUB Publication.</p>
 
 						<div class="note">
 							<p>To facilitate interoperability of custom attributes across Reading Systems, vendors are
@@ -1067,8 +768,8 @@
 						<li>
 							<p id="confreq-css-rs-html-default">In addition to supporting CSS properties as defined
 								above, its user agent style sheet SHOULD support the [[!HTML]] <a
-									href="https://www.w3.org/TR/html/rendering.html#rendering">suggested default
-									rendering</a>.</p>
+									href="https://html.spec.whatwg.org/multipage/rendering.html#rendering">suggested
+									default rendering</a>.</p>
 						</li>
 						<li>
 							<p id="confreq-css-rs-overrides">It SHOULD respect Author CSS and user styles as defined in
@@ -1092,8 +793,8 @@
 						preserves the Cascade: through a user agent style sheet, the <a
 							href="https://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/css.html#CSS-OverrideAndComputed"
 								><code>getOverrideStyle</code> method</a> [[!DOM-Level-2-Style]], or [[!HTML]] <a
-							href="https://www.w3.org/TR/html/dom.html#the-style-attribute"><code>style</code>
-							attributes</a>.</p>
+							href="https://html.spec.whatwg.org/multipage/dom.html#the-style-attribute"
+								><code>style</code> attributes</a>.</p>
 
 					<p>Developers of Reading Systems are strongly encouraged to publicly document their user agent style
 						sheets and how they interact with Author style sheets.</p>
@@ -1118,8 +819,9 @@
 						<li>
 							<p id="confreq-rs-scripted-fxl-support">It SHOULD support <a
 									href="https://www.w3.org/TR/epub-33/#sec-scripted-content-type-spine-level"
-									>spine-level scripting</a> [[!EPUB-33]] in <a href="#sec-fixed-layouts">fixed-layout
-									documents</a>.</p>
+									>spine-level scripting</a> [[!EPUB-33]] in <a
+									href="https://www.w3.org/TR/epub-33/#sec-fixed-layouts">fixed-layout documents</a>
+								[[!EPUB-33]].</p>
 						</li>
 						<li>
 							<p id="confreq-rs-scripted-scrolled">It SHOULD support spine-level scripting in reflowable
@@ -1280,72 +982,6 @@
 				</section>
 			</section>
 
-			<section id="sec-fixed-layouts">
-				<h3>Fixed Layouts</h3>
-
-				<section id="sec-fxl-rs-conf">
-					<h4>Fixed Layout Conformance</h4>
-
-					<p>A conformant <a>EPUB Reading System</a> has to meet the following criteria for processing
-							<a>Fixed-Layout Documents</a>:</p>
-
-					<ul class="conformance-list">
-						<li>
-							<p id="confreq-fxl-rs-viewport">It SHOULD allocate the full <a>Content Display Area</a> for
-								the document, as defined in <a href="#sec-fxl-viewport"></a>.</p>
-						</li>
-						<li>
-							<p id="confreq-fxl-rs-html">It MUST use the dimensions expressed in the
-									<code>viewport</code>
-								<code>meta</code> tag to render <a>XHTML Content Documents</a>, as defined in <a
-									href="#sec-fxl-html-dimensions"></a>.</p>
-						</li>
-						<li>
-							<p id="confreq-fxl-rs-svg">It MUST use the dimensions as defined in <a
-									href="https://www.w3.org/TR/epub-33/#sec-fxl-icb-svg">Expressing the ICB in SVG</a>
-								[[!EPUB-33]] to render <a>SVG Content Documents</a>.</p>
-						</li>
-					</ul>
-
-					<div class="note">
-						<p>This specification does not define how the <a
-								href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-								containing block</a> [[CSS2]] is placed within the Reading System <a>Content Display
-								Area</a>.</p>
-					</div>
-				</section>
-
-				<section id="sec-fxl-html-dimensions">
-					<h4>HTML Initial Containing Block Dimensions</h4>
-
-					<p>In this version of this specification, only the width and height expressions as defined in <a
-							href="../core/index.html#sec-fxl-icb-html">Expressing in HTML</a> [[!EPUB-33]] MUST be
-						recognized by <a>Reading Systems</a>.</p>
-
-					<p>Reading Systems MUST clip XHTML content to the initial containing block (ICB) dimensions declared
-						in the <code>viewport</code>
-						<code>meta</code> tag — content positioned outside of the initial containing block will not be
-						visible. When the ICB aspect ratio does not match the aspect ratio of the Reading System
-							<a>Content Display Area</a>, Reading Systems MAY position the ICB inside the area to
-						accommodate the user interface; in other words, added letter-boxing space MAY appear on either
-						side (or both) of the content.</p>
-				</section>
-
-				<section id="sec-fxl-viewport">
-					<h4>Viewport Rendering</h4>
-
-					<p>When rendering <a>Fixed-Layout Documents</a>, the default intent is that the <a>Content Display
-							Area</a> SHOULD occupy as much of the available <a>Viewport</a> area as possible. <a>Reading
-							Systems</a> SHOULD NOT inject additional content such as border, margins, headers or footers
-						into the Viewport.</p>
-
-					<div class="note">
-						<p>The exposure of Reading System control widgets to the user is implementation-specific and not
-							included in the above behavioral expectations.</p>
-					</div>
-				</section>
-			</section>
-
 			<section id="sec-pls-conf-rs">
 				<h3>Pronunciation Lexicons</h3>
 
@@ -1363,8 +999,8 @@
 							[[!PRONUNCIATION-LEXICON]].</p>
 						<p id="confreq-pls-rs-scope">It MUST apply the supplied pronunciation instructions to all text
 							nodes in the current XHTML Content Document whose <a
-								href="https://www.w3.org/TR/html/dom.html#the-lang-and-xmllang-attributes">language</a>
-							[[!HTML]] matches <a
+								href="https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xmllang-attributes"
+								>language</a> [[!HTML]] matches <a
 								href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/#S4.1">the language
 								for which the pronunciation lexicon is relevant</a> [[!PRONUNCIATION-LEXICON]]. The
 							algorithm for matching language tags is defined in [[!BCP47]].</p>
@@ -1378,6 +1014,234 @@
 							of an element that carries the <code>ssml:ph</code> attribute [[!SSML]].</p>
 					</li>
 				</ul>
+			</section>
+		</section>
+		<section id="sec-nav">
+			<h3>Navigation Document</h3>
+
+			<section id="sec-nav-rs-conf">
+				<h4>Navigation Document Conformance</h4>
+
+				<p>A conformant <a>EPUB Reading System</a> has to meet the following criteria for processing <a>EPUB
+						Navigation Documents</a>:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-nav-access">When requested by a user, it MUST provide access to the links and
+							link labels in <a href="https://www.w3.org/TR/epub-33/#sec-nav-def-types">the
+									<code>nav</code> elements</a> [[!EPUB-33]] of the EPUB Navigation Document in a
+							fashion that allows the user to activate the links.</p>
+					</li>
+					<li>
+						<p id="confreq-nav-activation">When a link is activated, it MUST relocate the application's
+							current reading position to the destination identified by that link.</p>
+					</li>
+					<li>
+						<p id="confreq-nav-spine">It MUST honor the above requirements irrespective of whether the EPUB
+							Navigation Document is part of the <a href="#sec-spine-elem">spine</a>.</p>
+					</li>
+				</ul>
+			</section>
+
+			<section id="sec-nav-def-model">
+				<h4>The <code>nav</code> Element: Restrictions</h4>
+
+				<p id="confreq-nav-ol-style">In the context of this specification, the default display style of list
+					items within <code>nav</code> elements MUST be equivalent to the <a
+						href="https://www.w3.org/TR/CSS2/generate.html#propdef-list-style"><code>list-style: none</code>
+						property</a> [[!CSSSnapshot]]. Reading Systems MUST NOT show list item numbering on these lists
+					when presenting the Navigation Document outside of the spine, regardless of their support for
+					CSS.</p>
+			</section>
+		</section>
+		<section id="sec-fxl">
+			<h2>Fixed-Layout Documents</h2>
+
+			<section id="sec-fxl-rs-conf">
+				<h3>Fixed Layout Conformance</h3>
+
+				<p>A conformant <a>EPUB Reading System</a> has to meet the following criteria for processing
+						<a>Fixed-Layout Documents</a>:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-fxl-rs-viewport">It SHOULD allocate the full <a>Content Display Area</a> for the
+							document, as defined in <a href="#sec-fxl-viewport"></a>.</p>
+					</li>
+					<li>
+						<p id="confreq-fxl-rs-html">It MUST use the dimensions expressed in the <code>viewport</code>
+							<code>meta</code> tag to render <a>XHTML Content Documents</a>, as defined in <a
+								href="#sec-fxl-html-dimensions"></a>.</p>
+					</li>
+					<li>
+						<p id="confreq-fxl-rs-svg">It MUST use the dimensions as defined in <a
+								href="https://www.w3.org/TR/epub-33/#sec-fxl-icb-svg">Expressing the ICB in SVG</a>
+							[[!EPUB-33]] to render <a>SVG Content Documents</a>.</p>
+					</li>
+				</ul>
+
+				<div class="note">
+					<p>This specification does not define how the <a
+							href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial containing
+							block</a> [[CSS2]] is placed within the Reading System <a>Content Display Area</a>.</p>
+				</div>
+			</section>
+
+			<section id="sec-fxl-props">
+				<h3>Fixed-Layout Properties</h3>
+
+				<section id="layout">
+					<h4>The <code>rendition:layout</code> Property</h4>
+
+					<p>The default value <code>reflowable</code> MUST be assumed by <a>EPUB Reading Systems</a> as the
+						global value if no <code>meta</code> element carrying this property occurs in the <a
+							href="https://www.w3.org/TR/epub-33/#elemdef-opf-metadata"><code>metadata</code> section</a>
+						[[!EPUB-33]].</p>
+
+					<p>When the <code>rendition:layout</code> property is set to <code>pre-paginated</code>, Reading
+						Systems MUST NOT include space between the adjacent content slots when rendering <a>Synthetic
+							Spreads</a>.</p>
+
+					<p>The <code>rendition:layout</code> property values have the following processing requirements:</p>
+
+					<dl class="variablelist">
+						<dt id="def-layout-reflowable">reflowable</dt>
+						<dd>
+							<p>Reading Systems MAY apply dynamic pagination when rendering.</p>
+						</dd>
+						<dt id="def-layout-pre-paginated">pre-paginated</dt>
+						<dd>
+							<p>Reading Systems MUST produce exactly one page per spine <a
+									href="https://www.w3.org/TR/epub-33/#elemdef-spine-itemref"><code>itemref</code></a>
+								[[!EPUB-33]] when rendering.</p>
+						</dd>
+					</dl>
+				</section>
+
+				<section id="orientation">
+					<h4>The <code>rendition:orientation</code> Property</h4>
+
+					<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if no
+							<code>meta</code> element carrying this property occurs in the <code>metadata</code>
+						section.</p>
+
+					<p>Reading Systems that support multiple orientations SHOULD convey the intended orientation to the
+						user, unless the given value is <code>auto</code>. The means by which the intent is conveyed is
+						implementation-specific.</p>
+				</section>
+
+				<section id="spread">
+					<h4>The <code>rendition:spread</code> Property</h4>
+
+					<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if no
+							<code>meta</code> element carrying this property occurs in the <code>metadata</code>
+						section.</p>
+
+					<p>The <code>rendition:spread</code> property values have the following processing requirements:</p>
+
+					<dl class="variablelist">
+						<dt>none</dt>
+						<dd>
+							<p>Reading Systems MUST NOT incorporate spine items in a Synthetic Spread.</p>
+						</dd>
+						<dt>landscape</dt>
+						<dd>
+							<p>Reading Systems SHOULD render a Synthetic Spread for spine items only when the device is
+								in landscape orientation.</p>
+						</dd>
+						<dt>portrait (deprecated)</dt>
+						<dd>
+							<p>Reading Systems SHOULD treat the value "<code>portrait</code>" as a synonym of
+									"<code>both</code>" and create spreads regardless of orientation.</p>
+						</dd>
+						<dt>both</dt>
+						<dd>
+							<p>Reading Systems SHOULD render a Synthetic Spread regardless of device orientation.</p>
+						</dd>
+						<dt>auto</dt>
+						<dd>
+							<p>Reading Systems MAY use Synthetic Spreads in specific or all device orientations as part
+								of a <a>Content Display Area</a> utilization optimization process.</p>
+						</dd>
+					</dl>
+				</section>
+
+				<section id="page-spread">
+					<h4>The <code>rendition:page-spread-*</code> Properties</h4>
+
+					<p>The <code>rendition:page-spread-left</code> property indicates that the given spine item SHOULD
+						be rendered in the left-hand slot in the spread, and <code>rendition:page-spread-right</code>
+						that it SHOULD be rendered in the right-hand slot. The <code>rendition:page-spread-center</code>
+						property indicates that the synthetic spread mode SHOULD be overridden and a single viewport
+						rendered and positioned at the center of the screen.</p>
+
+					<p>The <code>rendition:page-spread-left</code>, <code>rendition:page-spread-right</code> and
+							<code>rendition:page-spread-center</code> properties apply to both pre-paginated and
+						reflowable content, and they only apply when the Reading System is creating Synthetic
+						Spreads.</p>
+
+					<p>The <code>rendition:page-spread-*</code> properties take precedence over whatever value of the <a
+							href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
+								><code>page-break-before</code> property</a> [[!CSSSnapshot]] has been set for an
+							<a>XHTML Content Document</a>.</p>
+
+					<div class="note">
+						<p>The presence of <code>rendition:page-spread-center</code> does not change the viewport
+							dimensions. In particular, it does not indicate that a viewport with the size of the whole
+							spread has to be created. This is important so that the scale factor stays consistent
+							between regular and center-spread pages.</p>
+					</div>
+
+					<p>When a <a href="#def-layout-reflowable">reflowable</a> spine item follows a <a
+							href="#def-layout-pre-paginated">pre-paginated</a> one, the reflowable one SHOULD start on
+						the next page (as defined by the <a
+							href="https://www.w3.org/TR/epub-33/#attrdef-spine-page-progression-direction"
+								><code>page-progression-direction</code></a> [[EPUB-33]]) when it lacks a
+							<code>rendition:page-spread-*</code> property value. If the reflowable spine item has a
+							<code>rendition:page-spread-*</code> specification, it MUST be honored (e.g., by inserting a
+						blank page).</p>
+
+					<p>Similarly, when a pre-paginated spine item follows a reflowable one, the pre-paginated one SHOULD
+						start on the next page (as defined by the <code>page-progression-direction</code>) when it lacks
+						a <code>rendition:page-spread-*</code> property value. If the pre-paginated spine item has a
+							<code>rendition:page-spread-*</code> specification, it MUST be honored (e.g., by inserting a
+						blank page).</p>
+
+					<p>When a Reading System encounters two spine items that represent a true spread (i.e., two adjacent
+						spine items with the <code>rendition:page-spread-left</code> and
+							<code>rendition:page-spread-right</code> properties), it SHOULD create the spread with no
+						space between the adjacent pages.</p>
+				</section>
+			</section>
+
+			<section id="sec-fxl-html-dimensions">
+				<h3>HTML Initial Containing Block Dimensions</h3>
+
+				<p>In this version of this specification, only the width and height expressions as defined in <a
+						href="../core/index.html#sec-fxl-icb-html">Expressing in HTML</a> [[!EPUB-33]] MUST be
+					recognized by <a>Reading Systems</a>.</p>
+
+				<p>Reading Systems MUST clip XHTML content to the initial containing block (ICB) dimensions declared in
+					the <code>viewport</code>
+					<code>meta</code> tag — content positioned outside of the initial containing block will not be
+					visible. When the ICB aspect ratio does not match the aspect ratio of the Reading System <a>Content
+						Display Area</a>, Reading Systems MAY position the ICB inside the area to accommodate the user
+					interface; in other words, added letter-boxing space MAY appear on either side (or both) of the
+					content.</p>
+			</section>
+
+			<section id="sec-fxl-viewport">
+				<h3>Viewport Rendering</h3>
+
+				<p>When rendering <a>Fixed-Layout Documents</a>, the default intent is that the <a>Content Display
+						Area</a> SHOULD occupy as much of the available <a>Viewport</a> area as possible. <a>Reading
+						Systems</a> SHOULD NOT inject additional content such as border, margins, headers or footers
+					into the Viewport.</p>
+
+				<div class="note">
+					<p>The exposure of Reading System control widgets to the user is implementation-specific and not
+						included in the above behavioral expectations.</p>
+				</div>
 			</section>
 		</section>
 		<section id="ocf">
@@ -1700,9 +1564,9 @@
 							Document MUST be overridden.</p>
 
 						<p>Note that the rules below apply only to <em>referenced</em> [[!HTML]] <a
-								href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+								href="https://html.spec.whatwg.org/multipage/media.html#the-video-element"
 									><code>video</code></a> or <a
-								href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-audio-element"
+								href="https://html.spec.whatwg.org/multipage/media.html#the-audio-element"
 									><code>audio</code></a> elements within the associated EPUB Content Document. That
 							is to say, the rules apply to only those elements pointed to by <a
 								href="https://www.w3.org/TR/epub-33/#elemdef-smil-text"><code>text</code> elements</a>
@@ -1721,8 +1585,8 @@
 									<li>
 										<p>Hide the individual video/audio UI controls from the page, which overrides
 											the default behavior defined by the [[!HTML]] <a
-												href="https://www.w3.org/TR/html/semantics-embedded-content.html#element-attrdef-mediaelements-controls"
-													><code>controls</code></a> attribute.</p>
+												href="https://html.spec.whatwg.org/multipage/media.html#attr-media-controls"
+													><code>controls</code> attribute</a>.</p>
 									</li>
 									<li>
 										<p>Prevent scripts embedded within the EPUB Content Document from invoking the
@@ -1740,10 +1604,10 @@
 									initialized to their "stopped" state, and be ready to be played from the
 									zero-position within their content stream (possibly displaying the image specified
 									using the [[!HTML]] <a
-										href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+										href="https://html.spec.whatwg.org/multipage/media.html#the-video-element"
 											><code>poster</code></a> attribute). This requirement overrides the default
 									behavior defined by the [[!HTML]] <a
-										href="https://www.w3.org/TR/html/semantics-embedded-content.html#the-video-element"
+										href="https://html.spec.whatwg.org/multipage/media.html#the-video-element"
 											><code>autoplay</code></a> attribute.</p>
 							</li>
 							<li>
@@ -1844,19 +1708,174 @@
 						<h5>Skippability</h5>
 
 						<p>Reading Systems SHOULD use the semantic information provided by Media Overlay elements' <a
-								href="https://www.w3.org/TR/epub-33/#sec-docs-semantic-inflection"
-									><code>epub:type</code> attribute</a> [[!EPUB-33]] to determine when to offer users
-							the option of skippable features.</p>
+								href="#sec-semantic-inflection"><code>epub:type</code> attribute</a> to determine when
+							to offer users the option of skippable features.</p>
 					</section>
 
 					<section id="sec-escabaility">
 						<h5>Escapability</h5>
 
 						<p>Reading Systems SHOULD allow escaping of nested structures. Reading Systems MUST determine
-							the start of nested structures by the value of the <a
-								href="https://www.w3.org/TR/epub-33/#sec-docs-semantic-inflection"
-									><code>epub:type</code> attribute</a> [[!EPUB-33]] and SHOULD offer users the option
-							to skip playback of that structure and resume with whatever content comes after it.</p>
+							the start of nested structures by the value of the <a href="#sec-semantic-inflection"
+									><code>epub:type</code> attribute</a> and SHOULD offer users the option to skip
+							playback of that structure and resume with whatever content comes after it.</p>
+					</section>
+				</section>
+			</section>
+		</section>
+		<section id="sec-semantic-inflection">
+			<h2>Semantic Inflection</h2>
+
+			<p>A Reading System has to process the <code>epub:type</code> attribute as follows:</p>
+
+			<ul class="conformance-list">
+				<li>
+					<p id="confreq-rs-epubtype-beh">It MAY associate behaviors with none, some or all of the terms
+						defined in the <a href="https://www.w3.org/TR/epub-33/#sec-contentdocs-default-vocab">default
+							vocabulary</a> [[EPUB-33]].</p>
+				</li>
+				<li>
+					<p id="confreq-rs-epubtype-oth">It MAY associate behaviors with terms from other vocabularies.</p>
+				</li>
+				<li>
+					<p id="confreq-rs-epubtype-ign">It MUST ignore terms that it does not recognize.</p>
+				</li>
+				<li>
+					<p id="confreq-rs-epubtype-conflict">It MUST <a href="#confreq-rs-epubtype-prec">ignore inflected
+							semantics</a> that conflict with the carrying element.</p>
+				</li>
+			</ul>
+
+			<p id="confreq-rs-epubtype-prec">When Reading System behavior associated with a given <code>epub:type</code>
+				value conflicts with an element's native behavior, the behavior associated with the element MUST be
+				given precedence.</p>
+		</section>
+		<section id="vocabs">
+			<h2>Vocabularies</h2>
+
+			<section id="sec-vocab-assoc">
+				<h3>Vocabulary Association Mechanisms</h3>
+
+				<dl class="conformance-list">
+					<dt id="sec-metadata-reserved-prefixes">Reserved Prefixes</dt>
+					<dd>
+						<p>Reading Systems MUST resolve all reserved prefixes used in Package Documents using their
+							predefined URIs unless a local <a href="#sec-prefix-attr">prefix</a> is declared. Reading
+							Systems MUST use locally-overriden prefixes in the <code>prefix</code> attribute when
+							encountered.</p>
+
+						<p>As changes to the reserved prefixes and updates to Reading Systems are not always going
+							happen in synchrony, Reading Systems MUST NOT fail when encountering unrecognized prefixes
+							(i.e., not reserved and not declared using the <code>prefix</code> attribute).</p>
+					</dd>
+
+					<dt id="sec-prefix-attr">The <code>prefix</code> attribute</dt>
+					<dd>
+						<p>If the <code>prefix</code> attribute includes a declaration for a <a
+								href="#sec-metadata-reserved-prefixes">predefined prefix</a>, Reading Systems MUST use
+							the URI mapping defined in the <code>prefix</code> attribute, regardless of whether of it
+							maps to the same URI as the predefined prefix.</p>
+					</dd>
+
+					<dt id="sec-property-datatype">The <code>property</code> Data Type</dt>
+					<dd>
+						<p>A Reading System MUST use the following rules to create an IRI [[!RFC3987]] from a
+							property:</p>
+
+						<ul>
+							<li>
+								<p>If the property consists only of a reference, the IRI is obtained by concatenating
+									the IRI stem associated with the <a
+										href="https://www.w3.org/TR/epub-33/#sec-metadata-default-vocab">default
+										vocabulary</a> [[!EPUB-33]] to the reference.</p>
+							</li>
+							<li>
+								<p>If the property consists of a prefix and reference, the IRI is obtained by
+									concatenating the IRI stem associated with the prefix to the reference. If no
+									matching prefix has been defined, the property is invalid and MUST be ignored.</p>
+							</li>
+						</ul>
+
+						<p>The resulting IRI MUST be valid to [[!RFC3987]]. Reading Systems do not have to resolve this
+							IRI, however.</p>
+					</dd>
+				</dl>
+			</section>
+
+			<section id="sec-package-metadata-rendering">
+				<h3>Package Rendering Metadata</h3>
+
+				<section id="sec-package-metadata-general">
+					<h4>General Properties</h4>
+
+					<section id="flow">
+						<h5>The <code>rendition:flow</code> Property</h5>
+
+						<p>If a Reading System supports the specified rendering, it SHOULD use that method to handle
+							overflow content, but MAY provide the option for users to override the requested
+							rendering.</p>
+
+						<p>The default value <code>auto</code> MUST be assumed by Reading Systems as the global value if
+							no <code>meta</code> element carrying this property occurs in the <a
+								href="https://www.w3.org/TR/epub-33/#elemdef-opf-metadata"><code>metadata</code>
+								section</a> [[!EPUB-33]]. Reading Systems MAY support only this default value.</p>
+
+						<p>If a Reading Systems supports the <a href="#layout"><code>rendition:layout</code></a>
+							property, it MUST ignore the <code>rendition:flow</code> property when it has been set on a
+							spine item that also specifies the <a href="#layout"><code>rendition:layout</code></a> value
+								<code>pre-paginated</code>.</p>
+
+						<p>The <code>rendition:flow</code> property values have the following processing
+							requirements:</p>
+
+						<dl class="variablelist">
+							<dt id="paginated">paginated</dt>
+							<dd>
+								<p>The Reading System SHOULD dynamically paginate all overflow content.</p>
+							</dd>
+							<dt id="scrolled-continuous">scrolled-continuous</dt>
+							<dd>
+								<p>The Reading System SHOULD render all Content Documents such that overflow content is
+									scrollable, and the EPUB Publication represented by the given <a>Rendition</a>
+									SHOULD be presented as one continuous scroll from spine item to spine item (except
+									where <a href="https://www.w3.org/TR/epub-33/#layout-property-flow-overrides"
+										>locally overridden</a> [[!EPUB-33]]).</p>
+							</dd>
+							<dt id="scrolled-doc">scrolled-doc</dt>
+							<dd>
+								<p>The Reading System SHOULD render all Content Documents such that overflow content is
+									scrollable, and each spine item SHOULD be presented as a separate scrollable
+									document.</p>
+							</dd>
+							<dt id="auto">auto</dt>
+							<dd>
+								<p>The Reading System MAY render overflow content using its default method or a user
+									preference, whichever is applicable.</p>
+							</dd>
+						</dl>
+
+						<p>For the <code>rendition:flow-scrolled-continuous</code> property, the scroll direction is
+							defined relative to the block flow direction of the root element of the XHTML Content
+							Document referenced by the <a href="https://www.w3.org/TR/epub-33/#elemdef-spine-itemref"
+									><code>itemref</code> element</a> [[!EPUB-33]]. The scroll direction is vertical if
+							the block flow direction is downward (top-to-bottom). It is horizontal if the block flow
+							direction of the root element is rightward (left-to-right) or leftward (right-to-left).</p>
+					</section>
+
+					<section id="align-x-center">
+						<h5>The <code>rendition:align-x-center</code> Property</h5>
+
+						<p>When the <a href="#align-x-center"><code>rendition:align-x-center</code> property</a> is set
+							on a spine item, Reading Systems SHOULD reneder the content centered horizontally within the
+								<a>Viewport</a> or spread, as applicable. This property does not affect the rendering of
+							the spine item, only the placement of the resulting content box.</p>
+
+						<p>For reflowable content, Reading Systems that support this property MUST center each virtual
+							page.</p>
+
+						<p>This version of this specification does not define a default rendering behavior when this
+							property is not supported or specified. Reading Systems MAY render spine items by their own
+							design.</p>
 					</section>
 				</section>
 			</section>
@@ -1911,8 +1930,8 @@ partial interface Navigator {
 						href="https://www.w3.org/TR/epub-33/#sec-scripted-content-type-container-constrained"
 						>container-constrained scripting contexts</a> [[!EPUB-33]]. Reading Systems MUST ensure that the
 						<code>epubReadingSystem</code> object is available no later than when the <a
-						href="https://www.w3.org/TR/html/syntax.html#the-end"><code>DOMContentLoaded</code> event is
-						triggered</a> [[!HTML]].</p>
+						href="https://html.spec.whatwg.org/multipage/parsing.html#the-end"><code>DOMContentLoaded</code>
+						event is triggered</a> [[!HTML]].</p>
 
 				<div class="note">
 					<p>Reading systems implementations might create cloned instances of the
@@ -2082,6 +2101,13 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 		<section id="change-log">
 			<h2>Change Log</h2>
 
+			<p>Note that this change log only identifies substantive changes &#8212; those that affect the conformance
+				of <a>EPUB Reading Systems</a>, or are similarly noteworthy.</p>
+
+			<p>For a list of all issues addressed during the revision, refer to the <a
+					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aclosed+label%3AEPUB33+label%3ASpec-RS+"
+					>working group's issue tracker</a>.</p>
+
 			<section id="changes-latest">
 				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
 					3.2</a></h3>
@@ -2090,6 +2116,9 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 					<li>6-Nov-2020: Reading systems are now required to <a href="#confreq-rs-xml-extid">not resolve
 							external identifiers</a> in doctype declarations. See <a
 							href="https://github.com/w3c/epub-specs/issues/1338">issue 1338</a>.</li>
+					<li>5-Nov-2020: Generalized the restriction on <a href="#sec-xhtml-custom-attributes">custom
+							attribute namespace URIs</a> to exclude all of idpf.org and w3.org. See <a
+							href="https://github.com/w3c/epub-specs/issues/1388">issue 1388</a>.</li>
 					<li>30-Sept-2020: The structure of the EPUB core specifications has been simplified to ease
 						understanding and access to information. This specification now consolidates the reading system
 						requirements from the EPUB 3.2 specification together with the Packages, Content Documents, OCF
