@@ -76,6 +76,22 @@ var biblio = {
 		"title": "EPUB Accessibility Techniques",
 		"href": "https://www.w3.org/publishing/epub/a11y-tech/"
 	},
+	"EPUBCFI-11": {
+		"authors":[
+			"Peter Sorotokin",
+			"Garth Conboy",
+			"Brady Duga",
+			"John Rivlin",
+			"Don Beaver",
+			"Kevin Ballard",
+			"Alastair Fettes",
+			"Daniel Weck"
+		],
+		"title": "EPUB Canonical Fragment Identifiers 1.1",
+		"href": "http://idpf.org/epub/linking/cfi/epub-cfi-20170105.html",
+		"date": "5 October 2017",
+		"publisher": "IDPF"
+	},
 	"EPUBChanges-30": {
 		"authors":[
 		"William McCoy",
