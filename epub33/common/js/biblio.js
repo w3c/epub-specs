@@ -455,5 +455,14 @@ var biblio = {
 		"title": "EPUB 3 Overview",
 		"href": "https://www.w3.org/TR/epub-overview-33/",
 		"publisher": "W3C"
+	},
+	"EPUB-MULTIPLE-RENDITION-33": {
+		"authors":[
+			"Matt Garrish"
+		],
+		"title": "EPUB Multiple-Rendition Publications 1.1",
+		"href": "https://www.w3.org/TR/epub-multi-rend-11/",
+		"publisher": "W3C"
+	
 	}
 }
