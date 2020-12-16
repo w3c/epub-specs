@@ -15,7 +15,7 @@ Editor's Drafts
 - [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/)
 - [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 - [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
-- [EPUB Multiple Renditions 1.1](https://w3c.github.io/pepub-specs/epub33/multi-rend/)
+- [EPUB Multiple Renditions 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/)
 
 The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
