@@ -440,20 +440,10 @@ var biblio = {
 		"href": "https://www.w3.org/TR/epub-rs-33/",
 		"publisher": "W3C"
 	},
-	"EPUB-CHANGES-33": {
-		"authors":[
-			"Matt Garrish",
-			"Dave Cramer"
-		],
-		"title": "EPUB Changes 3.3",
-		"href": "https://www.w3.org/TR/epub-changes-33/",
-		"publisher": "W3C"
-	},
 	"EPUB-OVERVIEW-33": {
 		"authors":[
     		"Garth Conboy",
     		"Matt Garrish",
-    		"MURATA Makoto",
     		"Daniel Weck"],
 		"title": "EPUB 3 Overview",
 		"href": "https://www.w3.org/TR/epub-overview-33/",
