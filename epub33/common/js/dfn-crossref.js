@@ -32,7 +32,7 @@ function fixDefinitionCrossrefs() {
         var link_txt = link.hasAttribute('data-lt') ? link.getAttribute('data-lt').trim().replace(/\s+/g,' ').toLowerCase() : link.textContent.trim().replace(/\s+/g,' ').toLowerCase();
         
         if (dfn.hasOwnProperty(link_txt)) {
-            link.setAttribute('href','https://www.w3.org/TR/epub-33/index.html#dfn-'+dfn[link_txt]);
+            link.setAttribute('href','https://www.w3.org/TR/epub-33/#dfn-'+dfn[link_txt]);
         }
     });
 }
