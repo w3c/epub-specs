@@ -367,7 +367,7 @@ var biblio = {
 		"publisher": "W3C"
 	},
 	"SWF": {
-		"title": "SWF File Format Specification</link> Version 19",
+		"title": "SWF File Format Specification Version 19",
 		"href": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf",
 		"date": "2012"
 	},
