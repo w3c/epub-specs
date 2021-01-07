@@ -74,7 +74,7 @@ var biblio = {
 	},
 	"EPUB-A11Y-Tech": {
 		"title": "EPUB Accessibility Techniques",
-		"href": "https://www.w3.org/publishing/epub/a11y-tech/"
+		"href": "http://idpf.org/epub/a11y/techniques/"
 	},
 	"EPUBCFI-11": {
 		"authors":[
