@@ -486,7 +486,8 @@
 							using a synthesized voice.</p>
 					</dd>
 					<dt>
-						<dfn id="dfn-top-level-content-document">Top-level Content Document</dfn>
+						<dfn id="dfn-top-level-content-document" data-lt="Top-level Content Documents">Top-level Content
+							Document</dfn>
 					</dt>
 					<dd>
 						<p>An <a>EPUB Content Document</a> referenced from the <a>spine</a>, whether directly or via a
@@ -1243,12 +1244,23 @@
 								<code>dir</code>
 							</dt>
 							<dd>
-								<p>Specifies the base text direction of the content and attribute values of the carrying
-									element and its descendants.</p>
-								<p>Inherent directionality specified using [[!Unicode]] takes precedence over this
-									attribute.</p>
-								<p>Allowed values are <code>ltr</code> (left-to-right) and <code>rtl</code>
-									(right-to-left).</p>
+								<p>Specifies the base direction [[!BIDI]] of the carrying element and its
+									descendants.</p>
+								<p>Allowed values are:</p>
+								<ul>
+									<li><code>ltr</code> &#8212; left-to-right base direction;</li>
+									<li><code>rtl</code> &#8212; right-to-left base direction; and</li>
+									<li><code>auto</code> &#8212; base direction is determined using the Unicode Bidi
+										Algorithm [[BIDI]].</li>
+								</ul>
+								<p>The value <code>auto</code> is assumed when the attribute is not specified or
+									contains an invalid value.</p>
+								<div class="note">
+									<p>The base direction specified in the <code>dir</code> attribute does not affect
+										the ordering of characters within directional runs, only the relative ordering
+										of those runs and the placement of weak directional characters such as
+										punctuation.</p>
+								</div>
 								<div class="example">
 									<pre>&lt;package … dir="ltr"&gt;</pre>
 								</div>
@@ -1764,9 +1776,9 @@
 								</dl>
 
 								<p>The <code>metadata</code> section MUST contain at least one <code>language</code>
-									element with a value conforming to [[!BCP47]].</p>
-
-								<p>This value is not inherited by <a>Publication Resources</a>.</p>
+									element. The value of each <code>language</code> element MUST be a <a
+										href="https://tools.ietf.org/html/bcp47#section-2.2.9">well-formed language
+										tag</a> [[!BCP47]].</p>
 
 								<aside class="example">
 									<p>The following example shows an <a>EPUB Publication</a> is in U.S. English.</p>
@@ -1778,10 +1790,15 @@
 </pre>
 								</aside>
 
-								<p>Additional <code>language</code> elements MAY be specified for multilingual
-									Publications, but each element's value MUST conform to [[!BCP47]]. The first
-										<code>language</code> element in document order is considered the primary
-									language of the EPUB Publication.</p>
+								<p>Although additional <code>language</code> elements MAY be specified for multilingual
+									Publications, the first <code>language</code> element in document order is
+									considered the primary language of the EPUB Publication.</p>
+
+								<div class="note">
+									<p><a>Publication Resources</a> do not inherit their language from the
+											<code>dc:language</code> element(s). The language of a resource has to be
+										set using the intrinsic methods of the format.</p>
+								</div>
 							</section>
 						</section>
 
@@ -2219,6 +2236,14 @@
 										</li>
 										<li>
 											<p>
+												<a href="#attrdef-hreflang">
+													<code>hreflang</code>
+												</a>
+												<code>[optional]</code>
+											</p>
+										</li>
+										<li>
+											<p>
 												<a href="#attrdef-id">
 													<code>id</code>
 												</a>
@@ -2286,7 +2311,8 @@
     … 
     &lt;link rel="record"
           href="front.xhtml#meta-json"
-          media-type="application/xhtml+xml"/&gt;
+          media-type="application/xhtml+xml"
+          hreflang="en"/&gt;
     …
 &lt;/metadata&gt;</pre>
 							</aside>
@@ -2300,6 +2326,11 @@
 									attribute</a> is OPTIONAL when a linked resource is located outside the EPUB
 								Container, as more than one media type could be served from the same IRI. The attribute
 								is REQUIRED for all <a>Local Resources</a>.</p>
+
+							<p id="attrdef-hreflang">The OPTIONAL <code>hreflang</code> attribute identifies the
+								language of the linked resource. The value MUST be a <a
+									href="https://tools.ietf.org/html/bcp47#section-2.2.9">well-formed language tag</a>
+								[[!BCP47]].</p>
 
 							<p id="attrdef-link-rel">The REQUIRED <code>rel</code> attribute takes a space-separated
 								list of <a href="#sec-property-datatype">property</a> values that establish the
@@ -8869,9 +8900,19 @@ EPUB/images/cover.png</pre>
 				-->
 
 				<ul>
-					<li>27-Jan-2021: Clarified that <code>nav</code> elements without an <code>epub:type</code>
+					<li>15-Feb-2021: Clarified that <code>nav</code> elements without an <code>epub:type</code>
 						attribute are not subject to the EPUB Navigation Document's content model restrictions. See <a
 							href="https://github.com/w3c/publ-epub-revision/issues/976">issue 976</a>.</li>
+					<li>4-Feb-2021: Clarify that the value of <code>dc:language</code> elements must be well-formed
+						language tags. See <a href="https://github.com/w3c/publ-epub-revision/issues/1325">issue
+							1325</a>.</li>
+					<li>2-Feb-2021: Added <code>auto</code> value for <code>dir</code> attribute and clarified the
+						precedence of the attribute. See <a href="https://github.com/w3c/publ-epub-revision/issues/1491"
+							>issue 1491</a> and <a href="https://github.com/w3c/publ-epub-revision/issues/1494">issue
+							1494</a>.</li>
+					<li>2-Feb-2021: Added the <code>hreflang</code> attribute to <code>link</code> elements to identify
+						the language of linked resources. See <a
+							href="https://github.com/w3c/publ-epub-revision/issues/1488">issue 1488</a>.</li>
 					<li>20-Jan-2021: Clarified that user-defined media overlay style classes must be declared in the
 						Package Document metadata. See <a href="https://github.com/w3c/publ-epub-revision/issues/1319"
 							>issue 1319</a>.</li>
@@ -8930,7 +8971,7 @@ EPUB/images/cover.png</pre>
 				</ul>
 			</section>
 		</section>
-		<div data-include="../common/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"
+		<div data-include="../common/acknowledgements-core.html" data-oninclude="fixIncludes" data-include-replace="true"
 		></div>
 	</body>
 </html>
