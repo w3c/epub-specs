@@ -368,7 +368,7 @@ var biblio = {
 	},
 	"SWF": {
 		"title": "SWF File Format Specification Version 19",
-		"href": "https://wwwimages2.adobe.com/content/dam/acom/en/devnet/swf/pdf/swf-file-format-spec.pdf",
+		"href": "https://www.adobe.com/content/dam/acom/en/devnet/pdf/swf-file-format-spec.pdf",
 		"date": "2012"
 	},
 	"TR15": {
