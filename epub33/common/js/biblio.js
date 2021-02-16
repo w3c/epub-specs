@@ -368,7 +368,7 @@ var biblio = {
 	},
 	"SWF": {
 		"title": "SWF File Format Specification Version 19",
-		"href": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf",
+		"href": "https://wwwimages2.adobe.com/content/dam/acom/en/devnet/swf/pdf/swf-file-format-spec.pdf",
 		"date": "2012"
 	},
 	"TR15": {
@@ -404,57 +404,5 @@ var biblio = {
 		"title": "XPointer Shorthand Notation",
 		"href": "https://www.w3.org/TR/2003/REC-xptr-framework-20030325/",
 		"date": "25 March 2003"
-	},
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// TEMPORARY ENTRIES UNTIL FPWD ADDS THEM TO SPECREF DATABASE
-	
-	"EPUB-33": {
-		"authors":[
-			"Garth Conboy",
-			"Dave Cramer",
-			"Marisa DeMeglio",
-			"Matt Garrish",
-			"Daniel Weck"
-		],
-		"title": "EPUB 3.3",
-		"href": "https://www.w3.org/TR/epub-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-RS-33": {
-		"authors":[
-			"Garth Conboy",
-			"Dave Cramer",
-			"Marisa DeMeglio",
-			"Matt Garrish",
-			"Daniel Weck"
-		],
-		"title": "EPUB Reading Systems 3.3",
-		"href": "https://www.w3.org/TR/epub-rs-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-OVERVIEW-33": {
-		"authors":[
-    		"Garth Conboy",
-    		"Matt Garrish",
-    		"Daniel Weck"],
-		"title": "EPUB 3 Overview",
-		"href": "https://www.w3.org/TR/epub-overview-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-MULTI-REND-11": {
-		"authors":[
-    		"Matt Garrish"
-		],
-		"title": "EPUB Multiple-Rendition Publications 1.1",
-		"href": "https://www.w3.org/TR/epub-multi-rend-11/",
-		"publisher": "W3C"
 	}
 }
