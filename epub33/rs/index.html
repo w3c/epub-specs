@@ -20,27 +20,32 @@
 				editors:[ {
 					name: "Garth Conboy",
 					company: "Google",
-					companyURL: "https://www.google.com"
+					companyURL: "https://www.google.com",
+					w3cid: 92141
 				},
 				{
 					name: "Dave Cramer",
 					company: "Hachette Livre",
 					companyURL: "https://www.hachettebookgroup.com",
+					w3cid: 65283
 				},
 				{
 					name: "Marisa DeMeglio",
 					company: "DAISY Consortium",
-					companyURL: "https://www.daisy.org"
+					companyURL: "https://www.daisy.org",
+					w3cid: 35713
 				},
 				{
 					name: "Matt Garrish",
 					company: "DAISY Consortium",
-					companyURL: "https://www.daisy.org"
+					companyURL: "https://www.daisy.org",
+					w3cid: 51655
 				},
 				{
 					name: "Daniel Weck",
 					company: "DAISY Consortium",
-					companyURL: "https://www.daisy.org"
+					companyURL: "https://www.daisy.org",
+					w3cid: 45653
 				}],
 				includePermalinks: true,
 				permalinkEdge: true,
@@ -48,7 +53,7 @@
 				diffTool: "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
 				github: {
 					repoURL: "https://github.com/w3c/epub-specs",
-					branch: "master"
+					branch: "main"
 				},
 				localBiblio: biblio,
 				preProcess:[inlineCustomCSS, fixDefinitionCrossrefs],
@@ -143,8 +148,8 @@
 									href="#ocf"></a>.</p>
 						</li>
 						<li>
-							<p id="confreq-rs-epub3-package">It MUST process <a>EPUB Packages</a> as defined in <a
-									href="#packages"></a>.</p>
+							<p id="confreq-rs-epub3-package">It MUST process the <a>Package Document</a> as defined in
+									<a href="#package-doc"></a>.</p>
 						</li>
 						<li>
 							<p id="confreq-rs-foreign">It MAY support an arbitrary set of <a>Foreign Resource</a> types,
@@ -206,9 +211,8 @@
 				<dd>
 					<ul class="conformance-list">
 						<li>
-							<p id="confreq-rs-backward-epub">It MUST attempt to process any given rendition of an EPUB
-								Publication whose Package Document <code>version</code> attribute is less than
-									"<code>3.0</code>".</p>
+							<p id="confreq-rs-backward-epub">It MUST attempt to process an EPUB Publication whose
+								Package Document <code>version</code> attribute is less than "<code>3.0</code>".</p>
 						</li>
 						<li>
 							<p id="confreq-rs-backward-conf">EPUB Publications with older version numbers will not
@@ -222,9 +226,8 @@
 				<dd>
 					<ul class="conformance-list">
 						<li>
-							<p id="confreq-rs-forward-epubn">It SHOULD attempt to process any given Rendition of an EPUB
-								Publication whose Package Document <code>version</code> attribute is greater than
-									"<code>3.0</code>".</p>
+							<p id="confreq-rs-forward-epubn">It SHOULD attempt to process an EPUB Publication whose
+								Package Document <code>version</code> attribute is greater than "<code>3.0</code>".</p>
 						</li>
 					</ul>
 				</dd>
@@ -258,11 +261,11 @@
 					as a distributed system.</p>
 			</div>
 		</section>
-		<section id="packages">
-			<h2>Package Processing</h2>
+		<section id="package-doc">
+			<h2>Package Document Processing</h2>
 
 			<section id="sec-package-rs-conformance">
-				<h3>Package Conformance</h3>
+				<h3>Package Document Conformance</h3>
 
 				<p>An <a>EPUB Reading System</a> is conformant with this section if meets all of the following
 					criteria:</p>
@@ -295,14 +298,27 @@
 						<p id="confreq-rendition-rs-manifest">It MUST NOT use any resources not listed in the Package
 							Document in the processing of the Package (e.g., <a
 								href="https://www.w3.org/TR/epub-33/#sec-container-metainf"><code>META-INF</code>
-								files</a> [[EPUB-33]] or resources specific to other Renditions of the EPUB
-							Publication).</p>
+								files</a> [[EPUB-33]]).</p>
 					</li>
 				</ul>
 			</section>
 
 			<section id="sec-package-def">
 				<h3>Package Document</h3>
+
+				<section id="dir">
+					<h4>Base Direction</h4>
+
+					<p>If the <code>dir</code> attribute is set and indicates a base direction of <code>ltr</code> or
+							<code>rtl</code>, the Reading System MUST override the bidi algorithm per <a
+							data-cite="bidi#Higher-Level_Protocols">the higher-level protocols</a> defined in [[!BIDI]],
+						setting the paragraph embedding level to 0 if the base direction is <code>ltr</code>, or 1 if
+						the base direction is <code>rtl</code>.</p>
+
+					<p>Otherwise the base direction is <code>auto</code>, in which case the Reading System MUST
+						determine the text's direction by applying the Unicode Bidi Algorithm, beginning with <a
+							data-cite="bidi#P2">Rule P2</a> of [[!BIDI]].</p>
+				</section>
 
 				<section id="metadata">
 					<h4>Metadata</h4>
@@ -318,7 +334,6 @@
 							<p>Reading Systems MUST trim all leading and trailing <a
 									href="https://www.w3.org/TR/xml/#white">white space</a> [[!XML]] from Dublin Core
 								element values before processing.</p>
-
 							<p>Unless an individual property explicitly defines a different white space normalization
 								algorithm, Reading Systems MUST trim all leading and trailing <a
 									href="https://www.w3.org/TR/xml/#white">white space</a> [[!XML]] from
@@ -336,9 +351,17 @@
 						<dt id="dc-title">The <code>title</code> element</dt>
 						<dd>
 							<p id="title-order"><a>Reading Systems</a> MUST recognize the first <code>title</code>
-								element in document order as the main title of the EPUB Publication (i.e., the primary
-								one to present to users). This specification does not define how to process additional
-									<code>title</code> elements.</p>
+								element in document order as the main title of the EPUB Publication and present it to
+								users before other title elements.</p>
+							<p>This specification does not define how to process additional <code>title</code>
+								elements.</p>
+						</dd>
+
+						<dt id="sec-opf-dclanguage">The <code>language</code> element</dt>
+						<dd>
+							<p>The language(s) of the <a>EPUB Publication</a> specified in <code>language</code>
+								elements are advisory. Reading Systems MUST use the language information associated with
+								a resource to determine its language.</p>
 						</dd>
 
 						<dt id="dc-creator">The <code>creator</code> element</dt>
@@ -355,7 +378,6 @@
 						<dd>
 							<p>If a Reading System does not recognize the <code>scheme</code> attribute value, it SHOULD
 								treat the value of the element as a string.</p>
-
 							<p>Reading Systems SHOULD ignore all <code>meta</code> elements whose <code>property</code>
 								attributes define expressions they do not recognize. A Reading System MUST NOT fail when
 								encountering unknown expressions.</p>
@@ -364,23 +386,21 @@
 						<dt id="conf-metadata-link">The <code>link</code> element</dt>
 						<dd>
 							<p>Retrieval of Remote Resources is OPTIONAL.</p>
-
+							<p>The language identified in an <code>hreflang</code> attribute is not authoritative.
+								Language information defined in a linked resource determines its language.</p>
 							<p>Reading System do not have to use or present linked resources, even if they recognize the
 								relationship defined in the <code>rel</code> attribute.</p>
-
 							<p id="sec-linked-records">In the case of a <a href="https://www.w3.org/TR/epub-33/#record"
 									>linked metadata record</a> [[!EPUB-33]], Reading Systems MUST NOT skip processing
 								the metadata expressed in the Package Document and only use the information expressed in
 								the record. Reading Systems MAY compile metadata from multiple linked records; they do
 								not have to select only one record.</p>
-
 							<p>When it comes to resolving discrepancies and conflicts between metadata expressed in the
 								Package Document and in linked metadata records, Reading Systems MUST use the document
 								order of <code>link</code> elements in the Package Document to establish precedence
 								(i.e., metadata in the first linked record encountered has the highest precedence and
 								metadata in the Package Document the lowest, regardless of whether the <code>link</code>
 								elements occur before, within or after the package metadata elements).</p>
-
 							<p>Reading Systems MUST ignore any instructions contained in linked resources related to the
 								layout and rendering of the EPUB Publication.</p>
 						</dd>
@@ -394,12 +414,10 @@
 						<dd>
 							<p>When an <code>href</code> attribute contains a relative IRI, Reading Systems MUST use the
 								IRI of the Package Document as the base when resolving to an absolute IRI.</p>
-
 							<p>Reading Systems MAY optimize the rendering depending on the properties set in the
 									<code>properties</code> attribute (e.g., disable a rendering process or use a
-								fallback). Reading Systems MUST ignore all descriptive metadata properties that they do
-								not recognize.</p>
-
+								fallback). Reading Systems MUST ignore values of the <code>properties</code> attribute
+								they do not recognize.</p>
 							<p>A Reading System that does not support the Media Type of a given Publication Resource
 								MUST traverse the fallback chain until it has identified at least one supported
 								Publication Resource to use in place of the unsupported resource. If the Reading System
@@ -412,8 +430,11 @@
 						</dd>
 						<dt>Manifest Fallbacks</dt>
 						<dd>
-							<p>Reading System MAY choose to utilize fallbacks to find the optimal version of a Content
-								Document to render in a given context.</p>
+							<p>When <a href="https://www.w3.org/TR/epub-33/#sec-foreign-restrictions-manifest">manifest
+									fallbacks</a> [[!EPUB-33]] are provided for <a>Top-level Content Documents</a>,
+								Reading Systems MAY choose from the available options in order to find the optimal
+								version to render in a given context (e.g., by inspecting the properties attribute for
+								each).</p>
 						</dd>
 					</dl>
 				</section>
@@ -424,17 +445,16 @@
 					<dl class="conformance-list">
 						<dt id="sec-spine-elem">The <code>spine</code> element</dt>
 						<dd>
-							<p>Reading Systems MUST provide a means of rendering the Rendition in the order defined in
-								the <code>spine</code>, which includes: 1) recognizing the first primary
+							<p>Reading Systems MUST provide a means of rendering the EPUB Publication in the order
+								defined in the <code>spine</code>, which includes: 1) recognizing the first primary
 									<code>itemref</code> as the beginning of the default reading order; and, 2)
 								rendering successive primary items in the order given in the <code>spine</code>.</p>
-
-							<p>When the <code>default</code> value is specified, the Reading System can choose the
-								rendering direction. The <code>default</code> value MUST be assumed when the attribute
-								is not specified. In this case, the reading system SHOULD choose a default
+							<p>When the <code>default</code> value of the <code>page-progression-direction</code>
+								attribute is specified, the Reading System can choose the rendering direction. The
+									<code>default</code> value MUST be assumed when the attribute is not specified. In
+								this case, the reading system SHOULD choose a default
 									<code>page-progression-direction</code> value based on the first
 									<code>language</code> element.</p>
-
 							<p>Reading Systems MUST ignore the page progression direction defined in <a href="#layout"
 										><code>pre-paginated</code></a> XHTML Content Documents. The
 									<code>page-progression-direction</code> attribute defines the flow direction from
@@ -449,7 +469,6 @@
 								EPUB Publication. This specification does not mandate which model Reading Systems have
 								to use. A Reading System MAY also provide the option for users to toggle between the two
 								models.</p>
-
 							<p>Reading Systems MUST ignore all metadata properties expressed in the
 									<code>properties</code> attribute that they do not recognize.</p>
 						</dd>
@@ -473,10 +492,8 @@
 					<dd>
 						<p>Reading Systems MUST NOT depend on the Unique Identifier being unique to one and only one
 							EPUB Publication. Determining whether two EPUB Publications with the same Unique Identifier
-							represent different versions of the same publication (see <a
-								href="https://www.w3.org/TR/epub-33/#sec-metadata-elem-identifiers-pid">Release
-								Identifier</a> [[!EPUB-33]]), or different publications, might require inspecting other
-							metadata, such as the titles or authors.</p>
+							represent different versions of the same publication, or different publications, might
+							require inspecting other metadata, such as the titles or authors.</p>
 					</dd>
 				</dl>
 			</section>
@@ -682,7 +699,7 @@
 								<p>SVG included <em>by reference</em> is processed as a separate document, and can
 									include its own CSS style rules just like an <a>SVG Content Document</a> would. Note
 									that this is consistent with situations where an [[HTML]] <a
-										href="https://www.w3.org/TR/html/semantics-embedded-content.html#elementdef-object"
+										href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-object-element"
 											><code>object</code></a> element references an external [[HTML]]
 									element.</p>
 							</div>
@@ -998,7 +1015,7 @@
 							[[!PRONUNCIATION-LEXICON]].</p>
 						<p id="confreq-pls-rs-scope">It MUST apply the supplied pronunciation instructions to all text
 							nodes in the current XHTML Content Document whose <a
-								href="https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xmllang-attributes"
+								href="https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xml:lang-attributes"
 								>language</a> [[!HTML]] matches <a
 								href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/#S4.1">the language
 								for which the pronunciation lexicon is relevant</a> [[!PRONUNCIATION-LEXICON]]. The
@@ -1026,14 +1043,30 @@
 
 				<ul class="conformance-list">
 					<li>
-						<p id="confreq-nav-access">When requested by a user, it MUST provide access to the links and
-							link labels in <a href="https://www.w3.org/TR/epub-33/#sec-nav-def-types">the
-									<code>nav</code> elements</a> [[!EPUB-33]] of the EPUB Navigation Document in a
-							fashion that allows the user to activate the links.</p>
+						<p id="confreq-nav-toc-access">It MUST provide users access to the links in the <a
+								href="https://www.w3.org/TR/epub-33/#sec-nav-toc"><code>toc nav</code> element</a>
+							[[!EPUB-33]].</p>
 					</li>
 					<li>
-						<p id="confreq-nav-activation">When a link is activated, it MUST relocate the application's
-							current reading position to the destination identified by that link.</p>
+						<p id="confreq-nav-pagelist-access">It SHOULD provide a method to navigate to the listed page
+							breaks when a <a href="https://www.w3.org/TR/epub-33/#sec-nav-pagelist"><code>page-list
+									nav</code> element</a> [[!EPUB-33]] is present.</p>
+					</li>
+					<li>
+						<p id="confreq-nav-landmarks-access">It MAY provide users access to the links in the <a
+								href="https://www.w3.org/TR/epub-33/#sec-nav-landmarks"><code>landmarks nav</code>
+								element</a> [[!EPUB-33]] and MAY use the links to enable functionality in the
+							application.</p>
+					</li>
+					<li>
+						<p id="confreq-nav-other-access">It MAY provide access to <code>nav</code> elements that do not
+							specify an <code>epub:type</code> attribute or that <a
+								href="https://www.w3.org/TR/epub-33/#sec-nav-def-types-other">declare an unknown
+								value</a> [[!EPUB-33]].</p>
+					</li>
+					<li>
+						<p id="confreq-nav-activation">When a link to a <a>Publication Resource</a> is activated, it
+							MUST relocate the current reading position to the destination identified by that link.</p>
 					</li>
 					<li>
 						<p id="confreq-nav-spine">It MUST honor the above requirements irrespective of whether the EPUB
@@ -1217,8 +1250,8 @@
 				<h3>HTML Initial Containing Block Dimensions</h3>
 
 				<p>In this version of this specification, only the width and height expressions as defined in <a
-						href="../core/index.html#sec-fxl-icb-html">Expressing in HTML</a> [[!EPUB-33]] MUST be
-					recognized by <a>Reading Systems</a>.</p>
+						href="https://www.w3.org/TR/epub-33/#sec-fxl-icb-html">Expressing in HTML</a> [[!EPUB-33]] MUST
+					be recognized by <a>Reading Systems</a>.</p>
 
 				<p>Reading Systems MUST clip XHTML content to the initial containing block (ICB) dimensions declared in
 					the <code>viewport</code>
@@ -1311,14 +1344,10 @@
 					<dl class="conformance-list">
 						<dt id="sec-container-metainf-container.xml">Container File (<code>container.xml</code>)</dt>
 						<dd>
-							<p id="container-default-rendition">A Reading System MUST consider the first
-									<code>rootfile</code> element within the <code>rootfiles</code> element to represent
-								the <a>Default Rendition</a> for the contained EPUB Publication. <a>Reading Systems</a>
-								are REQUIRED to present the Default Rendition, but MAY present other Renditions in the
-								container.</p>
-
-							<p><a>Reading Systems</a> MUST ignore foreign elements and attributes within a
-									<code>container.xml</code> file.</p>
+							<p id="container-default-rendition">A Reading System MUST, by default, use the Package
+								Document referenced from first <code>rootfile</code> element to render the EPUB
+								Publication. If the Reading System recognizes a means of selecting from the other
+								available options, it MAY choose a more appropriate Package Document.</p>
 						</dd>
 
 						<dt id="sec-container-metainf-inc">Other Files</dt>
@@ -1730,7 +1759,7 @@
 			<ul class="conformance-list">
 				<li>
 					<p id="confreq-rs-epubtype-beh">It MAY associate behaviors with none, some or all of the terms
-						defined in the <a href="https://www.w3.org/TR/epub-33/#sec-contentdocs-default-vocab">default
+						defined in the <a href="https://www.w3.org/TR/epub-33/#sec-epub-type-attribute">default
 							vocabulary</a> [[EPUB-33]].</p>
 				</li>
 				<li>
@@ -1762,7 +1791,6 @@
 							predefined URIs unless a local <a href="#sec-prefix-attr">prefix</a> is declared. Reading
 							Systems MUST use locally overridden prefixes in the <code>prefix</code> attribute when
 							encountered.</p>
-
 						<p>As changes to the reserved prefixes and updates to Reading Systems are not always going
 							happen in synchrony, Reading Systems MUST NOT fail when encountering unrecognized prefixes
 							(i.e., not reserved and not declared using the <code>prefix</code> attribute).</p>
@@ -1780,13 +1808,12 @@
 					<dd>
 						<p>A Reading System MUST use the following rules to create an IRI [[!RFC3987]] from a
 							property:</p>
-
 						<ul>
 							<li>
 								<p>If the property consists only of a reference, the IRI is obtained by concatenating
 									the IRI stem associated with the <a
-										href="https://www.w3.org/TR/epub-33/#sec-metadata-default-vocab">default
-										vocabulary</a> [[!EPUB-33]] to the reference.</p>
+										href="https://www.w3.org/TR/epub-33/#sec-default-vocab">default vocabulary</a>
+									[[!EPUB-33]] to the reference.</p>
 							</li>
 							<li>
 								<p>If the property consists of a prefix and reference, the IRI is obtained by
@@ -1794,7 +1821,6 @@
 									matching prefix has been defined, the property is invalid and MUST be ignored.</p>
 							</li>
 						</ul>
-
 						<p>The resulting IRI MUST be valid to [[!RFC3987]]. Reading Systems do not have to resolve this
 							IRI, however.</p>
 					</dd>
@@ -1835,10 +1861,10 @@
 							<dt id="scrolled-continuous">scrolled-continuous</dt>
 							<dd>
 								<p>The Reading System SHOULD render all Content Documents such that overflow content is
-									scrollable, and the EPUB Publication represented by the given <a>Rendition</a>
-									SHOULD be presented as one continuous scroll from spine item to spine item (except
-									where <a href="https://www.w3.org/TR/epub-33/#layout-property-flow-overrides"
-										>locally overridden</a> [[!EPUB-33]]).</p>
+									scrollable, and the EPUB Publication SHOULD be presented as one continuous scroll
+									from spine item to spine item (except where <a
+										href="https://www.w3.org/TR/epub-33/#layout-property-flow-overrides">locally
+										overridden</a> [[!EPUB-33]]).</p>
 							</dd>
 							<dt id="scrolled-doc">scrolled-doc</dt>
 							<dd>
@@ -1879,7 +1905,23 @@
 				</section>
 			</section>
 		</section>
-		<section class="appendix" id="app-epubReadingSystem">
+		<section id="sec-privacy">
+			<h2>Privacy</h2>
+
+			<div class="ednote">
+				<p>The working group will address issues related to privacy in EPUB Reading Systems in a future
+					draft.</p>
+			</div>
+		</section>
+		<section id="sec-security">
+			<h2>Security</h2>
+
+			<div class="ednote">
+				<p>The working group will address issues related to security in EPUB Reading Systems in a future
+					draft.</p>
+			</div>
+		</section>
+		<section id="app-epubReadingSystem" class="appendix">
 			<h2>JavaScript <dfn>epubReadingSystem</dfn> Object</h2>
 
 			<section id="app-ers-idl">
@@ -2105,13 +2147,42 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 
 			<p>For a list of all issues addressed during the revision, refer to the <a
 					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aclosed+label%3AEPUB33+label%3ASpec-RS+"
-					>working group's issue tracker</a>.</p>
+					>Working Group's issue tracker</a>.</p>
 
 			<section id="changes-latest">
-				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
-					3.2</a></h3>
+				<h3>Substantive Changes since the <a href="https://www.w3.org/TR/2021/WD-epub-rs-33-20210112/">First
+						Public Working Draft</a></h3>
+
+				<!--
+					After each working draft is published:
+						- change the link/text in the section heading to refer to the published draft (use the dated URL)
+						- move all changes down to the next section
+				-->
 
 				<ul>
+					<li>15-Jan-2021: Clarified the requirements for presenting nav elements in the navigation document.
+						The toc nav is now the only required element, the page-list nav is recommended when present, and
+						all others are optional. See <a href="https://github.com/w3c/publ-epub-revision/issues/975"
+							>issue 975</a>.</li>
+					<li>4-Feb-2021: Added explicit requirement that reading systems not use the language in
+							<code>dc:language</code> elements as the language of resources.</li>
+					<li>2-Feb-2021: Added base direction determination rules for the <code>dir</code> attribute
+						accounting for the addition of the new <code>auto</code> value. See <a
+							href="https://github.com/w3c/publ-epub-revision/issues/1491">issue 1491</a>.</li>
+					<li>2-Feb-2021: Noted that language information in the new <code>hreflang</code> attribute on
+							<code>link</code> elements is not authoritative. See <a
+							href="https://github.com/w3c/publ-epub-revision/issues/1488">issue 1488</a>.</li>
+				</ul>
+			</section>
+
+			<section id="changes-older">
+				<h3>Substantive Changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
+					3.2</a></h3>
+				<ul>
+					<li>24-Dec-2020: The creation of a <a
+							href="https://www.w3.org/publishing/epub32/epub-packages.html#sec-metadata-elem-identifiers-pid"
+							>release identifier</a> [[EPUBPackages-32]] is no longer defined. See <a
+							href="https://github.com/w3c/publ-epub-revision/issues/1440">issue 1440</a>.</li>
 					<li>6-Nov-2020: Reading systems are now required to <a href="#confreq-rs-xml-extid">not resolve
 							external identifiers</a> in doctype declarations. See <a
 							href="https://github.com/w3c/epub-specs/issues/1338">issue 1338</a>.</li>
@@ -2125,21 +2196,8 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 						requirements.</li>
 				</ul>
 			</section>
-
-			<!--
-				After FPWD:
-				- Uncomment this section and move all pre-FPWD changes above here
-				- Change link/reference in preceding section heading to FPWD
-			
-			<section id="changes-older">
-				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
-					3.2</a></h3>
-				<ul>
-				</ul>
-			</section>
-			-->
 		</section>
-		<div data-include="../common/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"
+		<div data-include="../common/acknowledgements-rs.html" data-oninclude="fixIncludes" data-include-replace="true"
 		></div>
 	</body>
 </html>

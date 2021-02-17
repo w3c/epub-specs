@@ -74,7 +74,7 @@ var biblio = {
 	},
 	"EPUB-A11Y-Tech": {
 		"title": "EPUB Accessibility Techniques",
-		"href": "https://www.w3.org/publishing/epub/a11y-tech/"
+		"href": "http://idpf.org/epub/a11y/techniques/"
 	},
 	"EPUBCFI-11": {
 		"authors":[
@@ -367,8 +367,8 @@ var biblio = {
 		"publisher": "W3C"
 	},
 	"SWF": {
-		"title": "SWF File Format Specification</link> Version 19",
-		"href": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf",
+		"title": "SWF File Format Specification Version 19",
+		"href": "https://www.adobe.com/content/dam/acom/en/devnet/pdf/swf-file-format-spec.pdf",
 		"date": "2012"
 	},
 	"TR15": {
@@ -416,44 +416,15 @@ var biblio = {
 	
 	// TEMPORARY ENTRIES UNTIL FPWD ADDS THEM TO SPECREF DATABASE
 	
-	"EPUB-33": {
+	"EPUB-A11Y-11": {
 		"authors":[
-		"Garth Conboy",
-		"Dave Cramer",
-		"Marisa DeMeglio",
-		"Matt Garrish",
-		"Daniel Weck"],
-		"title": "EPUB 3.3",
-		"href": "https://www.w3.org/TR/epub-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-RS-33": {
-		"authors":[
-		"Garth Conboy",
-		"Dave Cramer",
-		"Marisa DeMeglio",
-		"Matt Garrish",
-		"Daniel Weck"],
-		"title": "EPUB Reading Systems 3.3",
-		"href": "https://www.w3.org/TR/epub-rs-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-CHANGES-33": {
-		"authors":[
-		"Matt Garrish",
-		"Dave Cramer"],
-		"title": "EPUB Changes 3.3",
-		"href": "https://www.w3.org/TR/epub-changes-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-OVERVIEW-33": {
-		"authors":[
-		"Garth Conboy",
-		"Matt Garrish",
-		"MURATA Makoto",
-		"Daniel Weck"],
-		"title": "EPUB 3 Overview",
-		"href": "https://www.w3.org/TR/epub-overview-33/",
+			"Matt Garrish",
+			"George Kerscher",
+			"Charles Lapierre",
+			"Avneesh Singh"
+		],
+		"title": "EPUB Accessibility 1.1",
+		"href": "https://www.w3.org/TR/epub-a11y-11/",
 		"publisher": "W3C"
 	}
 }
