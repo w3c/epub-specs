@@ -388,6 +388,11 @@ var biblio = {
 	"US-ASCII": {
 		"title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
 	},
+	"WCAG2": {
+		"title": "Web Content Accessibility Guidelines (WCAG) 2",
+		"href": "https://www.w3.org/TR/WCAG2/",
+		"publisher": "W3C"
+	},
 	"WebP-Container": {
 		"title": "WebP Container Specification",
 		"href": "https://developers.google.com/speed/webp/docs/riff_container"
