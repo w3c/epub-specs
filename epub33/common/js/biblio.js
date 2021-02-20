@@ -72,10 +72,6 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUB-A11Y-Tech": {
-		"title": "EPUB Accessibility Techniques",
-		"href": "http://idpf.org/epub/a11y/techniques/"
-	},
 	"EPUBCFI-11": {
 		"authors":[
 			"Peter Sorotokin",
@@ -409,27 +405,5 @@ var biblio = {
 		"title": "XPointer Shorthand Notation",
 		"href": "https://www.w3.org/TR/2003/REC-xptr-framework-20030325/",
 		"date": "25 March 2003"
-	},
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// TEMPORARY ENTRIES UNTIL FPWD ADDS THEM TO SPECREF DATABASE
-	
-	"EPUB-A11Y-11": {
-		"authors":[
-			"Matt Garrish",
-			"George Kerscher",
-			"Charles Lapierre",
-			"Avneesh Singh"
-		],
-		"title": "EPUB Accessibility 1.1",
-		"href": "https://www.w3.org/TR/epub-a11y-11/",
-		"publisher": "W3C"
 	}
 }
