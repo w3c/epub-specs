@@ -33,12 +33,8 @@ var biblio = {
 		"href": "http://www.daisy.org/guidelines/epub/navigable-audio-only-epub3-guidelines"
 	},
 	"EPUB-3": {
-		"title": "EPUB 3 Overview",
-		"href": "https://www.w3.org/TR/epub-overview/",
-		"authors" : [
-			"Matt Garrish",
-			"Ivan Herman"
-		],
+		"title": "EPUB 3",
+		"href": "https://www.w3.org/TR/epub/",
 		"publisher": "W3C"
 	},
 	"EPUB-31": {
