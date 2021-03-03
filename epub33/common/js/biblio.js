@@ -34,7 +34,7 @@ var biblio = {
 	},
 	"EPUB-3": {
 		"title": "EPUB 3",
-		"href": "https://www.w3.org/publishing/epub3/",
+		"href": "https://www.w3.org/TR/epub/",
 		"publisher": "W3C"
 	},
 	"EPUB-31": {
@@ -58,7 +58,13 @@ var biblio = {
 	},
 	"EPUB-A11Y": {
 		"title": "EPUB Accessibility",
-		"href": "https://www.w3.org/publishing/epub/a11y/",
+		"href": "https://www.w3.org/TR/epub-a11y/",
+		"authors": [
+			"Matt Garrish",
+			"George Kerscher",
+			"Gregorio Pellegrino",
+			"Avneesh Singh"
+		],
 		"publisher": "W3C"
 	},
 	"EPUB-A11Y-10": {
