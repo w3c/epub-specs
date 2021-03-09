@@ -1229,9 +1229,38 @@
 								<p>Establishes an association between the current expression and the element or resource
 									identified by its value. The value of the attribute must be a relative IRI
 									[[!RFC3987]] that references the resource or element being described.</p>
+								<aside class="example">
+									<p>The following example shows the <code>refines</code> element used to indicate a
+										creator is the illustrator.</p>
+									<pre>&lt;metadata&gt;
+   …
+   &lt;dc:creator id="creator02">E.H. Shepard&lt;/dc:creator>
+   &lt;meta refines="#creator02" property="role" scheme="marc:relators">ill&lt;/meta>
+   …
+&lt;/metadata&gt;</pre>
+								</aside>
 								<p>The <code>refines</code> attribute is OPTIONAL depending on the type of metadata
 									being expressed. When omitted, the element defines a <a href="#primary-expression"
 										>primary expression</a>.</p>
+								<p>When creating expressions about a <a>Publication Resource</a>, the
+										<code>refines</code> attribute SHOULD be a fragment identifier that references
+									the ID of the resource's <a href="#sec-item-elem">manifest entry</a>.</p>
+								<aside class="example">
+									<p>The following example shows the <code>refines</code> element used to set the
+										duration of an Media Overlay Document.</p>
+									<pre>&lt;metadata&gt;
+   …
+   &lt;meta property="media:duration" refines="#c01_overlay">0:32:29&lt;/meta>
+   …
+&lt;/metadata&gt;
+&lt;manifest>
+   …
+   &lt;item id="c01_overlay"
+         href="overlays/chapter01.smil"
+         media-type="application/smil+xml"/>
+   …
+&lt;/manifest></pre>
+								</aside>
 								<p>Allowed on: <a href="#sec-link-elem"><code>link</code></a> and <a
 										href="#sec-meta-elem"><code>meta</code></a>.</p>
 							</dd>
@@ -7068,7 +7097,8 @@ store destination as source in ocf
 						<p>The <a href="#elemdef-smil-body"><code>body</code></a> of a Media Overlay Document consists
 							of two elements: the <a href="#elemdef-smil-par"><code>par</code> element</a> and the <a
 								href="#elemdef-smil-seq"><code>seq</code> element</a>. The ordering of these elements
-							MUST match the default reading order of the EPUB Content Document.</p>
+							represents how the content in the corresponding EPUB Content Documents is rendered during
+							playback.</p>
 
 						<p>The <code>par</code> element represents phrases. Each element identifies a text and audio
 							component to synchronize during playback.</p>
@@ -7392,12 +7422,12 @@ html.my-document-playing * {
 								<a>EPUB Publication</a> in a <a href="#elemdef-meta"><code>meta</code> element</a> with
 							the <a href="#duration"><code>duration</code> property</a>.</p>
 
-						<p>In addition, the duration of each EPUB Content Document with an associated Media Overlay MUST
-							be provided. The <a href="#attrdef-refines"><code>refines</code> attribute</a> is used to
-							associate each duration declaration to the corresponding <a>manifest</a>
+						<p>In addition, the duration of each Media Overlay Document MUST be provided. The <a
+								href="#attrdef-refines"><code>refines</code> attribute</a> is used to associate each
+							duration declaration to the corresponding <a>manifest</a>
 							<a href="#elemdef-package-item"><code>item</code></a>.</p>
 
-						<p>The sum of the durations for each EPUB Content Document SHOULD equal the <a
+						<p>The sum of the durations for each Media Overlay Document SHOULD equal the <a
 								href="#total-duration">total duration</a>.</p>
 
 						<p><a>Authors</a> also MAY specify <a href="#narrator"><code>narrator</code></a> information in
@@ -8987,6 +9017,15 @@ EPUB/images/cover.png</pre>
 				-->
 
 				<ul>
+					<li>8-Mar-2021: The fix for <a href="https://github.com/w3c/epub-specs/issues/1322">issue 1322</a>
+						on 20-Jan-2021 incorrectly mentioned EPUB Content Documents having durations. Corrected to Media
+						Overlay Documents.</li>
+					<li>8-Mar-2021: Added recommendation that <code>refines</code> attribute use fragment identifiers to
+						reference Publication Resources. See <a href="https://github.com/w3c/epub-specs/issues/1361"
+							>issue 1361</a>.</li>
+					<li>8-Mar-2021: Change requirement that Media Overlay <code>par</code> and <code>seq</code> ordering
+						match the default reading order to guidance. See <a
+							href="https://github.com/w3c/epub-specs/issues/1458">issue 1458</a></li>
 					<li>5-Mar-2021: Clarified that whitespace within metadata element values is collapsed per the
 						[[Infra]] specification definition. See <a href="https://github.com/w3c/epub-specs/issues/1528"
 							>issue 1528</a>.</li>
