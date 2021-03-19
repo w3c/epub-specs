@@ -33,7 +33,8 @@ The following links provide filtered views of the currently open issues:
 
 - [EPUB 3 core specifications](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+-label%3ACat-NonCore+-label%3ACat-Accessibility+)
 - [EPUB Accessibility specification](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+label%3ACat-Accessibility+)
-- [Non-core specifications](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+label%3ACat-NonCore+)
+
+Issues for specifications not actively maintained have now been [marked as abadoned and closed](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aopen+label%3AStatus-Abandoned+). These issues may be resurrected in the future if work is resumed on their respective specifications.
 
 ## Repository Structure
 
