@@ -448,7 +448,8 @@
 							in outbound hyperlinks that resolve to <a>Remote Resources</a> (e.g., referenced from the
 								<code>href</code> attribute of an [[!HTML]] <a
 								href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"
-									><code>a</code></a> element).</p>
+									><code>a</code></a> element). Resources represented by <a href="#sec-data-urls">data
+								URLs</a> are also not Publication Resources.</p>
 					</dd>
 					<dt>
 						<dfn id="dfn-remote-resource" data-lt="Remote Resources">Remote Resource</dfn>
@@ -999,6 +1000,30 @@
 									><code>remote-resources</code> property</a> on the <a>manifest</a>
 							<a href="#sec-item-elem"><code>item</code> element</a>.</p>
 					</div>
+				</section>
+
+				<section id="sec-data-urls">
+					<h4>Data URLs</h4>
+
+					<p>The <a href="https://tools.ietf.org/html/rfc2397"><code>data:</code> URL scheme</a> [[!RFC2397]]
+						is used to encode resources directly into a URL string. The advantage of this scheme is that it
+						allows a resource to be embedded within another, avoiding the need for an external file.</p>
+
+					<p><a>EPUB Creators</a> MAY use data URLs in EPUB Publications provided their use does not result in
+						a <a>Top-Level Content Document</a> or open a new browser instance (e.g., they cannot be used in
+						manifest <code>item</code> elements that are referenced from the <a>spine</a>, in [[HTML]] or
+						[[SVG]] <code>a</code> elements (except when inside an <code>iframe</code>), or in calls to
+						[[ECMASCRIPT]] <code>window.open</code> or <code>document.open</code>).</p>
+
+					<p>This restriction on their use is to prevent security issues (i.e., phishing scams) and also to
+						ensure that <a>Reading Systems</a> can determine where to take a user next (i.e., because such
+						resources will typically not be listed in the spine).</p>
+
+					<p>Resources represented as data URLs are not Publication Resources so are exempt from the
+						requirement to be listed in the <a>manifest</a>.</p>
+
+					<p>Data URLs MUST encode Core Media Types or be used where a fallback to one is provided (i.e., they
+						are subject to the <a href="sec-foreign-restrictions">foreign resource restrictions</a>).</p>
 				</section>
 
 				<section id="sec-xml-constraints">
@@ -1794,7 +1819,7 @@
 										combine them in unexpected ways.</p>
 
 									<p>For example, the following example shows a basic multipart title:</p>
-									
+
 									<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
     &lt;dc:title&gt;THE LORD OF THE RINGS&lt;/dc:title&gt;
     &lt;dc:title&gt;Part One: The Fellowship of the Ring&lt;/dc:title&gt;
@@ -1803,7 +1828,7 @@
 </pre>
 									<p>The same title could instead be expressed using a single <code>dc:title</code>
 										element as follows:</p>
-									
+
 									<pre>&lt;metadata xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
     &lt;dc:title&gt;
         THE LORD OF THE RINGS, Part One: The Fellowship of the Ring
@@ -2820,7 +2845,6 @@ Manifest:
 Spine:
 &lt;itemref idref="audio01" linear="no"/&gt;</pre>
 							</aside>
-
 						</section>
 
 						<section id="sec-foreign-restrictions-manifest">
@@ -2867,6 +2891,12 @@ Spine:
 							<p>Fallbacks MAY also be provided for <a>Top-Level Content Documents</a> that are EPUB
 								Content Documents. An example of when this feature can be utilized is when providing <a
 									href="#confreq-cd-scripted-flbk">fallbacks for scripted content</a>.</p>
+
+							<div class="note">
+								<p>As it is not possible to use manifest fallbacks for resources represented using <a
+										href="#sec-data-urls">data URLs</a>. Foreign resources can only be represented
+									as data URLs where an intrinsic fallback mechanism is available.</p>
+							</div>
 						</section>
 
 						<section id="sec-opf-bindings">
@@ -9349,10 +9379,11 @@ EPUB/images/cover.png</pre>
 				-->
 
 				<ul>
+					<li>23-Mar-2021: Clarified the requirements for the use of data URLs in EPUB Publications. See <a
+							href="https://github.com/w3c/epub-specs/issues/1564">issue 1564</a></li>
 					<li>17-Mar-2021: Include non characters at the end of the supplementary planes in list of characters
 						not allowed in file names. See <a href="https://github.com/w3c/epub-specs/issues/1538">issue
-            1538</a>.
-          </li>
+							1538</a>.</li>
 					<li>15-Mar-2021: Removed the normative dependencies on XML schemas and added element and attribute
 						definitions for the <code>container.xml</code>, <code>encryption.xml</code> and
 							<code>signatures.xml</code> files. All schemas are considered informative. See <a
