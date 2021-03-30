@@ -1,6 +1,6 @@
 
 function addConformanceLinks() {
-    var dt = document.querySelectorAll('*[class~="conformance-list"] p[id]');
+    var dt = document.querySelectorAll('*[class~="conformance-list"] li p[id]');
     
     for (var i = 0; i < dt.length; i++) {
         
