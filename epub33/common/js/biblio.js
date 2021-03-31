@@ -34,7 +34,7 @@ var biblio = {
 	},
 	"EPUB-3": {
 		"title": "EPUB 3",
-		"href": "https://www.w3.org/publishing/epub3/",
+		"href": "https://www.w3.org/TR/epub/",
 		"publisher": "W3C"
 	},
 	"EPUB-31": {
@@ -58,7 +58,13 @@ var biblio = {
 	},
 	"EPUB-A11Y": {
 		"title": "EPUB Accessibility",
-		"href": "https://www.w3.org/publishing/epub/a11y/",
+		"href": "https://www.w3.org/TR/epub-a11y/",
+		"authors": [
+			"Matt Garrish",
+			"George Kerscher",
+			"Gregorio Pellegrino",
+			"Avneesh Singh"
+		],
 		"publisher": "W3C"
 	},
 	"EPUB-A11Y-10": {
@@ -71,10 +77,6 @@ var biblio = {
 		"href": "http://idpf.org/epub/a11y/accessibility-20170105.html",
 		"date": "05 January 2017",
 		"publisher": "IDPF"
-	},
-	"EPUB-A11Y-Tech": {
-		"title": "EPUB Accessibility Techniques",
-		"href": "http://idpf.org/epub/a11y/techniques/"
 	},
 	"EPUBCFI-11": {
 		"authors":[
@@ -368,7 +370,7 @@ var biblio = {
 	},
 	"SWF": {
 		"title": "SWF File Format Specification Version 19",
-		"href": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf",
+		"href": "https://www.adobe.com/content/dam/acom/en/devnet/pdf/swf-file-format-spec.pdf",
 		"date": "2012"
 	},
 	"TR15": {
@@ -388,6 +390,11 @@ var biblio = {
 	"US-ASCII": {
 		"title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
 	},
+	"WCAG2": {
+		"title": "Web Content Accessibility Guidelines (WCAG) 2",
+		"href": "https://www.w3.org/TR/WCAG2/",
+		"publisher": "W3C"
+	},
 	"WebP-Container": {
 		"title": "WebP Container Specification",
 		"href": "https://developers.google.com/speed/webp/docs/riff_container"
@@ -404,57 +411,5 @@ var biblio = {
 		"title": "XPointer Shorthand Notation",
 		"href": "https://www.w3.org/TR/2003/REC-xptr-framework-20030325/",
 		"date": "25 March 2003"
-	},
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// TEMPORARY ENTRIES UNTIL FPWD ADDS THEM TO SPECREF DATABASE
-	
-	"EPUB-33": {
-		"authors":[
-			"Garth Conboy",
-			"Dave Cramer",
-			"Marisa DeMeglio",
-			"Matt Garrish",
-			"Daniel Weck"
-		],
-		"title": "EPUB 3.3",
-		"href": "https://www.w3.org/TR/epub-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-RS-33": {
-		"authors":[
-			"Garth Conboy",
-			"Dave Cramer",
-			"Marisa DeMeglio",
-			"Matt Garrish",
-			"Daniel Weck"
-		],
-		"title": "EPUB Reading Systems 3.3",
-		"href": "https://www.w3.org/TR/epub-rs-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-OVERVIEW-33": {
-		"authors":[
-    		"Garth Conboy",
-    		"Matt Garrish",
-    		"Daniel Weck"],
-		"title": "EPUB 3 Overview",
-		"href": "https://www.w3.org/TR/epub-overview-33/",
-		"publisher": "W3C"
-	},
-	"EPUB-MULTI-REND-11": {
-		"authors":[
-    		"Matt Garrish"
-		],
-		"title": "EPUB Multiple-Rendition Publications 1.1",
-		"href": "https://www.w3.org/TR/epub-multi-rend-11/",
-		"publisher": "W3C"
 	}
 }
