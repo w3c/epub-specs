@@ -34,7 +34,7 @@ var biblio = {
 	},
 	"EPUB-3": {
 		"title": "EPUB 3",
-		"href": "https://www.w3.org/publishing/epub3/",
+		"href": "https://www.w3.org/TR/epub/",
 		"publisher": "W3C"
 	},
 	"EPUB-31": {
@@ -58,7 +58,13 @@ var biblio = {
 	},
 	"EPUB-A11Y": {
 		"title": "EPUB Accessibility",
-		"href": "https://www.w3.org/publishing/epub/a11y/",
+		"href": "https://www.w3.org/TR/epub-a11y/",
+		"authors": [
+			"Matt Garrish",
+			"George Kerscher",
+			"Gregorio Pellegrino",
+			"Avneesh Singh"
+		],
 		"publisher": "W3C"
 	},
 	"EPUB-A11Y-10": {
@@ -272,6 +278,10 @@ var biblio = {
 		"title": "ISO/IEC 19757-3: Rule-based validation — Schematron",
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip",
 		"date": "2006-06-01"
+	},
+	"MARC21": {
+		"title": "MARC 21 XML",
+		"href": "https://www.loc.gov/standards/marcxml/"		
 	},
 	"NVDL": {
 		"title": "ISO/IEC 19757-4: NVDL (Namespace-based Validation Dispatching Language)",
