@@ -279,6 +279,10 @@ var biblio = {
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip",
 		"date": "2006-06-01"
 	},
+	"MARC21": {
+		"title": "MARC 21 XML",
+		"href": "https://www.loc.gov/standards/marcxml/"		
+	},
 	"NVDL": {
 		"title": "ISO/IEC 19757-4: NVDL (Namespace-based Validation Dispatching Language)",
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c038615_ISO_IEC_19757-4_2006(E).zip",
