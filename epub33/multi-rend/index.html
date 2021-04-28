@@ -102,7 +102,7 @@
 					Reading Systems can adapt to changing user needs.</p>
 			</section>
 
-			<section id="background">
+			<section id="background" class="informative">
 				<h3>Background</h3>
 
 				<p>The notion of including multiple renditions of an <a>EPUB Publication</a> has existed for as long as
@@ -189,6 +189,7 @@
 					<li><a href="https://www.w3.org/TR/epub-33/#dfn-root-directory">Root Directory</a></li>
 					<li><a href="https://www.w3.org/TR/epub-33/#dfn-top-level-content-document">Top-Level Content
 							Document</a></li>
+					<li><a href="https://www.w3.org/TR/epub-33/#dfn-unique-identifier">Unique Identifier</a></li>
 					<li><a href="https://www.w3.org/TR/epub-33/#dfn-xhtml-content-document">XHTML Content
 						Document</a></li>
 				</ul>
@@ -238,15 +239,15 @@
 
 			<p>Each Rendition of an <a>EPUB Publication</a> MUST meet the <a
 					href="https://www.w3.org/TR/epub-33/#sec-epub-conf">requirements for EPUB Publications</a>
-				[[!EPUB-33]].</p>
+				[[EPUB-33]].</p>
 
 			<p>The Package Document for each Rendition MUST be listed in the <code>container.xml</code> file
-				[[!EPUB-33]], where the first Package Document listed represents the <a>Default Rendition</a>.</p>
+				[[EPUB-33]], where the first Package Document listed represents the <a>Default Rendition</a>.</p>
 
 			<aside class="example">
 				<p>The following example shows SVG and XHTML Renditions bundled in the same container:</p>
 
-				<pre>&lt;?xml version="1.0"?&gt;
+				<pre id="sep-dir">&lt;?xml version="1.0"?&gt;
 &lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
     &lt;rootfiles&gt;
         &lt;rootfile full-path="SVG/Sandman.opf"
@@ -258,8 +259,18 @@
 			</aside>
 
 			<p>Each Rendition of the EPUB Publication SHOULD only list the <a>Publication Resources</a> necessary for
-				its rendering in its Package Document <a>manifest</a> [[!EPUB-33]]. Renditions MAY reference the same
+				its rendering in its Package Document <a>manifest</a> [[EPUB-33]]. Renditions MAY reference the same
 				Publication Resources.</p>
+
+			<div class="note">
+				<p>If the Package Documents for each Rendition are stored in separate directories, as shown in the <a
+						href="#sep-dir">preceding example</a>, Reading Systems may prevent one Rendition from accessing
+					the resources of another (i.e., to prevent publications from trying to reach outside the EPUB
+					Container, referencing the parent directory or above of a Package Document may be forbidden).</p>
+
+				<p>To share resources between Renditions, it is recommended that the Package Documents be located in a
+					common directory and the resources for each Rendition stored in separate subdirectories.</p>
+			</div>
 		</section>
 		<section id="sec-metadata">
 			<h2>Expressing Metadata</h2>
@@ -310,6 +321,11 @@
 								class="markup">metadata</code> element.</li>
 					</ul>
 
+					<div class="note">
+						<p>The content of this file is also defined informally through an XML schema. See <a
+								href="#schema-metadata"></a> for further details.</p>
+					</div>
+
 					<p>This specification does not define a model for the inheritance of metadata from the Publication
 						level to the <a>Rendition</a> level, as EPUB processing only requires that the <a>Default
 							Rendition</a> be recognized by Reading Systems (i.e., reliance on inheritance could result
@@ -327,13 +343,32 @@
 					<div class="note">
 						<p>As [[EPUB-33]] does not define a content model for the <code>metadata.xml</code> file, EPUB
 							Publications that do not conform to this specification can include different metadata. EPUB
-							Publications that are not valid to the schema in <a href="#schema-metadata"></a> are not
+							Publications that are not valid to the content model restrictions in this section are not
 							valid Multiple-Rendition Publications as defined by this specification, but might still be
-							valid EPUB 3.0.1 Publications.</p>
+							valid EPUB 3 Publications.</p>
 						<p>EPUB Creators are strongly encouraged to migrate to the content model defined in this
 							specification, even if not producing Multiple-Rendition Publications, to ensure consistent
 							processing.</p>
 					</div>
+
+					<section id="pub-metadata-obfuscation">
+						<h4>Resource Obfuscation</h4>
+
+						<p>The <a href="https://www.w3.org/TR/epub-33/#obfus-algorithm">resource obfuscation
+								algorithm</a> [[EPUB-33]] depends on creating an <a
+								href="https://www.w3.org/TR/epub-33/#obfus-keygen">obfuscation key</a> [[EPUB-33]] from
+							the <a>Unique Identifier</a> for the EPUB Publication.</p>
+
+						<p>For compatibility reasons, and due to the complexities of being able to share resources
+							across Renditions, this specification does not change this requirement but applies it to all
+							obfuscated resources in the EPUB Container.</p>
+
+						<p>Consequently, EPUB Creators MUST use the Unique Identifier of the <a>Default Rendition</a> as
+							the obfuscation key for all resources in a <a>Multiple-Rendition Publication</a>.</p>
+
+						<p>Similarly, <a>Reading Systems</a> MUST use this Unique Identifier of the Default Rendition to
+							de-obfuscate all resources in a Multiple-Rendition Publication.</p>
+					</section>
 				</section>
 
 				<section id="vocab-assoc">
@@ -377,36 +412,39 @@
 			<section id="rendition-selection-pub-confomance">
 				<h3>Content Conformance</h3>
 
-				<p>A Container Document MUST meet all of the following criteria:</p>
+				<p>A Container Document:</p>
 
 				<ul class="conformancelist">
-					<li id="confreq-container">It MUST be valid to the definition and requirements for the
+					<li id="confreq-container">MUST be valid to the definition and requirements for the
 							<code>container.xml</code> file specified in <a
 							href="https://www.w3.org/TR/epub-33/#sec-container-metainf-container.xml">Container –
 							META-INF/container.xml</a> [[EPUB-33]].</li>
-					<li id="confreq-selection-attr">It MAY include any of the selection attributes defined in <a
+					<li id="confreq-selection-attr">MAY include any of the selection attributes defined in <a
 							href="#rendition-selection-attr">Rendition Selection Attributes</a>.</li>
-					<li id="confreq-selection-min">Inclusion of selection attributes is OPTIONAL on the <a
+					<li id="confreq-selection-default">MAY Include selection attributes on the <a
 							href="https://www.w3.org/TR/epub-33/#elemdef-container-rootfile"><code>rootfile</code>
-							element</a> [[EPUB-33]] for the <a>Default Rendition</a>, but it SHOULD include at least one
-						selection attribute ‒ in addition to the OPTIONAL label ‒ on each subsequent
-							<code>rootfile</code> element.</li>
+							element</a> [[EPUB-33]] for the <a>Default Rendition</a></li>
+					<li id="confreq-selection-min">SHOULD include at least one selection attribute ‒ in addition to the
+						OPTIONAL label ‒ on each subsequent <code>rootfile</code> element.</li>
 				</ul>
 			</section>
 
 			<section id="rendition-selection-rs-conformance">
 				<h3>Reading System Conformance</h3>
 
-				<p>An EPUB Reading System MUST meet all of the following criteria for <a>Rendition</a> selection:</p>
-
-				<ul class="conformancelist">
-					<li id="confreq-rs-processing">It SHOULD determine the Rendition to present to a user as defined in
-							<a href="#rendition-selection-proc-model"></a>.</li>
-				</ul>
+				<p>An EPUB Reading System SHOULD determine the Rendition to present to a user as defined in <a
+						href="#rendition-selection-proc-model"></a>.</p>
 			</section>
 
 			<section id="rendition-selection-attr">
 				<h3>Rendition Selection Attributes</h3>
+
+				<div class="note">
+					<p>The use of the rendition selection attributes in the <a
+							href="https://www.w3.org/TR/epub-33/#sec-container-metainf-container.xml"
+								><code>container.xml</code> file</a> [[EPUB-33]] is also defined informally through an
+						XML schema. See <a href="#schema-container"></a> for further details.</p>
+				</div>
 
 				<section id="media-attr">
 					<h4>The <code>rendition:media</code> attribute</h4>
@@ -862,25 +900,18 @@
 
 				<p>An EPUB Publication MAY include an EPUB Rendition Mapping Document.</p>
 
-				<p>A conformant EPUB Rendition Mapping Document MUST meet all of the following criteria:</p>
-
-				<p class="bridgehead">Document Properties</p>
+				<p>A conformant EPUB Rendition Mapping Document:</p>
 
 				<ul class="conformancelist">
-					<li id="confreq-map-xhtml">It MUST conform to all content conformance constraints for XHTML Content
+					<li id="confreq-map-xhtml">MUST conform to all content conformance constraints for XHTML Content
 						Documents as defined in <a
 							href="http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-xhtml-conf-content">XHTML
 							Content Documents — Content Conformance</a> [[EPUB-33]].</li>
-					<li id="confreq-map-content-model">It MUST conform to all content conformance constraints specific
-						for EPUB Rendition Mapping Documents expressed in <a href="#rendition-mapping-doc-def">EPUB
+					<li id="confreq-map-content-model">MUST conform to all content conformance constraints specific for
+						EPUB Rendition Mapping Documents expressed in <a href="#rendition-mapping-doc-def">EPUB
 							Rendition Mapping Document Definition</a>.</li>
-				</ul>
-
-				<p class="bridgehead">Publication</p>
-
-				<ul class="conformancelist">
-					<li id="confreq-map-unlisted">It MUST NOT be listed in the Package Document manifest of any of the
-						EPUB Publication's Renditions.</li>
+					<li id="confreq-map-unlisted">MUST NOT be listed in the Package Document manifest of any of the EPUB
+						Publication's Renditions.</li>
 				</ul>
 			</section>
 
@@ -889,16 +920,21 @@
 
 				<p>Reading Systems SHOULD support the use of Rendition Mapping Documents to switch between content. </p>
 
-				<p>If a Reading System supports mapping, it MUST meet all of the following criteria:</p>
+				<p>A Reading System that supports mapping:</p>
 
 				<ul class="conformancelist">
-					<li id="confreq-rs-remap">When a change in Renditions occurs, it MUST locate the current position in
+					<li id="confreq-rs-remap">MUST, when a change in Renditions occurs, locate the current position in
 						the Rendition Mapping Document and load the matching position in the new Rendition.</li>
 				</ul>
 			</section>
 
 			<section id="rendition-mapping-doc-def">
 				<h3>EPUB Rendition Mapping Document Definition</h3>
+
+				<div class="note">
+					<p>The content of this file is also defined informally through an XML schema. See <a
+							href="#schema-mapping-doc"></a> for further details.</p>
+				</div>
 
 				<section id="rendition-mapping-doc-xhtml">
 					<h4>XHTML Content Document: Restrictions</h4>
@@ -993,8 +1029,6 @@
 							costs in terms of caching, incremental updating, etc.</p>
 					</div>
 
-					<p>Examples</p>
-
 					<aside class="example">
 						<p>The following example shows a Rendition Mapping Document for a magazine with 3 Renditions:
 							text, portrait and landscape. ‘article 1' is on pages 5 and 6 of the fixed layout Renditions
@@ -1085,9 +1119,9 @@
 				<section id="rendition-mapping-container-id">
 					<h4>Container Identification</h4>
 
-					<p>The location of the Rendition Mapping Document is identified in the Container Document using an
-						[[EPUB-33]] <code>link</code> element child of the root <code>container</code> element,
-						where:</p>
+					<p>The location of the Rendition Mapping Document is identified in the Container Document using a <a
+							href="https://www.w3.org/TR/epub-33/#sec-container.xml-link-elem"><code>link</code>
+							element</a> [[EPUB-33]], where:</p>
 
 					<ul>
 						<li>the <code>href</code> attribute MUST reference the location of the Rendition Mapping
@@ -1202,7 +1236,7 @@
 						>http://www.idpf.org/epub/renditions/multiple/schema/epub-rendition-mapping.rnc</a>.</p>
 			</section>
 		</section>
-		<section id="change-log">
+		<section id="change-log" class="appendix informative">
 			<h2>Change Log</h2>
 
 			<p>Note that this change log only identifies substantive changes &#8212; those that affect the conformance
@@ -1213,9 +1247,31 @@
 					>working group's issue tracker</a>.</p>
 
 			<section id="changes-latest">
+				<h3>Substantive changes since the <a href="https://www.w3.org/TR/2021/NOTE-epub-multi-rend-11-20210112/"
+						>First Public Working Draft</a></h3>
+
+				<!--
+					After each working draft is published:
+						- change the link/text in the section heading to refer to the published draft (use the dated URL)
+						- move all changes down to the next section
+				-->
+
+				<ul>
+					<li>19-Mar-2021: Require the use of the unique identifier in the <code>metadata.xml</code> file for
+						obfuscating resources and recommend it be the same as the identifier in the default rendition.
+						See <a href="https://github.com/w3c/publ-epub-revision/issues/1443">issue 1443</a>.</li>
+					<li>19-Mar-2021: Added note clarifying that Package Documents need to be in a common directory to
+						share resources. See <a href="https://github.com/w3c/publ-epub-revision/issues/619">issue
+							619</a>.</li>
+					<li>19-Mar-2021: Fixed incorrect reference to <code>link</code> element being a child of the
+							<code>container</code> element. See <a
+							href="https://github.com/w3c/publ-epub-revision/issues/584">issue 584</a>.</li>
+				</ul>
+			</section>
+
+			<section id="changes-older">
 				<h3>Substantive changes since <a href="http://idpf.org/epub/renditions/multiple/">EPUB
 						Multiple-Rendition Publications 1.0</a></h3>
-
 				<ul>
 					<li>24-Dec-2020: The specification no longer makes reference to a release identifier, but the
 						requirement to include a unique identifier and last modification date in the
@@ -1228,19 +1284,6 @@
 						1436</a>.</li>
 				</ul>
 			</section>
-
-			<!--
-				After FPWD:
-				- Uncomment this section and move all pre-FPWD changes above here
-				- Change link/reference in preceding section heading to FPWD
-			
-			<section id="changes-older">
-				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
-					3.2</a></h3>
-				<ul>
-				</ul>
-			</section>
-			-->
 		</section>
 	</body>
 </html>
