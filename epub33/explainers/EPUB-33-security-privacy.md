@@ -1,25 +1,8 @@
-# EPUB 3.3 Explainer
+# Security and Privacy Questionnaire for EPUB 3.3
 
-**Written**: 2021-02-22, **Updated**: 2021-04-29, Duke Ellington’s birthday. 
+Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 2021.
 
-## Authors:
-
- * Dave Cramer (Invited Expert)
- 
-## Participate
-
- * [Issue Tracker](https://github.com/w3c/epub-specs/issues)
- * [Mailing List](https://lists.w3.org/Archives/Public/public-epub-wg/)
- 
-## Table of Contents
-
-TK
- 
-## Introduction
-
-**EPUB 3.3** is a packaging mechanism for web content, designed for electronic books. EPUB's roots go back to 1999, with the OEB 1.0 specification from the Open Ebook Forum (which evolved into the IDPF) In 2007, a packaging format was introduced and OEB became EPUB 2.0. In 2011, EPUB 3.0 added support for XHTML5. Changes since then have been minor. The IDPF was absorbed into W3C in 2017, and responsibility for the maintenance of EPUB fell to the EPUB 3 Community Group, which released EPUB 3.2 in 2019 as a community group note. EPUB is twenty-one years old, but has never gone through the W3C Recommendation track, until now. 
-
-EPUB 3.3 includes the following specifications:
+## Links to specifications
 
 * [EPUB 3.3 Overview](https://w3c.github.io/epub-specs/epub33/overview/), a non-normative overview of EPUB 3.3
 * [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core/), the specification of the file format
@@ -27,20 +10,17 @@ EPUB 3.3 includes the following specifications:
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 
-## Goals
-
-## Non-goals
 
 
-## Security and Privacy Questionnaire
+## Introduction
 
 EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
 
 This makes it hard to think about security issues. In order to read EPUB files, I generally have to give personally-identifying information like a credit card number to the ebook retailer. They have likely altered the original EPUB, for example by applying digital rights management to the constituent files. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
 
-It's hard to even reason about how HTML’s security issues affect EPUB. If I read an EPUB on the Google Play app on an Android tablet, what risks am I exposed to? Can any of those risks be mitigated by the design of the EPUB specification?
+It’s hard to even reason about how HTML’s security issues affect EPUB. If I read an EPUB on the Google Play app on an Android tablet, what risks am I exposed to? Can any of those risks be mitigated by the design of the EPUB specification?
 
-
+## Questionnaire
 
 ### 1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
@@ -79,7 +59,7 @@ Many EPUB reading systems do not support scripting at all. For those that do, sc
 
 EPUB does have requirements for user agents to respond to device orientation (`portrait | landscape`) for fixed-layout EPUBs. 
 
-There has been talk about scripted EPUBs using geolocation information; I don't know if this has happened in the wild yet, or if any reading systems would allow access to this information. This would happen through existing Web APIs; EPUB does not specify new APIs to interact with sensors. 
+There has been talk about scripted EPUBs using geolocation information; I don’t know if this has happened in the wild yet, or if any reading systems would allow access to this information. This would happen through existing Web APIs; EPUB does not specify new APIs to interact with sensors. 
 
 ### 8. What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
 
@@ -120,15 +100,4 @@ No.
 
 ### 17. What should this questionnaire have asked?
 
-I am somewhat concerned about a feature of app platform web views that could lead to user confusion. In testing, if an EPUB reading system opens an EPUB that contains a non-HTML content document, the RS will often offer to the user the opportunity to download the file. This is a spec violation, but I've seen this behaviour in multiple user agents. It seems to be browser-level issue: request a `.dmg` file, for example, and you get a download dialogue. 
-
-
-
-
-
-
-
-
-
-
-
+I am somewhat concerned about a feature of app platform web views that could lead to user confusion. In testing, if an EPUB reading system opens an EPUB that contains a non-HTML content document, the Reading System will often offer to the user the opportunity to download the file. This is a spec violation, but I’ve seen this behaviour in multiple user agents. It seems to be browser-level issue: request a `.dmg` file, for example, and you get a download dialogue. 
