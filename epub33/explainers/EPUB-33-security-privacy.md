@@ -16,7 +16,7 @@ Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 
 
 EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
 
-This makes it hard to think about security issues. In order to read EPUB files, I generally have to give personally-identifying information like a credit card number to the ebook retailer. They have likely altered the original EPUB, for example by applying digital rights management to the constituent files. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
+This makes it hard to think about security issues. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
 
 It’s hard to even reason about how HTML’s security issues affect EPUB. If I read an EPUB on the Google Play app on an Android tablet, what risks am I exposed to? Can any of those risks be mitigated by the design of the EPUB specification?
 
