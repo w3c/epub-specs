@@ -1,6 +1,6 @@
 # EPUB 3.3 Explainer
 
-**Written**: 2021-02-22, **Updated**: 2021-02-26
+**Written**: 2021-02-22, **Updated**: 2021-04-29, Duke Ellington’s birthday. 
 
 **EPUB 3.3** is a packaging mechanism for web content, designed for electronic books. 
 
@@ -8,7 +8,7 @@
 
 Spec references:
 * [EPUB 3.3 Overview](https://w3c.github.io/epub-specs/epub33/overview/), a non-normative overview of EPUB 3.3
-* [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core//), the specification of the file format
+* [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core/), the specification of the file format
 * [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB Reading Systems. 
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
@@ -20,7 +20,7 @@ Spec references:
 
 EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, and CSS. 
 
-This makes it hard to think about security issues. In order to read EPUB files, I generally have to give personally-identifying information like a credit card number to the ebook retailer. They have likely altered the original EPUB, for example by applying digital rights management to the constituent files. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system. 
+This makes it hard to think about security issues. In order to read EPUB files, I generally have to give personally-identifying information like a credit card number to the ebook retailer. They have likely altered the original EPUB, for example by applying digital rights management to the constituent files. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
 
 It's hard to even reason about how HTML's security issues affect EPUB. If I read an EPUB on the Google Play app on an Android tablet, what risks am I exposed to? Can any of those risks be mitigated by the design of the EPUB specification? 
 
@@ -34,7 +34,7 @@ EPUB Reading Systems typically collect information on the reading habits of thei
 2. Remembering highlights, notes, bookmarks. 
 3. Remembering user preferences around fonts, visual themes (including dark/light), text justification, etc. 
 4. Recording progress through a book and whether a book was finished. 
-5. I am aware of some reading systems that track every reading system, including what tie of day, the duration, how many pages read, what book, IP address, etc. 
+5. Some reading systems track every user reading session, including the time of day, the duration, how many pages were read, what book, the user’s IP address if a web-based reader, etc. 
 
 
 
