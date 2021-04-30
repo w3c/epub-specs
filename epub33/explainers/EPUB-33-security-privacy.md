@@ -75,7 +75,7 @@ EPUB reading systems often implement syncing behaviour across multiple devices w
 
 ### 11. Does this specification allow an origin some measure of control over a user agent’s native UI?
 
-Only to the extent that the reading system or app platform would allow full-screen, etc. 
+No.
 
 ### 12. What temporary identifiers might this this specification create or expose to the web?
 
