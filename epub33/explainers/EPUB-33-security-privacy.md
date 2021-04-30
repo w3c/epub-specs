@@ -7,14 +7,14 @@ Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 
 * [EPUB 3.3 Overview](https://w3c.github.io/epub-specs/epub33/overview/), a non-normative overview of EPUB 3.3
 * [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core/), the specification of the file format
 * [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB Reading Systems. 
-* [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
-* [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
+* [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/), the specification for accessibility. 
+* [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/), an informative document on accessibility techniques. 
 
 
 
 ## Introduction
 
-EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
+EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps using browser rendering engines. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
 
 This makes it hard to think about security issues. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
 
@@ -44,7 +44,7 @@ The EPUB specifications do not mention personal information.
 
 ### 4. How does this specification deal with sensitive information?
 
-Merely the fact that you are reading a particular book can be sensitive information. Again, the specification offers no guidance to reading systems on this matter. 
+EPUBs should not contain any sensitive information. But the fact that you are reading a particular book can itself be sensitive information. The specification offers no guidance to reading systems on this matter. 
 
 ### 5. Does this specification introduce new state for an origin that persists across browsing sessions?
 
