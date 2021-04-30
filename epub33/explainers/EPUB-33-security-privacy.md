@@ -92,7 +92,7 @@ This seems a bit specific to browsers...
 
 ### 15. Does this specification have a "Security Considerations" and "Privacy Considerations" section?
 
-Yes, but it feels quite inadequate. 
+Yes. 
 
 ### 16. Does this specification allow downgrading default security characteristics?
 
