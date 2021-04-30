@@ -9,7 +9,7 @@ Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 
 * [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB Reading Systems. 
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/), the specification for accessibility. 
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/), an informative document on accessibility techniques. 
-
+* [EPUB Multiple-Rendition Publications 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/), a non-normative description of a largely-unimplemented feature allowing multiple EPUB publications to be packaged in the same container. 
 
 
 ## Introduction
