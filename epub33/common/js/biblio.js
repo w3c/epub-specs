@@ -3,14 +3,6 @@ var biblio = {
 		"title": "EPUB Accessibility Frequently Asked Questions",
 		"href": "http://www.idpf.org/epub/guides/a11y-faq"
 	},
-	"AttributeExtensions": {
-		"title": "EPUB Custom Attribute Extensions for Content Documents",
-		"href": "http://www.idpf.org/epub/extensions/attributes"
-	},
-	"AuthorityRegistry": {
-		"title": "EPUB Subject Authorities Registry",
-		"href": "http://www.idpf.org/epub/registries/authorities/"
-	},
 	"CSSSnapshot": {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
@@ -354,14 +346,6 @@ var biblio = {
 		"title": "Request for Comments",
 		"href": "https://www.ietf.org/standards/rfcs/"
 	},
-	"RoleExtensions": {
-		"title": "EPUB Collection Element Role Extensions",
-		"href": "http://www.idpf.org/epub/extensions/roles"
-	},
-	"RoleRegistry": {
-		"title": "EPUB Collection Roles Registry",
-		"href": "http://www.idpf.org/epub/registries/roles"
-	},
 	"SHA-1": {
 		"title": "Federal Information Processing Standards Publication 180-3: Secure Hash Standard (SHS)",
 		"href": "http://csrc.nist.gov/publications/fips/fips180-3/fips180-3_final.pdf",
@@ -386,10 +370,6 @@ var biblio = {
 		"href": "https://developer.apple.com/fonts/TrueType-Reference-Manual/",
 		"publisher": "Apple",
 		"date": "2002"
-	},
-	"TypesRegistry": {
-		"title": "EPUB Publication Types Registry",
-		"href": "http://www.idpf.org/epub/vocab/package/types"
 	},
 	"US-ASCII": {
 		"title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
