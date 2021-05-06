@@ -6728,8 +6728,8 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a fragment identifier that references the specific
-											element as per the [[XPTRSH]].</p>
+											Document, including a <a href="#sec-media-overlays-fragids">fragment
+												identifier</a> that references the specific content.</p>
 									</dd>
 								</dl>
 							</dd>
@@ -6805,8 +6805,8 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a fragment identifier that references the specific
-											element as per the [[XPTRSH]].</p>
+											Document, including a <a href="#sec-media-overlays-fragids">fragment
+												identifier</a> that references the specific content.</p>
 										<p>Refer to <a href="#sec-media-overlays-structure"></a> for more
 											information.</p>
 									</dd>
@@ -6937,8 +6937,8 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a fragment identifier that references the specific
-											element as per the [[XPTRSH]].</p>
+											Document, including a <a href="#sec-media-overlays-fragids">fragment
+												identifier</a> that references the specific content.</p>
 									</dd>
 									<dt>
 										<code>id</code>
@@ -7118,7 +7118,6 @@ store destination as source in ocf
 								Documents</a>, playback behavior might not be consistent and therefore interoperability
 							is not guaranteed.</p>
 					</div>
-
 					<section id="sec-media-overlays-structure">
 						<h5>Overlay Structure</h5>
 
@@ -7136,13 +7135,11 @@ store destination as source in ocf
 							to retain the structure inherent in these containers in the Media Overlay Document.</p>
 
 						<p>The <code>seq</code> element MUST contain an <a href="#attrdef-body-textref"
-									><code>epub:textref</code> attribute</a>. The IRI [[RFC3987]] value of this
-							attribute MUST reference the corresponding structural element in an EPUB Content Document.
-							As <code>seq</code> elements do not provide synchronization instructions, this attribute
-							allows a Reading System to still match the element to a location in the text.</p>
+									><code>epub:textref</code> attribute</a>. As <code>seq</code> elements do not
+							provide synchronization instructions, this attribute allows a Reading System to match the
+							fragment to a location in the text.</p>
 
 						<div class="example" id="example-mo-nesting">
-
 							<p>The following example shows a Media Overlay Document with nested <code>seq</code>
 								elements, representing a chapter with both a section header and a figure.</p>
 							<pre>&lt;smil xmlns="http://www.w3.org/ns/SMIL" xmlns:epub="http://www.idpf.org/2007/ops" version="3.0"&gt;
@@ -7247,20 +7244,43 @@ store destination as source in ocf
 						</aside>
 					</section>
 
+					<section id="sec-media-overlays-fragids">
+						<h5>Referencing Document Fragments</h5>
+
+						<p>The <code>epub:textref</code> attribute and the <a href="#elemdef-smil-text"
+									><code>text</code> element's</a>
+							<code>src</code> attribute both require a fragment identifier that references a specific
+							fragment (e.g., an element or text string) of the associated <a>EPUB Content
+							Document</a>.</p>
+
+						<p>For XHTML and SVG Content Documents, the fragment SHOULD be a reference to a <a
+								href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-element"
+								>target element</a> [[HTML]] or an <a
+								href="https://www.w3.org/TR/SVG2/linking.html#SVGFragmentIdentifiers">SVG Fragment
+								Identifier</a> [[SVG]], respectively.</p>
+
+						<p>EPUB Creators MAY use other fragment identifier schemes, but Reading Systems may not support
+							such identifiers.</p>
+					</section>
+
 					<section id="sec-media-overlays-granularity" class="informative">
 						<h5>Overlay Granularity</h5>
 
-						<p>Media Overlay <a href="#elemdef-smil-text"><code>text</code> elements'</a>
-							<code>src</code> attributes refer to <a>EPUB Content Document</a> elements by their IDs
-							[[XML]]. The granularity level of the Media Overlay therefore depends on how EPUB Creators
-							mark up the EPUB Content Document. If the finest level of markup is at the paragraph level,
+						<p>The granularity level of the Media Overlay depends on how EPUB Creators mark up the EPUB
+							Content Document and the type of fragment identifier they use in the <a
+								href="#elemdef-smil-text"><code>text</code> elements'</a>
+							<code>src</code> attributes. For example, when referencing <a
+								href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-element"
+								>target elements</a> [[HTML]], if the finest level of markup is at the paragraph level,
 							then that is the finest possible level for Media Overlay synchronization. Likewise, if
 							sub-paragraph markup is available, such as [[HTML]] <a
 								href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-span-element"
 									><code>span</code></a> elements representing phrases or sentences, then finer
 							granularity is possible in the Media Overlay. Finer granularity gives users more precise
 							results for synchronized playback when navigating by word or phrase and when searching the
-							text but increases the file size of the Media Overlay Documents.</p>
+							text but increases the file size of the Media Overlay Documents. Fragment identifier schemes
+							that do not rely on the presence of elements could provide even finer granularity, where
+							supported.</p>
 					</section>
 
 					<section id="sec-audio-video">
@@ -7269,7 +7289,7 @@ store destination as source in ocf
 						<p>Any <a>EPUB Content Document</a> associated with a Media Overlay MAY contain embedded media
 							such as video, audio, and images. EPUB Creators MAY use the Media Overlay <a
 								href="#elemdef-smil-text"><code>text</code> element</a> in such instances to reference
-							the embedded media by its ID [[XML]] value.</p>
+							the embedded media by its element's <code>id</code> attribute value.</p>
 
 						<p>When a <code>text</code> element references embedded media that contains audio, the <a
 								href="#elemdef-smil-audio"><code>audio</code></a> sibling element is OPTIONAL.</p>
@@ -7289,8 +7309,8 @@ store destination as source in ocf
 						<p>This specification allows the use of <a>Text-to-Speech</a> (TTS) in addition to pre-recorded
 							audio clips. When a Media Overlay <a href="#elemdef-smil-text"><code>text</code> element</a>
 							with no sibling <a href="#elemdef-smil-audio"><code>audio</code> element</a> references an
-							element within the target <a>EPUB Content Document</a>, the contents of that referenced
-							element MUST be appropriate for rendering via TTS. For example, it could be a textual EPUB
+							element within the target <a>EPUB Content Document</a>, the contents of the referenced
+							fragment MUST be appropriate for rendering via TTS. For example, it could be a textual EPUB
 							Content Document element or contain a text fallback.</p>
 					</section>
 				</section>
@@ -7344,7 +7364,7 @@ store destination as source in ocf
 					<p>EPUB Creators MAY express visual rendering information for the currently playing <a>EPUB Content
 							Document</a> element in a CSS Style Sheet using author-defined classes.</p>
 
-					<p>When used, the author-defined class names MUST be declared in the Package Document using the <a
+					<p>When used, EPUB Creators MUST declare the class names in the Package Document using the <a
 							href="#active-class"><code>active-class</code></a> and <a href="#playback-active-class"
 								><code>playback-active-class</code></a> properties.</p>
 
@@ -7359,9 +7379,9 @@ store destination as source in ocf
 						style sheet with the class definitions. Reading Systems might provide their own styling, or no
 						styling at all, in the absence of a linked definition.</p>
 
-					<p>The <code>active-class</code> and <code>playback-active-class</code> properties MUST NOT be used
-						in conjunction with a <a href="#attrdef-refines"><code>refines</code> attribute</a> as they are
-						always considered to apply to the entire <a>EPUB Publication</a>.</p>
+					<p>EPUB Creators MUST NOT use the <code>active-class</code> and <code>playback-active-class</code>
+						properties in conjunction with a <a href="#attrdef-refines"><code>refines</code> attribute</a>
+						as they always apply to the entire <a>EPUB Publication</a>.</p>
 
 					<aside class="example">
 						<p>This example demonstrates how EPUB Creators can associate style information with the
@@ -7453,12 +7473,13 @@ html.my-document-playing * {
 					<section id="sec-mo-package-metadata">
 						<h5>Overlays Package Metadata</h5>
 
-						<p id="total-duration">The <a>Package Document</a> MUST specify the duration of the entire
-								<a>EPUB Publication</a> in a <a href="#elemdef-meta"><code>meta</code> element</a> with
-							the <a href="#duration"><code>duration</code> property</a>.</p>
+						<p id="total-duration">EPUB Creators MUST specify the duration of the entire <a>EPUB
+								Publication</a> in the <a>Package Document</a> using a <a href="#elemdef-meta"
+									><code>meta</code> element</a> with the <a href="#duration"><code>duration</code>
+								property</a>.</p>
 
 						<p>In addition, EPUB Creators MUST provide the duration of each Media Overlay Document. EPUB
-							Creators can use the <a href="#attrdef-refines"><code>refines</code> attribute</a> to
+							Creators may use the <a href="#attrdef-refines"><code>refines</code> attribute</a> to
 							associate each duration declaration to the corresponding <a>manifest</a>
 							<a href="#elemdef-package-item"><code>item</code></a>.</p>
 
@@ -7686,8 +7707,8 @@ html.my-document-playing * {
 			<section id="sec-nav-doc">
 				<h3>Navigation Document Overlays</h3>
 
-				<p>The <a>EPUB Navigation Document</a> is an <a>XHTML Content Document</a> and can therefore be
-					associated with an audio Media Overlay. Unlike traditional XHTML Content Documents, however,
+				<p>As the <a>EPUB Navigation Document</a> is an <a>XHTML Content Document</a>, <a>EPUB Creators</a> MAY
+					associate an audio Media Overlay with it. Unlike traditional XHTML Content Documents, however,
 						<a>Reading Systems</a> must present the EPUB Navigation Document to users even when it is not
 					included in the <a>spine</a> (see <a href="https://www.w3.org/TR/epub-rs-33/#sec-nav">Navigation
 						Document Processing</a> [[?EPUB-RS-33]]). As a result, the method in which an associated Media
@@ -9407,8 +9428,8 @@ EPUB/images/cover.png</pre>
 					3.2</a></h3>
 
 				<ul>
-					<li>04-May-2021: Removed requirements around SVG <code>requiredExtensions</code> attribute. See 
-						<a href="https://github.com/w3c/epub-specs/issues/1087">issue 1087</a>.</li>
+					<li>04-May-2021: Removed requirements around SVG <code>requiredExtensions</code> attribute. See <a
+							href="https://github.com/w3c/epub-specs/issues/1087">issue 1087</a>.</li>
 					<li>26-Mar-2021: Removed requirement for page list ordering to reflect the order of page breaks in
 						the content. See <a href="https://github.com/w3c/epub-specs/issues/1500">issue 1500</a>.</li>
 					<li>26-Mar-2021: Allowed <code>creator</code> and <code>contributor</code> elements to have multiple
