@@ -782,9 +782,6 @@
 						<p id="confreq-rs-scripted-origin">
 							It MUST provide a common <a href="https://url.spec.whatwg.org/#origin" >origin</a> [[URL]], shared by all <a href="https://www.w3.org/TR/epub-33/#sec-scripted-spine">spine-level scripts</a> of the EPUB Publication. That <a href="https://url.spec.whatwg.org/#origin" >origin</a> [[URL]] MUST be <em>unique</em> for each EPUB Publication instance. 
 						</p>
-						<p class=note>
-							The unicity of the origin per EPUB Publication instance means that if two different users acquire a copy of the same EPUB Publication, the origins will be different for the two users on those copies even if the same Reading System is used. 
-						</p>
 					</li>
 
 					<li>
@@ -808,6 +805,15 @@
 							contexts.</p>
 					</li>
 				</ul>
+
+				<div class=note>
+					<p>
+						This specification does not mandate any particular implementation technique for the creation of a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> in the absence of a reliable Web origin (e.g., HTTP URL scheme + host + port). The necessary heuristics may include the combination of the Publication's <a href="https://www.w3.org/TR/epub-33/#dfn-unique-identifier">unique identifier</a> (although, in practice, these identifiers may in fact not guarantee globally-unique identification, that is why it is recommended to combine multiple techniques), filesystem path, <a href="https://www.w3.org/TR/epub-33/##dfn-zip-container">OCF Zip Container</a> checksum, etc.
+					</p>
+					<p>
+						The unicity of the <a href="https://url.spec.whatwg.org/#origin" >origin</a> per EPUB Publication instance means that if two different users acquire a copy of the same EPUB Publication, the origins will be different for the two users on those copies even if the same Reading System is used. 
+					</p>
+				</div>
 
 				<p class="ednote">Note that the definition of <code>epubReadingSystem</code> is currently marked as "at
 					risk". If, in the final version of this document, the object becomes non-normative, then each "MUST"
@@ -1771,7 +1777,7 @@
 			<p>The particularity of an <a>EPUB Publication</a> is its structure. The EPUB format provides a means of
 				representing, packaging, and encoding structured and semantically enhanced Web content — including HTML,
 				CSS, SVG, and other resources — for distribution in a single-file container. This specification does not
-					<em>add</em> any new features, APIs, etc. This also means that, essentially, the security and
+					<em>add</em> any new features, complex APIs, etc. This also means that, essentially, the security and
 				privacy issues are reliant on the features of those formats. In particular:</p>
 
 			<ul>
@@ -1799,10 +1805,9 @@
 			<section id="sec-scripted-content-security">
 				<h4>Scripting Considerations</h4>
 
-				<p><a>EPUB Creators</a> and Reading System developers must be aware of the security issues that arise
-					when Reading Systems execute scripted content. As the underlying scripting model employed by Reading
-					Systems and browsers is the same, developers must take into consideration the same kinds of issues
-					encountered in Web contexts.</p>
+				<p><a>EPUB Creators</a> and Reading System developers who also support scripting  must be aware of the 
+					security issues that arise when Reading Systems execute scripted content. As the underlying 
+					scripting model employed by Reading Systems and browsers is the same, developers must take into consideration the same kinds of issues encountered in Web contexts.</p>
 
 				<p>Each Reading System must establish if it can trust the scripts in a particular document. Reading
 					Systems should treat all scripts as untrusted (and potentially malicious), and developers should
@@ -1832,33 +1837,72 @@
 					</li>
 				</ul>
 
-				<p>This specification recommends the following practices for handling untrusted scripts:</p>
-
+				<p>
+					In handling untrusted scripts this specification recommends that Reading Systems establish 
+					a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]] allocated to each 
+					<a>EPUB Publication</a> (see <a href="#sec-scripted-content"></a>). Adopting this
+					approach isolates publications from each other, thereby limiting access to cookies, DOM storage, etc. Examples of Web APIs that are tied to the concept of “origin” include Web Storage [[?WEBSTORAGE]] and 
+					IndexedDB [[?INDEXEDDB]], which EPUB content documents can interact with via scripting.
+					This specification recommends the following practices:
+				</p>
 				<ul>
+
 					<li>
-						<p>Reading Systems must behave as if a unique <a href="https://url.spec.whatwg.org/#origin"
-								>origin</a> [[URL]] were allocated to each <a>EPUB Publication</a>. Adopting this
-							approach will isolate publications from each other, thereby limiting access to cookies, DOM
-							storage, etc.</p>
-						<div class="note">
-							<p>Although domain isolation is the most effective way to secure EPUB Publications in
-								Web-based Reading Systems, it is not always a realistic option. Web-based Reading
-								Systems must still maintain isolation in such cases, which may require limiting access
-								to scripting APIs that allow client-side data storage and access.</p>
-						</div>
-						<p>Reading Systems that enable scripting and network access should also include methods to
-							notify the user that network activity is occurring and/or that allow them to disable it.</p>
+						<p>
+							Although domain isolation is the most effective way to secure EPUB Publications in
+							Web-based Reading Systems, it is not always a realistic option. Web-based Reading
+							Systems must still maintain isolation in such cases, which may require limiting access
+							to scripting APIs that allow client-side data storage and access.
+						</p>
 					</li>
 					<li>
-						<p>If a Reading System allows users to store persistent data, it must treat that data as
+						<p>
+							Reading Systems that allow users to add/remove publications from a managed library 
+							(a.k.a “bookshelf”) may maintain the publication’s unique origin when the publication is
+							removed and subsequently re-imported into the content library. Conversely, Reading
+							Systems may create a new unique origin for every newly-added publication.
+						</p>
+					</li>
+
+					<li>
+						<p>
+							The unique origin for a given publication (and by extension, for all its content documents)
+							must be preserved across "renders", i.e. when closing/re-opening publications, or when navigating back-and-forth between documents within an opened publication.
+						</p>
+					</li>
+
+					<li>
+						<p>
+							Reading Systems must ensure that the data tied to specific <a href="#confreq-rs-scripted-origin">origins</a>
+							(e.g., Web Storage [[?WEBSTORAGE]] or IndexedDB [[?INDEXEDDB]]) is preserved between "reading".
+							Reading System implementations that integrate the capabilities of web browser engines (e.g., embedded WebView component) would typically use the provided cache/persistence APIs in order to ensure that origin-bound data is preserved. This specification does not mandate particular mitigation strategies for dealing with size limitations (e.g., cache invalidation, storage reset), but merely recommends to follow best practices as used on the Open Web Platform.
+						</p>
+					</li>
+
+					<li>
+						<p>
+							Reading Systems that support scripting and network access should also include
+							methods to notify the user that network activity is occurring and/or that allow them to disable it.
+						</p>
+					</li>
+
+					<li>
+						<p>
+							If a Reading System allows users/scripts to store persistent data, it must treat that data as
 							sensitive. Scripts may save persistent data through cookies and DOM storage but Reading
 							Systems may block such attempts. Reading Systems that allow users to store data must ensure
 							they do not make that data available to other unrelated documents (e.g., ones that could be
 							spoofed). In particular, checking for a matching document identifier (or similar metadata)
-							is not a valid method to control access to persistent data.</p>
-						<p>Reading Systems that allow local storage should also provide methods for users to inspect,
+							is not a valid method to control access to persistent data.
+						</p>
+					</li>
+
+					<li>
+						<p>
+							Reading Systems that allow local storage should also provide methods for users to inspect,
 							disable, and delete that data. The Reading System must destroy the data if the corresponding
-							EPUB Publication is deleted.</p>
+							EPUB Publication is deleted from its "bookshelf".
+						</p>
 					</li>
 				</ul>
 
