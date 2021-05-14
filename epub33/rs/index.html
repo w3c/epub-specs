@@ -274,18 +274,18 @@
 			<p id="confreq-rs-epub-pub" class="support">Reading Systems MUST process the <a
 					href="https://www.w3.org/TR/epub-33/#sec-package-doc">Package Document</a> [[EPUB-33]].</p>
 
-			<section id="sec-pkg-doc-relative-iris">
-				<h4>Resolving Relative IRIs</h4>
+			<section id="sec-pkg-doc-relative-urls">
+				<h4>Parsing Relative URLs</h4>
 
-				<p>To obtain an absolute IRI reference from a relative IRI reference [[RFC3987]] in the Package
-					Document, Reading Systems MUST use the Base IRI [[RFC3986]] of the Package Document.</p>
+				<p>To parse <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+						>relative-URL-with-fragment strings</a> [[URL]] in the Package Document, Reading Systems MUST
+					use the URL of the Package Document as the <a href="https://url.spec.whatwg.org/#concept-base-url"
+						>base URL</a> [[URL]].</p>
 
-				<p>The Base IRI of the Package Document is the combination of the Base IRI of the <a>EPUB Container</a>
-					together with the path to Package Document (relative to the <a>Root Directory</a>) when an EPUB
-					Publication is zipped.</p>
-
-				<p>This specification does not require a specific IRI scheme for referencing the path to the Package
-					Document within the EPUB Container.</p>
+				<p>When an EPUB Publication is zipped, the base URL of the Package Document is obtained from the URL of
+					the <a>EPUB Container</a> together with a fragment identifier that specifies the path to Package
+					Document (relative to the <a>Root Directory</a>). This specification does not require a specific URL
+					scheme for referencing the path to the Package Document within the EPUB Container.</p>
 			</section>
 
 			<section id="sec-pkg-doc-base-dir">
@@ -372,6 +372,9 @@
 						<p>Reading Systems SHOULD ignore all <code>meta</code> elements whose <code>property</code>
 							attributes define expressions they do not recognize. A Reading System MUST NOT fail when
 							encountering unknown expressions.</p>
+						<p>If the <code>property</code> attribute's value does not include a prefix, Reading Systems
+							MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/meta/#</code>" to <a
+								href="#sec-property-datatype">expand the value</a>.</p>
 					</dd>
 
 					<dt id="conf-metadata-link">The <code>link</code> element</dt>
@@ -395,6 +398,10 @@
 							before, within or after the package metadata elements).</p>
 						<p>Reading Systems MUST ignore any instructions contained in linked resources related to the
 							layout and rendering of the EPUB Publication.</p>
+						<p>If any of the <code>rel</code> or <code>properties</code> attributes' values do not include a
+							prefix, Reading Systems MUST use the prefix URL
+								"<code>http://idpf.org/epub/vocab/package/link/#</code>" to <a
+								href="#sec-property-datatype">expand the values</a>.</p>
 					</dd>
 
 					<dt>Proprietary Metadata</dt>
@@ -409,8 +416,12 @@
 			<section id="sec-pkg-doc-manifest">
 				<h3>Manifest</h3>
 
-				<p>When an <code>href</code> attribute contains a relative IRI, Reading Systems MUST use the IRI of the
-					Package Document as the base when resolving to an absolute IRI.</p>
+				<p>When an <code>href</code> attribute contains a <a
+						href="https://url.spec.whatwg.org/#relative-url-string">relative-URL string</a>, Reading Systems
+					MUST use the URL of the Package Document as the <a
+						href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> when <a
+						href="https://url.spec.whatwg.org/#concept-url-parser">parsing</a> to a <a
+						href="https://url.spec.whatwg.org/#concept-url">URL record</a> [[URL]].</p>
 
 				<p>Reading Systems MAY optimize the rendering depending on the properties set in the
 						<code>properties</code> attribute (e.g., disable a rendering process or use a fallback). Reading
@@ -437,6 +448,10 @@
 
 				<p>Reading Systems MUST terminate the fallback chain at the first reference to a manifest item it has
 					already encountered.</p>
+
+				<p>If any of the <code>properties</code> attribute's values do not include a prefix, Reading Systems
+					MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/item/#</code>" to <a
+						href="#sec-property-datatype">expand the values</a>.</p>
 			</section>
 
 			<section id="sec-pkg-doc-spine">
@@ -463,6 +478,10 @@
 							><code>pre-paginated</code></a> XHTML Content Documents. The
 						<code>page-progression-direction</code> attribute defines the flow direction from one
 					fixed-layout page to the next.</p>
+
+				<p>If any of the <code>properties</code> attribute's values do not include a prefix, Reading Systems
+					MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/itemref/#</code>" to <a
+						href="#sec-property-datatype">expand the values</a>.</p>
 
 				<p>Reading Systems MUST ignore all metadata properties expressed in spine <code>itemref</code>
 					<code>properties</code> attribute that they do not recognize.</p>
@@ -1084,21 +1103,24 @@
 				<h3>OCF Abstract Container</h3>
 
 				<section id="sec-container-iri">
-					<h4>Relative IRIs for Referencing Other Components</h4>
+					<h4>Relative URLs for Referencing Other Components</h4>
 
-					<p>For relative IRI references, Reading Systems MUST determine the Base IRI [[RFC3986]] according to
-						the relevant language specifications for the given file formats. For example, CSS defines how
-						relative IRI references work in the context of CSS style sheets and property declarations
+					<p>For <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+							>relative-URL-with-fragment strings</a> [[URL]], Reading Systems MUST determine the <a
+							href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> [[URL]] according to the
+						relevant language specifications for the given file formats. For example, CSS defines how
+						relative URL references work in the context of CSS style sheets and property declarations
 						[[CSSSnapshot]].</p>
 
 					<div class="note">
-						<p>Some language specifications reference Requests For Comments that preceded [[RFC3987]], in
-							which case the earlier RFC applies for content in that particular language.</p>
+						<p>Some language specifications reference <a href="https://tools.ietf.org/rfc/index">Requests
+								For Comments</a> that preceded [[URL]], in which case the earlier RFC applies for
+							content in that particular language.</p>
 					</div>
 
 					<p>Unlike most language specifications, Reading Systems MUST use the <a>Root Directory</a> of the
-						OCF Abstract Container as the default Base IRI as the Base IRI for all files within the
-							<code>META-INF</code> directory.</p>
+						OCF Abstract Container as the <a href="https://url.spec.whatwg.org/#concept-base-url">base
+							URL</a> [[URL]] for all files within the <code>META-INF</code> directory.</p>
 				</section>
 
 				<section id="sec-container-filenames">
@@ -1334,7 +1356,8 @@
 					<p>The <code>active-class</code> and <code>playback-active-class</code> metadata properties are
 						OPTIONAL, and if omitted, Reading System behavior is implementation-specific.</p>
 
-					<p>Reading System behavior when a <a href="#sec-media-overlays-fragids">fragment identifier</a>
+					<p>Reading System behavior when a <a
+							href="https://www.w3.org/TR/epub-33/#sec-media-overlays-fragids">fragment identifier</a>
 						[[EPUB-33]] does not reference an element is also implementation-specific.</p>
 				</section>
 			</section>
@@ -1573,9 +1596,9 @@
 				<dt id="sec-metadata-reserved-prefixes">Reserved Prefixes</dt>
 				<dd>
 					<p>Reading Systems MUST resolve all reserved prefixes used in Package Documents using their
-						predefined URIs unless the EPUB Creator declares a local <a href="#sec-prefix-attr">prefix</a>.
-						Reading Systems MUST use locally overridden prefixes in the <code>prefix</code> attribute when
-						encountered.</p>
+						predefined URLs unless the EPUB Creator declares a local <a href="#sec-prefix-attr">prefix</a>.
+						Reading Systems MUST use the URLs defined for locally overridden prefixes (using the
+							<code>prefix</code> attribute) when encountered.</p>
 					<p>As changes to the reserved prefixes and updates to Reading Systems are not always going happen in
 						synchrony, Reading Systems MUST NOT fail when encountering unrecognized prefixes (i.e., not
 						reserved and not declared using the <code>prefix</code> attribute).</p>
@@ -1585,28 +1608,35 @@
 				<dd>
 					<p>If the <code>prefix</code> attribute includes a declaration for a <a
 							href="#sec-metadata-reserved-prefixes">predefined prefix</a>, Reading Systems MUST use the
-						URI mapping defined in the <code>prefix</code> attribute, regardless of whether of it maps to
-						the same URI as the predefined prefix.</p>
+						URL mapping defined in the <code>prefix</code> attribute, regardless of whether of it maps to
+						the same URL as the predefined prefix.</p>
 				</dd>
 
-				<dt id="sec-property-datatype">The <code>property</code> Data Type</dt>
+				<dt id="sec-property-datatype">Expanding <code>property</code> Data Types</dt>
 				<dd>
-					<p>A Reading System MUST use the following rules to create an IRI [[RFC3987]] from a property:</p>
+					<p>Reading Systems MUST expand <code>property</code> values as follows:</p>
 					<ul>
 						<li>
-							<p>If the property consists only of a reference, obtain the IRI by concatenating the IRI
-								stem associated with the <a href="https://www.w3.org/TR/epub-33/#sec-default-vocab"
-									>default vocabulary</a> [[EPUB-33]] to the reference.</p>
+							<p>If the property consists only of a reference, concatenate the prefix URL associated with
+								the <a href="https://www.w3.org/TR/epub-33/#sec-default-vocab">default vocabulary</a>
+								[[EPUB-33]] to the reference.</p>
 						</li>
 						<li>
-							<p>If the property consists of a prefix and reference, obtain the IRI by concatenating the
-								IRI stem associated with the prefix to the reference. If the EPUB Creator has not
-								defined a matching prefix, the property is invalid and the Reading System MUST ignore
+							<p>If the property consists of a prefix and reference, concatenate the URL defined for the
+								prefix to the reference. If the EPUB Creator has not defined a matching prefix, and it
+								is not a <a href="https://www.w3.org/TR/epub-33/#sec-reserved-prefixes">reserved
+									prefix</a> [[EPUB-33]], the property is invalid and Reading Systems MUST ignore
 								it.</p>
 						</li>
+						<li>
+							<p>If the property consists only of a prefix (i.e., there is no reference after the colon),
+								the property is invalid and Reading Systems MUST ignore it.</p>
+						</li>
 					</ul>
-					<p>The resulting IRI MUST be valid to [[RFC3987]]. Reading Systems do not have to resolve this IRI,
-						however.</p>
+					<p>The result MUST be a <a href="https://url.spec.whatwg.org/#valid-url-string">valid URL string</a>
+						[[URL]]. If the process results in an invalid URL, Reading Systems MUST ignore the property.</p>
+					<p>Reading Systems do not have to <a href="https://url.spec.whatwg.org/#concept-url-parser">parse
+							the resulting URL</a> [[URL]] or attempt to dereference the resource.</p>
 				</dd>
 			</dl>
 		</section>
@@ -2116,6 +2146,11 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 				-->
 
 				<ul>
+					<li>12-May-2021: Added additional requirement that Reading Systems ignore property values that
+						expand to invalid URL strings and property values with empty references. See <a
+							href="https://github.com/w3c/epub-specs/issues/1673">issue 1673</a>.</li>
+					<li>12-May-2021: Changed all references to URIs/IRIs to URLs and references to RFCs 3986 and 3987 to
+						the URL standard. See <a href="https://github.com/w3c/epub-specs/issues/808">issue 808</a>.</li>
 					<li>06-May-2021: Recommend that Reading Systems support references to HTML target elements and SVG
 						fragment identifiers in <code>textref</code> attributes and the <code>text</code> element's
 							<code>src</code> attribute. Support for other fragment identifier schemes is optional. See
@@ -2146,7 +2181,7 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 				<h3>Substantive Changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
 					3.2</a></h3>
 				<ul>
-					<li>01-Apr-2021: Added section clarifying how absolute IRIs are created from relative in the Package
+					<li>01-Apr-2021: Added section clarifying how absolute URLs are created from relative in the Package
 						Document. See <a href="https://github.com/w3c/epub-specs/pull/1468">pull request 1468</a>.</li>
 					<li>30-Mar-2021: Restructured the document to remove the rendundant conformance sections and
 						requirements that were only used as locators when this specification was combined with the
