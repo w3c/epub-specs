@@ -16,7 +16,7 @@
 				specStatus: "ED",
 				shortName: "epub-rs-33",
 				edDraftURI: "https://w3c.github.io/epub-specs/epub33/rs/",
-                previousPublishDate: "2021-04-06",
+                previousPublishDate: "2021-05-25",
                 previousMaturity: "WD",
 				copyrightStart: "1999",
 				editors: [ 
@@ -68,7 +68,11 @@
 				},
 				localBiblio: biblio,
 				preProcess:[inlineCustomCSS, fixDefinitionCrossrefs],
-				postProcess:[addConformanceLinks]
+				postProcess:[addConformanceLinks],
+				testSuiteURI: "https://github.com/w3c/epub-tests/tree/HEAD/tests/EPUBs/",
+				lint: {
+					"wpt-tests-exist": true,
+				}
 			};//]]></script>
 	</head>
 	<body>
@@ -187,13 +191,15 @@
 			<section id="sec-epub-rs-conf-cmt">
 				<h4>Core Media Types</h4>
 
-				<p id="confreq-rs-epub3-images">If a Reading System has a <a>Viewport</a>, it MUST support the <a
-						href="https://www.w3.org/TR/epub-33/#cmt-grp-image">image Core Media Type Resources</a>
-					[[EPUB-33]].</p>
+				<p id="confreq-rs-epub3-images"
+				    data-tests="cmt-gif.epub,cmt-jpg.epub,cmt-png.epub,cmt-svg.epub,cmt-webp.epub">If a Reading System has a
+				    <a>Viewport</a>, it MUST support the <a href="https://www.w3.org/TR/epub-33/#cmt-grp-image">image Core
+				   	Media Type Resources</a> [[EPUB-33]].</p>
 
-				<p id="confreq-rs-epub3-mp3-aac">If it has the capability to render pre-recorded audio, it MUST support
-					the <a href="https://www.w3.org/TR/epub-33/#cmt-grp-audio">audio Core Media Type Resources</a>
-					[[EPUB-33]] and SHOULD support Media Overlays [[EPUB-33]].</p>
+				<p id="confreq-rs-epub3-mp3-aac" data-tests="cmt-mp3.epub,cmt-mp4-aac.epub,cmt-ogg-opus.epub">If it has the
+					capability to render pre-recorded audio, it MUST support the <a
+					href="https://www.w3.org/TR/epub-33/#cmt-grp-audio">audio Core Media Type Resources</a> [[EPUB-33]] and
+					SHOULD support Media Overlays [[EPUB-33]].</p>
 
 				<p class="note" id="note-video-codecs">It is recommended that Reading Systems support at least one of
 					the H.264 [[H264]] and VP8 [[RFC6386]] video codecs, but this is not a conformance requirement
@@ -217,9 +223,6 @@
 						<p id="confreq-rs-xml-ns">a <a
 								href="https://www.w3.org/TR/2009/REC-XML-NAMES-20091208/#ProcessorConformance"
 								>conformant processor</a> as defined in [[XML-NAMES]].</p>
-					</li>
-					<li>
-						<p id="confreq-rs-xml-base">a conformant application as defined by [[XMLBase]].</p>
 					</li>
 				</ul>
 
@@ -274,18 +277,18 @@
 			<p id="confreq-rs-epub-pub" class="support">Reading Systems MUST process the <a
 					href="https://www.w3.org/TR/epub-33/#sec-package-doc">Package Document</a> [[EPUB-33]].</p>
 
-			<section id="sec-pkg-doc-relative-iris">
-				<h4>Resolving Relative IRIs</h4>
+			<section id="sec-pkg-doc-relative-urls">
+				<h4>Parsing Relative URLs</h4>
 
-				<p>To obtain an absolute IRI reference from a relative IRI reference [[RFC3987]] in the Package
-					Document, Reading Systems MUST use the Base IRI [[RFC3986]] of the Package Document.</p>
+				<p>To parse <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+						>relative-URL-with-fragment strings</a> [[URL]] in the Package Document, Reading Systems MUST
+					use the URL of the Package Document as the <a href="https://url.spec.whatwg.org/#concept-base-url"
+						>base URL</a> [[URL]].</p>
 
-				<p>The Base IRI of the Package Document is the combination of the Base IRI of the <a>EPUB Container</a>
-					together with the path to Package Document (relative to the <a>Root Directory</a>) when an EPUB
-					Publication is zipped.</p>
-
-				<p>This specification does not require a specific IRI scheme for referencing the path to the Package
-					Document within the EPUB Container.</p>
+				<p>When an EPUB Publication is zipped, the base URL of the Package Document is obtained from the URL of
+					the <a>EPUB Container</a> together with a fragment identifier that specifies the path to Package
+					Document (relative to the <a>Root Directory</a>). This specification does not require a specific URL
+					scheme for referencing the path to the Package Document within the EPUB Container.</p>
 			</section>
 
 			<section id="sec-pkg-doc-base-dir">
@@ -372,6 +375,9 @@
 						<p>Reading Systems SHOULD ignore all <code>meta</code> elements whose <code>property</code>
 							attributes define expressions they do not recognize. A Reading System MUST NOT fail when
 							encountering unknown expressions.</p>
+						<p>If the <code>property</code> attribute's value does not include a prefix, Reading Systems
+							MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/meta/#</code>" to <a
+								href="#sec-property-datatype">expand the value</a>.</p>
 					</dd>
 
 					<dt id="conf-metadata-link">The <code>link</code> element</dt>
@@ -395,6 +401,10 @@
 							before, within or after the package metadata elements).</p>
 						<p>Reading Systems MUST ignore any instructions contained in linked resources related to the
 							layout and rendering of the EPUB Publication.</p>
+						<p>If any of the <code>rel</code> or <code>properties</code> attributes' values do not include a
+							prefix, Reading Systems MUST use the prefix URL
+								"<code>http://idpf.org/epub/vocab/package/link/#</code>" to <a
+								href="#sec-property-datatype">expand the values</a>.</p>
 					</dd>
 
 					<dt>Proprietary Metadata</dt>
@@ -409,8 +419,12 @@
 			<section id="sec-pkg-doc-manifest">
 				<h3>Manifest</h3>
 
-				<p>When an <code>href</code> attribute contains a relative IRI, Reading Systems MUST use the IRI of the
-					Package Document as the base when resolving to an absolute IRI.</p>
+				<p>When an <code>href</code> attribute contains a <a
+						href="https://url.spec.whatwg.org/#relative-url-string">relative-URL string</a>, Reading Systems
+					MUST use the URL of the Package Document as the <a
+						href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> when <a
+						href="https://url.spec.whatwg.org/#concept-url-parser">parsing</a> to a <a
+						href="https://url.spec.whatwg.org/#concept-url">URL record</a> [[URL]].</p>
 
 				<p>Reading Systems MAY optimize the rendering depending on the properties set in the
 						<code>properties</code> attribute (e.g., disable a rendering process or use a fallback). Reading
@@ -437,6 +451,10 @@
 
 				<p>Reading Systems MUST terminate the fallback chain at the first reference to a manifest item it has
 					already encountered.</p>
+
+				<p>If any of the <code>properties</code> attribute's values do not include a prefix, Reading Systems
+					MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/item/#</code>" to <a
+						href="#sec-property-datatype">expand the values</a>.</p>
 			</section>
 
 			<section id="sec-pkg-doc-spine">
@@ -464,6 +482,10 @@
 						<code>page-progression-direction</code> attribute defines the flow direction from one
 					fixed-layout page to the next.</p>
 
+				<p>If any of the <code>properties</code> attribute's values do not include a prefix, Reading Systems
+					MUST use the prefix URL "<code>http://idpf.org/epub/vocab/package/itemref/#</code>" to <a
+						href="#sec-property-datatype">expand the values</a>.</p>
+
 				<p>Reading Systems MUST ignore all metadata properties expressed in spine <code>itemref</code>
 					<code>properties</code> attribute that they do not recognize.</p>
 			</section>
@@ -487,8 +509,8 @@
 			<section id="sec-xhtml">
 				<h3>XHTML Content Documents</h3>
 
-				<p id="confreq-rs-epub3-xhtml" class="support">Reading Systems MUST process <a
-						href="https://www.w3.org/TR/epub-33/#sec-xhtml">XHTML Content Documents</a> [[EPUB-33]].</p>
+				<p id="confreq-rs-epub3-xhtml" class="support" data-tests="confreq-rs-epub3-xhtml.epub">Reading Systems MUST
+					process <a href="https://www.w3.org/TR/epub-33/#sec-xhtml">XHTML Content Documents</a> [[EPUB-33]].</p>
 
 				<p id="confreq-html-rs-behavior">Unless explicitly defined in this section as overridden, Reading
 					Systems MUST process XHTML Content Documents using semantics defined by the [[HTML]] specification
@@ -583,18 +605,19 @@
 
 						<ul class="conformance-list">
 							<li>
-								<p id="confreq-mathml-rs-behavior">MUST be an input-compliant renderer for <a
-										href="https://www.w3.org/TR/MathML3/chapter3.html">Presentation MathML</a>, as
+								<p id="confreq-mathml-rs-behavior" data-tests="confreq-mathml-rs-behavior.epub">MUST be an <a
+									href="https://www.w3.org/TR/MathML3/chapter7.html#sec7.2.1">input-compliant processor</a>
+									for <a href="https://www.w3.org/TR/MathML3/chapter3.html">Presentation MathML</a>, as
 									defined in the [[MATHML3]] specification.</p>
+							</li>
+							<li>
+								<p id="confreq-mathml-rs-render" data-tests="confreq-mathml-rs-behavior.epub">MUST, if it has
+									a <a>Viewport</a>, support visual rendering of Presentation MathML.</p>
 							</li>
 							<li>
 								<p id="confreq-mathml-rs-anno">MAY support rendering of <a
 										href="https://www.w3.org/TR/MathML3/chapter4.html">Content MathML</a> found in
 										<code>annotation-xml</code> elements.</p>
-							</li>
-							<li>
-								<p id="confreq-mathml-rs-render">MUST, if it has a <a>Viewport</a>, support visual
-									rendering of Presentation MathML.</p>
 							</li>
 						</ul>
 						<p class="note">Reading Systems may choose to use third-party libraries such as MathJax to
@@ -604,19 +627,21 @@
 					<section id="sec-xhtml-svg">
 						<h5>Embedded SVG</h5>
 
-						<p>Reading Systems MUST process SVG embedded in XHTML Content Documents as defined in <a
-								href="#sec-svg"></a>.</p>
+						<p id="confreq-svg-rs-embed">Reading Systems MUST process SVG embedded in XHTML Content Documents as
+							defined in <a href="#sec-svg"></a>.</p>
 
 						<section id="sec-xhtml-svg-css">
 							<h6>Embedded SVG and CSS</h6>
 
-							<p id="confreq-svg-rs-css-embed-ref">For the purposes of styling SVG embedded in XHTML
-								Content Documents <em>by reference</em>, Reading Systems MUST NOT apply CSS style rules
-								of the containing document to the referenced SVG document.</p>
+							<p id="confreq-svg-rs-css-embed-ref" data-tests="confreq-svg-rs-css-embed-ref.epub">For the
+								purposes of styling SVG embedded in XHTML Content Documents <em>by reference</em>, Reading
+								Systems MUST NOT apply CSS style rules of the containing document to the referenced SVG
+								document.</p>
 
-							<p id="confreq-svg-rs-css-embed-inc">For the purposes of styling SVG embedded in XHTML
-								Content Documents <em>by inclusion</em>, Reading Systems MUST apply applicable CSS rules
-								of the containing document to the included SVG elements.</p>
+							<p id="confreq-svg-rs-css-embed-inc" data-tests="confreq-svg-rs-css-embed-inc.epub">For the
+								purposes of styling SVG embedded in XHTML Content Documents <em>by inclusion</em>, Reading
+								Systems MUST apply applicable CSS rules of the containing document to the included SVG
+								elements.</p>
 
 							<div class="note">
 								<p>SVG included <em>by reference</em> is processed as a separate document, and can
@@ -641,8 +666,8 @@
 			<section id="sec-svg">
 				<h3>SVG Content Documents</h3>
 
-				<p id="confreq-rs-epub3-svg" class="support">Reading Systems MUST process <a
-						href="https://www.w3.org/TR/epub-33/#sec-svg">SVG Content Documents</a> [[EPUB-33]].</p>
+				<p id="confreq-rs-epub3-svg" class="support" data-tests="confreq-rs-epub3-svg.epub">Reading Systems MUST
+					process <a href="https://www.w3.org/TR/epub-33/#sec-svg">SVG Content Documents</a> [[EPUB-33]].</p>
 
 				<p>To process SVG Content Documents and <a href="#sec-xhtml-svg">SVG embedded in XHTML Content
 						Documents</a>, a Reading System:</p>
@@ -777,6 +802,15 @@
 						<p id="confreq-rs-scripted-ua">It MAY render <a>Scripted Content Documents</a> as an
 							interactive, scripted user agent according to [[HTML]].</p>
 					</li>
+
+					<li>
+						<p id="confreq-rs-scripted-origin"> It MUST assign a unique <a
+								href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]], shared by all <a
+								href="https://www.w3.org/TR/epub-33/#sec-scripted-spine">spine-level scripts</a> of the
+							EPUB Publication. That <a href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]] MUST
+							be <em>unique</em> for each EPUB Publication instance. </p>
+					</li>
+
 					<li>
 						<p id="confreq-rs-scripted-container">It MUST NOT allow a container-constrained script to modify
 							the DOM of the parent Content Document or other contents in the EPUB Publication and MUST
@@ -798,6 +832,21 @@
 							contexts.</p>
 					</li>
 				</ul>
+
+				<div class="note">
+					<p> This specification does not mandate any particular implementation technique for the creation of
+						a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> in the absence of a reliable
+						Web origin (e.g., HTTP URL scheme + host + port). The necessary heuristics may include the
+						combination of the Publication's <a href="https://www.w3.org/TR/epub-33/#dfn-unique-identifier"
+							>unique identifier</a> (although, in practice, these identifiers may in fact not guarantee
+						globally-unique identification, that is why it is recommended to combine multiple techniques),
+						filesystem path, <a href="https://www.w3.org/TR/epub-33/#dfn-zip-container">OCF Zip
+							Container</a> checksum, etc. </p>
+					<p> The unicity of the <a href="https://url.spec.whatwg.org/#origin">origin</a> per EPUB Publication
+						instance means that if two different users acquire a copy of the same EPUB Publication, the
+						origins will be different for the two users on those copies even if the same Reading System is
+						used. </p>
+				</div>
 
 				<p class="ednote">Note that the definition of <code>epubReadingSystem</code> is currently marked as "at
 					risk". If, in the final version of this document, the object becomes non-normative, then each "MUST"
@@ -1084,21 +1133,24 @@
 				<h3>OCF Abstract Container</h3>
 
 				<section id="sec-container-iri">
-					<h4>Relative IRIs for Referencing Other Components</h4>
+					<h4>Relative URLs for Referencing Other Components</h4>
 
-					<p>For relative IRI references, Reading Systems MUST determine the Base IRI [[RFC3986]] according to
-						the relevant language specifications for the given file formats. For example, CSS defines how
-						relative IRI references work in the context of CSS style sheets and property declarations
+					<p>For <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+							>relative-URL-with-fragment strings</a> [[URL]], Reading Systems MUST determine the <a
+							href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> [[URL]] according to the
+						relevant language specifications for the given file formats. For example, CSS defines how
+						relative URL references work in the context of CSS style sheets and property declarations
 						[[CSSSnapshot]].</p>
 
 					<div class="note">
-						<p>Some language specifications reference Requests For Comments that preceded [[RFC3987]], in
-							which case the earlier RFC applies for content in that particular language.</p>
+						<p>Some language specifications reference <a href="https://www.ietf.org/standards/rfcs/"
+								>Requests For Comments</a> that preceded [[URL]], in which case the earlier RFC applies
+							for content in that particular language.</p>
 					</div>
 
 					<p>Unlike most language specifications, Reading Systems MUST use the <a>Root Directory</a> of the
-						OCF Abstract Container as the default Base IRI as the Base IRI for all files within the
-							<code>META-INF</code> directory.</p>
+						OCF Abstract Container as the <a href="https://url.spec.whatwg.org/#concept-base-url">base
+							URL</a> [[URL]] for all files within the <code>META-INF</code> directory.</p>
 				</section>
 
 				<section id="sec-container-filenames">
@@ -1334,7 +1386,8 @@
 					<p>The <code>active-class</code> and <code>playback-active-class</code> metadata properties are
 						OPTIONAL, and if omitted, Reading System behavior is implementation-specific.</p>
 
-					<p>Reading System behavior when a <a href="#sec-media-overlays-fragids">fragment identifier</a>
+					<p>Reading System behavior when a <a
+							href="https://www.w3.org/TR/epub-33/#sec-media-overlays-fragids">fragment identifier</a>
 						[[EPUB-33]] does not reference an element is also implementation-specific.</p>
 				</section>
 			</section>
@@ -1573,9 +1626,9 @@
 				<dt id="sec-metadata-reserved-prefixes">Reserved Prefixes</dt>
 				<dd>
 					<p>Reading Systems MUST resolve all reserved prefixes used in Package Documents using their
-						predefined URIs unless the EPUB Creator declares a local <a href="#sec-prefix-attr">prefix</a>.
-						Reading Systems MUST use locally overridden prefixes in the <code>prefix</code> attribute when
-						encountered.</p>
+						predefined URLs unless the EPUB Creator declares a local <a href="#sec-prefix-attr">prefix</a>.
+						Reading Systems MUST use the URLs defined for locally overridden prefixes (using the
+							<code>prefix</code> attribute) when encountered.</p>
 					<p>As changes to the reserved prefixes and updates to Reading Systems are not always going happen in
 						synchrony, Reading Systems MUST NOT fail when encountering unrecognized prefixes (i.e., not
 						reserved and not declared using the <code>prefix</code> attribute).</p>
@@ -1585,28 +1638,35 @@
 				<dd>
 					<p>If the <code>prefix</code> attribute includes a declaration for a <a
 							href="#sec-metadata-reserved-prefixes">predefined prefix</a>, Reading Systems MUST use the
-						URI mapping defined in the <code>prefix</code> attribute, regardless of whether of it maps to
-						the same URI as the predefined prefix.</p>
+						URL mapping defined in the <code>prefix</code> attribute, regardless of whether of it maps to
+						the same URL as the predefined prefix.</p>
 				</dd>
 
-				<dt id="sec-property-datatype">The <code>property</code> Data Type</dt>
+				<dt id="sec-property-datatype">Expanding <code>property</code> Data Types</dt>
 				<dd>
-					<p>A Reading System MUST use the following rules to create an IRI [[RFC3987]] from a property:</p>
+					<p>Reading Systems MUST expand <code>property</code> values as follows:</p>
 					<ul>
 						<li>
-							<p>If the property consists only of a reference, obtain the IRI by concatenating the IRI
-								stem associated with the <a href="https://www.w3.org/TR/epub-33/#sec-default-vocab"
-									>default vocabulary</a> [[EPUB-33]] to the reference.</p>
+							<p>If the property consists only of a reference, concatenate the prefix URL associated with
+								the <a href="https://www.w3.org/TR/epub-33/#sec-default-vocab">default vocabulary</a>
+								[[EPUB-33]] to the reference.</p>
 						</li>
 						<li>
-							<p>If the property consists of a prefix and reference, obtain the IRI by concatenating the
-								IRI stem associated with the prefix to the reference. If the EPUB Creator has not
-								defined a matching prefix, the property is invalid and the Reading System MUST ignore
+							<p>If the property consists of a prefix and reference, concatenate the URL defined for the
+								prefix to the reference. If the EPUB Creator has not defined a matching prefix, and it
+								is not a <a href="https://www.w3.org/TR/epub-33/#sec-reserved-prefixes">reserved
+									prefix</a> [[EPUB-33]], the property is invalid and Reading Systems MUST ignore
 								it.</p>
 						</li>
+						<li>
+							<p>If the property consists only of a prefix (i.e., there is no reference after the colon),
+								the property is invalid and Reading Systems MUST ignore it.</p>
+						</li>
 					</ul>
-					<p>The resulting IRI MUST be valid to [[RFC3987]]. Reading Systems do not have to resolve this IRI,
-						however.</p>
+					<p>The result MUST be a <a href="https://url.spec.whatwg.org/#valid-url-string">valid URL string</a>
+						[[URL]]. If the process results in an invalid URL, Reading Systems MUST ignore the property.</p>
+					<p>Reading Systems do not have to <a href="https://url.spec.whatwg.org/#concept-url-parser">parse
+							the resulting URL</a> [[URL]] or attempt to dereference the resource.</p>
 				</dd>
 			</dl>
 		</section>
@@ -1761,8 +1821,8 @@
 			<p>The particularity of an <a>EPUB Publication</a> is its structure. The EPUB format provides a means of
 				representing, packaging, and encoding structured and semantically enhanced Web content — including HTML,
 				CSS, SVG, and other resources — for distribution in a single-file container. This specification does not
-					<em>add</em> any new features, APIs, etc. This also means that, essentially, the security and
-				privacy issues are reliant on the features of those formats. In particular:</p>
+					<em>add</em> any new features, complex APIs, etc. This also means that, essentially, the security
+				and privacy issues are reliant on the features of those formats. In particular:</p>
 
 			<ul>
 				<li>EPUB 3 allows references to remotely hosted resources from within <a>EPUB Content Documents</a>, but
@@ -1789,7 +1849,7 @@
 			<section id="sec-scripted-content-security">
 				<h4>Scripting Considerations</h4>
 
-				<p><a>EPUB Creators</a> and Reading System developers must be aware of the security issues that arise
+				<p>Reading System developers who also support scripting must be aware of the security issues that arise
 					when Reading Systems execute scripted content. As the underlying scripting model employed by Reading
 					Systems and browsers is the same, developers must take into consideration the same kinds of issues
 					encountered in Web contexts.</p>
@@ -1822,33 +1882,37 @@
 					</li>
 				</ul>
 
-				<p>This specification recommends the following practices for handling untrusted scripts:</p>
+				<p>To limit the possible damage of untrusted scripts, this specification recommends that Reading Systems
+					establish a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]] allocated to
+					each <a>EPUB Publication</a> (see <a href="#sec-scripted-content"></a>). Adopting this approach
+					isolates publications from each other, thereby limiting access to cookies, DOM storage, etc.
+					Examples of Web APIs that are tied to the concept of "origin" include Web Storage [[WEBSTORAGE]] and
+					IndexedDB [[INDEXEDDB]], which EPUB Content Documents can interact with via scripting. Reading
+					Systems that allow users to add/remove publications from a managed library (a.k.a "bookshelf") may
+					maintain the publication’s unique origin when the publication is removed and subsequently
+					re-imported into the content library. Conversely, Reading Systems may create a new unique origin for
+					every newly-added publication.</p>
+
+				<p>In addition, this specification recommends the following privacy practices:</p>
 
 				<ul>
 					<li>
-						<p>Reading Systems must behave as if a unique <a href="https://url.spec.whatwg.org/#origin"
-								>origin</a> [[URL]] were allocated to each <a>EPUB Publication</a>. Adopting this
-							approach will isolate publications from each other, thereby limiting access to cookies, DOM
-							storage, etc.</p>
-						<div class="note">
-							<p>Although domain isolation is the most effective way to secure EPUB Publications in
-								Web-based Reading Systems, it is not always a realistic option. Web-based Reading
-								Systems must still maintain isolation in such cases, which may require limiting access
-								to scripting APIs that allow client-side data storage and access.</p>
-						</div>
-						<p>Reading Systems that enable scripting and network access should also include methods to
+						<p>Reading Systems that support scripting and network access should also include methods to
 							notify the user that network activity is occurring and/or that allow them to disable it.</p>
 					</li>
+
 					<li>
-						<p>If a Reading System allows users to store persistent data, it must treat that data as
+						<p>If a Reading System allows users/scripts to store persistent data, it must treat that data as
 							sensitive. Scripts may save persistent data through cookies and DOM storage but Reading
 							Systems may block such attempts. Reading Systems that allow users to store data must ensure
 							they do not make that data available to other unrelated documents (e.g., ones that could be
 							spoofed). In particular, checking for a matching document identifier (or similar metadata)
 							is not a valid method to control access to persistent data.</p>
-						<p>Reading Systems that allow local storage should also provide methods for users to inspect,
-							disable, and delete that data. The Reading System must destroy the data if the corresponding
-							EPUB Publication is deleted.</p>
+					</li>
+
+					<li>
+						<p>Reading Systems that allow local storage should also provide methods for users to inspect, or
+							delete that data.</p>
 					</li>
 				</ul>
 
@@ -2106,7 +2170,7 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<section id="changes-latest">
-				<h3>Substantive Changes since the <a href="https://www.w3.org/TR/2021/WD-epub-rs-33-20210406/">Previous
+				<h3>Substantive Changes since the <a href="https://www.w3.org/TR/2021/WD-epub-rs-33-20210525/">Previous
 						Working Draft</a></h3>
 
 				<!--
@@ -2115,7 +2179,24 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 						- move all changes down to the next section
 				-->
 
+				<ul> </ul>
+			</section>
+
+			<section id="changes-older">
+				<h3>Substantive Changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
+					3.2</a></h3>
 				<ul>
+					<li> 20-May-2021: Providing a shared and unique origin for scripts is a requirements for Reading
+						Systems that support scripting. See <a href="https://github.com/w3c/epub-specs/issues/1659"
+							>issue 1659</a>. </li>
+					<li>20-May-2021: Removed requirement for reading systems to be conformant xml:base processors. See
+							<a href="https://github.com/w3c/epub-specs/pull/1678">pull request 1678</a>.</li>
+					<li>12-May-2021: Added additional requirement that Reading Systems ignore property values that
+						expand to invalid URL strings and property values with empty references. See <a
+							href="https://github.com/w3c/epub-specs/issues/1673">issue 1673</a>.</li>
+					<li>12-May-2021: Changed all references to URIs/IRIs to URLs and references to RFCs 3986 and 3987 to
+						the URL standard. See <a href="https://github.com/w3c/epub-specs/issues/808">issue 808</a>.</li>
+
 					<li>06-May-2021: Recommend that Reading Systems support references to HTML target elements and SVG
 						fragment identifiers in <code>textref</code> attributes and the <code>text</code> element's
 							<code>src</code> attribute. Support for other fragment identifier schemes is optional. See
@@ -2139,14 +2220,7 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 					<li>09-Apr-2021: Added section clarifying all the conformance requirements on establishing the
 						primary language and base direction of Publication Resources. See <a
 							href="https://github.com/w3c/epub-specs/pull/1613">pull request 1613</a>. </li>
-				</ul>
-			</section>
-
-			<section id="changes-older">
-				<h3>Substantive Changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
-					3.2</a></h3>
-				<ul>
-					<li>01-Apr-2021: Added section clarifying how absolute IRIs are created from relative in the Package
+					<li>01-Apr-2021: Added section clarifying how absolute URLs are created from relative in the Package
 						Document. See <a href="https://github.com/w3c/epub-specs/pull/1468">pull request 1468</a>.</li>
 					<li>30-Mar-2021: Restructured the document to remove the rendundant conformance sections and
 						requirements that were only used as locators when this specification was combined with the

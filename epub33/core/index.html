@@ -16,7 +16,7 @@
                 specStatus: "ED",
                 shortName: "epub-33",
                 edDraftURI: "https://w3c.github.io/epub-specs/epub33/core/",
-                previousPublishDate: "2021-04-06",
+                previousPublishDate: "2021-05-25",
                 previousMaturity: "WD",
                 copyrightStart: "1999",
                 editors:[
@@ -73,7 +73,11 @@
                 },
                 localBiblio: biblio,
                 preProcess:[inlineCustomCSS],
-                postProcess:[addConformanceLinks, addCautionHeaders]
+                postProcess:[addConformanceLinks, addCautionHeaders],
+                testSuiteURI: "https://github.com/w3c/epub-tests/tree/HEAD/tests/EPUBs/",
+                lint: {
+                     "wpt-tests-exist": true,
+		}
             };//]]>
       </script>
 	</head>
@@ -719,28 +723,28 @@
 									<th colspan="3" id="cmt-grp-image" class="tbl-group">Images</th>
 								</tr>
 								<tr>
-									<td id="cmt-gif">
+									<td id="cmt-gif" data-tests="cmt-gif.epub">
 										<code>image/gif</code>
 									</td>
 									<td> [[GIF]] </td>
 									<td>GIF Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-jpeg">
+									<td id="cmt-jpeg" data-tests="cmt-jpeg.epub">
 										<code>image/jpeg</code>
 									</td>
 									<td> [[JPEG]] </td>
 									<td>JPEG Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-png">
+									<td id="cmt-png" data-tests="cmt-png.epub">
 										<code>image/png</code>
 									</td>
 									<td> [[PNG]] </td>
 									<td>PNG Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-svg">
+									<td id="cmt-svg" data-tests="cmt-svg,confreq-rs-epub3-svg.epub">
 										<code>image/svg+xml</code>
 									</td>
 									<td>
@@ -749,7 +753,7 @@
 									<td>SVG documents</td>
 								</tr>
 								<tr>
-									<td id="cmt-webp">
+									<td id="cmt-webp" data-tests="cmt-webp.epub">
 										<code>image/webp</code>
 									</td>
 									<td> [[WebP-Container]], [[WebP-LB]] </td>
@@ -760,21 +764,21 @@
 									<th colspan="3" id="cmt-grp-audio" class="tbl-group">Audio</th>
 								</tr>
 								<tr>
-									<td id="cmt-mp3">
+									<td id="cmt-mp3" data-tests="cmt-mp3.epub">
 										<code>audio/mpeg</code>
 									</td>
 									<td> [[MP3]] </td>
 									<td>MP3 audio</td>
 								</tr>
 								<tr>
-									<td id="cmt-mp4-aac">
+									<td id="cmt-mp4-aac" data-tests="cmt-mp4-aac.epub">
 										<code>audio/mp4</code>
 									</td>
 									<td> [[MPEG4-Audio]], [[MP4]] </td>
 									<td>AAC LC audio using MP4 container</td>
 								</tr>
 								<tr>
-									<td id="cmt-ogg-opus">
+									<td id="cmt-ogg-opus" data-tests="cmt-ogg-opus.epub">
 										<code>audio/opus</code>
 									</td>
 									<td>[[RFC7845]]</td>
@@ -1026,10 +1030,10 @@
 				<section id="sec-data-urls">
 					<h4>Data URLs</h4>
 
-					<p>The <a href="https://tools.ietf.org/html/rfc2397"><code>data:</code> URL scheme</a> [[RFC2397]]
-						is used to encode resources directly into a URL string. The advantage of this scheme is that it
-						allows EPUB Creators to embed a resource within another, avoiding the need for an external
-						file.</p>
+					<p>The <a href="https://datatracker.ietf.org/doc/html/rfc2397"><code>data:</code> URL scheme</a>
+						[[RFC2397]] is used to encode resources directly into a URL string. The advantage of this scheme
+						is that it allows EPUB Creators to embed a resource within another, avoiding the need for an
+						external file.</p>
 
 					<p><a>EPUB Creators</a> MAY use data URLs in EPUB Publications provided their use does not result in
 						a <a>Top-level Content Document</a> or <a
@@ -1140,8 +1144,8 @@
 								metadata.</p>
 						</li>
 						<li>
-							<p>A <a href="#sec-manifest-elem">manifest</a> — identifies via IRI [[RFC3987]], and
-								describes via MIME media type [[RFC4839]], the set of <a>Publication Resources</a>.</p>
+							<p>A <a href="#sec-manifest-elem">manifest</a> — identifies via URL [[URL]], and describes
+								via MIME media type [[RFC4839]], the set of <a>Publication Resources</a>.</p>
 						</li>
 						<li>
 							<p>A <a href="#sec-spine-elem">spine</a> — an ordered sequence of ID references to top-level
@@ -1226,7 +1230,8 @@
 								<code>href</code>
 							</dt>
 							<dd>
-								<p>An absolute or relative IRI reference [[RFC3987]] to a resource.</p>
+								<p>A <a href="https://url.spec.whatwg.org/#valid-url-string">valid URL string</a>
+									[[URL]] that references a resource.</p>
 								<div class="example">
 									<pre>&lt;link rel="record"
       href="meta/9780000000001.xml" 
@@ -1302,8 +1307,10 @@
 							</dt>
 							<dd>
 								<p>Establishes an association between the current expression and the element or resource
-									identified by its value. The value of the attribute must be a relative IRI
-									[[RFC3987]] that references the resource or element being described.</p>
+									identified by its value. EPUB Creators MUST use as the value a <a
+										href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+										>relative-URL-with-fragment string</a> [[URL]] that references the resource or
+									element they are describing.</p>
 								<aside class="example">
 									<p>The following example shows the <code>refines</code> element used to indicate a
 										creator is the illustrator.</p>
@@ -1347,8 +1354,8 @@
 									element and its descendants, as defined in section <a
 										href="https://www.w3.org/TR/2008/REC-xml-20081126/#sec-lang-tag">2.12 Language
 										Identification</a> of [[XML]]. The value of each <code>xml:lang</code> attribute
-									MUST be a <a href="https://tools.ietf.org/html/bcp47#section-2.2.9">well-formed
-										language tag</a> [[BCP47]].</p>
+									MUST be a <a href="https://www.rfc-editor.org/rfc/rfc5646.html#section-2.2.9"
+										>well-formed language tag</a> [[BCP47]].</p>
 								<div class="example">
 									<pre>&lt;package … xml:lang="ja"&gt;
 	…
@@ -1931,8 +1938,8 @@
 
 								<p>The <code>metadata</code> section MUST contain at least one <code>language</code>
 									element. The <a>value</a> of each <code>language</code> element MUST be a <a
-										href="https://tools.ietf.org/html/bcp47#section-2.2.9">well-formed language
-										tag</a> [[BCP47]].</p>
+										href="https://www.rfc-editor.org/rfc/rfc5646.html#section-2.2.9">well-formed
+										language tag</a> [[BCP47]].</p>
 
 								<aside class="example">
 									<p>The following example shows an <a>EPUB Publication</a> is in U.S. English.</p>
@@ -2151,7 +2158,7 @@
 								</aside>
 
 								<aside class="example">
-									<p>The following example shows the use of an IRI for the scheme.</p>
+									<p>The following example shows the use of a URL for the scheme.</p>
 									<pre>&lt;dc:subject id="sbj01"&gt;Number Theory&lt;/dc:subject&gt;
 &lt;meta refines="#sbj01" property="authority">http://www.ams.org/msc/msc2010.html&lt;/meta>
 &lt;meta refines="#sbj01" property="term">11&lt;/meta></pre>
@@ -2290,9 +2297,7 @@
 
 							<p>The <a href="#app-meta-property-vocab">Meta Properties Vocabulary</a> is the <a
 									href="#sec-default-vocab">default vocabulary</a> for use with the
-									<code>property</code> attribute. If the attribute's value does not include a prefix,
-								the following IRI [[RFC3987]] stem MUST be used to generate the resulting IRI:
-									<code>http://idpf.org/epub/vocab/package/meta/#</code></p>
+									<code>property</code> attribute.</p>
 
 							<p>EPUB Creators MAY add terms from other vocabularies as defined in <a
 									href="#sec-vocab-assoc"></a>.</p>
@@ -2492,13 +2497,13 @@
 
 							<p id="attrdef-link-media-type">The <a href="#attrdef-media-type"><code>media-type</code>
 									attribute</a> is OPTIONAL when a linked resource is located outside the EPUB
-								Container, as more than one media type could be served from the same IRI. EPUB Creators
-								MUST specify the attribute for all <a>Local Resources</a>.</p>
+								Container, as more than one media type could be served from the same URL [[URL]]. EPUB
+								Creators MUST specify the attribute for all <a>Local Resources</a>.</p>
 
 							<p id="attrdef-hreflang">The OPTIONAL <code>hreflang</code> attribute identifies the
 								language of the linked resource. The value MUST be a <a
-									href="https://tools.ietf.org/html/bcp47#section-2.2.9">well-formed language tag</a>
-								[[BCP47]].</p>
+									href="https://www.rfc-editor.org/rfc/rfc5646.html#section-2.2.9">well-formed
+									language tag</a> [[BCP47]].</p>
 
 							<p id="attrdef-link-rel">The REQUIRED <code>rel</code> attribute takes a space-separated
 								list of <a href="#sec-property-datatype">property</a> values that establish the
@@ -2529,9 +2534,7 @@
 
 							<p>The <a href="#app-link-vocab">Metadata Link Vocabulary</a> is the <a
 									href="#sec-default-vocab">default vocabulary</a> for the <code>rel</code> and
-									<code>properties</code> attributes. If any of these attributes' values do not
-								include a prefix, the following IRI [[RFC3987]] stem MUST be used to generate the
-								resulting IRI for them: <code>http://idpf.org/epub/vocab/package/link/#</code></p>
+									<code>properties</code> attributes.</p>
 
 							<p><a>EPUB Creators</a> MAY add relationships and properties from other vocabularies as
 								defined in <a href="#sec-vocab-assoc"></a>.</p>
@@ -2586,6 +2589,17 @@
 									between them, this specification does not require Reading Systems to process linked
 									records.</p>
 							</div>
+
+							<p>In addition to full records, EPUB Creators MAY also use the <code>link</code> element to
+								identify individual metadata properties available in an alternative format.</p>
+
+							<aside class="example">
+								<p>The following example shows a link to an embedded [[HTML]] description of the EPUB
+									Publication.</p>
+								<pre>&lt;link rel="dcterms:description"
+       href="description.html"
+       media-type="text/html" /&gt;</pre>
+							</aside>
 						</section>
 					</section>
 
@@ -2647,9 +2661,9 @@
 
 							<div class="note">
 								<p>This specification supports internationalized resource naming, so elements and
-									attributes that reference Publication Resources accept IRIs as their value. For
-									compatibility with older Reading Systems that only accept URIs, EPUB Creators should
-									restrict resource names to the ASCII character set.</p>
+									attributes that reference Publication Resources accept URLs [[URL]] as their value.
+									For compatibility with older Reading Systems that only accept URIs, EPUB Creators
+									should restrict resource names to the ASCII character set.</p>
 							</div>
 						</section>
 
@@ -2729,11 +2743,13 @@
 								</dd>
 							</dl>
 
-							<p>Each <code>item</code> element identifies a <a>Publication Resource</a> by the IRI
-								[[RFC3987]] in its <code>href</code> attribute. EPUB Creators MAY use absolute or
-								relative IRIs, but they MUST ensure each IRI is unique within the <code>manifest</code>
-								scope after <a href="https://www.w3.org/TR/epub-rs-33/#sec-pkg-doc-relative-iris"
-									>resolution to an absolute IRI</a> [[EPUB-RS-33]].</p>
+							<p>Each <code>item</code> element identifies a <a>Publication Resource</a> by the URL
+								[[URL]] in its <code>href</code> attribute. EPUB Creators MAY use <a
+									href="https://url.spec.whatwg.org/#absolute-url-string">absolute-</a> or <a
+									href="https://url.spec.whatwg.org/#relative-url-string">relative-URL string</a>
+								[[URL]], but they MUST ensure each URL is unique within the <code>manifest</code> scope
+								after <a href="https://www.w3.org/TR/epub-rs-33/#sec-pkg-doc-relative-urls">resolution
+									to an absolute URL</a> [[EPUB-RS-33]].</p>
 
 							<p id="attrdef-item-media-type">The Publication Resource identified by an <code>item</code>
 								element MUST conform to the applicable specification(s) as inferred from the MIME media
@@ -2750,9 +2766,7 @@
 
 							<p id="attrdef-item-properties">The <a href="#app-item-properties-vocab">Manifest Properties
 									Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a> for the
-									<code>properties</code> attribute. If any of the attribute's values do not include a
-								prefix, the following IRI [[RFC3987]] stem MUST be used to generate the resulting IRI
-								for them: <code>http://idpf.org/epub/vocab/package/item/#</code></p>
+									<code>properties</code> attribute.</p>
 
 							<p>EPUB Creators MAY add terms from other vocabularies as defined in <a
 									href="#sec-vocab-assoc"></a>.</p>
@@ -3182,9 +3196,7 @@ Spine:
 
 							<p id="attrdef-itemref-properties">The <a href="#app-itemref-properties-vocab">Spine
 									Properties Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a>
-								for the <code>properties</code> attribute. If any of the attribute's values do not
-								include a prefix, the following IRI [[RFC3987]] stem MUST be used to generate the
-								resulting IRI for them: <code>http://idpf.org/epub/vocab/package/itemref/#</code></p>
+								for the <code>properties</code> attribute.</p>
 
 							<p>EPUB Creators MAY add terms from other vocabularies as defined in <a
 									href="#sec-vocab-assoc"></a>.</p>
@@ -3295,16 +3307,21 @@ Spine:
 							<p id="attrdef-collection-role">Each specialization MUST define a role value that uniquely
 								identifies all conformant <code>collection</code> elements. EPUB Creators MUST identify
 								the role of each <code>collection</code> element in its <code>role</code> attribute,
-								whose value MUST be one or more NMTOKENs [[XMLSCHEMA-2]] and/or absolute IRIs
-								[[RFC3987]].</p>
+								whose value MUST be one or more NMTOKENs [[XMLSCHEMA-2]] and/or <a
+									href="https://url.spec.whatwg.org/#absolute-url-with-fragment-string"
+									>absolute-URL-with-fragment strings</a> [[URL]].</p>
 
 							<p>This specification reserves the use of NMTOKEN values for roles defined in EPUB
 								specifications. NMTOKEN values not defined by a recognized specification are not valid.
 								This section does not define any roles.</p>
 
 							<p>Third parties MAY define custom roles for the <code>collection</code> element, but they
-								MUST identify such roles using absolute IRIs. Custom roles MUST NOT incorporate the
-								string "<code>idpf.org</code>" in the host component of their identifying IRI.</p>
+								MUST identify such roles using <a
+									href="https://url.spec.whatwg.org/#absolute-url-with-fragment-string"
+									>absolute-URL-with-fragment strings</a> [[URL]]. Custom roles MUST NOT incorporate
+								the string "<code>idpf.org</code>" in the <a
+									href="https://url.spec.whatwg.org/#concept-host">host component</a> [[URL]] of their
+								identifying URL.</p>
 
 
 							<div class="note">
@@ -4320,7 +4337,7 @@ Spine:
 				</aside>
 
 				<p id="confreq-cd-pls-docprops-schema">PLS Documents MUST be valid to the RELAX NG schema available at
-					the URI <a href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng"
+					the URL <a href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng"
 							><code>https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng</code></a>
 					[[PRONUNCIATION-LEXICON]].</p>
 
@@ -4499,8 +4516,8 @@ Spine:
 								rendering of the link label.</p>
 						</li>
 						<li>
-							<p id="confreq-nav-a-href">The IRI reference provided in the <code>href</code> attribute of
-								the <code>a</code> element:</p>
+							<p id="confreq-nav-a-href">The URL [[URL]] reference provided in the <code>href</code>
+								attribute of the <code>a</code> element:</p>
 							<ul class="conformance-list">
 								<li>
 									<p id="confreq-nav-a-href-default">MUST, in the case of the <a href="#sec-nav-toc"
@@ -5352,32 +5369,37 @@ Spine:
 				</section>
 
 				<section id="sec-container-iri">
-					<h4>Relative IRIs for Referencing Other Components</h4>
+					<h4>Relative URLs for Referencing Other Components</h4>
 
-					<p>Files within the <a>OCF Abstract Container</a> MUST reference each other via relative IRI
-						references ([[RFC3987]] and [[RFC3986]]).</p>
+					<p>Files within the <a>OCF Abstract Container</a> MUST reference each other via <a
+							href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+							>relative-URL-with-fragment strings</a> [[URL]].</p>
 
 					<aside class="example">
-						<p>The following example shows how a file named <code>image1.jpg</code> in the same directory as
-							an <a>XHTML Content Document</a> is referenced from an [[HTML]] <code>img</code>
-							element.</p>
+						<p>The following example shows how to reference, from an [[HTML]] <code>img</code> element, a
+							file named <code>image1.jpg</code> in the same directory as an <a>XHTML Content
+							Document</a>.</p>
 						<pre>
 &lt;img src="image1.jpg" alt="…" /&gt;
                 </pre>
 					</aside>
 
-					<p>For relative IRI references, the Base IRI [[RFC3986]] is determined by the relevant language
-						specifications for the given file formats. For example, CSS defines how relative IRI references
-						work in the context of CSS style sheets and property declarations [[CSSSnapshot]].</p>
+					<p>The relevant language specification for a given file format determines the <a
+							href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> [[URL]] used to parse <a
+							href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+							>relative-URL-with-fragment strings</a> [[URL]]. For example, CSS defines how relative URL
+						references work in the context of CSS style sheets and property declarations
+						[[CSSSnapshot]].</p>
 
 					<div class="note">
-						<p>Some language specifications reference Requests For Comments that preceded [[RFC3987]], in
-							which case the earlier RFC applies for content in that language.</p>
+						<p>Some language specifications reference <a href="https://www.ietf.org/standards/rfcs/"
+								>Requests For Comments</a> that preceded [[URL]], in which case the earlier RFC applies
+							for content in that language.</p>
 					</div>
 
-					<p>Unlike most language specifications, the Base IRIs for all files within the <code>META-INF</code>
-						directory use the <a>Root Directory</a> of the OCF Abstract Container as the default Base
-						IRI.</p>
+					<p>Unlike most language specifications, the <a href="https://url.spec.whatwg.org/#concept-base-url"
+							>base URL</a> [[URL]] for all files within the <code>META-INF</code> directory is the
+							<a>Root Directory</a> of the OCF Abstract Container.</p>
 
 					<p>For example, if <code>META-INF/container.xml</code> has the following content:</p>
 
@@ -5394,8 +5416,10 @@ Spine:
 					<p>then the path <code>EPUB/Great_Expectations.opf</code> is relative to the root directory for the
 						OCF Abstract Container and not relative to the <code>META-INF</code> directory.</p>
 
-					<p>All relative IRI references MUST resolve to resources within the OCF Abstract Container (i.e., at
-						or below the Root Directory).</p>
+					<p>All <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+							>relative-URL-with-fragment strings</a> [[URL]] MUST, after <a
+							href="https://url.spec.whatwg.org/#concept-url-parser">parsing to URL records</a> [[URL]],
+						identify resources within the OCF Abstract Container (i.e., at or below the Root Directory).</p>
 				</section>
 
 				<section id="sec-container-filenames">
@@ -5496,8 +5520,8 @@ Spine:
 							</ul>
 						</li>
 						<li>
-							<p id="ocf-fn-cn">All File Names within the same directory MUST be unique following full
-								case folding [[Unicode]] and NFC normalization [[TR15]]. (Refer to <a
+							<p id="ocf-fn-cn">All File Names within the same directory MUST be unique following NFC
+								normalization [[TR15]] and then full case folding [[Unicode]]. (Refer to <a
 									href="https://www.w3.org/TR/charmod-norm/#CanonicalFoldNormalizationStep">Unicode
 									Canonical Case Fold Normalization Step</a> [[?CHARMOD-NORM]] for more
 								information.)</p>
@@ -5644,10 +5668,10 @@ Spine:
 											</dt>
 											<dd>
 												<p>Identifies the location of a <a>Package Document</a>.</p>
-												<p>The value of the attribute MUST contain a <em>path component</em>
-													[[RFC3986]] which MUST take the form of a <em>path-rootless</em>
-													[[RFC3986]] only. The path components are relative to the <a>Root
-														Directory</a>.</p>
+												<p>The value of the attribute MUST be a <a
+														href="https://url.spec.whatwg.org/#path-relative-scheme-less-url-string"
+														>path-relative-scheme-less-URL string</a> [[URL]]. The path is
+													relative to the <a>Root Directory</a>.</p>
 											</dd>
 
 											<dt>
@@ -5740,9 +5764,10 @@ Spine:
 											<dd>
 												<p>Identifies the location of a resource.</p>
 												<p>The value of the <code>link</code> element <code>href</code>
-													attribute MUST contain a <em>path component</em> [[RFC3986]] which
-													MUST take the form of a <em>path-rootless</em> [[RFC3986]] only. The
-													path component is relative to the <a>Root Directory</a>.</p>
+													attribute MUST be a <a
+														href="https://url.spec.whatwg.org/#path-relative-scheme-less-url-string"
+														>path-relative-scheme-less-URL string</a> [[URL]]. The path is
+													relative to the <a>Root Directory</a>.</p>
 											</dd>
 
 											<dt>
@@ -6140,7 +6165,7 @@ Spine:
 
 								<div class="note">
 									<p>Each <code>Signature</code> in the <code>signatures.xml</code> file identifies by
-										IRI the data to which the signature applies, using the [[XMLDSIG-CORE1]]
+										URL [[URL]] the data to which the signature applies, using the [[XMLDSIG-CORE1]]
 											<code>Manifest</code> element and its <code>Reference</code> sub-elements.
 										EPUB Creator may sign individual container files separately or together.
 										Separately signing each file creates a digest value for the resource that
@@ -6743,9 +6768,11 @@ store destination as source in ocf
 										<code>[optional]</code>
 									</dt>
 									<dd>
-										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a <a href="#sec-media-overlays-fragids">fragment
-												identifier</a> that references the specific content.</p>
+										<p>Identifies an associated fragment of an EPUB Content Document.</p>
+										<p>The value MUST be a <a
+												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+												>relative-URL-with-fragment string</a> [[URL]] with a <a
+												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
 									</dd>
 								</dl>
 							</dd>
@@ -6820,9 +6847,11 @@ store destination as source in ocf
 										<code>[required]</code>
 									</dt>
 									<dd>
-										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a <a href="#sec-media-overlays-fragids">fragment
-												identifier</a> that references the specific content.</p>
+										<p>Identifies an associated fragment of an EPUB Content Document.</p>
+										<p>The value MUST be a <a
+												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+												>relative-URL-with-fragment string</a> [[URL]] with a <a
+												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
 										<p>Refer to <a href="#sec-media-overlays-structure"></a> for more
 											information.</p>
 									</dd>
@@ -6952,9 +6981,11 @@ store destination as source in ocf
 										<code>[required]</code>
 									</dt>
 									<dd>
-										<p>The relative IRI reference [[RFC3987]] of the corresponding EPUB Content
-											Document, including a <a href="#sec-media-overlays-fragids">fragment
-												identifier</a> that references the specific content.</p>
+										<p>Identifies the associated fragment of an EPUB Content Document.</p>
+										<p>The value MUST be a <a
+												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
+												>relative-URL-with-fragment string</a> [[URL]] with a <a
+												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
 									</dd>
 									<dt>
 										<code>id</code>
@@ -7009,9 +7040,11 @@ store destination as source in ocf
 										<code>[required]</code>
 									</dt>
 									<dd>
-										<p>The relative or absolute IRI reference [[RFC3987]] of an audio file. The
-											audio file MUST be one of the audio formats listed in the <a
-												href="#sec-core-media-types">Core Media Type Resources</a> table.</p>
+										<p>The <a href="https://url.spec.whatwg.org/#relative-url-string">relative-</a>
+											or <a href="https://url.spec.whatwg.org/#absolute-url-string">absolute-URL
+												string</a> [[URL]] reference to an audio file. The audio file MUST be
+											one of the audio formats listed in the <a href="#sec-core-media-types">Core
+												Media Type Resources</a> table.</p>
 									</dd>
 									<dt id="attrdef-smil-clipBegin">
 										<code>clipBegin</code>
@@ -7079,7 +7112,7 @@ store destination as source in ocf
 						presentation.</p>
 
 					<p>The <code>text</code> element <code>src</code> attribute references the associated phrase,
-						sentence, or other segment of the EPUB Content Document by its IRI reference. The
+						sentence, or other segment of the EPUB Content Document by its URL [[URL]] reference. The
 							<code>audio</code> element <code>src</code> attribute similarly references the location of
 						the corresponding audio clip and adds the OPTIONAL <a href="#attrdef-smil-clipBegin"
 								><code>clipBegin</code></a> and <a href="#attrdef-smil-clipEnd"><code>clipEnd</code></a>
@@ -7794,9 +7827,10 @@ html.my-document-playing * {
 
 			<p>The particularity of an <a>EPUB Publication</a> is its structure. The EPUB format provides a means of
 				representing, packaging, and encoding structured and semantically enhanced Web content — including HTML,
-				CSS, SVG, and other resources — for distribution in a single-file container. This specification does not
-					<em>add</em> any new features, APIs, etc. This also means that, essentially, the security and
-				privacy issues are reliant on the features of those formats. In particular:</p>
+				CSS, SVG, JavaScript, and other resources — for distribution in a single-file container.</p>
+
+			<p>This means that, essentially, the security and privacy issues are reliant on the features of those
+				formats. In particular:</p>
 
 			<ul>
 				<li>EPUB 3 allows references to remotely hosted resources from within <a>EPUB Content Documents</a>, but
@@ -7809,10 +7843,30 @@ html.my-document-playing * {
 					could expose unexpected information if explicit author approval of metadata is not required.</li>
 			</ul>
 
-			<div class="ednote">
-				<p>The Working Group will have to address the particularity of cross-origin by addressing the question
-					of what the "origin" is for an EPUB Publication.</p>
-			</div>
+			<p>In general, EPUB 3 tries to avoid extending the underlying technologies it builds on, but it has
+				introduced some new features. These additions are not known to present any new privacy or security
+				issues:</p>
+
+			<ul>
+				<li>
+					<p><a href="#sec-xhtml-content-switch">Content switching</a> and <a href="#sec-xhtml-epub-trigger"
+							>multimedia control elements</a> (both now deprecated) only allow hiding of content and
+						script-less control of playback in HTML.</p>
+				</li>
+				<li>
+					<p>The <a href="#sec-epub-type-attribute">expression of structural semantics</a> in HTML and SVG
+						only allows the annotation of elements.</p>
+				</li>
+				<li>
+					<p>A <a href="#sec-xhtml-ssml-attrib">reformulation of SSML</a> as HTML attributes only allows the
+						expression of phonemes and pronunciation alphabets.</p>
+				</li>
+				<li>
+					<p>The <a href="https://www.w3.org/TR/epub-rs-33/#app-epubReadingSystem"
+								><code>epubReadingSystem</code> object</a> [[EPUB-RS-33]] only allows EPUB Creators to
+						query information about the current Reading System.</p>
+				</li>
+			</ul>
 		</section>
 		<section id="app-overview-unsupported" class="appendix">
 			<h2>Unsupported Features</h2>
@@ -8070,17 +8124,17 @@ html.my-document-playing * {
 							semantics</a>, for example, while the <code>property</code> and <code>rel</code> attributes
 						use the data type to define properties and relationships in the <a>Package Document</a>.</p>
 
-					<p>A <var>property</var> value is like a CURIE [[RDFA-CORE]] &#8212; it represents an IRI
-						[[RFC3987]] in compact form. The expression consists of a prefix and a reference, where the
-						prefix — whether literal or implied — is a shorthand mapping of an IRI that typically resolves
-						to a term vocabulary. When a Reading System converts the prefix to its IRI representation and
-						combines with the reference, the resulting IRI normally resolves to a fragment within that
-						vocabulary that contains human- and/or machine-readable information about the term.</p>
+					<p>A <var>property</var> value is like a CURIE [[RDFA-CORE]] &#8212; it represents a URL [[URL]] in
+						compact form. The expression consists of a prefix and a reference, where the prefix — whether
+						literal or implied — is a shorthand mapping of a URL that typically resolves to a term
+						vocabulary. When a Reading System converts the prefix to its URL representation and combines
+						with the reference, the resulting URL normally resolves to a fragment within that vocabulary
+						that contains human- and/or machine-readable information about the term.</p>
 
 					<p>To reduce the complexity for authoring, each attribute that takes a <var>property</var> data type
 						also defines a <a href="#sec-default-vocab">default vocabulary</a>. Terms and properties
 						referenced from the default vocabularies do not include a prefix as the mapping <a>Reading
-							Systems</a> use to map to a IRI is predefined.</p>
+							Systems</a> use to map to a URL is predefined.</p>
 
 					<p>The power of the <var>property</var> data type lies in its easy extensibility. To incorporate new
 						terms and properties, EPUB Creators only need to declare a <a href="#sec-prefix-attr"
@@ -8095,8 +8149,8 @@ html.my-document-playing * {
 				<section id="sec-property-datatype">
 					<h4>The <var>property</var> Data Type</h4>
 
-					<p>The <var>property</var> data type is a compact means of expressing an IRI [[RFC3987]] and
-						consists of an OPTIONAL prefix separated from a reference by a colon.</p>
+					<p>The <var>property</var> data type is a compact means of expressing a URL [[URL]] and consists of
+						an OPTIONAL prefix separated from a reference by a colon.</p>
 
 					<table class="productionset">
 						<caption>(EBNF productions <a
@@ -8131,8 +8185,9 @@ html.my-document-playing * {
 							<td>
 								<code>=</code>
 							</td>
-							<td>? irelative-ref ? ;</td>
-							<td>/* as defined in [[RFC3987]] */<br /></td>
+							<td>? <a href="https://url.spec.whatwg.org/#path-relative-scheme-less-url-string"
+									>path-relative-scheme-less-URL string</a> [[URL]] ? ;</td>
+							<td>/* as defined in [[URL]] */<br /></td>
 						</tr>
 					</table>
 
@@ -8146,12 +8201,12 @@ html.my-document-playing * {
 					</aside>
 
 					<p>After <a href="https://www.w3.org/TR/epub-rs-33/#sec-property-datatype">processing</a>
-						[[EPUB-RS-33]], this property would expand to the following IRI:</p>
+						[[EPUB-RS-33]], this property would expand to the following URL:</p>
 
 					<pre class="nohighlight">http://purl.org/dc/terms/modified</pre>
 
 					<p>as the <code>dcterms:</code> prefix is a <a href="#sec-metadata-reserved-prefixes">reserved
-							prefix</a> that maps to the IRI "<code>http://purl.org/dc/terms/</code>".</p>
+							prefix</a> that maps to the URL "<code>http://purl.org/dc/terms/</code>".</p>
 
 					<p>When an EPUB Creator omits a prefix from a <var>property</var> value, the expressed reference
 						represents a term from the <a href="#sec-default-vocab">default vocabulary</a> for that
@@ -8167,7 +8222,7 @@ html.my-document-playing * {
 
 						<pre>http://idpf.org/epub/vocab/package/item/#mathml</pre>
 
-						<p>when the IRI for the vocabulary is concatenated with the reference.</p>
+						<p>when the prefix URL for the vocabulary is concatenated with the reference.</p>
 					</aside>
 
 					<p>An empty string does not represent a valid <var>property</var> value, even though it is valid to
@@ -8182,7 +8237,7 @@ html.my-document-playing * {
 							href="#sec-property-datatype"><var>property</var> value</a> is expected. EPUB Creators MUST
 						NOT add a prefix to terms and properties from a default vocabulary.</p>
 
-					<p>EPUB Creators MUST NOT assign a prefix to the IRIs associated with these vocabularies using the
+					<p>EPUB Creators MUST NOT assign a prefix to the URLs associated with these vocabularies using the
 							<a href="#sec-prefix-attr"><code>prefix</code></a> attribute.</p>
 
 					<div class="note">
@@ -8199,7 +8254,7 @@ html.my-document-playing * {
 							href="#sec-property-datatype"><var>property</var> values</a>.</p>
 
 					<p>The value of the <code>prefix</code> attribute is a white space-separated list of one or more
-						prefix-to-IRI mappings of the form:</p>
+						prefix-to-URL mappings of the form:</p>
 
 					<table class="productionset">
 						<caption>(EBNF productions <a
@@ -8349,7 +8404,7 @@ html.my-document-playing * {
 								<thead>
 									<tr>
 										<th>Prefix</th>
-										<th>IRI</th>
+										<th>URL</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -8398,7 +8453,7 @@ html.my-document-playing * {
 								<thead>
 									<tr>
 										<th>Prefix</th>
-										<th>IRI</th>
+										<th>URL</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -9345,8 +9400,9 @@ EPUB/images/cover.png</pre>
 						<p>This media type registration is for the EPUB Open Container Format (OCF), as described by the
 							EPUB 3 specification located at <a href="https://www.w3.org/TR/epub-33/"
 									><code>https://www.w3.org/TR/epub-33/</code></a>.</p>
-						<p>The EPUB 3 specification supersedes both <a href="https://tools.ietf.org/html/rfc4839">RFC
-								4839</a> and the Open Container Format 2.0.1 specification, which is located at <a
+						<p>The EPUB 3 specification supersedes both <a
+								href="https://datatracker.ietf.org/doc/html/rfc4839">RFC 4839</a> and the Open Container
+							Format 2.0.1 specification, which is located at <a
 								href="http://www.idpf.org/doc_library/epub/OCF_2.0.1_draft.doc"
 									><code>http://www.idpf.org/doc_library/epub/OCF_2.0.1_draft.doc</code></a>, and
 							which also uses the <code>application/epub+zip</code> media type.</p>
@@ -9406,7 +9462,7 @@ EPUB/images/cover.png</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<section id="changes-latest">
-				<h3>Substantive Changes since the <a href="https://www.w3.org/TR/2021/WD-epub-33-20210406/">Previous
+				<h3>Substantive Changes since the <a href="https://www.w3.org/TR/2021/WD-epub-33-20210525/">Previous
 						Working Draft</a></h3>
 
 				<!--
@@ -9415,7 +9471,21 @@ EPUB/images/cover.png</pre>
 						- move all changes down to the next section
 				-->
 
+				<ul> </ul>
+			</section>
+
+			<section id="changes-older">
+				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
+					3.2</a></h3>
+
 				<ul>
+					<li>12-May-2021: Clarified that manifest items must not contain fragment identifiers. See <a
+							href="https://github.com/w3c/epub-specs/issues/1303">issue 1303</a>.</li>
+					<li>12-May-2021: Changed all references to URIs/IRIs to URLs and references to RFCs 3986 and 3987 to
+						the URL standard. See <a href="https://github.com/w3c/epub-specs/issues/808">issue 808</a>.</li>
+					<li>08-May-2021: Added clarifying text that <code>link</code> element can be used to link individual
+						metadata properties in an alternative format. See <a
+							href="https://github.com/w3c/epub-specs/issues/1666">issue 1666</a>.</li>
 					<li>06-May-2021: Noted that the working group will no longer maintain the publication type and
 						collection role registries and removed dependence on the latter for validating collection types
 						(use of NMToken values remains restricted to extension specifications). The registry of
@@ -9442,14 +9512,6 @@ EPUB/images/cover.png</pre>
 							href="#sec-css-req"></a>. See <a href="https://github.com/w3c/epub-specs/issues/1613">issue
 							1614</a>.</li>
 					<li>09-Apr-2021: Added a new section dedicated to accessibility in EPUB Publications.</li>
-				</ul>
-			</section>
-
-			<section id="changes-older">
-				<h3>Substantive changes since <a href="https://www.w3.org/publishing/epub/epub-spec.html">EPUB
-					3.2</a></h3>
-
-				<ul>
 					<li>04-May-2021: Removed requirements around SVG <code>requiredExtensions</code> attribute. See <a
 							href="https://github.com/w3c/epub-specs/issues/1087">issue 1087</a>.</li>
 					<li>26-Mar-2021: Removed requirement for page list ordering to reflect the order of page breaks in
