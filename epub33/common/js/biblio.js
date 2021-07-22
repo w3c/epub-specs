@@ -400,12 +400,13 @@ var biblio = {
 	
 	
 	// TEMP ENTRIES
+	
 	"EPUB-TTS-10": {
 		"authors":[
 			"Matt Garrish"
 		],
 		"title": "EPUB 3 Text-to-Speech Enhancements 1.0",
-		"href": "https://www.w3.org/TR/epub-tts-10",
+		"href": "https://w3c.github.io/epub-specs/epub33/tts/",
 		"publisher": "W3C"
 	}
 }
