@@ -62,9 +62,9 @@ This note serves to help content authors and publishers try to address some of t
 
 ### The Limits of Fixed Layout Accessibility {#limits}
 
-Fixed Layout publications present some unique challenges for accessibility. The requirements laid out in [[EPUB-A11Y-11]] recommend [[WCAG2]] AA, but for many use cases in fixed layout, that might not be possible without fundamental changes to the content.</p>
+Fixed Layout publications present some unique challenges for accessibility. The requirements laid out in [[EPUB-A11Y-11]] recommend [[WCAG2]] AA, but for many use cases in fixed layout, that might not be possible without fundamental changes to the content.
 
-We want to recognize these challenges for content creators, and in this document will outline some techniques for managing these challenges. We encourage content creators to explore the possibilities that digital publications present, even when creating fixed layout publications.</p>
+We want to recognize these challenges for content creators, and in this document will outline some techniques for managing these challenges. We encourage content creators to explore the possibilities that digital publications present, even when creating fixed layout publications.
 
 ## Reading Order {#reading-order}
 
@@ -174,7 +174,103 @@ Fixed-layout documents can be presented as ‘synthetic spreads’ when a left a
 If the text must be read in this way, the only solution to maintain the correct reading order is to convert the double page spread in to a single landscape page that contains the entire content of the spread and for the EPUB to be rendered as single pages.
 
 ## Alternative text {#alt-text}
-TBW
+
+Describing images within a fixed layout book will somewhat depend on the type of book these images are within.  For example describing a childrens picture book will be quite different than if this is a fixed layout graphic novel such as a comic book.
+
+<aside class="ednote">
+
+For the latest best practices regarding image descriptions it is recommended to visit the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/fxl/img.html) as sections from there fixed layout image descriptions has been copied here.
+    
+</aside>
+    
+### Overview
+    
+Images are often an integral part of fixed layout publications. Fixed layout publications sometimes consist entirely of images, in the case of comics, or images may be used as backgrounds to a story, as in children's books.
+
+Ensuring that the information conveyed in the images is available to users who may not be able to perceive the background or may have difficulty processing it, is consequently of high priority in making fixed layouts as accessible as possible.
+
+The [basic requirements for all images](http://kb.daisy.org/publishing/docs/html/images.html), to provide alt text and extended descriptions when they contain information necessary to understanding the publication, applies to fixed layouts. For example, while a reader may be able to follow the dialogue of a story when it is overlaid as text, only the placement on image might give context to what character is saying what.
+
+The challenge with fixed layouts is finding ways to describe the image and provide context given that there is no extra area on the page users can access in which to place a description.
+    
+### SVG
+    
+SVG provides two elements for describing images:
+
+`title` — the equivalent of the HTML `alt` attribute; it is used to provide alternative text for an entire SVG image and individual components within it.
+
+`desc` — used to provide an extended description for the entire SVG image and individual components within it.
+
+When a publication is made of [fixed-layout SVG pages](http://kb.daisy.org/publishing/docs/fxl/svg.html) these two elements can be used to describe the content. Note that ARIA attributes (`role` and `aria-describedby`) are added to improve support in assistive technologies as SVG is still not well supported.
+
+```html
+<body style="width:595px;height:842px">
+    <svg xmlns="http://www.w3.org/2000/svg" xml:lang="en" 
+         role="group" aria-describedby="svgtitle svgdesc">
+        <title id="svgtitle">The Hydrologic Cycle</title>
+        <desc id="svgdesc">The continuous cycle by which water …</desc>
+        …
+    </svg>
+</body>
+```
+
+<aside class="note">
+    
+The role `group` is given to the image because it contains additional text content (not shown) that the user will interact with. If the image were entirely graphical, the role `img` would be used instead.
+    
+</aside>
+
+The `title` and `desc` elements can also be used to annotate components of a larger image.
+
+```html
+<body style="width:595px;height:842px">
+    <g fill="lightgray" stroke="gray" role="img" aria-describedby="gtitle">
+      <title id="gtitle">Rain clouds</title>
+      …
+    </g>
+</body>
+```
+    
+The one problem with using these elements to annotate SVG images is that their content is typically only made available to users of assistive technologies.
+
+A more advanced approach would be to add a link or button to view the description using script or animations (e.g., open the description like a pop-out). EPUB reading system support for such approaches is likely to be limited, however, as animations, for example, were completely restricted until EPUB 3.2.
+    
+### HTML
+
+When an image is embedded in an HTML fixed layout page, there are more options available for including accessible descriptions. As with SVG fixed layouts, the primary consideration is once again the limitation of having only limited screen space in which to include the description.
+
+For this reason, descriptions are typically hidden from view using a variety of HTML, ARIA and CSS techniques. Descriptions can be hidden, clipped, made opaque, layered under an image, etc. The [knowledge base page on hidden content](http://kb.daisy.org/publishing/docs/html/hidden.html) delves into these possibilities in more detail.
+
+Support for scripting in XHTML content documents in EPUB is generally much better than is available for SVG, so there are more reliable techniques that can be used to make the descriptions viewable by a wider range of users. Clicking or tapping on an image can be used to show its description, for example. The [Voyage of Life sample EPUB](http://idpf.github.io/epub3-samples/30/samples.html#the-voyage-of-life-tol) contains an experimental example of this technique.
+
+Unlike reflowable publications, the CSS `background-image` property can be used with fixed layouts to set the background image for a page. It is best to limit this practice to backgrounds that are purely presentational as much as possible, however, as it complicates the ability to provide a description that any user will be able to reach (i.e., it often involves hiding the description only for assistive technologies).
+
+    
+### Complex Image Descriptions
+
+Depending on the complexity of the image this may require complex description with one of the following formats:
+
+* [WCAG Technique: Providing a long description in text near the non-text content, with a reference to the location of the long description in the short description](https://www.w3.org/WAI/WCAG21/Techniques/general/G74)
+* [WCAG Technique: Providing a long description in another location with a link to it that is immediately adjacent to the non-text content](https://www.w3.org/WAI/WCAG21/Techniques/general/G73)
+* [WCAG Technique: Providing long description for non-text content that serves the same purpose and presents the same information](https://www.w3.org/WAI/WCAG21/Techniques/general/G92)
+* [(DAISY's Example 2: Extended description in details)](http://kb.daisy.org/publishing/docs/html/images-desc.html#ex-02)
+* [(DAISY's Example 4:  Hidden description)](http://kb.daisy.org/publishing/docs/html/images-desc.html#ex-04)
+
+If an image splits over two pages, put the full image description of both images in the first image and in the second image reference back to the first. See '[Multiple Page Spreads](http://kb.daisy.org/publishing/docs/fxl/spreads.html)'
+
+If there are a group of images in sequence, you only have to describe details in the first image. In the proceeding images only mention what has changed. W3 Tutorial on Image Groups
+
+Not all details are needed in writing Alt-text for images, and what you do describe relies heavily on context. For example, if the image is described in the surrounding text, you only need to briefly describe it in the Alt-text. For more information on when, and how to describe you can go to the DIAGRAM centre, or AccessibilePublishing.ca. See resources for links.
+    
+
+### Useful Resources for describing images
+
+* [W3C - Resources on Alternative Text for Images](https://www.w3.org/WAI/alt/)
+* [Image Description Guidelines](http://diagramcenter.org/table-of-contents-2.html)
+* [POET - Image Description Training Tool](https://poet.diagramcenter.org)
+* [DIAGRAM - Accessible Image Sample Book](https://github.com/benetech/AccessibleImageSampleBook)
+* [How to Describe Complex Images for Accessibility - NCAM YouTube Video](https://youtu.be/oSdz6KZpLjs)
+* [Guide to Image Descriptions by AccessibilePublishing.ca](https://www.accessiblepublishing.ca/a-guide-to-image-description/)
 
 ## Navigation {#navigation}
 TBW
