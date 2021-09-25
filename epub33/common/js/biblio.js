@@ -395,18 +395,5 @@ var biblio = {
 		"title": "XPointer Shorthand Notation",
 		"href": "https://www.w3.org/TR/2003/REC-xptr-framework-20030325/",
 		"date": "25 March 2003"
-	},
-	
-	
-	
-	// TEMP ENTRIES
-	
-	"EPUB-TTS-10": {
-		"authors":[
-			"Matt Garrish"
-		],
-		"title": "EPUB 3 Text-to-Speech Enhancements 1.0",
-		"href": "https://w3c.github.io/epub-specs/epub33/tts/",
-		"publisher": "W3C"
-	}
+	},	
 }
