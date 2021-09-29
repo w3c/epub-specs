@@ -1,8 +1,4 @@
 var biblio = {
-	"AccessibilityFAQ": {
-		"title": "EPUB Accessibility Frequently Asked Questions",
-		"href": "http://www.idpf.org/epub/guides/a11y-faq"
-	},
 	"CSSSnapshot": {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
