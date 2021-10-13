@@ -1,13 +1,4 @@
 var biblio = {
-	"EPUB-SSV-11": {
-		"title": "EPUB 3 Structural Semantics Vocabulary",
-		"href": "https://w3c.github.io/epub-specs/epub33/ssv/",
-		"authors" : [
-			"Ivan Herman", "Matt Garrish"
-		],
-		"publisher": "W3C"
-	},
-
 	"CSSSnapshot": {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
