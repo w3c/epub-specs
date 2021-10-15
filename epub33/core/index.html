@@ -4,8 +4,8 @@
 		<meta charset="utf-8" />
 		<title>EPUB 3.3</title>
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
-		<script src="../common/js/biblio.js" class="remove"></script>
-		<script src="../common/js/confreq-permalinks.js" class="remove"></script>
+		<script src="./biblio.js" class="remove"></script>
+		<script src="../common/js/permalink-a11y.js" class="remove"></script>
 		<script src="../common/js/css-inline.js" class="remove"></script>
 		<script src="../common/js/add-caution-hd.js" class="remove"></script>
 		<script class="remove">
@@ -73,8 +73,8 @@
                 },
                 localBiblio: biblio,
                 preProcess:[inlineCustomCSS],
-                postProcess:[addConformanceLinks, addCautionHeaders],
-                testSuiteURI: "https://github.com/w3c/epub-tests/tree/HEAD/tests/EPUBs/",
+                postProcess:[updatePermaLinks, addCautionHeaders],
+                testSuiteURI: "https://w3c.github.io/epub-tests/index.html",
                 lint: {
                      "wpt-tests-exist": true,
 		}
@@ -722,28 +722,28 @@
 									<th colspan="3" id="cmt-grp-image" class="tbl-group">Images</th>
 								</tr>
 								<tr>
-									<td id="cmt-gif" data-tests="cmt-gif.epub">
+									<td id="cmt-gif" data-tests="#cmt-gif">
 										<code>image/gif</code>
 									</td>
 									<td> [[GIF]] </td>
 									<td>GIF Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-jpeg" data-tests="cmt-jpeg.epub">
+									<td id="cmt-jpeg" data-tests="#cmt-jpeg">
 										<code>image/jpeg</code>
 									</td>
 									<td> [[JPEG]] </td>
 									<td>JPEG Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-png" data-tests="cmt-png.epub">
+									<td id="cmt-png" data-tests="#cmt-png">
 										<code>image/png</code>
 									</td>
 									<td> [[PNG]] </td>
 									<td>PNG Images</td>
 								</tr>
 								<tr>
-									<td id="cmt-svg" data-tests="cmt-svg.epub,confreq-rs-epub3-svg.epub">
+									<td id="cmt-svg" data-tests="#cmt-svg,#confreq-rs-epub3-svg">
 										<code>image/svg+xml</code>
 									</td>
 									<td>
@@ -752,7 +752,7 @@
 									<td>SVG documents</td>
 								</tr>
 								<tr>
-									<td id="cmt-webp" data-tests="cmt-webp.epub">
+									<td id="cmt-webp" data-tests="#cmt-webp">
 										<code>image/webp</code>
 									</td>
 									<td> [[WebP-Container]], [[WebP-LB]] </td>
@@ -763,21 +763,21 @@
 									<th colspan="3" id="cmt-grp-audio" class="tbl-group">Audio</th>
 								</tr>
 								<tr>
-									<td id="cmt-mp3" data-tests="cmt-mp3.epub">
+									<td id="cmt-mp3" data-tests="#cmt-mp3">
 										<code>audio/mpeg</code>
 									</td>
 									<td> [[MP3]] </td>
 									<td>MP3 audio</td>
 								</tr>
 								<tr>
-									<td id="cmt-mp4-aac" data-tests="cmt-mp4-aac.epub">
+									<td id="cmt-mp4-aac" data-tests="#cmt-mp4-aac">
 										<code>audio/mp4</code>
 									</td>
 									<td> [[MPEG4-Audio]], [[MP4]] </td>
 									<td>AAC LC audio using MP4 container</td>
 								</tr>
 								<tr>
-									<td id="cmt-ogg-opus" data-tests="cmt-ogg-opus.epub">
+									<td id="cmt-ogg-opus" data-tests="#cmt-ogg-opus">
 										<code>audio/opus</code>
 									</td>
 									<td>[[RFC7845]]</td>
@@ -1191,7 +1191,7 @@
 								<code>dir</code>
 							</dt>
 							<dd>
-								<p>Specifies the <a href="https://www.unicode.org/reports/tr9/tr9-42.html#BD5">base
+								<p data-tests="#confreq-rs-pkg-dir_rtl-001,#confreq-rs-pkg-dir_rtl-002,#confreq-rs-pkg-dir_rtl-004,#confreq-rs-pkg-dir_rtl-005,#confreq-rs-pkg-dir_rtl-006">Specifies the <a href="https://www.unicode.org/reports/tr9/tr9-42.html#BD5">base
 										direction</a> [[BIDI]] of the textual content and attribute values of the
 									carrying element and its descendants</p>
 								<p>Allowed values are:</p>
@@ -1201,7 +1201,7 @@
 									<li><code>auto</code> &#8212; base direction is determined using the Unicode Bidi
 										Algorithm [[BIDI]].</li>
 								</ul>
-								<p>Reading Systems will assume the value <code>auto</code> when EPUB Creators omit the
+								<p data-tests="#confreq-rs-pkg-dir_rtl-003,#confreq-rs-pkg-dir_rtl-005">Reading Systems will assume the value <code>auto</code> when EPUB Creators omit the
 									attribute or use an invalid value.</p>
 								<div class="note">
 									<p>The base direction specified in the <code>dir</code> attribute does not affect
@@ -2805,14 +2805,15 @@
 									significant. The <a class="codelink" href="#sec-spine-elem"><code>spine</code>
 										element</a> provides the presentation sequence of content documents.</p>
 							</div>
-
-							<h6>Examples</h6>
-
-							<aside class="example" id="example-manifest-cmt">
-
-								<p>The following example shows a <code>manifest</code> that contains only <a>Core Media
+							
+							<section id="sec-item-elem-examples">
+								<h6>Examples</h6>
+								
+								<aside class="example" id="example-manifest-cmt">
+									
+									<p>The following example shows a <code>manifest</code> that contains only <a>Core Media
 										Type Resources</a>.</p>
-								<pre>&lt;manifest&gt;
+									<pre>&lt;manifest&gt;
     &lt;item id="nav" 
           href="nav.xhtml" 
           properties="nav"
@@ -2856,15 +2857,15 @@
           media-type="text/css"/&gt;   
 &lt;/manifest&gt;
 </pre>
-							</aside>
-
-							<aside class="example" id="example-manifest-flbk">
-								<p>The following example shows a <code>manifest</code> that references two <a>Foreign
+								</aside>
+								
+								<aside class="example" id="example-manifest-flbk">
+									<p>The following example shows a <code>manifest</code> that references two <a>Foreign
 										Resources</a> and therefore uses the <a
-										href="#sec-foreign-restrictions-manifest">fallback chain mechanism</a> to supply
-									content alternatives. The fallback chain terminates with a <a>Core Media Type
-										Resource</a>.</p>
-								<pre>&lt;manifest&gt;
+											href="#sec-foreign-restrictions-manifest">fallback chain mechanism</a> to supply
+										content alternatives. The fallback chain terminates with a <a>Core Media Type
+											Resource</a>.</p>
+									<pre>&lt;manifest&gt;
     &lt;item id="item1" 
           href="chap1_docbook.xml" 
           media-type="application/docbook+xml" 
@@ -2879,40 +2880,40 @@
     … 
 &lt;/manifest&gt;
 </pre>
-							</aside>
-
-							<aside class="example">
-								<p>The following example shows a reference to a remote audio file that EPUB Creators
-									must reference from the manifest (Reading Systems will render the audio inline in
-									the XHTML Content Document, so the file is a Publication Resource).</p>
-								<pre>XHTML:
+								</aside>
+								
+								<aside class="example">
+									<p>The following example shows a reference to a remote audio file that EPUB Creators
+										must reference from the manifest (Reading Systems will render the audio inline in
+										the XHTML Content Document, so the file is a Publication Resource).</p>
+									<pre>XHTML:
 &lt;audio src="http://www.example.com/book/audio/ch01.mp4" controls="controls"/&gt;
 
 Manifest:
 &lt;item id="audio01"
       href="http://www.example.com/book/audio/ch01.mp4"
       media-type="audio/mp4"/&gt;</pre>
-							</aside>
-
-							<aside class="example">
-								<p>The following example shows a link to the same audio file, but in this case the EPUB
-									Creator does not list the file in the manifest (hyperlinked Remote Resources are not
-									Publication Resources). The EPUB Creator would only list the audio file in the
-									manifest if it is also referenced it from an [[?HTML]] embedded content element, as
-									above (i.e., in a context where it is used as a Publication Resource).</p>
-								<pre>XHTML:
+								</aside>
+								
+								<aside class="example">
+									<p>The following example shows a link to the same audio file, but in this case the EPUB
+										Creator does not list the file in the manifest (hyperlinked Remote Resources are not
+										Publication Resources). The EPUB Creator would only list the audio file in the
+										manifest if it is also referenced it from an [[?HTML]] embedded content element, as
+										above (i.e., in a context where it is used as a Publication Resource).</p>
+									<pre>XHTML:
 &lt;a href="http://www.example.com/book/audio/ch01.mp4"&gt;Go to audio file&lt;/a&gt;
 
 Manifest:
 No Entry</pre>
-							</aside>
-
-							<aside class="example">
-								<p>The following example shows a link to a local version of the audio file. For this
-									link to be valid, EPUB Creators must list the audio file in the <a
-										href="#sec-spine-elem">spine</a> and requires a fallback to an EPUB Content
-									Document in its manifest declaration.</p>
-								<pre>XHTML:
+								</aside>
+								
+								<aside class="example">
+									<p>The following example shows a link to a local version of the audio file. For this
+										link to be valid, EPUB Creators must list the audio file in the <a
+											href="#sec-spine-elem">spine</a> and requires a fallback to an EPUB Content
+										Document in its manifest declaration.</p>
+									<pre>XHTML:
 &lt;a href="audio/ch01.mp4"&gt;Open Audio File&lt;/a&gt;
 
 Manifest:
@@ -2923,7 +2924,8 @@ Manifest:
 
 Spine:
 &lt;itemref idref="audio01" linear="no"/&gt;</pre>
-							</aside>
+								</aside>
+							</section>
 						</section>
 
 						<section id="sec-foreign-restrictions-manifest">
@@ -3206,8 +3208,9 @@ Spine:
 								the value "<code>yes</code>" for <code>itemref</code> elements without a
 									<code>linear</code> attribute.</p>
 
-							<p>EPUB Creators MUST provide a means of accessing all non-linear content (e.g., hyperlinks
-								in the content or from the <a href="#sec-nav">EPUB Navigation Document</a>).</p>
+							<p id="confreq-spine-nonlinear" data-tests="#confreq-spine-nonlinear">EPUB Creators MUST provide
+								a means of accessing all non-linear content (e.g., hyperlinks in the content or from the
+								<a href="#sec-nav">EPUB Navigation Document</a>).</p>
 
 							<p id="attrdef-itemref-properties">The <a href="#app-itemref-properties-vocab">Spine
 									Properties Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a>
@@ -3215,13 +3218,14 @@ Spine:
 
 							<p>EPUB Creators MAY add terms from other vocabularies as defined in <a
 									href="#sec-vocab-assoc"></a>.</p>
-
-							<h6>Examples</h6>
-
-							<aside class="example">
-								<p>The following example shows a <code>spine</code> element corresponding to <a
+							
+							<section id="sec-itemref-elem-examples">
+								<h6>Examples</h6>
+								
+								<aside class="example">
+									<p>The following example shows a <code>spine</code> element corresponding to <a
 										href="#example-manifest-cmt">the manifest example above</a>.</p>
-								<pre>&lt;spine page-progression-direction="ltr"&gt;
+									<pre>&lt;spine page-progression-direction="ltr"&gt;
     &lt;itemref idref="intro"/&gt;
     &lt;itemref idref="c1"/&gt;
     &lt;itemref idref="c1-answerkey" linear="no"/&gt;
@@ -3232,7 +3236,8 @@ Spine:
     &lt;itemref idref="notes" linear="no"/&gt;
 &lt;/spine&gt;
 </pre>
-							</aside>
+								</aside>
+							</section>
 						</section>
 					</section>
 
@@ -4549,7 +4554,7 @@ Spine:
 							nested sublists).</p>
 
 						<p>EPUB Creators MAY identify the destinations of the <code>page-list</code> references in their
-							respective EPUB Content Documents using the <a href="#pagebreak"><code>pagebreak</code>
+							respective EPUB Content Documents using the <a href="https://w3c.github.io/epub-specs/epub33/ssv/#pagebreak"><code>pagebreak</code>
 								term</a>.</p>
 					</section>
 
@@ -4573,8 +4578,7 @@ Spine:
 
 						<aside class="example">
 							<p>The following example shows a <code>landmarks</code>
-								<code>nav</code> element with structural semantics drawn from <a href="#structure-vocab"
-								></a>.</p>
+								<code>nav</code> element with structural semantics drawn from [[?EPUB-SSV-11]].</p>
 							<pre>&lt;nav epub:type="landmarks"&gt;
     &lt;h2&gt;Guide&lt;/h2&gt;
     &lt;ol&gt;
@@ -4596,9 +4600,9 @@ Spine:
 						<p>The following landmarks are recommended to include when available:</p>
 
 						<ul>
-							<li><a href="#bodymatter"><code>bodymatter</code></a> &#8212; Reading Systems often use this
+							<li><a href="https://w3c.github.io/epub-specs/epub33/ssv/#bodymatter"><code>bodymatter</code></a> [[?EPUB-SSV-11]] &#8212; Reading Systems often use this
 								landmark to automatically jump users past the front matter when they begin reading.</li>
-							<li><a href="#toc-1"><code>toc</code></a> &#8212; If the table of contents is available in
+							<li><a href="https://w3c.github.io/epub-specs/epub33/ssv/#toc-1"><code>toc</code></a> [[?EPUB-SSV-11]] &#8212; If the table of contents is available in
 								the spine, Reading Systems may use this landmark to take users to the document
 								containing it.</li>
 						</ul>
@@ -4800,11 +4804,11 @@ Spine:
 							set in the <code>viewport</code>
 							<code>meta</code> tag is static.</p>
 
-						<h3>Package Document</h3>
+						<p><strong>Package Document</strong></p>
 
 						<pre>&lt;meta property="rendition:layout"&gt;pre-paginated&lt;/meta&gt;</pre>
 
-						<h3>XHTML</h3>
+						<p><strong>XHTML</strong></p>
 
 						<pre>&lt;head&gt;
     &lt;meta name="viewport" content="width=1200, height=900"/&gt;
@@ -7303,7 +7307,7 @@ store destination as source in ocf
 							EPUB Content Document element or has a text fallback).</p>
 
 						<div class="note">
-							<p>See <a href="https://w3c.github.io/epub-specs/epub33/tts/">EPUB 3 Text-to-Speech
+							<p>See <a href="https://www.w3.org/TR/epub-tts-10/">EPUB 3 Text-to-Speech
 									Support</a> [[EPUB-TTS-10]] for more information about using TTS technologies in
 								EPUB Publications.</p>
 						</div>
@@ -7571,8 +7575,8 @@ html.my-document-playing * {
 &lt;/html&gt;</pre>
 					</aside>
 
-					<p>The following non-exhaustive list represents terms from the <a href="#structure-vocab">Structural
-							Semantics Vocabulary</a> for which Reading Systems may offer the option of skippability:</p>
+					<p>The following non-exhaustive list represents terms from the Structural Semantics Vocabulary [[?EPUB-SSV-11]]
+						for which Reading Systems may offer the option of skippability:</p>
 
 					<ul>
 						<li>
@@ -7673,8 +7677,8 @@ html.my-document-playing * {
 &lt;/smil&gt;</pre>
 					</aside>
 
-					<p>The following non-exhaustive list represents terms from the <a href="#structure-vocab">Structural
-							Semantics Vocabulary</a> for which Reading Systems may offer the option of escapability:</p>
+					<p>The following non-exhaustive list represents terms from the Structural
+							Semantics Vocabulary [[?EPUB-SSV-11]] for which Reading Systems may offer the option of escapability:</p>
 
 					<ul>
 						<li>
@@ -8003,7 +8007,7 @@ html.my-document-playing * {
 					section).</p>
 
 				<p>The <a href="#sec-default-vocab">default vocabulary</a> for the <code>epub:type</code> attribute is
-					the <a href="#structure-vocab">Structural Semantics Vocabulary</a>. EPUB Creators MAY include
+					the EPUB 3 Structural Semantics Vocabulary [[?EPUB-SSV-11]]. EPUB Creators MAY include
 					unprefixed terms that are not part of this vocabulary, but the preferred method for adding custom
 					semantics is to use <a href="#sec-prefix-attr">prefixes</a> for them. Refer to <a
 						href="#sec-vocab-assoc"></a> for more information.</p>
@@ -8427,7 +8431,6 @@ html.my-document-playing * {
 
 			<div data-include="vocab/overlays.html" data-oninclude="fixIncludes" data-include-replace="true"></div>
 
-			<div data-include="vocab/structure.html" data-oninclude="fixIncludes" data-include-replace="true"></div>
 		</section>
 		<section id="css-prefixes" class="appendix">
 			<h2>Prefixed CSS Properties</h2>
@@ -9406,6 +9409,9 @@ EPUB/images/cover.png</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<ul>
+				<li>12-Oct-2021: The Structure Semantics Vocabulary has been moved into a separate Working Group Note. 
+					See <a href="https://github.com/w3c/epub-specs/issues/1761">issue 1763</a>
+				</li>
 				<li>27-Aug-2021: Add clarifications for including landmarks, such as limiting the number, recommending
 					known semantics, and ensuring the labels are human readable. Also added recommendation to not
 					include nested lists to match the page list. See <a
