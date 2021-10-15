@@ -1,5 +1,5 @@
 var biblio = {
-	"EPUB-SSV-11": {
+	"EPUB-SSV": {
 		"title": "EPUB 3 Structural Semantics Vocabulary",
 		"href": "https://w3c.github.io/epub-specs/epub33/ssv/",
 		"authors" : [
