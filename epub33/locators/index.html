@@ -44,7 +44,7 @@
 	</head>
 	<body>
 <section id="abstract">
-This document outlines use cases and potential solutions for the challenge of location in digital publications.
+This document addresses the challenges of locators and how they are displayed to users in reflowable digital publications that are not page-oriented or with other set locators in place such as section numbers. Use cases for defined locators other than page numbers are presented along with recommendations and possible solutions for their implementation. We encourage all EPUBs to include a page-list. We also provide an algorithm for reading systems to calculate arbitrary and consistent page numbers.
 </section>
 
 <section id="sotd"></section>
@@ -52,27 +52,134 @@ This document outlines use cases and potential solutions for the challenge of lo
 
 ## Introduction
 
-TBW
+EPUBs today do not necessarily contain page numbers (represented, in EPUB, as a page-list). Because of this, it's difficult to direct others to specific places in the text.
 
-## Overview
+Readers today retain a spatial, linear, and sequential mental image of a page, how much a page holds, etc. Readers are used to page numbers, which identify the piece of paper in a hardcopy book with a number. In the future, this mental model might morph into something quite different.
 
-TBW
+The EPUB 3 specification provides a page-list feature that lets publishers manually define a series of markers that represent the beginning of a "page." This feature, however, is not compulsory, and most EPUB-creation software does not add a page-list by default, so EPUBs today frequently do not contain an authored page-list.
+
+Meanwhile, partially to fill this gap, most reading systems display their own calculated page numbers, typically based on screen size and varying with font size. These calculated page numbers are thus inconsistent between reading systems or a single reading system with different settings.
+
+This specification does not define solutions for other problems related to location in EPUB, such as defining precise machine-readable locations (partially covered by CFI) or cross-linking between EPUBs. These issues are out of scope of this proposal and may be handled separately.
+
+## Terminology
+
+* *Index*: a navigation element that includes an alphabetically or otherwise ordered arrangement of entries, different from the order of the material in the indexed document, to facilitate retrieval of content (Wellisch, 1991, p. xxiii). An analytic index is typically found at the back of a book (Hider, 2012, p. 66).
+* *Location*: a position within the document, for example a particular character or paragraph.
+* *Locator*: the identifier of a location, for example an anchor or CFI or page number. Called “position” in Readium or by Kobo, “location” on Kindle apps/devices.
+* *Page*: a unit defined by a page-list or alternative algorithm, typically of fixed size and corresponding to a paper page in the print edition.
+* *Authored page*: A unit defined by the content creator upon authoring of the EPUB, usually of fixed size corresponding to the print book
+* *Calculated page*: A unit defined by the reading system viewport, dependent on viewport size, and user-adjustable variables like font size, face, line spacing, or margins 
+* *Page-list*: a navigation element including linked mapping to the print page locations in an EPUB file, as defined in [EPUB 3.3 core](https://w3c.github.io/epub-specs/epub33/core/#sec-nav-pagelist). Also called a position list.
+* *Screen display*: a variable-size section of the publication that appears on a screen at a certain time, during navigation, often changes with font, screen size, etc.
 
 ## Use Cases
 
- * Susan, a teacher asks her students to go to a certain location in an EPUB file that contains no publisher-provided page list. The students are using different types of reading systems, nevertheless all are able to reach the same page.
+* Susan, a teacher, asks her students to go to a certain location in an EPUB file that contains no publisher-provided page list. The students are using different types of reading systems, nevertheless all are able to reach the same location.
+* Ali is a student preparing a bibliography for an essay assignment. Several of his resources are EPUBs, and he wants to reference them accurately, including precise citations.
+* It's 2046, and everyone is reading EPUBs. Folks in a book club want to share their locations in the text as they discuss the book they are reading. Each person is using a different device to read on, but they are able to share their locations successfully.
+* Reese, who is reading "The Lottery" in the Norton Anthology of English Literature, wants to refer to a specific location in the text when talking to their classmate Kaede, who read the story in The Collected Works of Shirley Jackson.
+* Susmitha is an indexer and wants to link an index entry to an exact location in a  book (digital or print versions, or both). 
+* Piotr wants to link an index entry to a range in the book, meaning that the entry refers to the content beginning at the first location and ending at the second location.
+* Caris is writing and embedding an index for an ebook and needs labels for locator links. The publisher has not provided a page list as this is a digital-only edition. She needs a consistent locator scheme for generating the locations in the index, so generates one using a standard algorithm.
 
- * Ali is a student preparing a bibliography for an essay assignment. Several of his resources are EPUBs, and he wants to reference them accurately, including location of the citation.
+## Recommendations and Possible Solutions 
 
- * It's 2046, and everyone is reading EPUBs. Folks in a book club want to share their locations in the text as they discuss the book they are reading. Each person is using a different device to read on, but they are able to share their locations successfully. 
+First, we recommend publishers provide virtual page-lists or position lists in the navigation documents of their ebooks. Page-lists (also called position lists) can include line numbers, section numbers, page numbers, etc. We encourage publishers to provide specific lists. 
 
- * Reese, who is reading "The Lottery" in the _Norton Anthology of English Literature_, wants to refer to a specific location in the text when talking to their classmate Kaede, who read the story in _The Collected Works of Shirley Jackson_.
+In lieu of a publisher-provided page-list or position list, the following algorithm is recommended for creating such a list:
 
- * Susmitha is an indexer and wants to link a term in an index to its exact location in the book. Note that the term does not necessarily occur on the page verbatim — could be a synonym or concept.
+### The Algorithm
+The algorithm must be near-perfectly repeatable and therefore consistent between different reading systems, but it is not necessarily of high quality relative to an authored page-list — it is best-effort, prioritizing consistency over pleasant page sizes.
 
- * Piotr wants to link an index entry to a range in the book, meaning that the entry refers to the content beginning at the first location and ending at the second location.
+The reading system or EPUB implementation should, in memory or persistently, calculate one page number for every 1,000 unicode code points of uncompressed visible-to-the-reader text (number TBD, requires experimental implementation and tuning to "feel" right). 
 
- * Caris is writing and embedding an index for an ebook and needs labels for locator links. The publisher has not provided a page list as this is a digital-only edition. She needs a consistent locator scheme for generating the locations in the index, so generates one using a standard algorithm.
+### Format and Persistence
 
+The reading system should treat the result of the algorithm as if it were an authored page-list, but whether it is actually a page-list, and whether the results are written back to the reading system's copy of the book, are implementation details. (Not all reading systems are capable of writing back to the EPUB.)
+
+### User Experience
+
+We should talk a bit about recommendations for page navigation. For example, typing strings into a box is not a good experience. By comparison, browsing from page to page (say with a slider/scroller) makes non sequential page "numbers" bearable.
+
+Laurent says that authored page-lists sometimes have visual indications in the book. Presumably the calculated page-list would not be user visible in the body of the text, but this might mess up the DOM. To be discussed.
+
+Possibly the user can choose what kind of page numbers they want: authored page numbers, calculated page numbers, no page numbers at all.
+
+## Internationalization Considerations 
+
+Page sizes are likely to vary widely between different languages. This is acceptable as page numbers do not need to correspond between translated versions of a book. A publisher who wants page content to correspond across languages can use an explicit page-list (but this is unlikely to correspond to all versions of the print book).
+
+## Accessibility Considerations
+
+The solution should follow the best practice recommendations for authored page numbers in EPUB (see Daisy knowledge base). For the user, there should be no difference between the authored and calculated page number. Calculated page numbers must appear in the reading system accessibility tree.
+
+## Locator Affordances 
+
+Ensuring that ebooks have consistent locating schemes, either in a provided page list or programmatically, creates an opportunity for a number of possible affordances. 
+
+Possible affordances include: 
+* Indexes and tables of contents with accurate position locations
+* Exporting accurate, complete citations from annotations in the ebook 
+* Accurate position locations for annotations (i.e. highlights, notes, bookmarks) 
+* Accurate social sharing of quotes (i.e. “I loved this quote [link to location]”)
+* Accurate position sharing between ebook readers 
+* Accuracy of length of book on item detail pages
+
+## Other Considerations (Notes for the Algorithm)
+
+If using bytes, compressed vs uncompressed
+
+Are we counting only visible text or all HTML? Big discussion point, as it turns out! Everyone *wants* only visible text but this may be much harder to implement, which undermines the consistency of the algorithm (which is the whole point, and a strict requirement).
+
+How do images affect page size? Is every image a new page? Are large images new pages? Are images irrelevant? Are images a new page unless images are adjacent?
+
+[text goes here]
+
+If a title is ingested by a distributor, and they insert virtual page breaks in the content, they are changing the original title provided by the publisher. I would think that the distributor would need the rights to make these changes. This gets into copyright issues.
+
+## Page List vs Position List
+
+We inherit the definition of a page list from EPUB, among other things we could mention that:
+
+Each page reference is a string
+
+The page list is not necessarily consistent in its usage of these strings ("1", "two", "Three" and "IV" is a valid page list)
+
+The page list is non-exhaustive ("one", "three", "four" is a valid page list)
+
+All reading systems also generate on the fly a position list where:
+
+Each position is usually an integer (that's not always the case though)
+
+The position list is exhaustive
+
+Our current list of use-cases contains multiple items that are better addressed by a position list than a page list.
+
+> Susan, a teacher asks her students to go to a certain location in an EPUB file that contains no publisher-provided page list. The students are using different types of reading systems, nevertheless all are able to reach the same location.
+
+This use case is better served by a position list than a page list. A UI displaying a text input field for a user would be very confusing and potentially prone to errors (spelling mistakes, case sensitive strings).
+
+There's a trick though: if these different reading systems don't use the same algorithm for their position list, the students won't be able to reach the same location.
+
+> It's 2046, and everyone is reading EPUBs. Folks in a book club want to share their locations in the text as they discuss the book they are reading. Each person is using a different device to read on, but they are able to share their locations successfully.
+
+This is also better served by a position list than a page list. While displaying a string is easy enough, readers in the book club will need the ability to jump to that location, which brings us back to the same usability issue.
+
+> Reese, who is reading "The Lottery" in the Norton Anthology of English Literature, wants to refer to a specific location in the text when talking to their classmate Kaede, who read the story in The Collected Works of Shirley Jackson.
+
+This is another variation of the same use case, better addressed by a position list as well.
+
+If we look at the typical list of features of a reading system and identify if they're better served by an (authored) page list or a position list:
+
+| Feature | Best addressed by |
+| --- | --- |
+| Current location | Position list |
+| Jump to location | Position list |
+| Progression bar | Position list |
+| Table of contents | Both |
+| Bookmark | Both |
+| Highlight and annotation | Page list |
+| Citation | Page list |
     </body>
 </html>
