@@ -59,32 +59,40 @@ EPUB 3.3 includes the following specifications:
 
 ## Considered Alternatives
 
-EPUB or its predecessor formats have been in the marketplace for more than two decades. Many alternatives have fallen by the wayside, in spite of various theoretical advanatages. The demand for EPUB has proven itself to be strong and long-lasting. 
+EPUB or its predecessor formats have been in the marketplace for more than two decades. Many alternatives have fallen by the wayside, in spite of various theoretical advantages. The demand for EPUB has proven itself to be strong and long-lasting. 
 
-* *PDF*. PDF files are self-contained and can support extremely complex designs. But the user experience is poor, as the format does not naturally adapt to varying screen sizes, user font preferences, etc.
+* **PDF** PDF files are self-contained and can support extremely complex designs. But the user experience is poor, as the format does not naturally adapt to varying screen sizes, user font preferences, etc.
 
-* *The Web* Until very recently, web pages didn't work very well without a network connection. It's hard to define a linear reading order across a web site. It's hard to define metadata at a site level rather than a page level. The web is largely funded by advertising, and people who read ebooks have largely preferred paying directly for content. 
+* **The Web** Until very recently, web pages didn't work very well without a network connection. It's hard to define a linear reading order across a web site. It's hard to define metadata at a site level rather than a page level. The web is largely funded by advertising, and people who read ebooks have largely preferred paying directly for content. 
 
-* *older ebook formats* Numerous other ebook formats have been created, but have largely fallen out of use. The text-only Palm PDB format was both design-limited and hard to produce. Sony's BBeB XML format was extraordinarily complex. Several companies used proprietary packaging mechanisms for OEB (Microsoft LIT, Mobi) but they did not spread outside those companies. 
+* **Older ebook formats** Numerous other ebook formats have been created, but have largely fallen out of use. The text-only Palm PDB format was both design-limited and hard to produce. Sony's BBeB XML format was extraordinarily complex. Several companies used proprietary packaging mechanisms for OEB (Microsoft LIT, Mobi) but they did not spread outside those companies. 
 
 
 ## Stakeholder Feedback
 
-Amazon supports and ingests EPUB files, then transforms them into proprietary formats.
+Amazon supports and ingests EPUB 3 files, then transforms them into proprietary formats.
 
-Apple supports, ingests, distributes, and sells EPUB files.
+Apple supports, ingests, distributes, and sells EPUB 3 files.
 
-Barnes & Noble supports, ingests, distributes, and sells EPUB files.
+Barnes & Noble supports, ingests, distributes, and sells EPUB 3 files.
 
-Google supports, ingests, distributes, and sells EPUB files.
+Google supports, ingests, distributes, and sells EPUB 3 files.
 
-Kobo supports, ingests, distributes, and sells EPUB files.
+Kobo supports, ingests, distributes, and sells EPUB 3 files.
 
-EPUB is produced by nearly every trade and educational publisher in the world, including Penguin Random House, Pearson, Hachette Livre, Wiley, Macmillan, HarperCollins, Kodansha, Kadowakwa, Shueisha, etc. 
+EPUB 3 is produced by nearly every trade and educational publisher in the world, including Editis, Hachette Livre, HarperCollins, Haufe, Kadowakwa, Kodansha, Macmillan, Pearson, Penguin Random House, Shueisha, and Wiley. 
 
 ## Acknowledgements
 
 EPUB owes an eternal debt of gratitude to Garth Conboy.
+
+Many thanks for valuable feedback and advice from:
+
+* Ivan Herman
+
+* Wendy Reid
+
+* Tzviya Siegman
 
 
 
