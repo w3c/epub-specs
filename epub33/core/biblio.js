@@ -1,6 +1,6 @@
 var biblio = {
-	"EPUB-SSV": {
-		"title": "EPUB 3 Structural Semantics Vocabulary",
+	"EPUB-SSV-11": {
+		"title": "EPUB 3 Structural Semantics Vocabulary 1.1",
 		"href": "https://w3c.github.io/epub-specs/epub33/ssv/",
 		"authors" : [
 			"Ivan Herman", "Matt Garrish"
