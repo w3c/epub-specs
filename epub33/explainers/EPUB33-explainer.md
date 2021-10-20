@@ -51,9 +51,62 @@ EPUB 3.3 includes the following specifications:
 
 * Detailed error handling. EPUB largely tries to avoid detailed descriptions of how to present malformed content to users. 
 
-* Defining the user interface or user experience in detail. We don't ask that every book look exactly the same in every reading system.
+* Defining the user interface or user experience in detail. We don't ask that every book look exactly the same in every reading system. This also means that content creators generally control the appearance of their books, but have no influence over the UI. This is very different from the web. 
 
-* Creating DRM for ebooks. The EPUB 3 Working Group acknowledges that DRM is widely used, and that it is in fact necessary to support use cases of societal importance such as library lending of ebooks. EPUB can be used with DRM, but DRM is itself out of scope for the working group. 
+* Creating DRM for ebooks. The EPUB 3 Working Group acknowledges that DRM is widely used, and that it is in fact necessary to support use cases of societal importance such as library lending of ebooks. EPUB can be used with DRM, but DRM is itself out of scope for the working group.
+
+## Fundamentals
+
+
+### Packaging
+
+An EPUB is a zip archive, containing a `mimetype` file and a mandatory `META-INF` folder. This folder contains a `container.xml` file which points to the package file, which serves as both manifest and metadata for the EPUB. The packaging is adapted from the Open Document Format for Office Applications specification.
+
+
+![EPUB Folder Structure](epub-folder-structure.png) 
+
+The package file is the heart of any EPUB, and includes publication metadata, a manifest listing every resource used in the publication, and a spine which determines the linear sequence of content files. 
+
+### Package File (OPF)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" xmlns:epub="http://www.idpf.org/2007/ops" version="3.0" xml:lang="en" unique-identifier="pub-id">
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:title>Spine Items in Order</dc:title>
+  <dc:date>2021-01-21</dc:date>
+  <dc:creator>Dave Cramer</dc:creator>
+  <dc:identifier id="pub-id">sec-pkg-doc-spine</dc:identifier>
+  <meta property="dcterms:modified">2021-10-14T00:00:00Z</meta>
+  <dc:language>en</dc:language>
+  <dc:description>
+    Basic test of whether a reading system can display spine items in the correct order. 
+    The test is designed to fail if the reading system presents content 
+    in the order in which the file names sort, or if it presents files 
+    in manifest order rather than spine order.
+  </dc:description> 
+</metadata>
+<manifest>
+  <item id="b-content_003" href="b-content_003.xhtml" media-type="application/xhtml+xml" />
+  <item id="a-content_004" href="a-content_004.xhtml" media-type="application/xhtml+xml" />
+  <item id="c-content_002" href="c-content_002.xhtml" media-type="application/xhtml+xml" />
+  <item id="d-content_001" href="d-content_001.xhtml" media-type="application/xhtml+xml" />
+  <item id="nav" properties="nav" href="nav.xhtml" media-type="application/xhtml+xml" />
+</manifest>
+<spine>
+  <itemref idref="d-content_001" />
+  <itemref idref="c-content_002" />
+  <itemref idref="b-content_003" />
+  <itemref idref="a-content_004" />
+</spine>
+</package>
+```
+
+### Content
+
+EPUB uses the XML serialization of HTML5. There have been many attempts to allow the HTML serialization, but they failed because much of the existing supply chain depends on XML-based tools to process EPUBs, and there has not been implementor interest. 
+
+Scripting is poorly supported in existing EPUB Reading Systems. Since EPUBs are not generally presented to end users via the web, and since most EPUBs are sold by retailers rather than publishers, the idea of an origin is less useful as the basis for a security model. 
 
 
 
@@ -65,7 +118,7 @@ EPUB or its predecessor formats have been in the marketplace for more than two d
 
 * **The Web** Until very recently, web pages didn't work very well without a network connection. It's hard to define a linear reading order across a web site. It's hard to define metadata at a site level rather than a page level. The web is largely funded by advertising, and people who read ebooks have largely preferred paying directly for content. 
 
-* **Older ebook formats** Numerous other ebook formats have been created, but have largely fallen out of use. The text-only Palm PDB format was both design-limited and hard to produce. Sony's BBeB XML format was extraordinarily complex. Several companies used proprietary packaging mechanisms for OEB (Microsoft LIT, Mobi) but they did not spread outside those companies. 
+* **Older ebook formats** Numerous other ebook formats have been created, but have mostly fallen out of use. The text-only Palm PDB format was both design-limited and hard to produce. Sony's BBeB XML format was extraordinarily complex. Several companies used proprietary packaging mechanisms for OEB (Microsoft LIT, Mobi) but they did not spread outside those companies. 
 
 
 ## Stakeholder Feedback
