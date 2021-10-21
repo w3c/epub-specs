@@ -1,6 +1,6 @@
 # EPUB 3.3 Explainer
 
-**Written**: 2021-02-22, **Updated**: 2021-10-19 
+**Written**: 2021-02-22, **Updated**: 2021-10-21 
 
 ## Authors:
 
@@ -27,6 +27,12 @@ EPUB 3.3 includes the following specifications:
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 
+EPUB does not fit neatly into the web ecosystem. The content of an EPUB is web stuff: HTML, CSS, images, videos, etc. But EPUBs are not often displayed directly in browsers. Even if the content of an EPUB does appear in a browser, it will have been heavily processed by the reading system; at the very least embedded in an iframe on a page that creates the user interface. More likely, the content will be rendered with a webview in an app. Among other things, this means that the content creator does not control what the end user sees. 
+
+The relationship between the content creator and the end user may be more mediated than is typical on the web. Publishers who create EPUBs seldom provide books directly to the public, but instead work through distributors, retailers, and libraries. 
+
+
+
 ## Goals
 
 * to create a universal standard for the creation, distribution, and consumption of digital books
@@ -41,9 +47,9 @@ EPUB 3.3 includes the following specifications:
 
 * to allow for the syncronization of textual and audio content
 
-* to provide a standard format for digital books for *all* readers, including those who use assistive technologies.
+* to provide a standard format for digital books for **all*** readers, including those who use assistive technologies.
 
-* to work closely with the creators of an [EPUB Validation Tool](https://github.com/w3c/epubcheck), so that the entire ecosystem can agree on the file format.
+* to work closely with the creators of the [EPUB Validation Tool](https://github.com/w3c/epubcheck), to encourage conformance to the specifications. 
 
 ## Non-goals
 
