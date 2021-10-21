@@ -13,7 +13,13 @@
  
 ## Table of Contents
 
-TK
+1. [Introduction](#introduction)
+2. [Goals](#goals)
+3. [Non-Goals](#non-goals)
+4. [Fundamentals](#fundamentals)
+5. [Considered Alternatives](#considered-alternatives)
+6. [Stakeholder Feedback](#stakeholder-feedback)
+7. [Acknowledgements](#acknowledgements)
  
 ## Introduction
 
