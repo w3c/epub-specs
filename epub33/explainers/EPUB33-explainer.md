@@ -39,6 +39,8 @@ EPUB user agents are called EPUB reading systems. These are most likely apps, us
 
 The relationship between the content creator and the end user is likely to be more mediated than is typical on the web. Publishers who create EPUBs seldom provide books directly to the public, but instead work through distributors, retailers, and libraries.
 
+
+
 ## Goals
 
 * to create a universal standard for the creation, distribution, and consumption of digital books
@@ -85,31 +87,28 @@ The package file is the heart of any EPUB, and includes publication metadata, a 
 <?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" xmlns:epub="http://www.idpf.org/2007/ops" version="3.0" xml:lang="en" unique-identifier="pub-id">
 <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <dc:title>Spine Items in Order</dc:title>
-  <dc:date>2021-01-21</dc:date>
-  <dc:creator>Dave Cramer</dc:creator>
-  <dc:identifier id="pub-id">sec-pkg-doc-spine</dc:identifier>
+  <dc:title>Moby-Dick</dc:title>
+  <dc:date>1851-10-21</dc:date>
+  <dc:creator>Herman Melville</dc:creator>
+  <dc:identifier id="pub-id">urn:isbn:978000000000</dc:identifier>
   <meta property="dcterms:modified">2021-10-14T00:00:00Z</meta>
   <dc:language>en</dc:language>
   <dc:description>
-    Basic test of whether a reading system can display spine items in the correct order. 
-    The test is designed to fail if the reading system presents content 
-    in the order in which the file names sort, or if it presents files 
-    in manifest order rather than spine order.
+    Ishmael takes an entry-level job processing seafood, but his supervisor’s disregard for safety leads to the liquidation of the business. 
   </dc:description> 
 </metadata>
 <manifest>
-  <item id="b-content_003" href="b-content_003.xhtml" media-type="application/xhtml+xml" />
-  <item id="a-content_004" href="a-content_004.xhtml" media-type="application/xhtml+xml" />
-  <item id="c-content_002" href="c-content_002.xhtml" media-type="application/xhtml+xml" />
-  <item id="d-content_001" href="d-content_001.xhtml" media-type="application/xhtml+xml" />
+  <item id="c001" href="c001.xhtml" media-type="application/xhtml+xml" />
+  <item id="c002" href="c002.xhtml" media-type="application/xhtml+xml" />
+  <item id="c003" href="c003.xhtml" media-type="application/xhtml+xml" />
+  <item id="c004" href="c004.xhtml" media-type="application/xhtml+xml" />
   <item id="nav" properties="nav" href="nav.xhtml" media-type="application/xhtml+xml" />
 </manifest>
 <spine>
-  <itemref idref="d-content_001" />
-  <itemref idref="c-content_002" />
-  <itemref idref="b-content_003" />
-  <itemref idref="a-content_004" />
+  <itemref idref="c001" />
+  <itemref idref="c002" />
+  <itemref idref="c003" />
+  <itemref idref="c004" />
 </spine>
 </package>
 ```
@@ -126,9 +125,13 @@ Scripting is poorly supported in existing EPUB Reading Systems. Since EPUBs are 
 
 EPUB or its predecessor formats have been in the marketplace for more than two decades. Many alternatives have fallen by the wayside, in spite of various theoretical advantages. The demand for EPUB has proven itself to be strong and long-lasting. 
 
+Many publishers do not have a high level of technical expertise in-house, and rely on outside vendors and tools like InDesign to produce ebooks. Files rarely get updated, and some publishers still produce EPUB 2 even though EPUB 3 was introduced in 2007. The experience of creating ebooks is quite different from the web development experience. There are no dev tools, no developer advocates, few tools. Change happens slowly or not at all. 
+
 * **PDF** PDF files are self-contained and can support extremely complex designs. But the user experience is poor, as the format does not naturally adapt to varying screen sizes, user font preferences, etc.
 
 * **The Web** Until very recently, web pages didn't work very well without a network connection. It's hard to define a linear reading order across a web site. It's hard to define metadata at a site level rather than a page level. The web is largely funded by advertising, and people who read ebooks have largely preferred paying directly for content. 
+
+* **Web Publications** W3C’s Publishing Working Group developed a [web publications](https://www.w3.org/TR/wpub/) spec based on a JSON-LD manifest similar to the [web application manifest](https://www.w3.org/TR/appmanifest/). This work has been adapted for [audiobooks](https://www.w3.org/TR/audiobooks/), and used internally by EPUB reading systems. But no publisher that we are aware of has adopted the format for authoring. 
 
 * **Older ebook formats** Numerous other ebook formats have been created, but have mostly fallen out of use. The text-only Palm PDB format was both design-limited and hard to produce. Sony's BBeB XML format was extraordinarily complex. Several companies used proprietary packaging mechanisms for OEB (Microsoft LIT, Mobi) but they did not spread outside those companies. 
 
