@@ -1,6 +1,6 @@
 # EPUB 3.3 Explainer
 
-**Written**: 2021-02-22, **Updated**: 2021-10-21 
+**Written**: 2021-02-22, **Updated**: 2021-10-22 
 
 ## Authors:
 
@@ -33,11 +33,11 @@ EPUB 3.3 includes the following specifications:
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 
-EPUB does not fit neatly into the web ecosystem. The content of an EPUB is web stuff: HTML, CSS, images, videos, etc. But EPUBs are not often displayed directly in browsers. Even if the content of an EPUB does appear in a browser, it will have been heavily processed by the reading system; at the very least embedded in an iframe on a page that creates the user interface. More likely, the content will be rendered with a webview in an app. Among other things, this means that the content creator does not control what the end user sees. 
+EPUB does not fit neatly into the web ecosystem. The content of an EPUB is web stuff: HTML, CSS, images, videos, etc. But EPUBs are not rendered directly in browsers. 
 
-The relationship between the content creator and the end user may be more mediated than is typical on the web. Publishers who create EPUBs seldom provide books directly to the public, but instead work through distributors, retailers, and libraries. 
+EPUB user agents are called EPUB reading systems. These are most likely apps, using webviews, although they can be constructed as web apps. EPUB reading systems are responsible for providing the entire user interface, enabling navigation, page turns, etc. They may rewrite HTML and CSS to provide UI affordances or to implement pagination. They may inject scripts. The author of the EPUB does not totally control what the end user sees. 
 
-
+The relationship between the content creator and the end user is likely to be more mediated than is typical on the web. Publishers who create EPUBs seldom provide books directly to the public, but instead work through distributors, retailers, and libraries.
 
 ## Goals
 
@@ -154,6 +154,8 @@ EPUB owes an eternal debt of gratitude to Garth Conboy.
 Many thanks for valuable feedback and advice from:
 
 * Ivan Herman
+
+* Dan Lazin
 
 * Wendy Reid
 
