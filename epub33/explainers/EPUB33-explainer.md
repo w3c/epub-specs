@@ -1,6 +1,6 @@
 # EPUB 3.3 Explainer
 
-**Written**: 2021-02-22, **Updated**: 2021-10-22 
+**Written**: 2021-02-22, **Updated**: 2021-10-26 
 
 ## Authors:
 
@@ -102,7 +102,7 @@ The package file is the heart of any EPUB, and includes publication metadata, a 
   <item id="c002" href="c002.xhtml" media-type="application/xhtml+xml" />
   <item id="c003" href="c003.xhtml" media-type="application/xhtml+xml" />
   <item id="c004" href="c004.xhtml" media-type="application/xhtml+xml" />
-  <item id="nav" properties="nav" href="nav.xhtml" media-type="application/xhtml+xml" />
+  <item id="nav" properties="nav" href="toc.xhtml" media-type="application/xhtml+xml" />
 </manifest>
 <spine>
   <itemref idref="c001" />
