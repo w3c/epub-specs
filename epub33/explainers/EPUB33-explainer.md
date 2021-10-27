@@ -125,7 +125,7 @@ Scripting is poorly supported in existing EPUB Reading Systems. Since EPUBs are 
 
 EPUB or its predecessor formats have been in the marketplace for more than two decades. Many alternatives have fallen by the wayside, in spite of various theoretical advantages. The demand for EPUB has proven itself to be strong and long-lasting. 
 
-Many publishers do not have a high level of technical expertise in-house, and rely on outside vendors and tools like InDesign to produce ebooks. Files rarely get updated, and some publishers still produce EPUB 2 even though EPUB 3 was introduced in 2007. The experience of creating ebooks is quite different from the web development experience. There are no dev tools, no developer advocates, few tools. Change happens slowly or not at all. 
+Many publishers do not have a high level of technical expertise in-house, and rely on outside vendors and tools like InDesign to produce ebooks. Files rarely get updated, and some publishers still produce EPUB 2 even though EPUB 3 was introduced in 2007. The experience of creating ebooks is quite different from the web development experience. There are no dev tools, no developer advocates, very few authoring tools. Change happens slowly or not at all. 
 
 * **PDF** PDF files are self-contained and can support extremely complex designs. But the user experience is poor, as the format does not naturally adapt to varying screen sizes, user font preferences, etc.
 
