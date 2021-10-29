@@ -4,9 +4,8 @@
 		<meta charset="utf-8" />
 		<title>EPUB 3 Multiple-Rendition Publications 1.1</title>
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
-		<script src="../common/js/biblio.js" class="remove"></script>
 		<script src="../common/js/dfn-crossref.js" class="remove"></script>
-		<script src="../common/js/confreq-permalinks.js" class="remove"></script>
+		<script src="../common/js/permalink-a11y.js" class="remove"></script>
 		<script src="../common/js/css-inline.js" class="remove"></script>
 		<script class="remove">
 			//<![CDATA[
@@ -44,9 +43,31 @@
                     branch: "main"
                 },
                 pluralize: true,
-                localBiblio: biblio,
+				localBiblio: {
+					"ISO24751-3": {
+						"title": " ISO/IEC 24751-3:2008 Information technology -- Individualized adaptability and accessibility in e-learning, education and training -- Part 3: &quot;Access for all&quot; digital resource description",
+						"href": "http://www.iso.org/iso/catalogue_detail?csnumber=43604",
+						"date": "2008-10-01"
+					},
+					"EPUBCFI-11": {
+						"authors":[
+							"Peter Sorotokin",
+							"Garth Conboy",
+							"Brady Duga",
+							"John Rivlin",
+							"Don Beaver",
+							"Kevin Ballard",
+							"Alastair Fettes",
+							"Daniel Weck"
+						],
+						"title": "EPUB Canonical Fragment Identifiers 1.1",
+						"href": "http://idpf.org/epub/linking/cfi/epub-cfi-20170105.html",
+						"date": "5 October 2017",
+						"publisher": "IDPF"
+					},	
+				},
                 preProcess:[inlineCustomCSS, fixDefinitionCrossrefs],
-                postProcess:[addConformanceLinks]
+                postProcess:[updatePermaLinks]
             };//]]>
       </script>
 	</head>
@@ -263,13 +284,35 @@
 				Publication Resources.</p>
 
 			<div class="note">
-				<p>If the Package Documents for each Rendition are stored in separate directories, as shown in the <a
-						href="#sep-dir">preceding example</a>, Reading Systems may prevent one Rendition from accessing
-					the resources of another (i.e., to prevent publications from trying to reach outside the EPUB
-					Container, referencing the parent directory or above of a Package Document may be forbidden).</p>
+				<p>Renditions may not be able to access resources stored in sibling directories on all Reading Systems
+					(i.e., some Reading Systems do not provide access outside the directory a Rendition's Package
+					Document is stored in).</p>
+
+				<p>For example, given the following directory structure (all resources except the Package Documents
+					omitted for clarity):</p>
+
+				<pre>/META-INF
+/Rendition1
+   - rendition1.opf
+/Rendition2
+   - rendition2.opf
+/Shared</pre>
+
+				<p>Resources in the "<code>Rendition1</code>" directory may not be able to access resources in either
+						"<code>Rendition2</code>" or "<code>Shared</code>".</p>
 
 				<p>To share resources between Renditions, it is recommended that the Package Documents be located in a
 					common directory and the resources for each Rendition stored in separate subdirectories.</p>
+
+				<p>Restructuring the previous example as follows would allow shared access to all resources:</p>
+
+				<pre class="prettyprint">/META-INF
+/EPUB
+   /Rendition1
+   /Rendition2
+   /Shared
+   - rendition1.opf
+   - rendition2.opf</pre>
 			</div>
 		</section>
 		<section id="sec-metadata">
@@ -1239,50 +1282,34 @@
 		<section id="change-log" class="appendix informative">
 			<h2>Change Log</h2>
 
-			<p>Note that this change log only identifies substantive changes &#8212; those that affect the conformance
-				of <a>EPUB Publications</a> or are similarly noteworthy.</p>
+			<p>Note that this change log only identifies substantive changes since <a
+					href="http://idpf.org/epub/renditions/multiple/">EPUB Multiple-Rendition Publications 1.0</a>
+				&#8212; those that affect the conformance of <a>EPUB Publications</a> or are similarly noteworthy.</p>
 
 			<p>For a list of all issues addressed during the revision, refer to the <a
 					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aclosed+label%3AMultipleRenditions11"
 					>working group's issue tracker</a>.</p>
 
-			<section id="changes-latest">
-				<h3>Substantive changes since the previous <a href="https://www.w3.org/TR/2021/NOTE-epub-multi-rend-11-20210525/"
-						>Draft Note</a></h3>
-
-				<!--
-					After each working draft is published:
-						- change the link/text in the section heading to refer to the published draft (use the dated URL)
-						- move all changes down to the next section
-				-->
-
-				<ul> </ul>
-			</section>
-
-			<section id="changes-older">
-				<h3>Substantive changes since <a href="http://idpf.org/epub/renditions/multiple/">EPUB
-						Multiple-Rendition Publications 1.0</a></h3>
-				<ul>
-					<li>19-Mar-2021: Require the use of the unique identifier in the <code>metadata.xml</code> file for
-						obfuscating resources and recommend it be the same as the identifier in the default rendition.
-						See <a href="https://github.com/w3c/publ-epub-revision/issues/1443">issue 1443</a>.</li>
-					<li>19-Mar-2021: Added note clarifying that Package Documents need to be in a common directory to
-						share resources. See <a href="https://github.com/w3c/publ-epub-revision/issues/619">issue
-							619</a>.</li>
-					<li>19-Mar-2021: Fixed incorrect reference to <code>link</code> element being a child of the
-							<code>container</code> element. See <a
-							href="https://github.com/w3c/publ-epub-revision/issues/584">issue 584</a>.</li>
-					<li>24-Dec-2020: The specification no longer makes reference to a release identifier, but the
-						requirement to include a unique identifier and last modification date in the
-							<code>metadata.xml</code> file remain for backwards compatibility. See <a
-							href="https://github.com/w3c/publ-epub-revision/issues/1440">issue 1440</a>.</li>
-					<li>16-Dec-2020: Terminology and requirements related to renditions of an EPUB Publication have been
-						moved to this specification to simplify readability of both this and the [[EPUB-33]]
-						specification. These changes do not affect the ability to include multiple renditions in an EPUB
-						Publication. See <a href="https://github.com/w3c/publ-epub-revision/issues/1436">issue
-						1436</a>.</li>
-				</ul>
-			</section>
+			<ul>
+				<li>19-Mar-2021: Require the use of the unique identifier in the <code>metadata.xml</code> file for
+					obfuscating resources and recommend it be the same as the identifier in the default rendition. See
+						<a href="https://github.com/w3c/publ-epub-revision/issues/1443">issue 1443</a>.</li>
+				<li>19-Mar-2021: Added note clarifying that Package Documents need to be in a common directory to share
+					resources. See <a href="https://github.com/w3c/publ-epub-revision/issues/619">issue 619</a>.</li>
+				<li>19-Mar-2021: Fixed incorrect reference to <code>link</code> element being a child of the
+						<code>container</code> element. See <a
+						href="https://github.com/w3c/publ-epub-revision/issues/584">issue 584</a>.</li>
+				<li>24-Dec-2020: The specification no longer makes reference to a release identifier, but the
+					requirement to include a unique identifier and last modification date in the
+						<code>metadata.xml</code> file remain for backwards compatibility. See <a
+						href="https://github.com/w3c/publ-epub-revision/issues/1440">issue 1440</a>.</li>
+				<li>16-Dec-2020: Terminology and requirements related to renditions of an EPUB Publication have been
+					moved to this specification to simplify readability of both this and the [[EPUB-33]] specification.
+					These changes do not affect the ability to include multiple renditions in an EPUB Publication. See
+						<a href="https://github.com/w3c/publ-epub-revision/issues/1436">issue 1436</a>.</li>
+			</ul>
 		</section>
+		<div data-include="../common/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"
+		></div>
 	</body>
 </html>

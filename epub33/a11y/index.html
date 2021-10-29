@@ -4,8 +4,7 @@
 		<meta charset="utf-8" />
 		<title>EPUB Accessibility 1.1</title>
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
-		<script src="../common/js/biblio.js" class="remove"></script>
-		<script src="../common/js/confreq-permalinks.js" class="remove"></script>
+		<script src="../common/js/permalink-a11y.js" class="remove"></script>
 		<script src="../common/js/css-inline.js" class="remove"></script>
 		<script class="remove">
 			var respecConfig = {
@@ -15,7 +14,7 @@
 				specStatus: "ED",
 				shortName: "epub-a11y-11",
 				edDraftURI: "https://w3c.github.io/epub-specs/epub33/a11y/",
-                previousPublishDate: "2021-05-25",
+                previousPublishDate: "2021-07-12",
                 previousMaturity: "WD",
                 copyrightStart: "2017",
 				editors:[ {
@@ -44,7 +43,6 @@
 					companyURL: "http://daisy.org",
 					w3cid: 75336
 				}],
-				processVersion: 2020,
 				includePermalinks: true,
 				permalinkEdge: true,
 				permalinkHide: false,
@@ -53,9 +51,49 @@
 					repoURL: "https://github.com/w3c/epub-specs",
 					branch: "main"
 				},
-				localBiblio: biblio,
+				localBiblio: {
+					"DAISYAudio": {
+						"title": "Navigable audio-only EPUB 3 Guidelines",
+						"href": "http://www.daisy.org/guidelines/epub/navigable-audio-only-epub3-guidelines"
+					},
+					"EPUB-3": {
+						"title": "EPUB 3",
+						"href": "https://www.w3.org/TR/epub/",
+						"publisher": "W3C"
+					},
+					"EPUB-A11Y-10": {
+						"authors":[
+						"Matt Garrish",
+						"George Kerscher",
+						"Charles LaPierre",
+						"Avneesh Singh"],
+						"title": "EPUB Accessibility 1.0",
+						"href": "http://idpf.org/epub/a11y/accessibility-20170105.html",
+						"date": "05 January 2017",
+						"publisher": "IDPF"
+					},
+					"MARC21": {
+						"title": "MARC 21 XML",
+						"href": "https://www.loc.gov/standards/marcxml/"		
+					},
+					"ONIX": {
+						"title": "ONIX for Books 3.0",
+						"href": "https://www.editeur.org/8/ONIX/"
+					},
+					"OPF-201": {
+						"title": "Open Packaging Format 2.0.1",
+						"href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
+						"date": "04 September 2010",
+						"publisher": "IDPF"
+					},
+					"WCAG2": {
+						"title": "Web Content Accessibility Guidelines (WCAG) 2",
+						"href": "https://www.w3.org/TR/WCAG2/",
+						"publisher": "W3C"
+					}
+				},
 				preProcess:[inlineCustomCSS],
-				postProcess:[addConformanceLinks]
+				postProcess:[updatePermaLinks]
 			};</script>
 		<style>
 			.conf-pattern {
@@ -64,22 +102,33 @@
 			}
 			.varlist {
 				margin-left: 3rem;
+			}
+			pre,
+			code {
+				white-space: break-spaces !important;
 			}</style>
 	</head>
 	<body>
 		<section id="abstract">
-			<p>This specification specifies content conformance requirements for verifying the accessibility of EPUB
+			<p>This specification specifies content conformance requirements for verifying the accessibility of EPUB®
 				Publications. It also specifies accessibility metadata requirements for the discoverability of EPUB
 				Publications.</p>
 		</section>
-		<section id="sotd"></section>
+		<section id="sotd">
+			<div class="ednote">
+				<p>Publishers not currently producing accessible content are encouraged to begin updating their
+					production processes to meet the requirements of [[EPUB-A11Y-10]] while this specification is being
+					developed. Content that meets the requirements of that version will typically also meet the
+					requirements of this specification with few changes necessary.</p>
+			</div>
+		</section>
 		<section id="intro">
 			<h2>Introduction</h2>
 
 			<section id="sec-overview" class="informative">
 				<h3>Overview</h3>
 
-				<p>This specification, EPUB Accessibility, addresses two key needs in the EPUB® ecosystem:</p>
+				<p>This specification, EPUB Accessibility, addresses two key needs in the EPUB ecosystem:</p>
 
 				<ul>
 					<li>discoverability of the accessible qualities of EPUB Publications; and</li>
@@ -96,22 +145,27 @@
 					accessibility, this specification sets formal requirements for certifying content accessible. These
 					requirements provide EPUB Creators a clear set of guidelines to evaluate their content against and
 					allows certification of quality. An accessible EPUB Publication is one that meets the accessibility
-					requirements described in <a href="#sec-access-pub"></a>.</p>
+					requirements described in <a href="#sec-accessible-pubs"></a>.</p>
 
-				<p>The specification also establishes how to identify content that EPUB Creators have optimized for
-					specific user needs so cannot meet broad accessibility requirements. Refer to the requirements for
-					optimized publications in <a href="#sec-opt-pubs"></a> for more information.</p>
+				<p>The specification also discusses the practice of optimizing EPUB Publications for specific reading
+					modalities. In these cases, the content cannot meet the broad accessibility requirements of this
+					specification, but by following its discoverability and reporting requirements EPUB Creators can
+					improve the ability of users to determine if the content still meets their needs. Refer to <a
+						href="#sec-optimized-pubs"></a> for more information.</p>
 
-				<p>This specification does not target a single version of EPUB. It applicable to EPUB Publications that
-					conform to any version or profile, including future versions of the standard.</p>
+				<p>The specification also addresses the impact of distribution on the accessibility and discoverability
+					of content in <a href="#sec-distribution"></a>.</p>
+
+				<p>This specification does not target a single version of EPUB. It is applicable to EPUB Publications
+					that conform to any version or profile, including future versions of the standard.</p>
 
 				<p>Ideally, these guidelines help evaluate any digital publication built on Open Web technologies,
 					although ensuring such application is outside the scope of this specification.</p>
 
 				<div class="note">
 					<p>For additional background on the decisions that went into this specification, refer to <a
-							href="https://idpf.github.io/epub-guides/a11y-faq/">EPUB Accessibility Frequently Asked
-							Questions</a> [[AccessibilityFAQ]].</p>
+							href="https://w3c.github.io/epub-specs/docs/a11y-faq/">EPUB Accessibility Frequently Asked
+							Questions</a>.</p>
 				</div>
 			</section>
 
@@ -127,12 +181,42 @@
 						Accessibility Techniques</a> [[EPUB-A11Y-TECH-11]] document outlines conformance techniques.
 					These techniques explain how to meet the requirements of this specification for different versions
 					of EPUB.</p>
+
+				<div class="ednote">
+					<p>A task force of the EPUB 3 Working Group is currently producing <a
+							href="https://w3c.github.io/epub-specs/epub33/fxl-a11y/">techniques for accessible fixed
+							layout publications</a>. When that document is formally published, it should be mentioned in
+						this section.</p>
+				</div>
+
+				<section id="sec-sc-i18n">
+					<h4>Internationalization</h4>
+
+					<p>This specification is also designed to address the accessibility needs of users independent of
+						what languages they read. The same is true for the principles and success criteria defined in
+						[[WCAG2]]. The goal is to ensure that users can fully consume the information of a publication
+						regardless of their preferred reading modality.</p>
+
+					<p>At the same time, the language and writing conventions of the authored text will influence the
+						techniques necessary to meet the accessibility requirements. EPUB <a
+							href="https://www.w3.org/TR/epub-33/#confreq-xml-enc">requires support for Unicode text</a>
+						[[EPUB-3]], for example, which ensures the correct character data can be used (i.e., EPUB
+						Creators do not have to use images of text). Although this is an important feature, it is often
+						not enough on its own to ensure that the text is fully accessible in any given language (e.g.,
+						additional information about directionality, emphasis, pronunciation, etc. may also be
+						needed).</p>
+
+					<p>As a consequence, there may be language- or culture-specific practices for meeting accessibility
+						requirements. Whether these practices are defined within this specification and its techniques
+						or elsewhere (e.g., in WCAG techniques or language-specific best practice recommendations) will
+						depend on whether the issues are specific to EPUB or broadly affect all Web content.</p>
+				</section>
 			</section>
 
 			<section id="sec-application" class="informative">
 				<h3>Application to Older Versions</h3>
 
-				<p>This specification applicable to any EPUB Publication, even if the content conforms to an older
+				<p>This specification is applicable to any EPUB Publication, even if the content conforms to an older
 					version of EPUB that does not refer to this specification (e.g., EPUB 2 [[OPF-201]]).</p>
 
 				<p>Creators of such EPUB Publications should create content in conformance with the accessibility and
@@ -176,6 +260,7 @@
 						playback.</p>
 				</div>
 			</section>
+
 			<section id="conformance"></section>
 		</section>
 		<section id="sec-discovery">
@@ -206,55 +291,58 @@
 			</section>
 
 			<section id="sec-disc-package">
-				<h3>Package metadata</h3>
+				<h3>Package Metadata</h3>
 
-				<p>All EPUB Publications MUST include accessibility metadata in the Package Document that exposes their
-					accessible properties, regardless of whether the publications also meet the <a
-						href="#sec-access-pub">accessibility</a> or <a href="#sec-opt-pubs">optimization</a>
+				<p>All EPUB Publications MUST include [[schema-org]] accessibility metadata in the Package Document that
+					exposes their accessible properties, regardless of whether the publications also meet the <a
+						href="#sec-accessible-pubs">accessibility</a> or <a href="#sec-optimized-pubs">optimization</a>
 					requirements.</p>
 
 				<p>EPUB Publications MUST include the following accessibility metadata:</p>
 
 				<ul class="conformance-list">
 					<li>
-						<p id="confreq-schema-accessMode">Access modes — a human sensory perceptual system or cognitive
-							faculty necessary to process or perceive the content (e.g., textual, visual, auditory,
-							tactile).</p>
+						<p id="confreq-schema-accessMode"><a href="https://schema.org/accessMode">accessMode</a> — a
+							human sensory perceptual system or cognitive faculty necessary to process or perceive the
+							content (e.g., textual, visual, auditory, tactile).</p>
 					</li>
 
 					<li>
-						<p id="confreq-schema-accessibilityFeature">Accessibility features — features and adaptations
-							that contribute to the overall accessibility of the content (e.g., alternative text,
-							extended descriptions, captions).</p>
+						<p id="confreq-schema-accessibilityFeature"><a href="https://schema.org/accessibilityFeature"
+								>accessibilityFeature</a> — features and adaptations that contribute to the overall
+							accessibility of the content (e.g., alternative text, extended descriptions, captions).</p>
 					</li>
 
 					<li>
-						<p id="confreq-schema-accessibilityHazard">Accessibility hazards — any potential hazards that
-							the content presents (e.g., flashing, motion simulation, sound).</p>
+						<p id="confreq-schema-accessibilityHazard"><a href="https://schema.org/accessibilityHazard"
+								>accessibilityHazard</a> — any potential hazards that the content presents (e.g.,
+							flashing, motion simulation, sound).</p>
 					</li>
 
 					<li>
-						<p id="confreq-schema-accessibilitySummary">Accessibility summary — a human-readable summary of
-							the overall accessibility, which includes a description of any known deficiencies (e.g.,
-							lack of extended descriptions, specific hazards).</p>
+						<p id="confreq-schema-accessibilitySummary"><a href="https://schema.org/accessibilitySummary"
+								>accessibilitySummary</a> — a human-readable summary of the overall accessibility, which
+							includes a description of any known deficiencies (e.g., lack of extended descriptions,
+							specific hazards).</p>
 					</li>
 				</ul>
 
-				<p>EPUB Publications SHOULD include the following accessibility metadata:</p>
+				<p>EPUB Publications SHOULD include the following [[schema-org]] accessibility metadata:</p>
 
 				<ul class="conformance-list">
 					<li>
-						<p id="confreq-schema-accessModeSufficient">Sufficient access modes — a set of one or more
-							access modes sufficient to consume the content without significant loss of information. An
-							EPUB Publication can have more than one set of sufficient access modes for its consumption
-							depending on the types of content it includes (i.e., unlike <a
-								href="#confreq-schema-accessMode">access modes</a>, this property takes into account any
-							affordances for content that is not broadly accessible, such as the inclusion of transcripts
-							for audio content).</p>
+						<p id="confreq-schema-accessModeSufficient"><a href="https://schema.org/accessibilityHazard"
+								>accessModeSufficient</a> — a set of one or more access modes sufficient to consume the
+							content without significant loss of information. An EPUB Publication can have more than one
+							set of sufficient access modes for its consumption depending on the types of content it
+							includes (i.e., unlike <a href="#confreq-schema-accessMode">access modes</a>, this property
+							takes into account any affordances for content that is not broadly accessible, such as the
+							inclusion of transcripts for audio content).</p>
 					</li>
 				</ul>
 
-				<p>EPUB Creators MAY include additional accessibility metadata not specified in this section.</p>
+				<p>EPUB Creators MAY include additional [[schema-org]] accessibility metadata not specified in this
+					section.</p>
 
 				<div class="note">
 					<p>See <a href="https://www.w3.org/TR/epub-a11y-tech-11/#sec-discovery">Discovery Metadata
@@ -275,10 +363,10 @@
 					discoverability requirements of this specification.</p>
 			</section>
 		</section>
-		<section id="sec-access-pub">
+		<section id="sec-accessible-pubs">
 			<h2>Accessible Publications</h2>
 
-			<section id="sec-access-pub-intro" class="informative">
+			<section id="sec-accessible-pubs-intro" class="informative">
 				<h3>Introduction</h3>
 
 				<p>EPUB builds on the Open Web Platform, with HTML, CSS, JavaScript and SVG, the core technologies used
@@ -332,7 +420,7 @@
 			</section>
 
 			<section id="sec-acc-pub-wcag">
-				<h3>WCAG conformance</h3>
+				<h3>WCAG Conformance</h3>
 
 				<section id="sec-wcag-conf">
 					<h4>WCAG Conformance Requirements</h4>
@@ -342,14 +430,15 @@
 					<ul class="conformance-list">
 						<li>
 							<p id="confreq-wcag-20">MUST meet the requirements of WCAG 2.0 [[WCAG20]], but it is
-								strongly RECOMMENDED that it conform to the <a href="https://www.w3.org/TR/WCAG2/"
-									>latest recommended version</a>.</p>
+								strongly RECOMMENDED that it meet the requirements of the <a
+									href="https://www.w3.org/TR/WCAG2/">latest recommended version of WCAG 2</a>.</p>
 						</li>
 
 						<li>
 							<p id="confreq-wcag-a">MUST meet the requirements of <a
 									href="https://www.w3.org/TR/WCAG2/#cc1">Level A</a>, but it is strongly RECOMMENDED
-								that it meet <a href="https://www.w3.org/TR/WCAG2/#cc1">Level AA</a> [[WCAG2]].</p>
+								that it meet the requirements of <a href="https://www.w3.org/TR/WCAG2/#cc1">Level AA</a>
+								[[WCAG2]].</p>
 						</li>
 					</ul>
 
@@ -363,9 +452,9 @@
 						practitioners do not recognize this level as providing a high degree of accessibility,
 						however.</p>
 
-					<p>Ideally, EPUB Creators should try to conform to the latest version of WCAG at Level AA, but local
-						and national laws, or procurer or distributor requirements, will define the formal thresholds
-						they must meet.</p>
+					<p>Ideally, EPUB Creators should try to conform to the latest version of WCAG 2 at Level AA, but
+						local and national laws, or procurer or distributor requirements, will define the formal
+						thresholds they must meet.</p>
 
 					<div class="note">
 						<p>Examples of legislative requirements for accessibility include the <a
@@ -388,6 +477,14 @@
 						they can, but fully conforming at AAA is typically not possible). When EPUB Creators meet only
 						Level A conformance, they compromise their content for various user groups, resulting in a less
 						optimal reading experience.</p>
+
+					<div class="note">
+						<p>The <a href="https://www.w3.org/WAI/GL/">W3C Accessibility Guidelines Working Group</a> is
+							currently developing WCAG 3. As this version potentially represents a significant departure
+							from WCAG 2, a future version of this specification will address conformance requirements
+							related to it. EPUB Creators are encouraged to adopt WCAG 3 once it is stable and widely
+							recognized, but conformance to the new version is not a requirement of this standard.</p>
+					</div>
 				</section>
 
 				<section id="sec-wcag-eval">
@@ -404,8 +501,7 @@
 
 						<p>Consequently, when evaluating the accessibility of an EPUB Publication, EPUB Creators cannot
 							review individual pages — or Content Documents, as they are known in EPUB 3 — in isolation.
-							Rather, EPUB Creators MUST evaluate their overall accessibility as parts of a larger
-							work.</p>
+							Rather, EPUB Creators MUST evaluate their accessibility as part of the larger work.</p>
 
 						<p>For example, it is not sufficient for EPUB Creators to give individual EPUB Content Documents
 							a logical reading order if they list the documents in the wrong reading order. Likewise,
@@ -499,7 +595,7 @@
 					<section id="sec-page-nav-applicability">
 						<h5>Applicability</h5>
 
-						<p>An EPUB Publication SHOULD include the page navigation objectives defined in this section
+						<p>An EPUB Publication SHOULD meet the page navigation objectives defined in this section
 							whenever any of the following cases is true:</p>
 
 						<ul>
@@ -602,13 +698,13 @@
 
 								<dt id="sec-page-breaks-understand">Understanding this Objective</dt>
 								<dd>
-									<p>Inserting page breaks markers into an EPUB Publication provides users with
-										context about where they are in the text. Assistive technologies can use this
+									<p>Inserting page break markers into an EPUB Publication provides users with context
+										about where they are in the text. Assistive technologies can use this
 										information to announce the current page number the user is on, for example, if
 										the user wants to cite something on the page.</p>
 									<p>The inclusion of page break markers can also allow users to move quickly forwards
 										and backwards by page without having to access the page list each time.</p>
-									<p>The inclusion of these markers also simplifies the creation a <a
+									<p>The inclusion of these markers also simplifies the creation of a <a
 											href="#sec-page-list">page list</a>, as they provide easily referenced
 										destinations for the links.</p>
 								</dd>
@@ -669,8 +765,9 @@
 							any additional requirements beyond those defined in [[EPUB-3]] to be conformant with this
 							specification.</p>
 
-						<p>To improve the usability of Media Overlays, however, EPUB Creators should meet the <a
-								href="#sec-mo-obj">objectives defined in this section</a>.</p>
+						<p>To maximize the effectiveness of Media Overlays for people with different reading needs,
+							however, EPUB Creators are strongly encouraged to meet the <a href="#sec-mo-obj">OPTIONAL
+								objectives</a> defined in the next section.</p>
 
 						<div class="note">
 							<p>EPUB Creators do not have to include Media Overlays in their EPUB Publications, only
@@ -680,6 +777,36 @@
 
 					<section id="sec-mo-obj">
 						<h5>Objectives</h5>
+
+						<section id="sec-mo-complete">
+							<h6>Completeness</h6>
+
+							<dl>
+								<dt id="sec-mo-comlete-obj">Objective</dt>
+								<dd>
+									<p>Ensure that the full text is available in audio.</p>
+								</dd>
+
+								<dt id="sec-mo-complete-understand">Understanding this Objective</dt>
+								<dd>
+									<p>Although it is possible for users who require a publication in audio form to use
+										text-to-speech playback, the experience is considerably poorer than when
+										pre-recorded narration is provided. Text-to-speech engines have limited built-in
+										vocabularies, causing them to mangle and mispronounce most uncommon words they
+										encounter. As a result users have to have words repeated and spelled out to make
+										sense of the content, slowing down their reading and reducing comprehension.</p>
+									<p>For this reason, it is important to provide narration for the full text of a
+										publication in addition to the full text. Users can then decide which reading
+										modality they prefer &#8212; text, audio, or a mix of the two.</p>
+								</dd>
+
+								<dt id="sec-mo-complete-conf">Meeting this Objective</dt>
+								<dd>
+									<p>EPUB Creators MUST provide synchronized audio playback via Media Overlays for all
+										textual content.</p>
+								</dd>
+							</dl>
+						</section>
 
 						<section id="sec-mo-order">
 							<h6>Reading Order</h6>
@@ -752,7 +879,7 @@
 
 								<dt id="sec-mo-skippability-conf">Meeting this Objective</dt>
 								<dd>
-									<p>EPUB Creators should identify all <a
+									<p>EPUB Creators SHOULD identify all <a
 											href="https://www.w3.org/TR/epub/#sec-skippability">skippable structures</a>
 										[[EPUB-3]] in Media Overlay Documents.</p>
 								</dd>
@@ -786,7 +913,7 @@
 
 								<dt id="sec-mo-escapability-conf">Meeting this Objective</dt>
 								<dd>
-									<p>EPUB Creators should identify all <a
+									<p>EPUB Creators SHOULD identify all <a
 											href="https://www.w3.org/TR/epub/#sec-escapability">escapable structures</a>
 										[[EPUB-3]] in the Media Overlay Documents.</p>
 								</dd>
@@ -817,7 +944,7 @@
 
 								<dt id="sec-mo-navdoc-conf">Meeting this Objective</dt>
 								<dd>
-									<p>EPUB Creators should include a Media Overlay Document for the <a
+									<p>EPUB Creators SHOULD include a Media Overlay Document for the <a
 											href="https://www.w3.org/TR/epub/#sec-nav-doc">EPUB Navigation Document</a>
 										[[EPUB-3]].</p>
 								</dd>
@@ -901,7 +1028,11 @@
 						<pre>&lt;package …>
    &lt;metadata>
       …
-      &lt;meta property="dcterms:conformsTo">EPUB-A11Y-11_WCAG-21-AA&lt;/meta>
+      &lt;meta 
+          property="dcterms:conformsTo"
+          id="conf">
+         EPUB-A11Y-11_WCAG-21-AA
+      &lt;/meta>
       …
    &lt;/metadata>
    …
@@ -915,10 +1046,15 @@
 					</div>
 
 					<div class="note">
-						<p>An EPUB Publication that only meets WCAG conformance requirements (i.e., does not fully
-							conform to this specification) can use a WCAG conformance URL (e.g.,
-								"<code>https://www.w3.org/TR/WCAG21/</code>" for [[WCAG21]]) with the
-								<code>confomsTo</code> property.</p>
+						<p>EPUB Creators may use a conformance URL, as defined in the <a
+								href="https://www.w3.org/TR/WCAG/#conformance-required">Required Components of a
+								Conformance Claim</a> [[WCAG2]], with the <code>conformsTo</code> property for EPUB
+							Publications that only meet WCAG conformance requirements (i.e., that do not fully conform
+							to this specification).</p>
+
+						<p>As [[WCAG2]] does not define how to specify the conformance level in the URL, however, EPUB
+							Creators will have to find an alternative means of relating this information when necessary
+							(e.g., through the accessibility summary).</p>
 					</div>
 				</section>
 
@@ -937,49 +1073,89 @@
 						<p>The following example shows an EPUB 3 Publication that has been self-evaluated by the
 							publisher (the values of the <code>dc:publisher</code> and <code>a11y:certifiedBy</code>
 							property are the same).</p>
-						<pre>&lt;metadata&gt;
+						<pre>&lt;metadata>
   …
-  &lt;dc:publisher&gt;Acme Publishing Inc.&lt;/dc:publisher&gt;
-  &lt;meta property="a11y:certifiedBy"&gt;Acme Publishing Inc.&lt;/meta&gt;
-  &lt;link rel="dcterms:conformsTo" href="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/&gt;
+  &lt;dc:publisher>
+     Acme Publishing Inc.
+  &lt;/dc:publisher>
   …
-&lt;/metadata&gt;</pre>
+  &lt;meta
+      property="dcterms:conformsTo"
+      id="conf">
+     EPUB-A11Y-11_WCAG-21-AA
+  &lt;/meta>
+  &lt;meta
+      property="a11y:certifiedBy"
+      refines="#conf">
+     Acme Publishing Inc.
+  &lt;/meta>
+  …
+&lt;/metadata></pre>
 					</aside>
 
 					<aside class="example">
 						<p>The following example shows an EPUB 3 Publication that has been evaluated by a third party
 							(the values of the <code>dc:publisher</code> and <code>a11y:certifiedBy</code> property
 							differ).</p>
-						<pre>&lt;metadata&gt;
+						<pre>&lt;metadata>
   …
-  &lt;dc:publisher&gt;Acme Publishing Inc.&lt;/dc:publisher&gt;
-  &lt;meta property="a11y:certifiedBy"&gt;Foo's Accessibility Testing&lt;/meta&gt;
-  &lt;link rel="dcterms:conformsTo" href="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/&gt;
+  &lt;dc:publisher>
+     Acme Publishing Inc.
+  &lt;/dc:publisher>
   …
-&lt;/metadata&gt;</pre>
+  &lt;meta
+      property="dcterms:conformsTo"
+      id="conf">
+     EPUB-A11Y-11_WCAG-21-AA
+  &lt;/meta>
+  &lt;meta
+      property="a11y:certifiedBy"
+      refines="#conf">
+     Foo's Accessibility Testing
+  &lt;/meta>
+  …
+&lt;/metadata></pre>
 					</aside>
 
 					<aside class="example">
 						<p>The following example shows an EPUB 3 Publication that has been self-evaluated by the EPUB
 							Creator.</p>
-						<pre>&lt;metadata&gt;
+						<pre>&lt;metadata>
   …
-  &lt;dc:creator&gt;Jane Doe&lt;/dc:creator&gt;
-  &lt;meta property="a11y:certifiedBy"&gt;Jane Doe&lt;/meta&gt;
-  &lt;link rel="dcterms:conformsTo" href="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/&gt;
+  &lt;dc:creator>
+     Jane Doe
+  &lt;/dc:creator>
   …
-&lt;/metadata&gt;</pre>
+  &lt;meta
+      property="dcterms:conformsTo"
+      id="conf">
+     EPUB-A11Y-11_WCAG-21-AA
+  &lt;/meta>
+  &lt;meta
+      property="a11y:certifiedBy"
+      refines="#conf">
+     Jane Doe
+  &lt;/meta>
+  …
+&lt;/metadata></pre>
 					</aside>
 
 					<aside class="example">
 						<p>The following example shows a self-evaluated EPUB 2 Publication.</p>
-						<pre>&lt;metadata&gt;
+						<pre>&lt;metadata>
   …
-  &lt;dc:publisher&gt;Acme Publishing Inc.&lt;/dc:publisher&gt;
-  &lt;meta name="dcterms:conformsTo" content="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/&gt;
-  &lt;meta name="a11y:certifiedBy" content="Acme Publishing Inc."/&gt;
+  &lt;dc:publisher>
+     Acme Publishing Inc.
+  &lt;/dc:publisher>
   …
-&lt;/metadata&gt;</pre>
+  &lt;meta
+      name="dcterms:conformsTo"
+      content="EPUB-A11Y-11_WCAG-21-AA"/>
+  &lt;meta
+      name="a11y:certifiedBy"
+      content="Acme Publishing Inc."/>
+  …
+&lt;/metadata></pre>
 					</aside>
 
 					<div class="note">
@@ -989,6 +1165,24 @@
 							diminish the trust users have in the claim.</p>
 					</div>
 
+					<p>The date the evaluation was performed on MAY be specified by linking a <a
+							href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#http://purl.org/dc/terms/date"
+								><code>dcterms:date</code> property</a> [[DCTERMS]] to the certifier.</p>
+
+					<aside class="example">
+						<p>The following example shows the date an evaluation was carried out on.</p>
+						<pre>&lt;meta
+    property="a11y:certifiedBy"
+    id="certifier">
+   EPUB Accessibility Evaluator
+&lt;/meta>
+&lt;meta
+    property="dcterms:date"
+    refines="#certifier">
+   2021-09-07
+&lt;/meta></pre>
+					</aside>
+
 					<p>If the party that evaluates the content has a credential or badge that establishes their
 						authority to evaluate content, include that information in an <a href="#certifierCredential"
 								><code>a11y:certifierCredential</code> property</a>.</p>
@@ -996,8 +1190,22 @@
 					<aside class="example">
 						<p>The following example shows a credential. The <code>refines</code> attribute associates the
 							credential with the certifier.</p>
-						<pre>&lt;meta property="a11y:certifiedBy" id="certifier"&gt;EPUB Accessibility Evaluator&lt;/meta&gt;
-&lt;meta property="a11y:certifierCredential" refines="#certifier"&gt;A+ Accessibility Rating&lt;/meta&gt;</pre>
+						<pre>&lt;meta
+    property="dcterms:conformsTo"
+    id="conf">
+   EPUB-A11Y-11_WCAG-21-AA
+&lt;/meta>
+&lt;meta
+    property="a11y:certifiedBy"
+    refines="#conf"
+    id="certifier">
+   EPUB Accessibility Evaluator
+&lt;/meta>
+&lt;meta
+    property="a11y:certifierCredential"
+    refines="#certifier">
+   A+ Accessibility Rating
+&lt;/meta></pre>
 					</aside>
 
 					<p>If the party that evaluated the content provides a publicly-readable report of its assessment,
@@ -1006,17 +1214,41 @@
 
 					<aside class="example">
 						<p>The following example shows a link to a remotely hosted accessibility report.</p>
-						<pre>&lt;meta property="a11y:certifiedBy" id="certifier"&gt;EPUB Accessibility Evaluator&lt;/meta&gt;
-&lt;link rel="a11y:certifierReport" refines="#certifier"
-      href="http://www.example.com/a11y/report/9780000000001"/&gt;</pre>
+						<pre>&lt;meta
+    property="dcterms:conformsTo"
+    id="conf">
+   EPUB-A11Y-11_WCAG-21-AA
+&lt;/meta>
+&lt;meta
+    property="a11y:certifiedBy"
+    refines="#conf"
+    id="certifier">
+   EPUB Accessibility Evaluator
+&lt;/meta>
+&lt;link
+    rel="a11y:certifierReport"
+    refines="#certifier"
+    href="http://www.example.com/a11y/report/9780000000001"/></pre>
 					</aside>
 
 					<aside class="example">
 						<p>The following example shows a link to a locally hosted accessibility report.</p>
-						<pre>&lt;meta property="a11y:certifiedBy" id="certifier"&gt;EPUB Accessibility Evaluator&lt;/meta&gt;
-&lt;link rel="a11y:certifierReport" refines="#certifier" href="reports/a11y.xhtml"/&gt;</pre>
+						<pre>&lt;meta
+    property="dcterms:conformsTo"
+    id="conf">
+   EPUB-A11Y-11_WCAG-21-AA
+&lt;/meta>
+&lt;meta
+    property="a11y:certifiedBy"
+    refines="#conf"
+    id="certifier">
+   EPUB Accessibility Evaluator
+&lt;/meta>
+&lt;link
+    rel="a11y:certifierReport"
+    refines="#certifier"
+    href="reports/a11y.xhtml"/></pre>
 					</aside>
-
 
 					<div class="note">
 						<p>As each metadata format is unique in what it can express, this specification does not mandate
@@ -1040,9 +1272,9 @@
 							It is not a requirement to conform to this specification.</p>
 					</div>
 
-					<p>How long a conformance evaluation of an EPUB Publication is good for is complex question. Unlike
-						web sites, which are continuously evolving, an EPUB Creators may never update an EPUB
-						Publication after its initial publication. As a result, an unmodified EPUB Publication will
+					<p>How long a conformance evaluation of an EPUB Publication is good for is a complex question.
+						Unlike web sites, which are continuously evolving, EPUB Creators may not update EPUB
+						Publications after their initial publication. As a result, an unmodified EPUB Publication will
 						always conform to its last evaluation.</p>
 
 					<p>It is common in publishing, however, to release updated versions of an EPUB Publication to fix
@@ -1097,7 +1329,7 @@
 				</section>
 			</section>
 		</section>
-		<section id="sec-opt-pubs">
+		<section id="sec-optimized-pubs" class="informative">
 			<h2>Optimized Publications</h2>
 
 			<p>Although WCAG [[WCAG2]] provides a general set of guidelines for making content broadly accessible,
@@ -1114,59 +1346,76 @@
 				failure to achieve a WCAG conformance level does not make it any less accessible to the intended
 				audience.</p>
 
-			<p>EPUB Creators MUST identify the standard or guidelines that an optimized EPUB Publication adheres to in a
-					<code>conformsTo</code> property in accordance with [[DCTERMS]]. For the value, EPUB Creators MUST
-				specify a URL, in accordance with [[URL]], that references the standard or guidelines the content
-				follows.</p>
+			<p>Defining requirements for optimized publications is outside the scope of this specification, as is
+				formally recognizing other standards and guidelines that address these specific needs. The general model
+				of this specification can be used as a basis for identifying how an EPUB Creator has optimized their
+				content, however.</p>
+
+			<p>In particular, if an EPUB Publication meets the requirements of an optimization standard, the following
+				best practices are recommended:</p>
+
+			<ul>
+				<li>The EPUB Publication should meet the <a href="#sec-discovery">discovery metadata requirements</a> of
+					this specification so its accessible properties are machine-readable.</li>
+				<li>The EPUB Publication should identify the standard or guidelines it follows in a
+						<code>conformsTo</code> property in accordance with [[DCTERMS]] so this information can be made
+					available to users.</li>
+				<li>If the standard does not define conformance values for the <code>conformsTo</code> property, EPUB
+					Creators should use a URL [[URL]] to where the standard is publicly available so users can look up
+					the specific details of the standard.</li>
+				<li>If the identifier is not sufficient for a user to understand conformance (e.g., the guidelines are
+					not publicly available), EPUB Creators should provide additional information about they have
+					optimized the content in the <a href="#confreq-schema-accessibilitySummary">accessibility
+						summary</a>.</li>
+			</ul>
+
+			<p>When creating guidelines for optimized EPUB Publications, it is recommended that these practices be
+				integrated as a formal requirement for conformance.</p>
+
+			<div class="note">
+				<p>Refer to the <a href="https://w3c.github.io/epub-specs/docs/optimized-pubs/">Guide to Optimized
+						Publication Standards</a> for an informative list of standards.</p>
+			</div>
 
 			<aside class="example">
 				<p>The following example shows a conformance statement for an EPUB 3 Publication that conforms to the
 					DAISY Navigable Audio-only EPUB 3 Guidelines [[DAISYAudio]].</p>
-				<pre>&lt;package …&gt;
-   &lt;metadata&gt;
+				<pre>&lt;package …>
+   &lt;metadata>
       …
-      &lt;link rel="dcterms:conformsTo" href="http://www.daisy.org/guidelines/epub/navigable-audio-only-epub3-guidelines"/&gt;
+      &lt;link
+          rel="dcterms:conformsTo"
+          href="http://www.daisy.org/guidelines/epub/navigable-audio-only-epub3-guidelines"/>
       …
-   &lt;/metadata&gt;
+   &lt;/metadata>
    …
-&lt;/package&gt;</pre>
+&lt;/package></pre>
 			</aside>
-
-			<p>If the URL is not sufficient for a user to understand conformance (e.g., the guidelines are not publicly
-				available), more information about how the content has been optimized SHOULD be provided in the <a
-					href="#confreq-schema-accessibilitySummary">accessibility summary</a>.</p>
 
 			<aside class="example">
 				<p>The following example shows an accessibility summary for an EPUB Publication optimized for braille
 					rendering.</p>
-				<pre>&lt;meta property="schema:accessibilitySummary"&gt;
+				<pre>&lt;meta property="schema:accessibilitySummary">
     This publication is optimized for braille readers. It will not be 
     usable by persons who cannot read braille. The publication is designed
     for braille reading devices capable of displaying 6-character cells and
     40-character line lengths. The text is not contracted, and follows 
     Unified English Braille formatting conventions. All characters are
     encoded using the Unicode braille character set.
-&lt;/meta&gt;</pre>
+&lt;/meta></pre>
 			</aside>
 
 			<aside class="example">
 				<p>The following example shows an accessibility summary for an EPUB Publication optimized for audio
 					rendering.</p>
-				<pre>&lt;meta property="schema:accessibilitySummary"&gt;
+				<pre>&lt;meta property="schema:accessibilitySummary">
     This publication is an audio book. It will not be usable by persons who 
     cannot hear the audio. The publication is recorded by a professional
     narrator. There is navigation to the beginning of each chapter. The text
     of the publication is not included. Images are not included, but the
     photo captions are narrated at the end of the chapter where they occur.
-&lt;/meta&gt;</pre>
+&lt;/meta></pre>
 			</aside>
-
-			<div class="note">
-				<p>This specification does not define or recommend standards or guidelines for producing optimized
-					content. For an informative list of such standards, however, refer to the <a
-						href="https://idpf.github.io/epub-registries/optimizations/">EPUB Optimized Publication
-						Standards Registry</a>.</p>
-			</div>
 		</section>
 		<section id="sec-distribution" class="informative">
 			<h2>Distribution</h2>
@@ -1206,15 +1455,34 @@
 				<p>A distributor may implement a digital rights management scheme that inherently impairs accessibility
 					through no fault of the EPUB Creator. Following the guidance in this section does not restrict EPUB
 					Creators from using such distributors. The intent is only that the EPUB Creator not impair
-					accessibility by activating a feature that that would normally not be active.</p>
+					accessibility by activating a feature that would normally not be active.</p>
 			</div>
 		</section>
-		<section id="privacy">
+		<section id="privacy" class="informative">
 			<h2>Privacy and Security</h2>
 
-			<div class="ednote">
-				<p>The working group will address issues related to privacy and security, if any, in a future draft.</p>
-			</div>
+			<p>The authoring of accessible content does not introduce any new privacy or security considerations for
+				users. Meeting accessibility requirements is about optimally using the available technologies, and no
+				new features are introduced by this specification.</p>
+
+			<p>The inclusion of accessibility metadata by EPUB Creators similarly does not introduce security or privacy
+				issues for the EPUB Creator, as describing an EPUB Publication only provides a general idea of its
+				suitability for different user groups.</p>
+
+			<p>The use of accessibility metadata in reading systems, bookstores and any other interface that can build a
+				profile of the user, on the other hand, has the potential to violate individual privacy laws. While it
+				might seem helpful to store and anticipate the type of content a user is most likely to consume, for
+				example, or how best to initiate its playback, developers should not engage in such profiling unless
+				explicit permission is obtained from the user and a means of easily removing the profile is
+				available.</p>
+
+			<p>Even in the case where a user assents to the application maintaining information about their
+				accessibility needs, developers must ensure that this information is kept private (e.g., it must not be
+				shared with third party advertisers or even with the original publisher).</p>
+
+			<p>Developers should also be mindful about storing or mining information about the types of searches a user
+				performs when searching for content based on its accessibility characteristics. This information can be
+				used to indirectly profile the abilities of users.</p>
 		</section>
 		<section id="app-a11y-vocab" class="appendix vocab">
 			<h2>EPUB Accessibility Vocabulary</h2>
@@ -1245,6 +1513,7 @@
 						<h4>certifiedBy</h4>
 
 						<table>
+							<caption>Definition of the <code>certifiedBy</code> property</caption>
 							<tr>
 								<th>Name:</th>
 								<td>
@@ -1269,7 +1538,10 @@
 							<tr>
 								<th>Example:</th>
 								<td>
-									<pre>&lt;meta property="a11y:certifiedBy">Accessibility Testers Group&lt;/meta></pre>
+									<pre>&lt;meta
+    property="a11y:certifiedBy">
+   Accessibility Testers Group
+&lt;/meta></pre>
 								</td>
 							</tr>
 						</table>
@@ -1279,6 +1551,7 @@
 						<h4>certifierCredential</h4>
 
 						<table>
+							<caption>Definition of the <code>certifierCredential</code> property</caption>
 							<tr>
 								<th>Name:</th>
 								<td>
@@ -1311,8 +1584,16 @@
 							<tr>
 								<th>Example:</th>
 								<td>
-									<pre>&lt;meta property="a11y:certifiedBy" id="certifier">Accessibility Testers Group&lt;/meta>
-&lt;meta property="a11y:certifierCredential" refines="#certifier">DAISY OK&lt;/meta></pre>
+									<pre>&lt;meta
+    property="a11y:certifiedBy"
+    id="certifier">
+   Accessibility Testers Group
+&lt;/meta>
+&lt;meta
+    property="a11y:certifierCredential"
+    refines="#certifier">
+   DAISY OK
+&lt;/meta></pre>
 								</td>
 							</tr>
 						</table>
@@ -1322,6 +1603,7 @@
 						<h4>certifierReport</h4>
 
 						<table>
+							<caption>Definition of the <code>certifierReport</code> property</caption>
 							<tr>
 								<th>Name:</th>
 								<td>
@@ -1354,8 +1636,15 @@
 							<tr>
 								<th>Example:</th>
 								<td>
-									<pre>&lt;meta property="a11y:certifiedBy" id="certifier">Accessibility Testers Group&lt;/meta>
-&lt;link rel="a11y:certifierReport" refines="#certifier" href="http://example.com/a11y/reports/9780000000001"/></pre>
+									<pre>&lt;meta
+    property="a11y:certifiedBy"
+    id="certifier">
+   Accessibility Testers Group
+&lt;/meta>
+&lt;link
+    rel="a11y:certifierReport"
+    refines="#certifier"
+    href="https://example.com/a11y-report/"/></pre>
 								</td>
 							</tr>
 						</table>
@@ -1366,73 +1655,67 @@
 		<section id="change-log" class="appendix informative">
 			<h2>Change Log</h2>
 
-			<p>Note that this change log only identifies substantive changes &#8212; those that affect the conformance
-				of EPUB Publications or are similarly noteworthy.</p>
+			<p>Note that this change log only identifies substantive changes since <a href="http://idpf.org/epub/a11y/"
+					>EPUB Accessibility 1.0</a> &#8212; those that affect the conformance of EPUB Publications or are
+				similarly noteworthy.</p>
 
 			<p>For a list of all issues addressed during the revision, refer to the <a
 					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc+label%3ASpec-Accessibility+label%3AAccessibility11"
 					>working group's issue tracker</a>.</p>
 
-			<section id="changes-latest">
-				<h3>Substantive changes since the <a href="https://www.w3.org/TR/2021/WD-epub-a11y-11-20210525/"
-						>Previous Working Draft</a></h3>
-
-				<!--
-					After each working draft is published:
-						- change the link/text in the section heading to refer to the published draft (use the dated URL)
-						- move all changes down to the next section
-				-->
-
-				<ul>
-					<li>9-June-2021: Clarified that a pagination source must not be specified when page break markers
-						and/or a page list are included in a digital-only publication. See <a
-							href="https://github.com/w3c/epub-specs/issues/1599">issue 1599</a>.</li>
-				</ul>
-			</section>
-
-			<section id="changes-older">
-				<h3>Substantive changes since <a href="http://idpf.org/epub/a11y/">EPUB Accessibility 1.0</a></h3>
-				<ul>
-					<li>29-Apr-2021: Change conformance identifiers to use hyphens and dashes so they are not confused
-						for plain language strings. See <a href="https://github.com/w3c/epub-specs/issues/1455">issue
-							1455</a>.</li>
-					<li>26-Mar-2021: Added informative section detailing when to re-evaluate EPUB Publications. See <a
-							href="https://github.com/w3c/epub-specs/issues/1470">issue 1470</a>.</li>
-					<li>12-Mar-2021: Changed the distribution section to informative but added a note that the
-						requirements must be followed where required by law (e.g., in the EU). See <a
-							href="https://github.com/w3c/epub-specs/issues/1487">issue 1487</a>.</li>
-					<li>8-Mar-2021: Add objective for the sequence of <code>par</code> and <code>seq</code> elements in
-						media overlay documents to reflect a logical reading order. See <a
-							href="https://github.com/w3c/epub-specs/issues/1556">issue 1556</a>.</li>
-					<li>5-Mar-2021: Added recommendation that page markers be included for all pages of content
-						reproduced from source and best practice to include markers for all pages in the source. See <a
-							href="https://github.com/w3c/epub-specs/issues/1502">issue 1502</a>.</li>
-					<li>5-Mar-2021: Added recommendation that page list include links to all pages of content reproduced
-						from source and best practice to include links to all pages in the source. See <a
-							href="https://github.com/w3c/epub-specs/issues/1503">issue 1503</a>.</li>
-					<li>5-Mar-2021: Restructured the EPUB Requirements section to split out the individual objectives
-						that were grouped together under the Page Navigation and Media Overlays headings. See <a
-							href="https://github.com/w3c/epub-specs/issues/1458">issue 1458</a>.</li>
-					<li>25-Feb-2021: Replaced the IDPF URLs used to report conformance to the 1.0 specification with
-						more flexible text strings. See <a href="https://github.com/w3c/epub-specs/issues/1455">issue
-							1455</a>.</li>
-					<li>19-Feb-2021: References to WCAG 2.0 have been updated to undated references to WCAG 2 (except
-						where WCAG 2.0 is explicitly mentioned for conformance).</li>
-					<li>01-Feb-2021: Changed the recommendation that media overlays conform to the requirements of the
-						EPUB specification to a requirement. See <a href="https://github.com/w3c/epub-specs/issues/1486"
-							>issue 1486</a>.</li>
-					<li>17-Nov-2020: Added the <code>refines</code> attribute to the <code>certifierCredential</code>
-						and <code>certifierReport</code> properties and examples. See <a
-							href="https://github.com/w3c/epub-specs/issues/1410">issue 1410</a>.</li>
-					<li>16-Nov-2020: References to the optional accessibility control and API metadata have been removed
-						from the discoverability section. These metadata properties are more applicable to Reading
-						Systems. See <a href="https://github.com/w3c/epub-specs/issues/1327">issue 1327</a>.</li>
-					<li>26-Sept-2020: The revisions made to the Accessibility 1.0 specification as part of publishing it
-						as an ISO standard have been incorporated into the initial draft text.</li>
-				</ul>
-			</section>
+			<ul>
+				<li>28-Sep-2021: The section on optimized publication has been made informative and rewritten to
+					highlight best practices for identifying conformance to such standards. See <a
+						href="https://github.com/w3c/epub-specs/pulls/1833">pull request 1833</a>.</li>
+				<li>23-Sep-2021: Added section explaining effects of internationalization on techniques used. See <a
+						href="https://github.com/w3c/epub-specs/issues/1790">issue 1790</a>.</li>
+				<li>07-Sep-2021: Added <code>refines</code> attribute to certifier metadata examples to show the
+					expected linkage. See <a href="https://github.com/w3c/epub-specs/issues/1789">issue 1789</a>.</li>
+				<li>07-Sep-2021: Added explanation that the <code>dcterms:date</code> property can be used to indicate
+					when an evaluation was performed. See <a href="https://github.com/w3c/epub-specs/issues/1590">issue
+						1590</a>.</li>
+				<li>09-June-2021: Clarified that a pagination source must not be specified when page break markers
+					and/or a page list are included in a digital-only publication. See <a
+						href="https://github.com/w3c/epub-specs/issues/1599">issue 1599</a>.</li>
+				<li>29-Apr-2021: Change conformance identifiers to use hyphens and dashes so they are not confused for
+					plain language strings. See <a href="https://github.com/w3c/epub-specs/issues/1455">issue
+					1455</a>.</li>
+				<li>26-Mar-2021: Added informative section detailing when to re-evaluate EPUB Publications. See <a
+						href="https://github.com/w3c/epub-specs/issues/1470">issue 1470</a>.</li>
+				<li>12-Mar-2021: Changed the distribution section to informative but added a note that the requirements
+					must be followed where required by law (e.g., in the EU). See <a
+						href="https://github.com/w3c/epub-specs/issues/1487">issue 1487</a>.</li>
+				<li>08-Mar-2021: Add objective for the sequence of <code>par</code> and <code>seq</code> elements in
+					media overlay documents to reflect a logical reading order. See <a
+						href="https://github.com/w3c/epub-specs/issues/1556">issue 1556</a>.</li>
+				<li>05-Mar-2021: Added recommendation that page markers be included for all pages of content reproduced
+					from source and best practice to include markers for all pages in the source. See <a
+						href="https://github.com/w3c/epub-specs/issues/1502">issue 1502</a>.</li>
+				<li>05-Mar-2021: Added recommendation that page list include links to all pages of content reproduced
+					from source and best practice to include links to all pages in the source. See <a
+						href="https://github.com/w3c/epub-specs/issues/1503">issue 1503</a>.</li>
+				<li>05-Mar-2021: Restructured the EPUB Requirements section to split out the individual objectives that
+					were grouped together under the Page Navigation and Media Overlays headings. See <a
+						href="https://github.com/w3c/epub-specs/issues/1458">issue 1458</a>.</li>
+				<li>25-Feb-2021: Replaced the IDPF URLs used to report conformance to the 1.0 specification with more
+					flexible text strings. See <a href="https://github.com/w3c/epub-specs/issues/1455">issue
+					1455</a>.</li>
+				<li>19-Feb-2021: References to WCAG 2.0 have been updated to undated references to WCAG 2 (except where
+					WCAG 2.0 is explicitly mentioned for conformance).</li>
+				<li>01-Feb-2021: Changed the recommendation that media overlays conform to the requirements of the EPUB
+					specification to a requirement. See <a href="https://github.com/w3c/epub-specs/issues/1486">issue
+						1486</a>.</li>
+				<li>17-Nov-2020: Added the <code>refines</code> attribute to the <code>certifierCredential</code> and
+						<code>certifierReport</code> properties and examples. See <a
+						href="https://github.com/w3c/epub-specs/issues/1410">issue 1410</a>.</li>
+				<li>16-Nov-2020: References to the optional accessibility control and API metadata have been removed
+					from the discoverability section. These metadata properties are more applicable to Reading Systems.
+					See <a href="https://github.com/w3c/epub-specs/issues/1327">issue 1327</a>.</li>
+				<li>26-Sept-2020: The revisions made to the Accessibility 1.0 specification as part of publishing it as
+					an ISO standard have been incorporated into the initial draft text.</li>
+			</ul>
 		</section>
-		<div data-include="../common/acknowledgements-a11y.html" data-oninclude="fixIncludes"
-			data-include-replace="true"></div>
+		<div data-include="../common/acknowledgements.html" data-oninclude="fixIncludes" data-include-replace="true"
+		></div>
 	</body>
 </html>
