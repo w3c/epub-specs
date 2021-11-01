@@ -23,18 +23,24 @@ function updatePermaLinks() {
 			// number is inside the a tag with no class
 			secno = links[i].querySelector('bdi');
 			if (secno == null) {
-				console.log('Error creating new permalink for :' + parent.textContent);
+				console.log('Error creating new example permalink for :' + parent.textContent);
+				continue;
 			}
 			secno = secno.textContent
 			sectype = 'Example ';
+		}
+		
+		else if (title.match(/^Permalink/)) {
+			// ignore hidden definition permalinks
+			continue;
 		}
 		
 		else {
 			// number for sections/appendixes is sibling of the a tag with secno class
 			secno = parentElem.querySelector('.secno');
 			if (secno == null) {
-				console.log('Error creating new permalink for :' + parent.textContent);
-				break;
+				console.log('Error creating new section permalink for :' + parent.textContent);
+				continue;
 			}
 			secno = secno.textContent
 			// determine if section/appendix from parent class
