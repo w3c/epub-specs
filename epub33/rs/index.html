@@ -328,20 +328,6 @@
 			<p id="confreq-rs-epub-pub" class="support">Reading Systems MUST process the <a
 					href="https://www.w3.org/TR/epub-33/#sec-package-doc">Package Document</a> [[EPUB-33]].</p>
 
-			<section id="sec-pkg-doc-relative-urls">
-				<h4>Parsing Relative URLs</h4>
-
-				<p>To parse <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-						>relative-URL-with-fragment strings</a> [[URL]] in the Package Document, Reading Systems MUST
-					use the URL of the Package Document as the <a href="https://url.spec.whatwg.org/#concept-base-url"
-						>base URL</a> [[URL]].</p>
-
-				<p>When an EPUB Publication is zipped, the base URL of the Package Document is obtained from the URL of
-					the <a>EPUB Container</a> together with a fragment identifier that specifies the path to Package
-					Document (relative to the <a>Root Directory</a>). This specification does not require a specific URL
-					scheme for referencing the path to the Package Document within the EPUB Container.</p>
-			</section>
-
 			<section id="sec-pkg-doc-base-dir">
 				<h4>Base Direction</h4>
 
@@ -866,13 +852,13 @@
 							interactive, scripted user agent according to [[HTML]].</p>
 					</li>
 
-					<li>
+					<!-- <li>
 						<p id="confreq-rs-scripted-origin"> It MUST assign a unique <a
 								href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]], shared by all <a
 								href="https://www.w3.org/TR/epub-33/#sec-scripted-spine">spine-level scripts</a> of the
 							EPUB Publication. That <a href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]] MUST
 							be <em>unique</em> for each EPUB Publication instance. </p>
-					</li>
+					</li> -->
 
 					<li>
 						<p id="confreq-rs-scripted-container">It MUST NOT allow a container-constrained script to modify
@@ -896,20 +882,10 @@
 					</li>
 				</ul>
 
-				<div class="note">
-					<p> This specification does not mandate any particular implementation technique for the creation of
-						a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> in the absence of a reliable
-						Web origin (e.g., HTTP URL scheme + host + port). The necessary heuristics may include the
-						combination of the Publication's <a href="https://www.w3.org/TR/epub-33/#dfn-unique-identifier"
-							>Unique Identifier</a> (although, in practice, these identifiers may in fact not guarantee
-						globally-unique identification, that is why it is recommended to combine multiple techniques),
-						filesystem path, <a href="https://www.w3.org/TR/epub-33/#dfn-zip-container">OCF Zip
-							Container</a> checksum, etc. </p>
-					<p> The unicity of the <a href="https://url.spec.whatwg.org/#origin">origin</a> per EPUB Publication
-						instance means that if two different users acquire a copy of the same EPUB Publication, the
-						origins will be different for the two users on those copies even if the same Reading System is
-						used. </p>
-				</div>
+				<p>Note also that, as defined in <a href="#sec-container-iri"></a>, Reading Systems 
+					must assign a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> [[URL]], shared by all <a
+					href="https://www.w3.org/TR/epub-33/#sec-scripted-spine">spine-level scripts</a> of the EPUB Publication. </p>
+
 
 				<p class="ednote">Note that the definition of <code>epubReadingSystem</code> is currently marked as "at
 					risk". If, in the final version of this document, the object becomes non-normative, then each "MUST"
@@ -1170,14 +1146,88 @@
 				<h3>OCF Abstract Container</h3>
 
 				<section id="sec-container-iri">
-					<h4>Relative URLs for Referencing Other Components</h4>
+					<h4>URL of the Root Directory</h4>
 
-					<p>For <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-							>relative-URL-with-fragment strings</a> [[URL]], Reading Systems MUST determine the <a
-							href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> [[URL]] according to the
-						relevant language specifications for the given file formats. For example, CSS defines how
-						relative URL references work in the context of CSS style sheets and property declarations
-						[[CSSSnapshot]].</p>
+					<p>Reading Systems MUST assign a URL [[URL]] to the <a>Root Directory</a> of the <a>OCF Abstract Container</a>. This URL is called the <a data-cite="epub-33#dfn-container-root-url">container root URL</a>. The URL itself is implementation specific, but:</p>
+
+					<ul>
+						<li>The result of <a data-cite="url#concept-url-parser">parsing </a> [[URL]] "<code>/</code>" with the <a>container root URL</a> as <a data-cite="url#concept-base-url">base</a> MUST be the <a>container root URL</a>.</li>
+						<li>The result of <a data-cite="url#concept-url-parser">parsing </a> [[URL]] "<code>..</code>" with the <a>container root URL</a> as <a data-cite="url#concept-base-url">base</a> MUST be the <a>container root URL</a>.</li>
+						<li>The <a data-cite="url#origin">origin</a> of the <a>container root URL</a> MUST be unique for each EPUB Publication instance.</li>
+						<li>the <a data-cite="url#origin">origins</a> of the <a data-cite="epub-33#dfn-container-url">container URLs</a> of all the files in the <a>OCF Abstract Container</a> MUST be identical.</li>	
+					</ul>
+
+					<p class="note">The unicity of the <a href="https://url.spec.whatwg.org/#origin">origin</a> per EPUB Publication
+						instance means that if two different users acquire a copy of the same EPUB Publication, the
+						origins will be different for the two users on those copies even if the same Reading System is
+						used.</p>
+
+					<div class="note">
+						<p>The required properties of the container root URL are such that it behaves similarly to a URL defined as follows:</p>
+
+						<table class="zebra">
+							<thead>
+								<tr>
+									<td style="font-weight: bold; text-align: center;">
+										URL component
+									</td>
+									<td style="font-weight: bold; text-align: center;">
+										Values
+									</td>
+								</tr>	
+							</thead>
+							<tbody>
+								<tr>
+									<td>scheme</td>
+									<td><code>http</code> or <code>https</code></td>
+								</tr>
+								<tr>
+									<td>host</td>
+									<td><code>localhost</code></td>
+								</tr>
+								<tr>
+									<td>port</td>
+									<td>a dynamic port uniquely assigned to the EPUB instance</td>
+								</tr>	
+							</tbody>
+						</table>
+
+						<p>for example:</p>
+
+						<table class="zebra">
+							<thead>
+								<tr>
+									<td style="font-weight: bold; text-align: center;">Container File</td>
+									<td style="font-weight: bold; text-align: center;">File Path</td>
+									<td style="font-weight: bold; text-align: center;">URL</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										Root Directory
+									</td>
+									<td>
+										<var>empty string</var>
+									</td>
+									<td>
+										<code>https://localhost:49152/</code>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Package Document
+									</td>
+									<td>
+										<code>OPS/package.opf</code>
+									</td>
+									<td>
+										<code>https://localhost:49152/OPS/package.opf</code>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 					<div class="note">
 						<p>Some language specifications reference <a href="https://www.ietf.org/standards/rfcs/"
@@ -1185,9 +1235,35 @@
 							for content in that particular language.</p>
 					</div>
 
-					<p>Unlike most language specifications, Reading Systems MUST use the <a>Root Directory</a> of the
-						OCF Abstract Container as the <a href="https://url.spec.whatwg.org/#concept-base-url">base
-							URL</a> [[URL]] for all files within the <code>META-INF</code> directory.</p>
+					<p class="note">Unlike most language specifications, Reading Systems MUST use the 
+						<a>container root URL</a> as the <a href="https://url.spec.whatwg.org/#concept-base-url">base
+							URL</a> [[URL]] for all files within the <code>META-INF</code> directory.
+							See also the section on <a href="https://www.w3.org/TR/epub-33/#sec-parsing-urls-metainf">Parsing URLs in the <code>META-INF</code> Directory</a> in [[!EPUB-33]].
+					</p>
+
+					<p class="ednote">
+						We may have to say a few words on what exactly an "EPUB Publication instance" mean.
+					</p>
+
+					<div class="ednote">
+						<p>The previous version contained this note:</p>
+
+						<p class="note">
+							This specification does not mandate any particular implementation technique for the creation of
+							a unique <a href="https://url.spec.whatwg.org/#origin">origin</a> in the absence of a reliable
+							Web origin (e.g., HTTP URL scheme + host + port). The necessary heuristics may include the
+							combination of the Publication's <a href="https://www.w3.org/TR/epub-33/#dfn-unique-identifier"
+								>Unique Identifier</a> (although, in practice, these identifiers may in fact not guarantee
+							globally-unique identification, that is why it is recommended to combine multiple techniques),
+							filesystem path, <a href="https://www.w3.org/TR/epub-33/#dfn-zip-container">OCF Zip
+								Container</a> checksum, etc. 
+						</p>
+	
+						<p>This note may not be relevant any more...</p>
+					</div>
+
+
+
 				</section>
 
 				<section id="sec-container-filenames">
@@ -2227,7 +2303,10 @@ alert("Feature " + feature + " supported?: " + conformTest);</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<ul>
-				<li>25-Oct-2021: Clarify that reading systems must render non-linear resources when they are hyperlinked
+				<li>10-Nov-2021: Proper definition of the Container URL and handling of relative URLs. See <a
+					href="https://github.com/w3c/epub-specs/issues/1374">issue 1374</a> and 
+					<a href="https://github.com/w3c/epub-specs/issues/1888">issue 1888</a></li>
+			    <li>25-Oct-2021: Clarify that reading systems must render non-linear resources when they are hyperlinked
 					to by a user. See <a href="https://github.com/w3c/epub-specs/issues/1864">issue 1864</a>.</li>
 				<li>27-Aug-2021: Added accessibility bullet to cover the need for zooming, particularly for fixed-layout
 					documents. See <a href="https://github.com/w3c/epub-specs/issues/1776">issue 1776</a>.</li>
