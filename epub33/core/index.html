@@ -2585,9 +2585,9 @@
 </pre>
 							</aside>
 
-							<p id="sec-linked-records">EPUB Creators MAY provide one or more <a href="#record">linked
-									metadata records</a> to enhance the information available to Reading Systems, but
-								Reading Systems may ignore these records.</p>
+							<p id="sec-linked-records" data-tests="#pkg-linked-records">EPUB Creators MAY provide one or more
+								<a href="#record">linked metadata records</a> to enhance the information available to Reading
+								Systems, but Reading Systems may ignore these records.</p>
 
 							<p>When a Reading System <a href="https://www.w3.org/TR/epub-rs-33/#sec-linked-records"
 									>processes linked records</a> [[EPUB-RS-33]], the document order of
@@ -3179,10 +3179,10 @@ Spine:
 								</dd>
 							</dl>
 
-							<p id="attrdef-itemref-idref">Each <code>itemref</code> element MUST reference the ID
-								[[XML]] of a unique <a href="#elemdef-package-item"><code>item</code></a> in the
-									<a>manifest</a> via the IDREF [[XML]] in its <code>idref</code> attribute (i.e., two
-								or more <code>itemref</code> elements cannot reference the same <code>item</code>).</p>
+							<p id="attrdef-itemref-idref">Each itemref element MUST reference the ID of an <a
+									href="#elemdef-package-item"><code>item</code></a> in the <a>manifest</a> via the
+								IDREF [[XML]] in its <code>idref</code> attribute, and item IDs MUST NOT be referenced
+								more than once. </p>
 
 							<p id="confreq-spine-itemtypes">Each referenced manifest <code>item</code> MUST be either a)
 								an <a>EPUB Content Document</a> or b) another type of <a>Publication Resource</a> which,
@@ -5240,8 +5240,8 @@ Spine:
 						</dt>
 						<dd>
 							<p>Contains information about the encryption of <a>Publication Resources</a>. This file is
-								mandatory when EPUB Creators use <a href="#sec-resource-obfuscation"
-								>obfuscation</a>.</p>
+								mandatory when EPUB Creators use <a href="#sec-font-obfuscation">font
+								obfuscation</a>.</p>
 						</dd>
 						<dt>
 							<code>metadata.xml</code>
@@ -5839,11 +5839,11 @@ Spine:
 									rather than Deflate-compress them.</p>
 
 								<p id="encryption-obfuscation">Note that some situations require obfuscating the storage
-									of embedded resources referenced by an <a>EPUB Publication</a> to make them more
-									difficult to extract for unrestricted use (e.g., fonts). Although obfuscation is not
-									encryption, Reading Systems use the <code>encryption.xml</code> file in conjunction
-									with the <a href="#sec-resource-obfuscation">resource obfuscation algorithm</a> to
-									identify resources to de-obfuscated.</p>
+									of embedded fonts referenced by an <a>EPUB Publication</a> to make them more
+									difficult to extract for unrestricted use. Although obfuscation is not encryption,
+									Reading Systems use the <code>encryption.xml</code> file in conjunction with the <a
+										href="#sec-font-obfuscation">font obfuscation algorithm</a> to identify fonts to
+									de-obfuscated.</p>
 
 								<p id="encryption-restrictions">EPUB Creators MUST NOT encrypt or obfuscate the
 									following files:</p>
@@ -6041,11 +6041,6 @@ Spine:
 									<code>META-INF</code> directory for digital rights management (DRM) information for
 								trusted exchange of EPUB Publications among rights holders, intermediaries, and
 								users.</p>
-
-							<p>This version of the specification does not require a specific format for DRM information,
-								but a future version might. EPUB Creators SHOULD only use namespace-qualified elements
-								[[XML-NAMES]] in the <code>rights.xml</code> file to avoid collision with a future
-								format.</p>
 
 							<p>When EPUB Creators do not include a <code>rights.xml</code> file, no part of the
 								container is rights governed at the container level. Rights expressions might exist
@@ -6311,8 +6306,16 @@ Spine:
 				</section>
 			</section>
 
-			<section id="sec-resource-obfuscation">
-				<h3>Resource Obfuscation</h3>
+			<section id="sec-font-obfuscation">
+				<h3>Font Obfuscation</h3>
+
+				<div class="caution">
+					<p>Better methods of protecting fonts exist. Both [[WOFF]] and [[WOFF2]] fonts, for example, allow
+						the embedding of licensing information and also provide some protection through font table
+						compression. The use of remotely hosted fonts also allows for font subsetting. EPUB Creators are
+						advised to use font obfuscation as defined in this section only when no other options are
+						available to them.</p>
+				</div>
 
 				<section id="fobfus-intro" class="informative">
 					<h4>Introduction</h4>
@@ -6323,11 +6326,11 @@ Spine:
 						(e.g., a folder).</p>
 
 					<p>While this simplicity of ZIP files is quite useful, it also poses a problem when ease of
-						extraction of resources is not a desired side-effect of not encrypting them. An <a>EPUB
-							Creator</a> who wishes to include a third-party font, for example, typically does not want
-						that font extracted and re-used by others. More critically, many commercial fonts allow
-						embedding, but embedding a font implies making it an integral part of the EPUB Publication, not
-						just providing the original font file along with the content.</p>
+						extraction of fonts is not a desired side-effect of not encrypting them. An <a>EPUB Creator</a>
+						who wishes to include a third-party font, for example, typically does not want that font
+						extracted and re-used by others. More critically, many commercial fonts allow embedding, but
+						embedding a font implies making it an integral part of the EPUB Publication, not just providing
+						the original font file along with the content.</p>
 
 					<p>Since integrated ZIP support is so ubiquitous in modern operating systems, simply placing a font
 						in the ZIP archive is insufficient to signify that the font cannot be reused in other contexts.
@@ -6340,21 +6343,23 @@ Spine:
 						computing device, and it cannot be directly used by other EPUB Publications.</p>
 
 					<p>It is beyond the scope of this specification to provide a digital rights management or
-						enforcement system for such resources. This section instead defines a method of obfuscation that
-						will require additional work on the part of the final OCF recipient to gain general access to
-						any obfuscated resources.</p>
+						enforcement system for fonts. This section instead defines a method of obfuscation that will
+						require additional work on the part of the final OCF recipient to gain general access to any
+						obfuscated fonts.</p>
 
 					<p>Note this specification does not claim that this constitutes encryption, nor does it guarantee
 						that the resource will be secure from copyright infringement. The hope is that this algorithm
-						will meet the requirements of most vendors who require some assurance that their resources
-						cannot simply be extracted by unzipping the Container.</p>
+						will meet the requirements of most vendors who require some assurance that their fonts cannot
+						simply be extracted by unzipping the Container.</p>
 
-					<p>In the case of fonts, the primary use case for obfuscation, the defined mechanism will simply
-						provide a stumbling block for those who are unaware of the license details. It will not prevent
-						a determined user from gaining full access to the font. Given an OCF Container, it is possible
-						to apply the algorithms defined to extract the raw font file. Whether this method of obfuscation
-						satisfies the requirements of individual font licenses remains a question for the licensor and
-						licensee.</p>
+					<p>Also note that the algorithm is restricted to obfuscating fonts. It is not intended as a general
+						purpose mechanism for obfuscating any resource in the EPUB Container.</p>
+
+					<p>In the case of fonts, this mechanism simply provides a stumbling block for those who are unaware
+						of the license details. It will not prevent a determined user from gaining full access to the
+						font. Given an OCF Container, it is possible to apply the algorithms defined to extract the raw
+						font file. Whether this method of obfuscation satisfies the requirements of individual font
+						licenses remains a question for the licensor and licensee.</p>
 				</section>
 
 				<section id="obfus-keygen">
@@ -6369,38 +6374,38 @@ Spine:
 						Unicode code points <code>U+0020</code>, <code>U+0009</code>, <code>U+000D</code> and
 							<code>U+000A</code>.</p>
 
-					<p>EPUB Creators SHOULD generate a SHA-1 digest of the UTF-8 representation of the resulting string
-						as specified by the Secure Hash Standard [[FIPS-180-4]]. They can then use this digest as the
-						key for the algorithm.</p>
+					<p>EPUB Creators MUST generate a SHA-1 digest of the UTF-8 representation of the resulting string as
+						specified by the Secure Hash Standard [[FIPS-180-4]]. They can then use this digest as the key
+						for the algorithm.</p>
 				</section>
 
 				<section id="obfus-algorithm">
 					<h4>Obfuscation Algorithm</h4>
 
-					<p>The algorithm employed to obfuscate resource consists of modifying the first 1040 bytes (~1KB) of
-						the file. (In the unlikely event that the file is less than 1040 bytes, this process will modify
-						the entire file.)</p>
+					<p>The algorithm employed to obfuscate fonts consists of modifying the first 1040 bytes (~1KB) of
+						the font file. (In the unlikely event that the font file is less than 1040 bytes, this process
+						will modify the entire file.)</p>
 
-					<p>To obfuscate the original data, store, as the first byte of the embedded resource, the result of
-						performing a logical exclusive or (XOR) on the first byte of the raw file and the first byte of
-						the <a href="#obfus-keygen">obfuscation key</a>.</p>
+					<p>To obfuscate the original data, store, as the first byte of the embedded font, the result of
+						performing a logical exclusive or (XOR) on the first byte of the raw font file and the first
+						byte of the <a href="#obfus-keygen">obfuscation key</a>.</p>
 
 					<p>Repeat this process with the next byte of source and key and continue for all bytes in the key.
 						At this point, the process continues starting with the first byte of the key and 21st byte of
 						the source. Once 1040 bytes are encoded in this way (or the end of the source is reached),
 						directly copy any remaining data in the source to the destination.</p>
 
-					<p>EPUB Creators MUST obfuscate resources before compressing and adding them to the OCF Container.
-						Note that as obfuscation is not encryption, this requirement is not a violation of the one in <a
-							href="#sec-container-metainf-encryption.xml"></a> to compress resources before encrypting
+					<p>EPUB Creators MUST obfuscate fonts before compressing and adding them to the OCF Container. Note
+						that as obfuscation is not encryption, this requirement is not a violation of the one in <a
+							href="#sec-container-metainf-encryption.xml"></a> to compress fonts before encrypting
 						them.</p>
 
 					<aside class="example">
 						<p>The following pseudo-code exemplifies the obfuscation algorithm.</p>
 						<pre class="programlisting">
 set ocf to OCF container file
-set source to file
-set destination to obfuscated file
+set source to font file
+set destination to obfuscated font file
 set keyData to key for file
 set outer to 0
 while outer &lt; 52 and not (source at EOF)
@@ -6426,19 +6431,22 @@ store destination as source in ocf
 				</section>
 
 				<section id="obfus-specifying">
-					<h4>Specifying Obfuscated Resources</h4>
+					<h4>Specifying Obfuscated Fonts</h4>
 
-					<p>Although not technically encrypted data, all obfuscated resources MUST have an entry in the <code
+					<p>Although not technically encrypted data, all obfuscated fonts MUST have an entry in the <code
 							class="filename">encryption.xml</code> file accompanying the EPUB Publication (see <a
 							href="#sec-container-metainf-encryption.xml"></a>).</p>
 
-					<p>EPUB Creators MUST specify an <code>EncryptedData</code> element for each obfuscated resource.
-						Each <code>EncryptedData</code> element MUST contain a child <code>EncryptionMethod</code>
+					<p>EPUB Creators MUST specify an <code>EncryptedData</code> element for each obfuscated font. Each
+							<code>EncryptedData</code> element MUST contain a child <code>EncryptionMethod</code>
 						element whose <code>Algorithm</code> attribute has the value
 							<code>http://www.idpf.org/2008/embedding</code>. The presence of this attribute signals the
-						use of the algorithm described in this specification. EPUB Creators MUST list the path to the
-						obfuscated resource in the <code>CipherReference</code> child of the <code>CipherData</code>
-						element.</p>
+						use of the algorithm described in this specification.</p>
+
+					<p>EPUB Creators MUST list the path to the obfuscated font in the <code>CipherReference</code> child
+						of the <code>CipherData</code> element. As the obfuscation algorithm is restricted to fonts, the
+							<code>URI</code> attribute of the <code>CipherReference</code> element MUST reference a <a
+							href="#cmt-grp-font">Font Core Media Type</a>.</p>
 
 					<aside class="example">
 						<p>The following example shows an entry for an obfuscated font in the
@@ -6458,9 +6466,9 @@ store destination as source in ocf
                 </pre>
 					</aside>
 
-					<p>To prevent trivial copying of the embedded resource to other EPUB Publications, EPUB Creators
-						MUST NOT provide the <a href="#obfus-keygen">obfuscation key</a> in the
-							<code>encryption.xml</code> file.</p>
+					<p>To prevent trivial copying of the embedded font to other EPUB Publications, EPUB Creators MUST
+						NOT provide the <a href="#obfus-keygen">obfuscation key</a> in the <code>encryption.xml</code>
+						file.</p>
 				</section>
 			</section>
 		</section>
@@ -9442,6 +9450,13 @@ EPUB/images/cover.png</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<ul>
+				<li>12-Nov-2021: Change the recommendation to use SHA-1 to encrypt the obfuscation key to a requirement.
+					See <a href="https://github.com/w3c/epub-specs/issues/1873">issue 1873</a>.</li>
+				<li>12-Nov-2021: Restrict the obfuscation algorithm to fonts and add caution to use better protection
+					methods whenever possible. See <a href="https://github.com/w3c/epub-specs/issues/1873">issue
+						1873</a>.</li>
+				<li>12-Nov-2021: Removed the statement about rights.xml being reserved for future standardization of DRM
+					information. See <a href="https://github.com/w3c/epub-specs/issues/181">issue 1874</a>.</li>
 				<li>10-Nov-2021: Allow characters in the emoji tag sequence in file names. See <a
 						href="https://github.com/w3c/epub-specs/issues/1885">issue 1885</a></li>
 				<li>29-Oct-2021: Recommended that EPUB Creators not use path-absolute-URL strings for referencing
