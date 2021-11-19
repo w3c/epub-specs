@@ -18,6 +18,7 @@ Editor's Drafts
 - [EPUB Multiple Renditions 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/)
 - [EPUB Fixed Layout Accessibility](https://w3c.github.io/epub-specs/epub33/fxl-a11y/)
 - [EPUB Canonical Fragment Identifiers 1.1](https://w3c.github.io/epub-specs/epub33/epubcfi/)
+- [EPUB Virtual Locators](https://w3c.github.io/epub-specs/epub33/locators/)
 
 The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
