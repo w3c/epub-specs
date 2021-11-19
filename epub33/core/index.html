@@ -282,6 +282,24 @@
 							media types designed for optimum compression or that provide optimized streaming
 							capabilities.</p>
 					</dd>
+
+					<dt>
+						<dfn id="dfn-container-root-url">Container Root URL</dfn>
+					</dt>
+					<dd>
+						<p>The <a data-cite="url#concept-url">URL</a> [[URL]] of the <a>Root Directory</a> representing the <a>OCF Abstract Container</a>. 
+							It is implementation specific, but EPUB Creators must assume it has properties defined in <a href="#sec-container-iri"></a>.</p>
+					</dd>
+
+					<dt>
+						<dfn id="dfn-content-url">Content URL</dfn>
+					</dt>
+					<dd>
+						<p>
+							The <a data-cite="url#concept-url">URL</a> of a file or directory in the <a>OCF Abstract Container</a>, defined in <a href="#sec-container-iri"></a>.
+						</p>
+					</dd>
+
 					<dt>
 						<dfn id="dfn-content-display-area">Content Display Area</dfn>
 					</dt>
@@ -367,6 +385,15 @@
 							a file within a directory.</p>
 					</dd>
 					<dt>
+						<dfn id="dfn-file-path" data-lt="File Paths">File Path</dfn>
+					</dt>
+					<dd>
+						<p>The File Path of a file or directory is its full path relative to the root directory, as defined by the algorithm specified in <a href="#sec-file-names-to-path-names"></a>.</p>
+
+						<!-- <p>The File Path of a file or directory <var>file</var> is the <a data-cite="url#concept-url-path">path</a> of the <a>content URL</a> for <var>file</var>. 
+						It is derived from the <a>File Name</a> of <var>file</var> following the steps specified in <a href="#sec-file-names-to-path-names"></a>.</p> -->
+					</dd>
+					<dt>
 						<dfn id="dfn-fixed-layout-document" data-lt="Fixed-Layout Documents">Fixed-Layout Document</dfn>
 					</dt>
 					<dd>
@@ -431,19 +458,6 @@
 							defined in <a href="#sec-package-doc"></a>. The Package Document carries meta information
 							about the EPUB Publication, provides a manifest of resources and defines a default reading
 							order.</p>
-					</dd>
-					<dt>
-						<dfn id="dfn-path-name" data-lt="Path Names">Path Name</dfn>
-					</dt>
-					<dd>
-						<p>For a given directory within the <a href="#sec-container-abstract">OCF Abstract
-							Container</a>, the string holding all directory <a>File Name</a> in the full path
-							concatenated together with a <code>/</code> (<code>U+002F</code>) character separating the
-							directory File Names.</p>
-						<p>For a given file within the OCF Abstract Container, the Path Name is the string holding all
-							directory File Names concatenated together with a <code>/</code> character separating the
-							directory File Names, followed by a <code>/</code> character and then the File Name of the
-							file.</p>
 					</dd>
 					<dt>
 						<dfn id="dfn-publication-resource" data-lt="Publication Resources">Publication Resource</dfn>
@@ -1191,6 +1205,14 @@
 					<p>All [[XML]] elements defined in this section are in the <code>http://www.idpf.org/2007/opf</code>
 						namespace [[XML-NAMES]] unless otherwise specified.</p>
 
+					<section>
+						<h4>Parsing URLs in the Package Document</h4>
+						<p>
+							To parse a URL string <var>url</var> used in the Package Document, the <a data-cite="url#concept-url-parser">URL Parser</a> [[URL]] MUST be applied to <var>url</var>, with the 
+							<a>content URL</a> of the Package Document as <var>base</var>.
+						</p>		
+					</section>
+
 					<section id="sec-shared-attrs">
 						<h5>Shared Attributes</h5>
 
@@ -1322,9 +1344,7 @@
 							</dt>
 							<dd>
 								<p>Establishes an association between the current expression and the element or resource
-									identified by its value. EPUB Creators MUST use as the value a <a
-										href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-										>relative-URL-with-fragment string</a> [[URL]] that references the resource or
+									identified by its value. EPUB Creators MUST use as the value a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code> and a <a data-cite="url#url-fragment-string">URL-fragment string</a> that references the resource or
 									element they are describing.</p>
 								<aside class="example">
 									<p>The following example shows the <code>refines</code> element used to indicate a
@@ -2773,12 +2793,11 @@
 							</dl>
 
 							<p>Each <code>item</code> element identifies a <a>Publication Resource</a> by the URL
-								[[URL]] in its <code>href</code> attribute. EPUB Creators MAY use <a
-									href="https://url.spec.whatwg.org/#absolute-url-string">absolute-</a> or <a
-									href="https://url.spec.whatwg.org/#relative-url-string">relative-URL string</a>
-								[[URL]], but they MUST ensure each URL is unique within the <code>manifest</code> scope
-								after <a href="https://www.w3.org/TR/epub-rs-33/#sec-pkg-doc-relative-urls">resolution
-									to an absolute URL</a> [[EPUB-RS-33]].</p>
+								[[URL]] in its <code>href</code> attribute. 
+
+								The value MUST be a an <a
+									href="https://url.spec.whatwg.org/#absolute-url-string">absolute-</a> or  <a href="https://url.spec.whatwg.org/#path-relative-scheme-less-URL">path-relative-scheme-less-URL</a> string. EPUB Creators MUST ensure each URL is unique within the <code>manifest</code> scope
+									after <a href="#parsing-urls-in-the-package-document">parsing</a>.</p>
 
 							<p id="attrdef-item-media-type">The Publication Resource identified by an <code>item</code>
 								element MUST conform to the applicable specification(s) as inferred from the MIME media
@@ -5300,81 +5319,24 @@ Spine:
 					</div>
 				</section>
 
-				<section id="sec-container-iri">
-					<h4>Relative URLs for Referencing Other Components</h4>
-
-					<p>Files within the <a>OCF Abstract Container</a> MUST reference each other via <a
-							href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-							>relative-URL-with-fragment strings</a> [[URL]].</p>
-
-					<aside class="example">
-						<p>The following example shows how to reference, from an [[HTML]] <code>img</code> element, a
-							file named <code>image1.jpg</code> in the same directory as an <a>XHTML Content
-							Document</a>.</p>
-						<pre>&lt;img src="image1.jpg" alt="…" /&gt;</pre>
-					</aside>
-
-					<p>EPUB Creators SHOULD NOT use <a href="https://url.spec.whatwg.org/#path-absolute-url-string"
-							>path-absolute-URL strings</a> [[URI]] (i.e., where the path begins with a single slash) to
-						reference resources in the OCF Abstract Container.</p>
-
-					<div class="note">
-						<p>The base of an EPUB Publication can change from Reading System to Reading Systems depending
-							on how the content is served. Some Reading Systems may treat the location of the package
-							document as the base of the EPUB Publication, for example, while others may use the <a>Root
-								Directory</a>.</p>
-					</div>
-
-					<p>The relevant language specification for a given file format determines the <a
-							href="https://url.spec.whatwg.org/#concept-base-url">base URL</a> [[URL]] used to parse <a
-							href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-							>relative-URL-with-fragment strings</a> [[URL]]. For example, CSS defines how relative URL
-						references work in the context of CSS style sheets and property declarations
-						[[CSSSnapshot]].</p>
-
-					<p>Unlike most language specifications, the <a href="https://url.spec.whatwg.org/#concept-base-url"
-							>base URL</a> [[URL]] for all files within the <code>META-INF</code> directory is the
-							<a>Root Directory</a> of the OCF Abstract Container.</p>
-
-					<p>For example, if <code>META-INF/container.xml</code> has the following content:</p>
-
-					<pre class="example">
-&lt;?xml version="1.0"?&gt;
-&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
-    &lt;rootfiles&gt;
-        &lt;rootfile full-path="EPUB/Great_Expectations.opf"
-            media-type="application/oebps-package+xml" /&gt;	
-    &lt;/rootfiles&gt;
-&lt;/container&gt;
-            </pre>
-
-					<p>then the path <code>EPUB/Great_Expectations.opf</code> is relative to the root directory for the
-						OCF Abstract Container and not relative to the <code>META-INF</code> directory.</p>
-
-					<p>All <a href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-							>relative-URL-with-fragment strings</a> [[URL]] MUST, after <a
-							href="https://url.spec.whatwg.org/#concept-url-parser">parsing to URL records</a> [[URL]],
-						identify resources within the OCF Abstract Container (i.e., at or below the Root Directory).</p>
-				</section>
-
 				<section id="sec-container-filenames">
-					<h4>Path and File Names</h4>
+					<h4>File Paths and File Names</h4>
 
-					<p id="ocf-fn-cs">In the context of the Abstract Container, <a>Path Names</a> and <a>File Names</a>
+					<p id="ocf-fn-cs">In the context of the Abstract Container, <a>File Paths</a> and <a>File Names</a>
 						are case sensitive.</p>
 
-					<p>In addition, the following restrictions are designed to allow Path Names and File Names to be
+					<p>In addition, the following restrictions are designed to allow File Paths and File Names to be
 						used without modification on most operating systems:</p>
 
 					<ul class="conformance-list">
 						<li>
-							<p id="ocf-fn-encoding">Path and File Names MUST be UTF-8 [[Unicode]] encoded.</p>
+							<p id="ocf-fn-encoding">File Names and Paths MUST be UTF-8 [[Unicode]] encoded.</p>
 						</li>
 						<li>
 							<p id="ocf-fn-length">File Names MUST NOT exceed 255 bytes.</p>
 						</li>
 						<li>
-							<p id="ocf-pn-length">The Path Name for any directory or file within the OCF Abstract
+							<p id="ocf-pn-length">The File Paths for any directory or file within the OCF Abstract
 								Container MUST NOT exceed 65535 bytes.</p>
 						</li>
 						<li>
@@ -5479,7 +5441,64 @@ Spine:
 								Creators</a> who want to use ZIP tools that have these restrictions may find it best to
 							restrict their File Names to the [[US-ASCII]] range.</p>
 					</div>
+				</section>
 
+				<section id="sec-file-names-to-path-names">
+					<h4>Deriving File Paths of Files</h4>
+
+					<p>To derive the <a>File Path</a> of a file or directory <var>file</var> in the <a href="#sec-container-abstract">OCF Abstract
+						Container</a> apply the following steps (expressed using the terminology of [[INFRA]]):</p>
+
+					<ol class="algorithm">
+						<li>Let <var>path</var> be an empty <a data-cite="infra#list">list</a>.</li>
+						<li>Let <var>current</var> be <var>file</var>.</li>
+						<li>While <var>current</var> is not the <a>Root Directory</a>:
+							<ol>
+								<li><a data-cite="infra#list-prepend">prepend</a> the <a>File Name</a> of <var>current</var> to <var>path</var>;</li>
+								<li>set <var>current</var> to the parent directory of <var>current</var>.</li>
+							</ol>	
+						</li>
+						<li>
+							Return the <a data-cite="infra#string-concatenate">concatenation</a> of <var>path</var> using the  <code>U+002F (/)</code> character.
+						</li>
+					</ol>
+				</section>
+
+				<section id="sec-container-iri">
+					<h4>URLs in the OCF Abstract Container</h4>
+
+					<p>The <a>container root URL</a> is the <a data-cite="url#concept-url">URL</a> [[URL]] of the
+						<a>Root Directory</a>. It is implementation specific, but EPUB Creators MUST assume it has the following properties:</p>
+
+					<ul>
+						<li>The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>/</code>" with the <a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is the <a>container root URL</a>.</li>
+						<li>The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>..</code>" with the <a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is the <a>container root URL</a>.</li>	
+					</ul>
+
+					<p>The <a>content URL</a> of a file or directory in the <a>OCF Abstract Container</a> is the result of <a data-cite="url#concept-url-parser">parsing</a> 
+						the file's <a>File Path</a> with the <a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a>.</p>
+
+					<div class="note">
+						<p>
+							<a data-cite="url#concept-url-parser">Parsing</a> may replace some characters in the File Path by their <a data-cite="url#percent-encode">percent encoded</a> alternative. For example, <code>A/B/C/file&nbsp;name.xhtml</code> becomes <code>A/B/C/file%20name.xhtml</code>. 
+						</p>
+					</div>
+
+					<p>
+						In the <a>OCF Abstract Container</a>, when a file uses a URL string to reference another file in the container, the string MUST be a 
+						<a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code> and a <a data-cite="url#url-fragment-string">URL-fragment string</a>.
+					</p>
+
+					<aside class="example">
+						<p>The following example shows how to reference, from an [[HTML]] <code>img</code> element, a
+							file named <code>image1.jpg</code> in the same directory as an <a>XHTML Content
+							Document</a>.</p>
+						<pre>&lt;img src="image1.jpg" alt="…" /&gt;</pre>
+					</aside>
+
+					<p class="note">
+						The properties of the <a>container root URL</a> are such that whatever the amount of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for example, <code>../../../secret</code>), it will be parsed to a content URL (and not "leak" outside the container). However, for better interoperability with non-conforming or legacy Reading Systems, EPUB Creators should avoid using more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> than needed to reach the target container file.
+					</p>
 				</section>
 
 				<section id="sec-container-metainf">
@@ -5494,6 +5513,32 @@ Spine:
 						<p>This directory is reserved for configuration files, specifically those defined in <a
 								href="#sec-container-metainf-files"></a>.</p>
 					</section>
+
+					<section id="sec-parsing-urls-metainf">
+						<h5>Parsing URLs in the <code>META-INF</code> Directory</h5>
+
+						<p>To parse a URL string <var>url</var> used in files located in the <code>META-INF</code> directory the 
+							<a data-cite="url#concept-url-parser">URL Parser</a> MUST be applied to <var>url</var>, with the <a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a>.</p>
+
+						<aside class="example">
+						<p>For example, if <code>META-INF/container.xml</code> has the following content:</p>
+
+						<pre class="example">
+	&lt;?xml version="1.0"?&gt;
+	&lt;container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"&gt;
+		&lt;rootfiles&gt;
+			&lt;rootfile full-path="EPUB/Great_Expectations.opf"
+				  media-type="application/oebps-package+xml" /&gt;	
+		&lt;/rootfiles&gt;
+	&lt;/container&gt;
+				</pre>
+	
+						<p>then the path <code>EPUB/Great_Expectations.opf</code> is relative to the root directory for the
+							OCF Abstract Container and not relative to the <code>META-INF</code> directory.</p>
+						</aside>
+	
+					</section>
+
 
 					<section id="sec-container-metainf-files">
 						<h5>Reserved Files</h5>
@@ -6723,10 +6768,7 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>Identifies an associated fragment of an EPUB Content Document.</p>
-										<p>The value MUST be a <a
-												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-												>relative-URL-with-fragment string</a> [[URL]] with a <a
-												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
+										<p>The value MUST be a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code> and a <a data-cite="url#url-fragment-string">URL-fragment string</a>.</p>
 									</dd>
 								</dl>
 							</dd>
@@ -6802,10 +6844,7 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>Identifies an associated fragment of an EPUB Content Document.</p>
-										<p>The value MUST be a <a
-												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-												>relative-URL-with-fragment string</a> [[URL]] with a <a
-												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
+										<p>The value MUST be a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code> and a <a data-cite="url#url-fragment-string">URL-fragment string</a>.</p>
 										<p>Refer to <a href="#sec-media-overlays-structure"></a> for more
 											information.</p>
 									</dd>
@@ -6936,10 +6975,7 @@ store destination as source in ocf
 									</dt>
 									<dd>
 										<p>Identifies the associated fragment of an EPUB Content Document.</p>
-										<p>The value MUST be a <a
-												href="https://url.spec.whatwg.org/#relative-url-with-fragment-string"
-												>relative-URL-with-fragment string</a> [[URL]] with a <a
-												href="#sec-media-overlays-fragids">fragment identifier</a>.</p>
+										<p>The value MUST be a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code> and a <a data-cite="url#url-fragment-string">URL-fragment string</a>.</p>
 									</dd>
 									<dt>
 										<code>id</code>
@@ -9454,6 +9490,9 @@ EPUB/images/cover.png</pre>
 						1873</a>.</li>
 				<li>12-Nov-2021: Removed the statement about rights.xml being reserved for future standardization of DRM
 					information. See <a href="https://github.com/w3c/epub-specs/issues/181">issue 1874</a>.</li>
+				<li>10-Nov-2021: Proper definition of the content URL and handling of relative URLs. See <a
+						href="https://github.com/w3c/epub-specs/issues/1374">issue 1374</a> and 
+						<a href="https://github.com/w3c/epub-specs/issues/1888">issue 1888</a></li>
 				<li>29-Oct-2021: Recommended that EPUB Creators not use path-absolute-URL strings for referencing
 					resources due to the lack of a consistent root. See <a
 						href="https://github.com/w3c/epub-specs/issues/1681">issue 1681</a>.</li>
