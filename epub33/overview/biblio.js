@@ -229,4 +229,9 @@ var biblio = {
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
+	"SVG": {
+		"title": "SVG",
+		"href": "https://www.w3.org/TR/SVG/",
+		"publisher": "W3C"
+	}
 }
