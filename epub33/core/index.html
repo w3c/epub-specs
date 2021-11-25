@@ -6101,13 +6101,67 @@ No Entry</pre>
 &lt;/html></pre>
 					</aside>
 
-					<p class="note"> The properties of the <a>container root URL</a> are such that whatever the amount
+					<p>The properties of the <a>container root URL</a> are such that whatever the amount
 						of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
-						example, <code>../../../secret</code>), it will be parsed to a content URL (and not "leak"
-						outside the container). However, for better interoperability with non-conforming or legacy
-						Reading Systems, EPUB Creators should avoid using more <a
-							data-cite="url/#double-dot-path-segment">double-dot path segments</a> than needed to reach
-						the target container file. </p>
+						example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
+						outside the container). This avoids potential security issues.
+						However, for better interoperability with non-conforming or legacy
+						Reading Systems and toolchains, EPUB Creators SHOULD NOT use 
+						more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> than needed to reach
+						the target container file.</p>
+
+					<div class="note">
+						<p>A possible algorithm to determine whether a relative URL is "out-of-container" may be as follows.</p>
+
+						<p>A URL string <var>url</var> is an out-of-container URL string if it 
+						   is a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>
+							and the following steps return <var>true</var>.
+						</p>
+
+						<ol class="algorithm">
+							<li>
+								Set the <a>container root URL</a> to <code>https://example.org/A/</code>.
+							</li>
+							<li>
+								Let <var>usage context</var> be either <a>content URL</a> of the content document where 
+								<var>url</var> appears, if applicable, or the <a>container root URL</a> otherwise.
+							</li>
+							<li>
+								Let <var>testURLRecord</var> be the result of <a data-cite="url#concept-url-parser">parsing</a> <var>url</var> with <var>usage context</var> as <a data-cite="url#concept-base-url"><var>base</var></a>.
+							</li>
+							<li>
+								Test if <var>testURLRecord</var> starts with the string <code>https://example.org/A/</code>.
+								<ul>
+									<li>If the result of the test is <var>false</var>, return <var>true</var>.</li>
+									<li>Otherwise:
+										<ol>
+											<li>
+												Set the <a>container root URL</a> to <code>https://example.org/B/</code>.
+											</li>
+											<li>
+												Let <var>usage context</var> be either <a>content URL</a> of the content document where 
+												<var>url</var> appears, if applicable, or the <a>container root URL</a> otherwise.
+											</li>
+											<li>
+												Let <var>testURLRecord</var> be the result of <a data-cite="url#concept-url-parser">parsing</a> <var>url</var> with <var>usage context</var> as <a data-cite="url#concept-base-url"><var>base</var></a>.
+											</li>
+											<li>Test if <var>testURLRecord</var> starts with the string <code>https://example.org/B/</code>.</li>
+											<ul>
+												<li>If the result of the test is <var>false</var>, return <var>true</var>.</li>
+												<li>Otherwise return <var>false</var>.</li>
+											</ul>
+										</ol>
+									</li>
+								</ul>
+							</li>
+						</ol>
+						<p>
+							The algorithm is not 100% precise and complete; for example, it does not take into account the effect of a possible 
+							<a href="https://html.spec.whatwg.org/multipage/semantics.html#the-base-element"><code>base</code></a> element 
+							when setting the usage context (note, however, that the usage of that element is <a href="#sec-xhtml-deviations-base">discouraged</a>).
+						</p>
+						<p>(The reasons to repeat the same steps twice with different, and artifical, settings of the container root URL is to avoid collision which may occur if the <var>url</var> string also includes <code>/A/</code>. Consider, for example, the case where <var>url</var> is of the form <code>"../../A/doc.xhtml</code>.)</p>
+					</div>
 				</section>
 
 				<section id="sec-container-metainf">
