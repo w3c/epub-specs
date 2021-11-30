@@ -6082,10 +6082,19 @@ No Entry</pre>
 					</div>
 
 					<p> In the <a>OCF Abstract Container</a>, when a file uses a URL string to reference another file in
-						the container, the string MUST be a 
+						the container, the string SHOULD be a 
 						<a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, 
 						optionally followed by <code>U+0023 (#)</code> and a 
 						<a data-cite="url#url-fragment-string">URL-fragment string</a>. 
+					</p>
+
+					<p class="note">	
+						The properties of the <a>container root URL</a> are such that whatever the amount
+						of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
+						example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
+						outside the container). This avoids potential run-time security issues. 
+						Furthermore, the additional constraint and <a href="#algo-out-of-container">algorithm</a> below 
+						ensure that such potentially problematic URLs can also be detected when checking the EPUB Document.
 					</p>
 
 					<p>For a URL string <var>url</var> found in the <a>OCF Abstract Container</a>, the following steps MUST also return <var>true</var>:</p>
@@ -6093,13 +6102,33 @@ No Entry</pre>
 					<ol class="algorithm" id="algo-out-of-container">
 						<li>
 							Set the <a>container root URL</a> to <code>https://a.example.org/A/</code>.
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">
+									The goal of the algorithm is to detect whether <var>url</var> could be seen as
+									"leaking" outside the container. 
+									To do that, the official <a data-cite="url#concept-url-parser">URL parsing algorithm</a> 
+									is used with an artificial root URL; the detection of the "leak" is done by 
+									comparing the result of the parsing with the presence of the first test path 
+									segment (<code>A</code>). 
+									(Note that the artificial container root URL wilfully violates, for the purpose of this
+									algorithm, the <a href="#confreq-root-url">required properties</a> by using 
+									that first test path segment.)     
+								</p>
+							</details>
 						</li>
 
 						<li>
-							Let <var>base</var> be the <a data-cite="url#concept-base-url">base URL</a> that must be used to <a data-cite="url#concept-url-parser">parse</a> <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>container root URL</a>. 
+							Let <var>base</var> be the <a data-cite="url#concept-base-url">base URL</a> that must be used to parse <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>content URL</a> of the <a>Package Document</a> (see <a href="#sec-parse-package-urls"></a>). 
 							<details>
 								<summary>Explanation</summary>
-								<p class="note">In the case of a URL in the package document the <var>base</var> variable is set to the <a>container root URL</a>. In the case of a URL in a content document, the <a>content URL</a> of the enclosing document will be used. Furthermore, this step also takes into account a possible <a data-cite="html#document-base-url"><code>base</code></a> element in an XHTML content document, although the usage of that element is <a href="#sec-xhtml-deviations-base">discouraged</a>.</p>
+								<p class="note">
+									In the case of a URL in the package document the <var>base</var> variable is set 
+									to the <a>container root URL</a>. In the case of a URL in an XHTML Content Document, the 
+									base URL used for parsing is defined by the 
+									<a data-cite="html#resolving-urls">HTML standard</a>. Typically, it will be 
+									the <a>content URL</a> of the content document (unless the <a href="#sec-xhtml-deviations-base">discouraged</a> <code>base</code> element is used).
+								</p>
 							</details>
 						</li>
 
@@ -6115,16 +6144,16 @@ No Entry</pre>
 							Set the <a>container root URL</a> to <code>https://b.example.org/B/</code>.
 							<details>
 								<summary>Explanation</summary>
-								<p class="note">The reasons to repeat the same steps twice with different, and artifical, settings of the container root URL is to avoid collision which may occur if the <var>url</var> string also includes <code>/A/</code>. Consider, for example, the case where <var>url</var> is of the form <code>"../../A/doc.xhtml</code>.</p>
+								<p class="note">The reasons to repeat the same steps twice with different, and artificial, settings of the container root URL is to avoid collision which may occur if the <var>url</var> string also includes <code>/A/</code>. Consider, for example, the case where <var>url</var> is <code>../../A/doc.xhtml</code>.</p>
 							</details>
 						</li>
 
 						<li>
-							Let <var>base</var> be the <a data-cite="url#concept-base-url">base URL</a> that must be used to <a data-cite="url#concept-url-parser">parse</a> <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>container root URL</a>. 
+							Set <var>base</var> to be the <a data-cite="url#concept-base-url">base URL</a> that must be used to parse <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>content URL</a> of the <a>Package Document</a> (see <a href="#sec-parse-package-urls"></a>). 
 						</li>
 
 						<li>
-							Let <var>testURLRecord</var> be the result of applying the <a data-cite="url#concept-url-parser">URL parser</a> to <var>url</var>, with <var>base</var>.
+							Set <var>testURLRecord</var> to be the result of applying the <a data-cite="url#concept-url-parser">URL parser</a> to <var>url</var>, with <var>base</var>.
 						</li>
 
 						<li>
@@ -6135,7 +6164,11 @@ No Entry</pre>
 							If <var>testURLStringA</var> does not start with <code>https://a.example.org/</code> or <var>testURLStringB</var> does not start with <code>https://b.example.org/</code>, return <var>true</var>.
 							<details>
 								<summary>Explanation</summary>
-								<p class="note">If any of the result does not share the test URL host, it means the test URL, or the <code>base</code> element, was <em>absolute</em> and point outside the container. This is acceptable.</p>
+								<p class="note">
+									If any of the result does not share the test URL host, it means that <var>url</var>, or
+									its base URL (for example, in HTML, if it is explicitly set with the <code>base</code> 
+									element), was <em>absolute</em> and points outside the container. This is acceptable.
+								</p>
 							</details>
 						</li>
 
@@ -6150,22 +6183,11 @@ No Entry</pre>
 						<li>Return <var>false</var>.</li>
 					</ol>
 
-					<div class="note">
-						<p>	
-							The properties of the <a>container root URL</a> are such that whatever the amount
-							of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
-							example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
-							outside the container). This avoids potential run-time security issues. However, the additional
-							constraint and <a href="#algo-out-of-container">algorithm</a> ensure that such potentially 
-							problematic URLs can also be detected when checking the EPUB Document.
-						</p>
-
-						<p>
-							For better interoperability with non-conforming or legacy Reading Systems and toolchains, 
-							EPUB Creators should not use more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> 
-							than needed to reach the target container file.
-						</p>							
-					</div>
+					<p class="note">
+						For better interoperability with non-conforming or legacy Reading Systems and toolchains, 
+						EPUB Creators should not use more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> 
+						than needed to reach the target container file.
+					</p>							
 
 					<aside class="example" title="Referencing a file in the same directory">
 						<p>In this example, the file <code>image1.jpg</code> is in the same directory as the <a>XHTML
@@ -6195,10 +6217,7 @@ No Entry</pre>
 						</pre>						
 
 						<p>
-							The URL `../../../../EPUB/secret.xhtml`, appearing in `content.xhtml`, is out of container
-							and would be flagged as non acceptable by a checker tool based on the relevant <a href="algo-out-of-container">algorithm</a>. Furthermore, following the 
-							<a href="#confreq-root-url">constraints</a> on the <a>container root URL</a> the Reading System parses
-							this relative URL into <a>content URL</a> with a path `EPUB/secret.xhtml`.
+							A URL `../../../../EPUB/secret.xhtml` appearing in `content.xhtml` would be parsed by a Reading System into a <a>content URL</a> with a path `EPUB/secret.xhtml`, following the constraints on the <a>container root URL</a>. However, as the URL could be perceived as one of a resource outside the container, and create interoperability issues, it would be reported as a warning by a checker tool.
 						</p>
 					</aside>
 			</section>
