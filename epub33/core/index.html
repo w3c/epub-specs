@@ -6081,23 +6081,12 @@ No Entry</pre>
 
 					</div>
 
-					<p> In the <a>OCF Abstract Container</a>, when a file uses a URL string to reference another file in
-						the container, the string MUST be a 
-						<a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, 
+					<p>
+						A string is a <dfn id="dfn-valid-relative-container-url-string">valid-relative-container-URL-string</dfn> if it is 
+						a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, 
 						optionally followed by <code>U+0023 (#)</code> and a 
-						<a data-cite="url#url-fragment-string">URL-fragment string</a>. 
+						<a data-cite="url#url-fragment-string">URL-fragment string</a>, and if the following steps return <var>true</var>:
 					</p>
-
-					<p class="note">	
-						The properties of the <a>container root URL</a> are such that whatever the amount
-						of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
-						example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
-						outside the container). This avoids potential run-time security issues. 
-						Furthermore, the additional constraint and <a href="#algo-out-of-container">algorithm</a> below 
-						ensure that such potentially problematic URLs can also be detected when checking the EPUB Document.
-					</p>
-
-					<p>To validate a URL string <var>url</var> found in the <a>OCF Abstract Container</a>, the following steps SHOULD return <var>true</var>:</p>
 
 					<ol class="algorithm" id="algo-out-of-container">
 						<li>
@@ -6183,11 +6172,28 @@ No Entry</pre>
 						<li>Return <var>false</var>.</li>
 					</ol>
 
-					<p class="note">
-						For better interoperability with non-conforming or legacy Reading Systems and toolchains, 
-						EPUB Creators should not use more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> 
-						than needed to reach the target container file.
-					</p>							
+					<p>
+						In the <a>OCF Abstract Container</a>, any URL string MUST be an <a data-cite="url#https://url.spec.whatwg.org/#absolute-url-with-fragment-string">absolute-URL-with-fragment-string</a> or a <a>valid-relative-container-URL-string</a>.
+					</p>
+
+					<div class="note">
+						<p>	
+							The properties of the <a>container root URL</a> are such that whatever the amount
+							of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
+							example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
+							outside the container). This avoids potential run-time security issues. 
+							The additional constraint on <a>valid-relative-container-URL-strings</a>  
+							ensures that such potentially problematic URLs can also be detected when checking the EPUB Document.
+						</p>
+	
+	
+						<p>
+							For better interoperability with non-conforming or legacy Reading Systems and toolchains, 
+							EPUB Creators should not use more <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> 
+							than needed to reach the target container file.
+						</p>							
+	
+					</div>
 
 					<aside class="example" title="Referencing a file in the same directory">
 						<p>In this example, the file <code>image1.jpg</code> is in the same directory as the <a>XHTML
@@ -6217,7 +6223,7 @@ No Entry</pre>
 						</pre>						
 
 						<p>
-							A URL `../../../../EPUB/secret.xhtml` appearing in `content.xhtml` would be parsed by a Reading System into a <a>content URL</a> with a path `EPUB/secret.xhtml`, following the constraints on the <a>container root URL</a>. However, as the URL could be perceived as one of a resource outside the container, and create interoperability issues, it would be reported as a warning by a checker tool.
+							A URL `../../../../EPUB/secret.xhtml` appearing in `content.xhtml` would be parsed by a Reading System into a <a>content URL</a> with a path `EPUB/secret.xhtml`, following the constraints on the <a>container root URL</a>. However, as the URL could be perceived as one of a resource outside the container, and create interoperability issues; it would be reported as an error by a checker tool.
 						</p>
 					</aside>
 			</section>
