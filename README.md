@@ -13,6 +13,7 @@ Editor's Drafts
 - [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub33/overview/)
 - [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/) (On Recommendation track)
 - [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/) (On Recommendation track)
+- [EPUB Structural Semantics Vocabulary 1.1](https://w3c.github.io/epub-specs/epub33/ssv/)
 - [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/) (On Recommendation track)
 - [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 - [EPUB Multiple Renditions 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/)
