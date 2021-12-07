@@ -1011,38 +1011,38 @@
 				<section id="sec-resource-locations">
 					<h4>Resource Locations</h4>
 
-					<p>EPUB Creators MUST <a href="#sec-container-iri">locate all Publication Resources in the EPUB
-							Container</a>, with the following exceptions:</p>
+					<p>EPUB Creators MAY host the following types of Publication Resources outside the EPUB
+						Container:</p>
 
 					<ul class="conformance-list">
 						<li>
-							<p id="sec-resource-locations-audio"><a href="#cmt-grp-audio">Audio resources</a> referenced
-								from the [[HTML]] <a data-cite="html#the-audio-element"><code>audio</code> element</a>
-								(either from its <code>src</code> attribute or a child <a
-									data-cite="html#the-track-element"><code>track</code> element</a>) and from the
-								Media Overlays <a href="#sec-smil-audio-elem"><code>audio</code> element</a>.</p>
+							<p id="sec-resource-locations-audio"><a href="#cmt-grp-audio">Audio resources</a>.</p>
 						</li>
 						<li>
-							<p id="sec-resource-locations-video"><a href="#cmt-grp-video">Video resources</a> referenced
-								from the [[HTML]] <a data-cite="html#the-video-element"><code>video</code> element</a>
-								(either from its <code>src</code> attribute or a child <a
-									data-cite="html#the-track-element"><code>track</code> element</a>).</p>
+							<p id="sec-resource-locations-video"><a href="#cmt-grp-video">Video resources</a>.</p>
 						</li>
 						<li>
 							<p id="sec-resource-locations-script">Resources retrieved via scripting APIs (e.g.,
 								XmlHttpRequest [[?XHR]] and Fetch [[?FETCH]]).</p>
 						</li>
 						<li>
-							<p id="sec-resource-locations-fonts"><a href="#cmt-grp-font">Font resources</a> referenced
-								from <a data-cite="css-fonts-5#font-face-rule"><code>@font-face</code> rules</a>
-								[[CSS-FONTS-5]], <a data-cite="css-cascade-4#at-import"><code>@import</code> rules</a>
-								[[CSS-CASCADE-4]], and the [[HTML]] <a data-cite="html#the-link-element"
-										><code>link</code> element</a>.</p>
+							<p id="sec-resource-locations-fonts"><a href="#cmt-grp-font">Font resources</a>.</p>
 						</li>
 					</ul>
 
-					<p>EPUB Creators should locate these resources inside the EPUB Container whenever feasible to allow
-						users access to the entire presentation regardless of connectivity status.</p>
+					<p>EPUB Creators MUST store all other resources within the EPUB Container.</p>
+
+					<p>Storing all resources inside the EPUB Container allows users access to the entire presentation
+						regardless of connectivity status so is strongly encouraged whenever possible.</p>
+
+					<p>These rules for locating Publication Resource apply regardless of whether the given resource is a
+							<a>Core Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
+
+					<div class="note">
+						<p>Refer to the <a href="#remote-resources"><code>remote-resources</code> property</a> for more
+							information on how to indicate that a <a>manifest</a>
+							<a href="#sec-item-elem"><code>item</code></a> references a <a>Remote Resource</a>.</p>
+					</div>
 
 					<aside class="example" title="Referencing a local resource">
 						<p>In this example, the audio file referenced from the [[HTML]] <a
@@ -1075,17 +1075,6 @@
    &lt;/body>
 &lt;/html></pre>
 					</aside>
-
-					<div class="note">
-						<p>The rules in this section for Publication Resource locations apply regardless of whether the
-							given resource is a <a>Core Media Type Resource</a> or a <a>Foreign Resource</a>.</p>
-					</div>
-
-					<div class="note">
-						<p>The inclusion of Remote Resources is indicated via the <a href="#remote-resources"
-									><code>remote-resources</code> property</a> on the <a>manifest</a>
-							<a href="#sec-item-elem"><code>item</code> element</a>.</p>
-					</div>
 				</section>
 
 				<section id="sec-data-urls">
@@ -5226,8 +5215,9 @@ No Entry</pre>
 
 					</div>
 
-					<p>When the property is set to <code>pre-paginated</code> for a spine item, its content dimensions
-						MUST be set as defined in <a href="#sec-fixed-layouts"></a>.</p>
+					<p id="fxl-layout-duplication" data-tests="#fxl-layout-duplication">When the property is set to
+							<code>pre-paginated</code> for a spine item, its content dimensions MUST be set as defined
+						in <a href="#sec-fixed-layouts"></a>.</p>
 
 					<p>The <code>rendition:layout</code> property MUST NOT be declared more than once.</p>
 
@@ -5331,8 +5321,8 @@ No Entry</pre>
 						</dd>
 					</dl>
 
-					<p>EPUB Creators MUST NOT declare the <code>rendition:orientation</code> property more than
-						once.</p>
+					<p id="fxl-orientation-duplication" data-tests="#fxl-orientation-duplication">EPUB Creators MUST NOT
+						declare the <code>rendition:orientation</code> property more than once.</p>
 
 					<aside class="example" id="fxl-ex2" title="Specifying global landscape orientation">
 						<p>In this example, the content should also render without synthetic spreads.</p>
@@ -5961,10 +5951,121 @@ No Entry</pre>
 
 					</div>
 
-					<p> In the <a>OCF Abstract Container</a>, when a file uses a URL string to reference another file in
-						the container, the string MUST be a <a data-cite="url#path-relative-scheme-less-url-string"
-							>path-relative-scheme-less-URL string</a>, optionally followed by <code>U+0023 (#)</code>
-						and a <a data-cite="url#url-fragment-string">URL-fragment string</a>. </p>
+					<p>
+						A string <var>url</var> is a <dfn id="dfn-valid-relative-container-url-with-fragment-string">valid-relative-container-URL-with-fragment string</dfn> if it is 
+						a <a data-cite="url#path-relative-scheme-less-url-string">path-relative-scheme-less-URL string</a>, 
+						optionally followed by <code>U+0023 (#)</code> and a 
+						<a data-cite="url#url-fragment-string">URL-fragment string</a>, and if the following steps return <var>true</var>:
+					</p>
+
+					<ol class="algorithm" id="algo-out-of-container">
+						<li>
+							Set the <a>container root URL</a> to <code>https://a.example.org/A/</code>.
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">
+									The goal of the algorithm is to detect whether <var>url</var> could be seen as
+									"leaking" outside the container. 
+									To do that, the standard <a data-cite="url#concept-url-parser">URL parsing algorithm</a> 
+									is used with an artificial root URL; the detection of the "leak" is done by 
+									comparing the result of the parsing with the presence of the first test path 
+									segment (<code>A</code>). 
+									(Note that the artificial container root URL wilfully violates, for the purpose of this
+									algorithm, the <a href="#confreq-root-url">required properties</a> by using 
+									that first test path segment.)     
+								</p>
+							</details>
+						</li>
+
+						<li>
+							Let <var>base</var> be the <a data-cite="url#concept-base-url">base URL</a> that must be used to parse <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>content URL</a> of the <a>Package Document</a> (see <a href="#sec-parse-package-urls"></a>). 
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">
+									In the case of a URL in the package document the <var>base</var> variable is set 
+									to the <a>content URL</a> of the <a>Package Document</a>. 
+									In the case of a document within the <code>META-INF</code> directory, the <var>base</var> variable is set to 
+									the <a>container root URL</a> (see <a href="#sec-parsing-urls-metainf"></a>).
+									In the case of a URL in an XHTML Content Document, the  base URL used for parsing is defined by the 
+									<a data-cite="html#resolving-urls">HTML standard</a>. Typically, it will be 
+									the <a>content URL</a> of the content document (unless the <a href="#sec-xhtml-deviations-base">discouraged</a> <code>base</code> element is used).
+								</p>
+							</details>
+						</li>
+
+						<li>
+							Let <var>testURLRecord</var> be the result of applying the <a data-cite="url#concept-url-parser">URL parser</a> to <var>url</var>, with <var>base</var>.
+						</li>
+
+						<li>
+							Let <var>testURLStringA</var> be the result of applying the <a data-cite="url#concept-url-serializer">URL Serializer</a> to <var>testURLRecord</var>.
+						</li>
+
+						<li>
+							Set the <a>container root URL</a> to <code>https://b.example.org/B/</code>.
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">The reasons to repeat the same steps twice with different, and artificial, settings of the container root URL is to avoid collision which may occur if the <var>url</var> string also includes <code>/A/</code>. Consider, for example, the case where <var>url</var> is <code>../../A/doc.xhtml</code>.</p>
+							</details>
+						</li>
+
+						<li>
+							Set <var>base</var> to be the <a data-cite="url#concept-base-url">base URL</a> that must be used to parse <var>url</var> as defined by the context (document or environment) where <var>url</var> is used, and according to the <a>content URL</a> of the <a>Package Document</a> (see <a href="#sec-parse-package-urls"></a>). 
+						</li>
+
+						<li>
+							Set <var>testURLRecord</var> to be the result of applying the <a data-cite="url#concept-url-parser">URL parser</a> to <var>url</var>, with <var>base</var>.
+						</li>
+
+						<li>
+							Let <var>testURLStringB</var> be the result of applying the <a data-cite="url#concept-url-serializer">URL Serializer</a> to <var>testURLRecord</var>.
+						</li>
+
+						<li>
+							If <var>testURLStringA</var> does not start with <code>https://a.example.org/</code> or <var>testURLStringB</var> does not start with <code>https://b.example.org/</code>, return <var>true</var>.
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">
+									If any of the result does not share the test URL host, it means that <var>url</var>, or
+									its base URL (for example, in HTML, if it is explicitly set with the <code>base</code> 
+									element), was <em>absolute</em> and points outside the container. This is acceptable.
+								</p>
+							</details>
+						</li>
+
+						<li>
+							If <var>testURLStringA</var> starts with <code>https://a.example.org/A/</code> and <var>testURLStringB</var> starts with <code>https://b.example.org/B/</code>, return <var>true</var>.
+							<details>
+								<summary>Explanation</summary>
+								<p class="note">The presence of the first test path segments (<code>A</code>, respectively <code>B</code>) indicate that the URL doesn't leak outside the container.</p>
+							</details>
+						</li>
+
+						<li>Return <var>false</var>.</li>
+					</ol>
+
+					<p>
+						In the <a>OCF Abstract Container</a>, any URL string MUST be an <a data-cite="url#absolute-url-with-fragment-string">absolute-URL-with-fragment-string</a> or a <a>valid-relative-container-URL-with-fragment string</a>.
+					</p>
+
+					<div class="note">
+						<p>	
+							The properties of the <a>container root URL</a> are such that whatever the amount
+							of <a data-cite="url#double-dot-path-segment">double-dot path segments</a> in a URL string (for
+							example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not "leak"
+							outside the container). This avoids potential run-time security issues. 
+							The additional constraint on <a>valid-relative-container-URL-with-fragment strings</a>  
+							ensures that such potentially problematic URLs can also be detected when checking the EPUB Publication.
+						</p>
+	
+	
+						<p>
+							For better interoperability with non-conforming or legacy Reading Systems and toolchains, 
+							EPUB Creators should not use more <a data-cite="url#double-dot-path-segment">double-dot path segments</a> 
+							than needed to reach the target container file.
+						</p>							
+	
+					</div>
 
 					<aside class="example" title="Referencing a file in the same directory">
 						<p>In this example, the file <code>image1.jpg</code> is in the same directory as the <a>XHTML
@@ -5981,14 +6082,23 @@ No Entry</pre>
 &lt;/html></pre>
 					</aside>
 
-					<p class="note"> The properties of the <a>container root URL</a> are such that whatever the amount
-						of <a data-cite="url/#double-dot-path-segment">double-dot path segments</a> in a URL string (for
-						example, <code>../../../secret</code>), it will be parsed to a content URL (and not "leak"
-						outside the container). However, for better interoperability with non-conforming or legacy
-						Reading Systems, EPUB Creators should avoid using more <a
-							data-cite="url/#double-dot-path-segment">double-dot path segments</a> than needed to reach
-						the target container file. </p>
-				</section>
+					<aside class="example" title='An "out-of-container" URL'>
+						<p>Given the following container structure:</p>
+
+						<pre>
+							/
+							├── mimetype
+							├── META-INF
+							│   └── container.xml
+							└── EPUB
+							    └── content.xhtml
+						</pre>						
+
+						<p>
+							A URL `../../../../EPUB/secret.xhtml` appearing in `content.xhtml` would be parsed by a Reading System into a <a>content URL</a> with a path `EPUB/secret.xhtml`, following the constraints on the <a>container root URL</a>. However, as the URL could be perceived as one of a resource outside the container, and create interoperability issues; it would be reported as an error by a checker tool.
+						</p>
+					</aside>
+			</section>
 
 				<section id="sec-container-metainf">
 					<h4><code>META-INF</code> Directory</h4>
@@ -8687,9 +8797,50 @@ html.my-document-playing * {
 		<section id="app-overview-unsupported" class="appendix">
 			<h2>Unsupported Features</h2>
 
-			<p>This specification contains certain features the Working Group no longer recommends for use or that are
-				only retained for legacy support reasons. This section defines the meanings of the designations attached
-				to these features and their support expectations.</p>
+			<p>This specification contains certain features that are not yet fully supported in Reading Systems, that
+				the Working Group no longer recommends for use, or that are only retained for interoperability with EPUB
+				2 Reading Systems. This section defines the meanings of the designations attached to these features and
+				their support expectations.</p>
+
+			<section id="risky">
+				<h3>Risky Features</h3>
+
+				<p>A <strong>risky</strong> feature is a feature introduced prior to EPUB 3.3 for which the Working
+					Group has not been able to establish enough <a
+						href="https://www.w3.org/Consortium/Process/#adequate-implementation">implementation
+						experience</a>.</p>
+
+				<p>These features are considered important to retain despite this limitation because they are known to
+					be implemented by EPUB Creators (i.e., their deprecation would invalidate existing content) and/or
+					they are integral to the content model on which EPUB is built.</p>
+
+				<p>If this specification designates a feature as risky, the following hold true:</p>
+
+				<ul>
+					<li>
+						<p><a>EPUB Creators</a> MAY use the features as described.</p>
+					</li>
+					<li>
+						<p><a>Reading Systems</a> SHOULD support the feature as described.</p>
+					</li>
+				</ul>
+
+				<p>Validation tools SHOULD alert EPUB Creators to the presence of risky features when encountered in
+					EPUB Publications but MUST NOT treat their inclusion as a violation of the standard (i.e., not emit
+					errors or warnings).</p>
+
+				<div class="caution">
+					<p>Whether risky labels are removed or replaced by deprecation in a future version of the standard
+						cannot be determined at this time. EPUB Creators should strongly consider the interoperability
+						problems that may arise both now and in the future when using these features.</p>
+				</div>
+
+				<div class="note">
+					<p>The marking of features as risky is a one-time event to account for the different process under
+						which EPUB was developed prior to being brought into W3C. This label will not be used for new
+						features developed under W3C processes.</p>
+				</div>
+			</section>
 
 			<section id="deprecated">
 				<h3>Deprecated Features</h3>
@@ -10420,9 +10571,16 @@ EPUB/images/cover.png</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<ul>
+				<li>03-Dec-2021: Added a new risky class for unsupported features. See <a
+						href="https://github.com/w3c/epub-specs/issues/1944">issue 1944</a>.</li>
+				<li>03-Dec-2021: Remove the element-based restrictions on remote resources. See <a
+						href="https://github.com/w3c/epub-specs/issues/1913">issue 1913</a>.</li>
 				<li>01-Dec-2021: Deprecated the use of <code>page-spread-center</code>. It is now an alias for
 						<code>spread-none</code>. See <a href="https://github.com/w3c/epub-specs/issues/1929">issue
 						1929</a>.</li>
+				<li>26-Nov-2021: A requirement and an algorithm to detect out-of-container URLs has been added to the 
+					specification. See <a href="https://github.com/w3c/epub-specs/issues/1912">issue 1912</a>
+				</li>
 				<li>18-Nov-2021: Change to only disallow deprecated characters in the Tags and Variation Selectors
 					Supplement. See <a href="https://github.com/w3c/epub-specs/issues/1885">issue 1885</a>.</li>
 				<li>12-Nov-2021: Change the recommendation to use SHA-1 to encrypt the obfuscation key to a requirement.
