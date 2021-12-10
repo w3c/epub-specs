@@ -4,11 +4,11 @@
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
 the EPUB Accessibility 1.1 specification for consideration as a W3C Proposed Recommendation
-after documenting implementation of each feature.</p>
+after documenting implementation of each feature.
 
 For this specification to advance to Proposed Recommendation, it has to be
 proven that metadata defined and required in this specification have sufficient usage by the
-target communities. This metadata falls into two categories:</p>
+target communities. This metadata falls into two categories:
 
 1. required and recommended schema.org metadata for describing the accessibility
 of publications; and
