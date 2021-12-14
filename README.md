@@ -8,18 +8,18 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 ## EPUB 3.3
 
-Editor's Drafts
+Editor's Drafts of documents under active development:
 
 - [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub33/overview/)
 - [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/) (On Recommendation track)
 - [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/) (On Recommendation track)
 - [EPUB Structural Semantics Vocabulary 1.1](https://w3c.github.io/epub-specs/epub33/ssv/)
+- [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
+- [EPUB 3 Text-to-Speech Enhancements 1.0](https://w3c.github.io/epub-specs/epub33/tts/)
 - [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/) (On Recommendation track)
 - [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
-- [EPUB Multiple Renditions 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/)
-- [EPUB Fixed Layout Accessibility](https://w3c.github.io/epub-specs/epub33/fxl-a11y/)
-- [EPUB Canonical Fragment Identifiers 1.1](https://w3c.github.io/epub-specs/epub33/epubcfi/)
-- [EPUB Virtual Locators](https://w3c.github.io/epub-specs/epub33/locators/)
+- [W3C EPUB Accessibility - EU Accessibility Act Mapping](https://w3c.github.io/epub-specs/epub33/epub-a11y-eaa-mapping/)
+
 
 The EPUB 3.3 revision started on September 11, 2020. It is [chartered](https://www.w3.org/2020/08/epub-wg-charter.html) to run until February 2023.
 
