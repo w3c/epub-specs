@@ -14,7 +14,6 @@ Editor's Drafts of documents under active development:
 - [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/) (On Recommendation track)
 - [EPUB Reading Systems 3.3](https://w3c.github.io/epub-specs/epub33/rs/) (On Recommendation track)
 - [EPUB Structural Semantics Vocabulary 1.1](https://w3c.github.io/epub-specs/epub33/ssv/)
-- [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 - [EPUB 3 Text-to-Speech Enhancements 1.0](https://w3c.github.io/epub-specs/epub33/tts/)
 - [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/) (On Recommendation track)
 - [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
