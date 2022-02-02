@@ -291,9 +291,11 @@
 
 			<section id="sec-epub-rs-i18n">
 				<h2>Internationalization</h2>
+
 				<p>A Reading System MUST process, for all <a data-cite="epub-33#dfn-publication-resource">Publication
 						Resources</a>, the attributes that set the language for the documents' contents, when
 					applicable. This includes:</p>
+
 				<ul>
 					<li>the <code>xml:lang</code> attribute for all XML documents like the <a
 							data-cite="epub-33#attrdef-xml-lang">Package Document</a> or the <a
@@ -324,6 +326,50 @@
 					attributes on link elements, or from <code>dc:language</code> elements). Refer to a resource's
 					formal specification for more information about to handle the absence of explicit language or
 					direction information.</p>
+			</section>
+
+			<section id="sec-epub-rs-network-access">
+				<h3>Network Access</h3>
+
+				<p>Reading Systems may support network access to enable the <a href="#sec-epub-rs-conf-remote-res"
+						>retrieval of remote resources</a> and to allow <a>Scripted Content Documents</a>
+					<a href="#confreq-rs-scripted-limit">to communicate with web-hosted APIs and retrieve
+					resources</a>.</p>
+
+				<p>Providing network access, however, increases both the security risks to the Reading Systems and the
+					security and privacy risks to users. These risks are often unique to Reading Systems and the
+					platforms they run on &#8212; the browser cores most dedicated Reading System apps are built on do
+					not offer the same security and privacy controls as web browsers themselves. Consequently,
+					developers need to use extra caution when allowing network access, and more thoroughly test that
+					their Reading Systems are not vulnerable to attacks. More information about these risks is provided
+					in <a href="#sec-security-privacy"></a>.</p>
+
+				<p>If Reading System developers opt to allow network access, it is strongly RECOMMENDED that they
+					include methods to notify the user that network activity is occurring and/or that allow them to
+					disable it.</p>
+
+				<p>For example, users might be presented with a global setting that disables all network access on a
+					Reading System-wide or publication-by-publication basis (i.e., no downloading of remote resources or
+					scripting access). Users could also be provided the option to block or terminate network access
+					occurring within a publication to prevent unwanted scripting interactions.</p>
+			</section>
+
+			<section id="sec-epub-rs-external-links">
+				<h3>External Links</h3>
+
+				<p>Reading Systems SHOULD open links that resolve outside the <a>EPUB Publication</a> in a new browser
+					instance to ensure that the security and privacy controls of the browser are available to users.</p>
+
+				<p>Although links to external web sites and resources are commonly found in <a>EPUB Content
+						Documents</a>, these are not the only sources. If a Reading System provides access to <a
+						href="https://www.w3.org/TR/epub-33/#sec-link-elem">linked records</a> [[EPUB-33]] in the
+						<a>Package Document</a> metadata, for example, it should similarly open the links in a new
+					browser instance.</p>
+
+				<div class="note">
+					<p>For more information about the security and privacy issues related to external links, see <a
+							href="#epub-threat-model"></a>.</p>
+				</div>
 			</section>
 		</section>
 		<section id="sec-package-doc">
@@ -891,6 +937,84 @@
 				<p id="confreq-rs-scripted-flbk">If a Reading System does not support scripting, it MUST process
 					fallbacks for scripted content as defined in <a data-cite="epub-33#confreq-cd-scripted-flbk"
 						>Fallbacks for Scripted Content Documents</a> [[EPUB-33]].</p>
+
+				<section id="sec-local-storage">
+					<h4>Local Storage</h4>
+
+					<p>Scripts may save persistent data through cookies and DOM storage, but Reading Systems MAY block
+						such attempts. Reading Systems that allow users to store data MUST ensure they do not make that
+						data available to other unrelated documents (e.g., ones that could be spoofed). In particular,
+						checking for a matching document identifier (or similar metadata) is not a valid method to
+						control access to persistent data.</p>
+
+					<p>Reading Systems that allow local storage SHOULD provide methods for users to inspect or delete
+						that data.</p>
+				</section>
+
+				<section id="sec-scripted-content-events">
+					<h4>Event Model</h4>
+
+					<p>Reading Systems SHOULD follow the DOM Event model as per [[HTML]] and pass UI events to the
+						scripting environment before performing any default action associated with these events.</p>
+
+					<p>Reading System developers must ensure that scripts cannot disable critical functionality (such as
+						navigation) to constrain the extent to which a <a href="#sec-scripted-content-security"
+							>potentially malicious</a> script could impact their Reading Systems. As a result, although
+						the scripting environment should be able to cancel the default action of any event, some events
+						either might not be passed through or might not be cancelable.</p>
+				</section>
+
+				<section id="sec-scripted-content-security" class="informative">
+					<h3>Security Considerations</h3>
+
+					<p>Reading System developers who also support scripting must be aware of the security issues that
+						arise when Reading Systems execute scripted content. As the underlying scripting model employed
+						by Reading Systems and browsers is the same, developers must take into consideration the same
+						kinds of issues encountered in Web contexts.</p>
+
+					<p>Each Reading System must establish if it can trust the scripts in a particular document. Reading
+						Systems should treat all scripts as untrusted (and potentially malicious), and developers should
+						examine all vectors of attack and protect against them. In particular, developers should
+						consider the following:</p>
+
+					<ul>
+						<li>
+							<p>an attack against the runtime environment (e.g., stealing files from a user's hard
+								drive);</p>
+						</li>
+						<li>
+							<p>an attack against the Reading System itself (e.g., stealing a list of a user's books or
+								causing unexpected behavior);</p>
+						</li>
+						<li>
+							<p>an attack of one Content Document against another (e.g., stealing data that originated in
+								a different document);</p>
+						</li>
+						<li>
+							<p>an attack of an unencrypted script against an encrypted portion of a document (e.g., an
+								injected malicious script extracting protected content);</p>
+						</li>
+						<li>
+							<p>an attack against the local network (e.g., stealing data from a server behind a
+								firewall).</p>
+						</li>
+					</ul>
+
+					<p>To limit the possible damage of untrusted scripts, this specification recommends that Reading
+						Systems establish a unique <a data-cite="url#origin">origin</a> [[URL]] allocated to each
+							<a>EPUB Publication</a> (see <a href="#sec-container-iri"></a>). Adopting this approach
+						isolates publications from each other, thereby limiting access to cookies, DOM storage, etc.
+						Examples of Web APIs that are tied to the concept of "origin" include Web Storage [[WEBSTORAGE]]
+						and IndexedDB [[INDEXEDDB]], which EPUB Content Documents can interact with via scripting.
+						Reading Systems that allow users to add/remove publications from a managed library (their
+						"bookshelf") may maintain the publication’s unique origin when the publication is removed and
+						subsequently re-imported into the content library. Conversely, Reading Systems may create a new
+						unique origin for every newly added publication.</p>
+
+					<p>Note that compliance with these recommendations does not guarantee protection from the possible
+						attacks listed above; developers must examine each potential vulnerability within the context of
+						their Reading System.</p>
+				</section>
 			</section>
 		</section>
 		<section id="sec-nav">
@@ -939,7 +1063,6 @@
 			<p id="confreq-nav-spine" data-tests="#nav-spine_in-spine,#nav-spine_not-in-spine">Reading Systems MUST
 				honor the above requirements irrespective of whether the EPUB Navigation Document is part of the <a
 					data-cite="epub-33#sec-spine-elem">spine</a> [[EPUB-33]].</p>
-
 		</section>
 		<section id="sec-fixed-layouts">
 			<h2>Fixed-Layout Documents Processing</h2>
@@ -2011,107 +2134,16 @@
 					formats for further details. </p>
 			</section>
 
-			<section id="sec-scripted-content-security">
-				<h3>Scripting Considerations</h3>
-
-				<p>Reading System developers who also support scripting must be aware of the security issues that arise
-					when Reading Systems execute scripted content. As the underlying scripting model employed by Reading
-					Systems and browsers is the same, developers must take into consideration the same kinds of issues
-					encountered in Web contexts.</p>
-
-				<p>Each Reading System must establish if it can trust the scripts in a particular document. Reading
-					Systems should treat all scripts as untrusted (and potentially malicious), and developers should
-					examine all vectors of attack and protect against them. In particular, developers should consider
-					the following:</p>
-
-				<ul>
-					<li>
-						<p>an attack against the runtime environment (e.g., stealing files from a user's hard
-							drive);</p>
-					</li>
-					<li>
-						<p>an attack against the Reading System itself (e.g., stealing a list of a user's books or
-							causing unexpected behavior);</p>
-					</li>
-					<li>
-						<p>an attack of one Content Document against another (e.g., stealing data that originated in a
-							different document);</p>
-					</li>
-					<li>
-						<p>an attack of an unencrypted script against an encrypted portion of a document (e.g., an
-							injected malicious script extracting protected content);</p>
-					</li>
-					<li>
-						<p>an attack against the local network (e.g., stealing data from a server behind a
-							firewall).</p>
-					</li>
-				</ul>
-
-				<p>To limit the possible damage of untrusted scripts, this specification recommends that Reading Systems
-					establish a unique <a data-cite="url#origin">origin</a> [[URL]] allocated to each <a>EPUB
-						Publication</a> (see <a href="#sec-container-iri"></a>). Adopting this approach isolates
-					publications from each other, thereby limiting access to cookies, DOM storage, etc. Examples of Web
-					APIs that are tied to the concept of "origin" include Web Storage [[WEBSTORAGE]] and
-					IndexedDB [[INDEXEDDB]], which EPUB Content Documents can interact with via scripting. Reading
-					Systems that allow users to add/remove publications from a managed library (their "bookshelf") may
-					maintain the publication’s unique origin when the publication is removed and subsequently
-					re-imported into the content library. Conversely, Reading Systems may create a new unique origin for
-					every newly added publication.</p>
-
-				<p>Note that compliance with these recommendations does not guarantee protection from the possible
-					attacks listed above; developers must examine each potential vulnerability within the context of
-					their Reading System.</p>
-
-				<section id="sec-scripted-content-events">
-					<h4>Event Model</h4>
-
-					<p>Reading Systems should follow the DOM Event model as per [[HTML]] and pass UI events to the
-						scripting environment before performing any default action associated with these events. Reading
-						System implementers should ensure that scripts cannot disable critical functionality (such as
-						navigation) to constrain the extent to which a <a href="#sec-scripted-content-security"
-							>potentially malicious</a> script could impact their Reading Systems. As a result, although
-						the scripting environment should be able to cancel the default action of any event, some events
-						either might not be passed through or might not be cancelable.</p>
-				</section>
-			</section>
-
 			<section id="security-privacy-recommendations">
-				<h3>Additional Recommendations</h3>
+				<h3>Recommendations</h3>
 
 				<p>Arguably the strongest measure that Reading System developers can take for privacy is to specify the
 					data they intend to collect and use about the user and/or their reading behaviour and seek the
 					consent of users to obtain it. They should also allow personalization and control over this
 					information.</p>
 
-				<p>In addition, the following practices should be followed to help further limit security and privacy
-					issues:</p>
-
-				<ul>
-					<li>
-						<p>Reading Systems that support scripting and network access, as well as the retrieval of remote
-							resources, should include methods to notify the user that network activity is occurring
-							and/or that allow them to disable it.</p>
-					</li>
-
-					<li>
-						<p>If a Reading System allows users/scripts to store persistent data, it must treat that data as
-							sensitive. Scripts may save persistent data through cookies and DOM storage, but Reading
-							Systems may block such attempts. Reading Systems that allow users to store data must ensure
-							they do not make that data available to other unrelated documents (e.g., ones that could be
-							spoofed). In particular, checking for a matching document identifier (or similar metadata)
-							is not a valid method to control access to persistent data.</p>
-					</li>
-
-					<li>
-						<p>Reading Systems that allow local storage should also provide methods for users to inspect or
-							delete that data.</p>
-					</li>
-
-					<li>
-						<p>Reading Systems should open links outside the EPUB Publication in a new browser instance to
-							ensure that the security and privacy controls of the browser are available to users.</p>
-					</li>
-				</ul>
+				<p>If a Reading System allows users to store persistent data, especially personally identifiable
+					information, it must treat that data as sensitive.</p>
 
 				<p>It is understood that the collection of some user data may be required for the sale, delivery, and
 					operation of an EPUB Publication, particularly on platforms where the sale of an EPUB Publication
