@@ -29,29 +29,49 @@ out their implementations.
     <thead>
         <tr>
             <th>Role</th>
-            <th>[Publisher]</th>
+            <th>Used By</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <th>schema:accessibilityFeature</th>
-            <td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
             <th>schema:accessibilityHazard</th>
-            <td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
             <th>schema:accessibilitySummary</th>
-            <td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
             <th>schema:accessMode</th>
-            <td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
             <th>schema:accessModeSufficient</th>
-            <td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -66,25 +86,41 @@ implementations.
     <thead>
         <tr>
             <th>Role</th>
-            <th>[Publisher]</th>
+            <th>Used By</th>
         </tr>
     </thead>
     <tbody>
         <tr>
         	<td>dcterms:conformsTo</td>
-        	<td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
         	<td>a11y:certifiedBy</td>
-        	<td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
         	<td>a11y:certifierCredential</td>
-        	<td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
         <tr>
         	<td>a11y:certifierReport</td>
-        	<td></td>
+            <td>
+            	<ul>
+            		<li>TBD</li>
+            	</ul>
+            </td>
         </tr>
     </tbody>
 </table>
