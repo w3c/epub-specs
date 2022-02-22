@@ -37,7 +37,26 @@ out their implementations.
             <th>schema:accessibilityFeature</th>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -45,7 +64,26 @@ out their implementations.
             <th>schema:accessibilityHazard</th>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -53,7 +91,26 @@ out their implementations.
             <th>schema:accessibilitySummary</th>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -61,7 +118,26 @@ out their implementations.
             <th>schema:accessMode</th>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -69,7 +145,26 @@ out their implementations.
             <th>schema:accessModeSufficient</th>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -94,7 +189,26 @@ implementations.
         	<td>dcterms:conformsTo</td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -102,7 +216,26 @@ implementations.
         	<td>a11y:certifiedBy</td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
@@ -110,7 +243,26 @@ implementations.
         	<td>a11y:certifierCredential</td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Acorn Press</li>
+            		<li>House of Anansi Press</li>
+            		<li>Annick Press</li>
+            		<li>Au Press</li>
+            		<li>Book*hug Press</li>
+            		<li>ECW Press</li>
+            		<li>Éditions Bourton d'or Acadie</li>
+            		<li>Goose Lane</li>
+            		<li>Guilford Press</li>
+            		<li>Invisible Publishing</li>
+            		<li>Jones and Bartlett Learning</li>
+            		<li>Kogan Page</li>
+            		<li>Macmillan Learning</li>
+            		<li>Playwrights Canada</li>
+            		<li>Radiant Press</li>
+            		<li>Saint Jean</li>
+            		<li>Tidewater Press</li>
+            		<li>University of Michigan Press</li>
+            		<li>Wiley</li>
+            		<li>Wilfred Laurier University Press</li>
             	</ul>
             </td>
         </tr>
