@@ -3,8 +3,8 @@
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
-the EPUB Accessibility 1.1 specification for consideration as a W3C Proposed Recommendation
-after documenting implementation of each feature.
+the [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/) specification for
+consideration as a W3C Proposed Recommendation after documenting implementation of each feature.
 
 For this specification to advance to Proposed Recommendation, it has to be
 proven that metadata defined and required in this specification have sufficient usage by the
@@ -22,8 +22,11 @@ metadata for their EPUB Publications (as appropriate for each title).
 ### Schema.org discovery metadata
 
 The following table provides a list of publishers who have stated that they are currently using
-the schema.org discovery metadata properties in production or who are in the process of rolling
-out their implementations.
+the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
+in production or who are in the process of rolling out their implementations.
+
+Discovery properties are expressed in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -34,7 +37,7 @@ out their implementations.
     </thead>
     <tbody>
         <tr>
-            <th>schema:accessibilityFeature</th>
+            <th>[schema:accessibilityFeature](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityFeature)</th>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -61,7 +64,7 @@ out their implementations.
             </td>
         </tr>
         <tr>
-            <th>schema:accessibilityHazard</th>
+            <th>[schema:accessibilityHazard](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityHazard)</th>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -88,7 +91,7 @@ out their implementations.
             </td>
         </tr>
         <tr>
-            <th>schema:accessibilitySummary</th>
+            <th>[schema:accessibilitySummary](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilitySummary)</th>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -115,7 +118,7 @@ out their implementations.
             </td>
         </tr>
         <tr>
-            <th>schema:accessMode</th>
+            <th>[schema:accessMode](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessMode)</th>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -142,7 +145,7 @@ out their implementations.
             </td>
         </tr>
         <tr>
-            <th>schema:accessModeSufficient</th>
+            <th>[schema:accessModeSufficient](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessModeSufficient)</th>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -174,8 +177,13 @@ out their implementations.
 ### Conformance metadata
 
 The following table provides a list of publishers who have stated that they are currently using
-the conformance metadata properties in production or who are in the process of rolling out their
-implementations.
+the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting)
+in production or who are in the process of rolling out their implementations.
+
+Conformance properties are expressed in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+and in the
+[`link` element's `rel` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-link-rel).
 
 <table>
     <thead>
@@ -186,7 +194,7 @@ implementations.
     </thead>
     <tbody>
         <tr>
-        	<td>dcterms:conformsTo</td>
+        	<td>[dcterms:conformsTo](https://w3c.github.io/epub-specs/epub33/a11y/#dcterms-conformsTo)</td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -213,7 +221,7 @@ implementations.
             </td>
         </tr>
         <tr>
-        	<td>a11y:certifiedBy</td>
+        	<td>[a11y:certifiedBy](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifiedBy)</td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -240,7 +248,7 @@ implementations.
             </td>
         </tr>
         <tr>
-        	<td>a11y:certifierCredential</td>
+        	<td>[a11y:certifierCredential](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierCredential)</td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -267,7 +275,7 @@ implementations.
             </td>
         </tr>
         <tr>
-        	<td>a11y:certifierReport</td>
+        	<td>[a11y:certifierReport](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierReport)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -279,12 +287,12 @@ implementations.
 
 ## Validation and Authoring Tool Implementations
 
-The Ace by DAISY validator provides machine checking of the EPUB Accessibility specification requirements.
-A new version that supports the 1.1 specification will be released in 2022.
+The [Ace by DAISY](https://daisy.github.io/ace/) validator provides machine checking of the EPUB Accessibility
+specification requirements. A new version that supports the 1.1 specification will be released in 2022.
 
-The Ace SMART tool assists users with carrying out manual verification of the EPUB Accessibility specification.
-A new version that supports the 1.1 specification will also be released in early 2022. The tool additionally
-allows authors to generate discovery and certifier metadata for use in their publications.
+The [Ace SMART](https://smart.daisy.org) tool assists users with carrying out manual verification of the EPUB
+Accessibility specification. A new version that supports the 1.1 specification will also be released in early 2022.
+The tool additionally allows authors to generate discovery and certifier metadata for use in their publications.
 
 
 ## Vendor Implementations

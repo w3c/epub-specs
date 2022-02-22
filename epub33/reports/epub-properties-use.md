@@ -3,8 +3,8 @@
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
-the EPUB 3.3 specification for consideration as a W3C Proposed Recommendation
-after documenting implementation of each feature.
+the [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/) specification for consideration
+as a W3C Proposed Recommendation after documenting implementation of each feature.
 
 For this specification to advance to Proposed Recommendation, it has to be
 proven that metadata defined and required in this specification have sufficient usage by the
@@ -21,7 +21,11 @@ metadata for their EPUB Publications (as appropriate for each title).
 ### Meta Properties Vocabulary
 
 The following table lists publishers who have stated that they are currently using
-the meta properties in production.
+the [meta properties](https://w3c.github.io/epub-specs/epub33/core/#app-meta-property-vocab)
+in production.
+
+Manifest properties are expressed in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -32,7 +36,7 @@ the meta properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>alternate-script</th>
+            <td>[alternate-script](https://w3c.github.io/epub-specs/epub33/core/#sec-alternate-script)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -40,7 +44,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>authority</th>
+            <td>[authority](https://w3c.github.io/epub-specs/epub33/core/#sec-authority)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -48,7 +52,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>belongs-to-collection</th>
+            <td>[belongs-to-collection](https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -56,7 +60,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>collection-type</th>
+            <td>[collection-type](https://w3c.github.io/epub-specs/epub33/core/#sec-collection-type)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -64,7 +68,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>display-seq</th>
+            <td>[display-seq](https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -72,7 +76,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>file-as</th>
+            <td>[file-as](https://w3c.github.io/epub-specs/epub33/core/#sec-file-as)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -80,7 +84,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>group-position</th>
+            <td>[group-position](https://w3c.github.io/epub-specs/epub33/core/#sec-group-position)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -88,7 +92,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>identifier-type</th>
+            <td>[identifier-type](https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -96,7 +100,14 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>meta-auth (deprecated)</th>
+            <td>[<s>meta-auth</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-meta-auth)</td>
+            <td>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>[role](https://w3c.github.io/epub-specs/epub33/core/#sec-role)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -104,7 +115,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>role</th>
+            <td>[source-of](https://w3c.github.io/epub-specs/epub33/core/#sec-source-of)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -112,7 +123,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>source-of</th>
+            <td>[term](https://w3c.github.io/epub-specs/epub33/core/#sec-term)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -120,15 +131,7 @@ the meta properties in production.
             </td>
         </tr>
         <tr>
-            <th>term</th>
-            <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <th>title-type</th>
+            <td>[title-type](https://w3c.github.io/epub-specs/epub33/core/#sec-title-type)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -142,7 +145,11 @@ the meta properties in production.
 #### Link Relationships
 
 The following table lists publishers who have stated that they are currently using
-the link relationships in production.
+the [link relationships](https://w3c.github.io/epub-specs/epub33/core/#sec-link-rel)
+in production.
+
+Link relationships are expressed in the
+[`link` element's `rel` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-link-rel).
 
 <table>
     <thead>
@@ -153,7 +160,7 @@ the link relationships in production.
     </thead>
     <tbody>
         <tr>
-            <th>acquire</th>
+            <td>[acquire](https://w3c.github.io/epub-specs/epub33/core/#sec-acquire)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -161,7 +168,7 @@ the link relationships in production.
             </td>
         </tr>
         <tr>
-            <th>alternate</th>
+            <td>[alternate](https://w3c.github.io/epub-specs/epub33/core/#sec-alternate)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -169,7 +176,28 @@ the link relationships in production.
             </td>
         </tr>
         <tr>
-            <th>marc21xml-record (deprecated)</th>
+            <td>[<s>marc21xml-record</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-marc21xml-record)</td>
+            <td>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>[<s>mods-record</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-mods-record)</td>
+            <td>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>[<s>onix-record</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-onix-record)</td>
+            <td>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>[record](https://w3c.github.io/epub-specs/epub33/core/#sec-record)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -177,7 +205,7 @@ the link relationships in production.
             </td>
         </tr>
         <tr>
-            <th>mods-record (deprecated)</th>
+            <td>[voicing](https://w3c.github.io/epub-specs/epub33/core/#sec-voicing)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -185,43 +213,17 @@ the link relationships in production.
             </td>
         </tr>
         <tr>
-            <th>onix-record (deprecated)</th>
+            <td>[<s>xml-signature</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-xml-signature)</td>
             <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
+            	<p>This property deprecated and is no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <th>record</th>
+            <td>[<s>xmp-record</s>](https://w3c.github.io/epub-specs/epub33/core/#sec-xmp-record)</td>
             <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <th>voicing</th>
-            <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <th>xml-signature (deprecated)</th>
-            <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <th>xmp-record (deprecated)</th>
-            <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
     </tbody>
@@ -230,7 +232,11 @@ the link relationships in production.
 #### Link Properties
 
 The following table lists publishers who have stated that they are currently using
-the link properties in production.
+the [link properties](https://w3c.github.io/epub-specs/epub33/core/#sec-link-properties)
+in production.
+
+Link properties are expressed in the
+[`link` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
 
 <table>
     <thead>
@@ -241,7 +247,7 @@ the link properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>onix</th>
+            <td>[onix](https://w3c.github.io/epub-specs/epub33/core/#sec-onix)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -249,7 +255,7 @@ the link properties in production.
             </td>
         </tr>
         <tr>
-            <th>xmp</th>
+            <td>[xmp](https://w3c.github.io/epub-specs/epub33/core/#sec-xmp)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -263,7 +269,13 @@ the link properties in production.
 #### General Properties
 
 The following table lists publishers who have stated that they are currently using
-the general package rendering properties in production.
+the [general package rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-general)
+in production.
+
+General package rendering properties are expressed both globally in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+and as overrides in the
+[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
 
 <table>
     <thead>
@@ -274,7 +286,7 @@ the general package rendering properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>rendition:flow</th>
+            <td>[rendition:flow](https://w3c.github.io/epub-specs/epub33/core/#sec-flow)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -282,7 +294,7 @@ the general package rendering properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:align-x-center</th>
+            <td>[rendition:align-x-center](https://w3c.github.io/epub-specs/epub33/core/#sec-align-x-center)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -295,7 +307,13 @@ the general package rendering properties in production.
 #### Fixed-Layout Properties
 
 The following table lists publishers who have stated that they are currently using
-the fixed-layout properties in production.
+the [fixed-layout rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-fxl)
+in production.
+
+Fixed-layout properties are expressed both globally in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+and as overrides in the
+[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
 
 <table>
     <thead>
@@ -306,7 +324,7 @@ the fixed-layout properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>rendition:layout</th>
+            <td>[rendition:layout](https://w3c.github.io/epub-specs/epub33/core/#layout)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -314,7 +332,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:layout-pre-paginated</th>
+            <td>[rendition:layout-pre-paginated](https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -322,7 +340,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:layout-reflowable</th>
+            <td>[rendition:layout-reflowable](https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -330,7 +348,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:orientation</th>
+            <td>[rendition:orientation](https://w3c.github.io/epub-specs/epub33/core/#orientation)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -338,7 +356,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:orientation-auto</th>
+            <td>[rendition:orientation-auto](https://w3c.github.io/epub-specs/epub33/core/#orientation-auto)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -346,7 +364,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:orientation-landscape</th>
+            <td>[rendition:orientation-landscape](https://w3c.github.io/epub-specs/epub33/core/#orientation-landscape)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -354,7 +372,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:orientation-portrait</th>
+            <td>[rendition:orientation-portrait](https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -362,7 +380,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread</th>
+            <td>[rendition:spread](https://w3c.github.io/epub-specs/epub33/core/#spread)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -370,7 +388,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread-auto</th>
+            <td>[rendition:spread-auto](https://w3c.github.io/epub-specs/epub33/core/#spread-auto)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -378,7 +396,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread-both</th>
+            <td>[rendition:spread-both](https://w3c.github.io/epub-specs/epub33/core/#spread-both)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -386,7 +404,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread-landscape</th>
+            <td>[rendition:spread-landscape](https://w3c.github.io/epub-specs/epub33/core/#spread-landscape)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -394,7 +412,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread-none</th>
+            <td>[rendition:spread-none](https://w3c.github.io/epub-specs/epub33/core/#spread-none)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -402,7 +420,14 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:spread-portrait (deprecated)</th>
+            <td>[<s>rendition:spread-portrait</s>](https://w3c.github.io/epub-specs/epub33/core/#spread-portrait)</td>
+            <td>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>[rendition:page-spread-center](https://w3c.github.io/epub-specs/epub33/core/#page-spread-center)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -410,7 +435,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:page-spread-center</th>
+            <td>[rendition:page-spread-left](https://w3c.github.io/epub-specs/epub33/core/#page-spread-left)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -418,7 +443,7 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:page-spread-left</th>
+            <td>[rendition:page-spread-right](https://w3c.github.io/epub-specs/epub33/core/#page-spread-right)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -426,19 +451,10 @@ the fixed-layout properties in production.
             </td>
         </tr>
         <tr>
-            <th>rendition:page-spread-right</th>
+            <td>[<s>rendition:viewport</s>](https://w3c.github.io/epub-specs/epub33/core/#viewport)</td>
             <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <th>rendition:viewport (deprecated)</th>
-            <td>
-            	<ul>
-            		<li>TBD</li>
-            	</ul>
+            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
     </tbody>
@@ -447,7 +463,11 @@ the fixed-layout properties in production.
 ### Manifest Properties Vocabulary
 
 The following table lists publishers who have stated that they are currently using
-the manifest properties in production.
+the [manifest properties](https://w3c.github.io/epub-specs/epub33/core/#app-item-properties-vocab)
+in production.
+
+Manifest properties are expressed in the
+[`item` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
 
 <table>
     <thead>
@@ -458,7 +478,7 @@ the manifest properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>cover-image</th>
+            <td>[cover-image](https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -466,7 +486,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>mathml</th>
+            <td>[mathml](https://w3c.github.io/epub-specs/epub33/core/#sec-mathml)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -474,7 +494,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>nav</th>
+            <td>[nav](https://w3c.github.io/epub-specs/epub33/core/#sec-nav)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -482,7 +502,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>remote-resources</th>
+            <td>[remote-resources](https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -490,7 +510,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>scripted</th>
+            <td>[scripted](https://w3c.github.io/epub-specs/epub33/core/#sec-scripted)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -498,7 +518,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>svg</th>
+            <td>[svg](https://w3c.github.io/epub-specs/epub33/core/#sec-svg)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -506,7 +526,7 @@ the manifest properties in production.
             </td>
         </tr>
         <tr>
-            <th>switch</th>
+            <td>[switch](https://w3c.github.io/epub-specs/epub33/core/#sec-switch)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -519,7 +539,11 @@ the manifest properties in production.
 ### Spine Properties Vocabulary
 
 The following table lists publishers who have stated that they are currently using
-the spine properties in production.
+the [spine properties](https://w3c.github.io/epub-specs/epub33/core/#app-itemref-properties-vocab)
+in production.
+
+Spine properties are expressed in the
+[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
 
 <table>
     <thead>
@@ -530,7 +554,7 @@ the spine properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>page-spread-left</th>
+            <td>[page-spread-left](https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -538,7 +562,7 @@ the spine properties in production.
             </td>
         </tr>
         <tr>
-            <th>page-spread-right</th>
+            <td>[page-spread-right](https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -551,7 +575,11 @@ the spine properties in production.
 ### Media Overlays Vocabulary
 
 The following table lists publishers who have stated that they are currently using
-the media overlays properties in production.
+the [Media Overlays properties](https://w3c.github.io/epub-specs/epub33/core/#app-overlays-vocab)
+in production.
+
+Media Overlays properties are expressed in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -562,7 +590,7 @@ the media overlays properties in production.
     </thead>
     <tbody>
         <tr>
-            <th>active-class</th>
+            <td>[active-class](https://w3c.github.io/epub-specs/epub33/core/#sec-active-class)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -570,7 +598,7 @@ the media overlays properties in production.
             </td>
         </tr>
         <tr>
-            <th>duration</th>
+            <td>[duration](https://w3c.github.io/epub-specs/epub33/core/#sec-duration)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -578,7 +606,7 @@ the media overlays properties in production.
             </td>
         </tr>
         <tr>
-            <th>narrator</th>
+            <td>[narrator](https://w3c.github.io/epub-specs/epub33/core/#sec-narrator)</td>
             <td>
             	<ul>
             		<li>TBD</li>
@@ -586,7 +614,7 @@ the media overlays properties in production.
             </td>
         </tr>
         <tr>
-            <th>playback-active-class</th>
+            <td>[playback-active-class](https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class)</td>
             <td>
             	<ul>
             		<li>TBD</li>
