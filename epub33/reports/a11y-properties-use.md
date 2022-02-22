@@ -37,7 +37,7 @@ Discovery properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <th>[schema:accessibilityFeature](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityFeature)</th>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityFeature">schema:accessibilityFeature</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -64,7 +64,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <th>[schema:accessibilityHazard](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityHazard)</th>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityHazard">schema:accessibilityHazard</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -91,7 +91,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <th>[schema:accessibilitySummary](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilitySummary)</th>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilitySummary">schema:accessibilitySummary</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -118,7 +118,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <th>[schema:accessMode](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessMode)</th>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessMode">schema:accessMode</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -145,7 +145,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <th>[schema:accessModeSufficient](https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessModeSufficient)</th>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessModeSufficient">schema:accessModeSufficient</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -194,7 +194,7 @@ and in the
     </thead>
     <tbody>
         <tr>
-        	<td>[dcterms:conformsTo](https://w3c.github.io/epub-specs/epub33/a11y/#dcterms-conformsTo)</td>
+        	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#dcterms-conformsTo">dcterms:conformsTo</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -221,7 +221,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td>[a11y:certifiedBy](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifiedBy)</td>
+        	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifiedBy">a11y:certifiedBy</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -248,7 +248,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td>[a11y:certifierCredential](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierCredential)</td>
+        	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierCredential">a11y:certifierCredential</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -275,7 +275,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td>[a11y:certifierReport](https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierReport)</td>
+        	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierReport">a11y:certifierReport</a></td>
             <td>
             	<ul>
             		<li>TBD</li>
