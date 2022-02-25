@@ -40,26 +40,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityFeature">schema:accessibilityFeature</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -67,26 +48,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityHazard">schema:accessibilityHazard</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -94,26 +56,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilitySummary">schema:accessibilitySummary</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -121,26 +64,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessMode">schema:accessMode</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -148,26 +72,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessModeSufficient">schema:accessModeSufficient</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -197,26 +102,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#dcterms-conformsTo">dcterms:conformsTo</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -224,26 +110,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifiedBy">a11y:certifiedBy</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
@@ -251,26 +118,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierCredential">a11y:certifierCredential</a></td>
             <td>
             	<ul>
-            		<li>Acorn Press</li>
-            		<li>House of Anansi Press</li>
-            		<li>Annick Press</li>
-            		<li>Au Press</li>
-            		<li>Book*hug Press</li>
-            		<li>ECW Press</li>
-            		<li>Éditions Bourton d'or Acadie</li>
-            		<li>Goose Lane</li>
-            		<li>Guilford Press</li>
-            		<li>Invisible Publishing</li>
-            		<li>Jones and Bartlett Learning</li>
-            		<li>Kogan Page</li>
-            		<li>Macmillan Learning</li>
-            		<li>Playwrights Canada</li>
-            		<li>Radiant Press</li>
-            		<li>Saint Jean</li>
-            		<li>Tidewater Press</li>
-            		<li>University of Michigan Press</li>
-            		<li>Wiley</li>
-            		<li>Wilfred Laurier University Press</li>
+            		<li>TBD</li>
             	</ul>
             </td>
         </tr>
