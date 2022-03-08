@@ -178,23 +178,25 @@ Fixed-layout documents can be presented as ‘synthetic spreads’ when a left a
 
 If the text must be read in this way, the only solution to maintain the correct reading order is to convert the double page spread in to a single landscape page that contains the entire content of the spread and for the EPUB to be rendered as single pages.
 
-## Alternative text {#alt-text}
+## Images in Fixed Layout #images
+
+### Overview
+    
+Images are often an integral part of fixed layout publications. Fixed layout publications sometimes consist entirely of images, in the case of comics, or images may be used as backgrounds to a story, as in children's books. Fixed layout content where images serve as both the content and the layout pose a particular challenge for content creators interested in accessibility. 
+
+Ensuring that the information conveyed in the images is available to users who may not be able to perceive the background or may have difficulty processing it, is consequently of high priority in making fixed layouts as accessible as possible.
+
+The [basic requirements for all images](http://kb.daisy.org/publishing/docs/html/images.html) are to provide alt text and extended descriptions when they contain information necessary to understanding the publication, which applies to fixed layouts. For example, while a reader may be able to follow the dialogue of a story when it is overlaid as text, only the placement on image might give context to what character is saying what.
+
+One challenge with fixed layouts is finding ways to describe the image and provide context given that there is no extra area on the page users can access in which to place a description. The other challenge is for content where the text is rasterized as part of the image. As much as possible, we recommend making the text on the page it's own layer, using technologies such as SVG and CSS to achieve the desired styling and placement, while also making the text more accessible to the user. 
+
+### Alternative Text and Image Descriptions
 
 Describing images within a fixed layout book will somewhat depend on the type of book these images are within.  For example describing a childrens picture book will be quite different than if this is a fixed layout graphic novel such as a comic book.
 
 <aside class="ednote">
 For the latest best practices regarding image descriptions it is recommended to visit the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/fxl/img.html) as sections from there fixed layout image descriptions has been copied here.   
 </aside>
-    
-### Overview
-    
-Images are often an integral part of fixed layout publications. Fixed layout publications sometimes consist entirely of images, in the case of comics, or images may be used as backgrounds to a story, as in children's books.
-
-Ensuring that the information conveyed in the images is available to users who may not be able to perceive the background or may have difficulty processing it, is consequently of high priority in making fixed layouts as accessible as possible.
-
-The [basic requirements for all images](http://kb.daisy.org/publishing/docs/html/images.html) are to provide alt text and extended descriptions when they contain information necessary to understanding the publication, which applies to fixed layouts. For example, while a reader may be able to follow the dialogue of a story when it is overlaid as text, only the placement on image might give context to what character is saying what.
-
-The challenge with fixed layouts is finding ways to describe the image and provide context given that there is no extra area on the page users can access in which to place a description.
     
 ### SVG
     
@@ -241,10 +243,13 @@ When an image is embedded in an HTML fixed layout page, there are more options a
 
 For this reason, descriptions are typically hidden from view using a variety of HTML, ARIA and CSS techniques. Descriptions can be hidden, clipped, made opaque, layered under an image, etc. The [knowledge base page on hidden content](http://kb.daisy.org/publishing/docs/html/hidden.html) delves into these possibilities in more detail.
 
+<aside class="note">
+Hiding content as described in the DAISY Knowledge Base should be considered carefully. Hidden content is only available to users of assistive technologies, which could prevent others who may benefit from the same information from accessing it. 
+</aside>
+
 Support for scripting in XHTML content documents in EPUB is generally much better than is available for SVG, so there are more reliable techniques that can be used to make the descriptions viewable by a wider range of users. Clicking or tapping on an image can be used to show its description, for example. The [Voyage of Life sample EPUB](http://idpf.github.io/epub3-samples/30/samples.html#the-voyage-of-life-tol) contains an experimental example of this technique.
 
 Unlike reflowable publications, the CSS `background-image` property can be used with fixed layouts to set the background image for a page. It is best to limit this practice to backgrounds that are purely presentational as much as possible, however, as it complicates the ability to provide a description that any user will be able to reach (i.e., it often involves hiding the description only for assistive technologies).
-
 
 ### Complex Image Descriptions
 
@@ -424,6 +429,10 @@ Depending on the complexity of the image this may require complex description wi
  * Extended description in details
  * Using hidden description (see example 4)
 
+ <aside class="note">
+Using hidden descriptions should be considered very carefully, as hiding the description as demonstrated in example 4 will hide it from everything except assistive technologies. People with learning or cognitive disabilities would not benefit from this technique. 
+ </aside>
+
 ### ARIA Roles for Tables {#tables-aria}
 
 Provide an extended description for a table using either [aria-describedby or aria-details](https://www.w3.org/TR/WCAG20-TECHS/ARIA15.html).
@@ -485,7 +494,7 @@ A Fixed Layout book which contains both text and images would have two separate 
  
 The schema.org property `accessModeSufficient` is used to define the combinations in which this book can be consumed be that `visual`, `textual`, `auditory`, or `tactile`.
     
-For picture books the way one would consume this would be completely visually so having `accessModeSufficient` of `visual` would be solely defined.
+For picture books with no text, or no alternative text the way one would consume this would be completely visually so having `accessModeSufficient` of `visual` would be solely defined.
     
 <aside class="example" id="metadata-example-4">
 <pre><code>&lt;meta property="schema:accessModeSufficient"&gt;
@@ -493,19 +502,11 @@ For picture books the way one would consume this would be completely visually so
 &lt;/meta&gt;</code></pre>
 </aside>
     
-For Fixed Layout books that have both visual and textual elements then having `accessModeSufficient` of `visual,textual` would be appropriate.
+For Fixed Layout books that have both visual and textual elements then having `accessModeSufficient` of `visual,textual` would be appropriate. In addition, if the Fixed Layout book is primarily images that are fully described, `textual` would also apply, as this implies the boook is Screen Reader Friendly and can be fully read by assistive technology.
 
 <aside class="example" id="metadata-example-5">
 <pre><code>&lt;meta property="schema:accessModeSufficient"&gt;
     visual,textual
-&lt;/meta&gt;</code></pre>
-</aside>
-    
-If a Fixed Layout book has all images fully described then having `accessModeSufficient` of `textual` would be appropriate which implies this book is Screen Reader Friendly and can be fully read by assistive technology.
-    
-<aside class="example" id="metadata-example-6">
-<pre><code>&lt;meta property="schema:accessModeSufficient"&gt;
-    textual
 &lt;/meta&gt;</code></pre>
 </aside>
     
@@ -525,13 +526,11 @@ If there are no hazards within the book one can simply have `none` or can call o
     
 ### Accessibility Summary {#a11y-metadata-accessibility-summary}
 
-The schema.org property `accessibilitySummary` is a human readable statment on how accessible or inacessible this book is.
+The schema.org property `accessibilitySummary` is a human readable statement on how accessible or inaccessible this book is.
 
 <aside class="example" id="metadata-example-8">
 <pre><code>&lt;meta property="schema:accessibilitySummary"&gt;
-    This Fixed Layout EPUB contains a lot of visual formatting
-    where images can span over two pages.  All images do have
-    a textual description to aid in accessibility.
+    This Fixed Layout EPUB contains a lot of visual formatting where images can span over two pages.  All images do have a textual description to aid in accessibility. Here is where you can also include any exceptions to the overall accessibility of the book (eg. All complex images are well described other than a few reference materials in the Appendix.)
 &lt;/meta&gt;</code>
 </pre>
 </aside>
