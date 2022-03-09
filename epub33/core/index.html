@@ -1243,9 +1243,9 @@
 				<section id="sec-parse-package-urls">
 					<h4>Parsing URLs in the Package Document</h4>
 
-					<p> To parse a URL string <var>url</var> used in the Package Document, the <a
-							data-cite="url#concept-url-parser">URL Parser</a> [[URL]] MUST be applied to <var>url</var>,
-						with the <a>content URL</a> of the Package Document as <var>base</var>. </p>
+					<p id="pkg-parse-package-url" data-tests="#ocf-url_link_relative,#ocf-url_relative"> To parse a URL string <var>url</var> used in the Package Document, the <a
+								data-cite="url#concept-url-parser">URL Parser</a> [[URL]] MUST be applied to
+								<var>url</var>, with the <a>content URL</a> of the Package Document as <var>base</var>.</p>
 				</section>
 
 				<section id="sec-shared-attrs">
@@ -2485,9 +2485,9 @@
 								contributor expression by defining the role of the person.</li>
 						</ul>
 
-						<p>EPUB Creators MAY use subexpressions to refine the meaning of other subexpressions,
-								thereby creating chains of information. Refinement chains MUST NOT contain circular
-								references or self-references.</p>
+						<p>EPUB Creators MAY use subexpressions to refine the meaning of other subexpressions, thereby
+							creating chains of information. Refinement chains MUST NOT contain circular references or
+							self-references.</p>
 
 						<p class="note">All the DCMES [[DCTERMS]] elements represent primary expressions, and permit
 							refinement by meta element subexpressions.</p>
@@ -2983,7 +2983,7 @@ XHTML:
 									</li>
 									<li>
 										<p>
-											<a href="#attrdef-properties">
+											<a href="#sec-item-resource-properties">
 												<code>properties</code>
 											</a>
 											<code>[optional]</code>
@@ -2991,7 +2991,6 @@ XHTML:
 									</li>
 								</ul>
 							</dd>
-
 							<dt>Content Model</dt>
 							<dd>
 								<p>Empty</p>
@@ -3015,21 +3014,6 @@ XHTML:
 							identifies a fallback for the Publication Resource referenced from the <code>item</code>
 							element, as defined in <a href="#sec-foreign-restrictions-manifest"></a>.</p>
 
-						<p id="attrdef-item-properties">The <a href="#app-item-properties-vocab">Manifest Properties
-								Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a> for the
-								<code>properties</code> attribute.</p>
-
-						<p>EPUB Creators MAY add terms from other vocabularies as defined in <a href="#sec-vocab-assoc"
-							></a>.</p>
-
-						<p>EPUB Creators MUST declare all applicable descriptive metadata properties for each
-							Publication Resource in this attribute (e.g., if the resource is the <a
-								href="#sec-cover-image">cover image</a>, contains <a href="#sec-scripted">scripting</a>,
-							or references <a href="#sec-remote-resources">remote resources</a>).</p>
-
-						<p>EPUB Creators MUST declare exactly one <code>item</code> as the <a>EPUB Navigation
-								Document</a> using the <code>nav</code> property.</p>
-
 						<p id="attrdef-item-media-overlay">The <code>media-overlay</code> attribute takes an IDREF
 							[[XML]] that identifies the <a>Media Overlay Document</a> for the resource described by this
 								<code>item</code>. Refer to <a href="#sec-docs-package"></a> for more information.</p>
@@ -3039,6 +3023,75 @@ XHTML:
 								The <a class="codelink" href="#sec-spine-elem"><code>spine</code> element</a> provides
 								the presentation sequence of content documents.</p>
 						</div>
+
+						<section id="sec-item-resource-properties">
+							<h6>Resource Properties</h6>
+
+							<p>The <a href="#attrdef-properties"><code>properties</code> attribute</a> provides
+								information to <a>Reading Systems</a> about the content of a resource. This information
+								enables discovery of key resources, such as the cover image and <a>EPUB Navigation
+									Document</a>. It also allows Reading Systems to optimize rendering by indicating,
+								for example, whether the resource contains embedded scripting, MathML, or SVG.</p>
+
+							<p id="attrdef-item-properties">The <a href="#app-item-properties-vocab">Manifest Properties
+									Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a> for the
+									<code>properties</code> attribute.</p>
+
+							<p>EPUB Creators MUST set the following properties whenever a resource referenced by an
+									<code>item</code> element matches their respective definitions:</p>
+
+							<ul>
+								<li><a href="#sec-mathml">mathml</a></li>
+								<li><a href="#sec-remote-resources">remote-resources</a></li>
+								<li><a href="#sec-scripted">scripted</a></li>
+								<li><a href="#sec-svg">svg</a></li>
+								<li><a href="#sec-switch">switch</a></li>
+							</ul>
+
+							<aside class="example" id="example-item-properties-scripted-mathml"
+								title="Identifying a Scripted Content Document with embedded MathML">
+								<pre class="synopsis">&lt;item
+    properties="scripted mathml"
+    id="c2"
+    href="c2.xhtml"
+    media-type="application/xhtml+xml" /&gt;
+</pre>
+							</aside>
+
+							<p>These properties do not apply recursively to content included into a resource (e.g., via
+								the HTML <code>iframe</code> element). For example, if a non-scripted XHTML Content
+								Document embeds a scripted Content Document, only the embedded document's manifest
+									<code>item</code>
+								<code>properties</code> attribute will have the <code>scripted</code> value.</p>
+
+							<p>EPUB Creators MUST declare exactly one <code>item</code> as the EPUB Navigation Document
+								using the <a href="#sec-nav-prop"><code>nav</code> property</a>.</p>
+
+							<aside class="example" id="example-item-properties-nav"
+								title="Identifying the EPUB Navigation Document">
+								<pre class="synopsis">&lt;item
+    properties="nav"
+    id="c1"
+    href="c1.xhtml"
+    media-type="application/xhtml+xml" /&gt;</pre>
+							</aside>
+
+							<p>If an EPUB Publication contains a cover image, it is recommended to set the <a
+									href="#sec-cover-image"><code>cover-image</code> property</a>, but setting this
+								property is OPTIONAL.</p>
+
+							<aside class="example" id="example-item-properties-cover-image"
+								title="Identifying the cover image">
+								<pre class="synopsis">&lt;item
+    properties="cover-image"
+    id="ci"
+    href="cover.svg"
+    media-type="image/svg+xml" /&gt;</pre>
+							</aside>
+
+							<p>EPUB Creators MAY add terms from other vocabularies as defined in <a
+									href="#sec-vocab-assoc"></a>.</p>
+						</section>
 
 						<section id="sec-foreign-restrictions-manifest">
 							<h6>Manifest Fallbacks</h6>
@@ -5166,7 +5219,8 @@ No Entry</pre>
 						is specified on a <code>meta</code> element, it indicates that the paginated or reflowable
 						layout style applies globally (i.e., for all spine items).</p>
 
-					<p>EPUB Creators MAY use the following values with the <code>rendition:layout</code> property:</p>
+					<p>EPUB Creators MUST use one of the following values with the <code>rendition:layout</code>
+						property:</p>
 
 					<dl class="variablelist">
 						<dt id="def-layout-reflowable">reflowable</dt>
@@ -5197,7 +5251,11 @@ No Entry</pre>
 							<code>pre-paginated</code> for a spine item, its content dimensions MUST be set as defined
 						in <a href="#sec-fixed-layouts"></a>.</p>
 
-					<p>The <code>rendition:layout</code> property MUST NOT be declared more than once.</p>
+					<p>EPUB Creators MUST NOT declare the <code>rendition:layout</code> property more than once.</p>
+
+					<p>They also MUST NOT declare the property using the <a href="#attrdef-refines"><code>refines</code>
+							attribute</a>. Refer to <a href="#layout-overrides"></a> for setting the property for
+						individual <a>EPUB Content Documents</a>.</p>
 
 					<aside class="example" id="fxl-ex1" title="Fixed Layout Document with media queries">
 						<p>In this example, media queries [[CSS3-MediaQueries]] are used to apply different style sheets
@@ -5264,7 +5322,7 @@ No Entry</pre>
 							<dd>Specifies that the given spine item is reflowable.</dd>
 						</dl>
 
-						<p>EPUB Creators MAY use only one of these overrides on any given spine item.</p>
+						<p>EPUB Creators MUST NOT use more than one of these overrides on any given spine item.</p>
 					</section>
 				</section>
 
@@ -5279,7 +5337,7 @@ No Entry</pre>
 						element, it indicates that the intended orientation applies globally (i.e., for all spine
 						items).</p>
 
-					<p>EPUB Creators MAY use the following values with the <code>rendition:orientation</code>
+					<p>EPUB Creators MUST use one of the following values with the <code>rendition:orientation</code>
 						property:</p>
 
 					<dl class="variablelist">
@@ -5301,6 +5359,10 @@ No Entry</pre>
 
 					<p id="fxl-orientation-duplication" data-tests="#fxl-orientation-duplication">EPUB Creators MUST NOT
 						declare the <code>rendition:orientation</code> property more than once.</p>
+
+					<p>They also MUST NOT declare the property using the <a href="#attrdef-refines"><code>refines</code>
+							attribute</a>. Refer to <a href="#orientation-overrides"></a> for setting the property for
+						individual <a>EPUB Content Documents</a>.</p>
 
 					<aside class="example" id="fxl-ex2" title="Specifying global landscape orientation">
 						<p>In this example, the content should also render without synthetic spreads.</p>
@@ -5348,7 +5410,7 @@ No Entry</pre>
 								orientation.</dd>
 						</dl>
 
-						<p>EPUB Creators MAY use only one of these overrides on any given spine item.</p>
+						<p>EPUB Creators MUST NOT use more than one of these overrides on any given spine item.</p>
 					</section>
 				</section>
 
@@ -5362,7 +5424,8 @@ No Entry</pre>
 							<code>meta</code> element, it indicates that the intended <a>Synthetic Spread</a> behavior
 						applies globally (i.e., for all spine items).</p>
 
-					<p>EPUB Creators MAY use the following values with the <code>rendition:spread</code> property:</p>
+					<p>EPUB Creators MUST use one of the following values with the <code>rendition:spread</code>
+						property:</p>
 
 					<dl class="variablelist">
 						<dt>none</dt>
@@ -5397,7 +5460,11 @@ No Entry</pre>
 						</dd>
 					</dl>
 
-					<p>The <code>rendition:spread</code> property MUST NOT be declared more than once.</p>
+					<p>EPUB Creators MUST NOT declare the <code>rendition:spread</code> property more than once.</p>
+
+					<p>They also MUST NOT declare the property using the <a href="#attrdef-refines"><code>refines</code>
+							attribute</a>. Refer to <a href="#spread-overrides"></a> for setting the property for
+						individual <a>EPUB Content Documents</a>.</p>
 
 					<div class="note">
 						<p>When Synthetic Spreads are used in the context of HTML and SVG Content Documents, the
@@ -5493,7 +5560,7 @@ No Entry</pre>
 								to its definition in [[EPUBPublications-301]] for more information.</dd>
 						</dl>
 
-						<p>EPUB Creators MAY use only one of these overrides on any given spine item.</p>
+						<p>EPUB Creators MUST NOT use more than one of these overrides on any given spine item.</p>
 					</section>
 				</section>
 
@@ -5542,8 +5609,8 @@ No Entry</pre>
 						properties on the spine items for the two adjacent EPUB Content Documents, and omit the
 						properties on spine items where one-up or two-up presentation is equally acceptable.</p>
 
-					<p>EPUB Creators MAY only declare one <code>page-spread-*</code> property on any given spine
-						item.</p>
+					<p>EPUB Creators MUST NOT declare more than one <code>page-spread-*</code> property on any given
+						spine item.</p>
 
 					<div class="note" id="note-page-spread-aliases">
 						<p>The <code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
@@ -5926,16 +5993,16 @@ No Entry</pre>
 				<section id="sec-container-iri">
 					<h4>URLs in the OCF Abstract Container</h4>
 
-					<p id="confreq-root-url" data-tests="#pkg-manifest-url,#pkg-relative-url">The <a>container root
+					<p id="sec-container-iri-root" data-tests="#ocf-url_manifest,#ocf-url_relative,#ocf-url_link_relative">The <a>container root
 							URL</a> is the <a data-cite="url#concept-url">URL</a> [[URL]] of the <a>Root Directory</a>.
 						It is implementation-specific, but EPUB Creators MUST assume it has the following
 						properties:</p>
 
 					<ul>
-						<li>The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>/</code>" with the
+						<li id="sec-container-iri-root-parse" data-tests="#ocf-url_link_path_absolute,#ocf-url_parse_path_absolute">The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>/</code>" with the
 								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
 							the <a>container root URL</a>.</li>
-						<li>The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>..</code>" with the
+						<li id="sec-container-iri-step-parse" data-tests="#ocf-url_link_leaking_relative,#ocf-url_parse_leaking_relative">The result of <a data-cite="url#concept-url-parser">parsing</a> "<code>..</code>" with the
 								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
 							the <a>container root URL</a>.</li>
 					</ul>
@@ -6044,24 +6111,26 @@ No Entry</pre>
 						<li>Return <var>false</var>.</li>
 					</ol>
 
-					<p> In the <a>OCF Abstract Container</a>, any URL string MUST be an <a
+					<p id="urls-in-ocf-constraints"> In the <a>OCF Abstract Container</a>, any URL string MUST be an <a
 							data-cite="url#absolute-url-with-fragment-string">absolute-URL-with-fragment-string</a> or a
 							<a>valid-relative-container-URL-with-fragment string</a>. </p>
 
 					<div class="note">
-						<p> The properties of the <a>container root URL</a> are such that whatever the amount of <a
-								data-cite="url#double-dot-path-segment">double-dot path segments</a> in a URL string
-							(for example, <code>../../../secret</code>), it is parsed to a <a>content URL</a> (and not
-							"leak" outside the container). This avoids potential run-time security issues. The
-							additional constraint on <a>valid-relative-container-URL-with-fragment strings</a> ensures
-							that such potentially problematic URLs can also be detected when checking the EPUB
-							Publication. </p>
+						<p>These constraints on URL strings mean that:</p>
 
+						<ul>
+							<li>relative URL strings starting with a <code>/</code> (<code>U+002F</code>) (for example, <code>/EPUB/content.xhtml</code>) are disallowed;
+							</li>
+							<li>relative URL strings containing more <a
+								data-cite="url#double-dot-path-segment">double-dot path segments</a> than needed to reach the target
+								file (for example, <code>EPUB/../../../../config.xml</code>) are disallowed;
+							</li>
+							<li>any other absolute or relative URL string is allowed.</li>
+						</ul>
 
-						<p> For better interoperability with non-conforming or legacy Reading Systems and toolchains,
-							EPUB Creators should not use more <a data-cite="url#double-dot-path-segment">double-dot path
-								segments</a> than needed to reach the target container file. </p>
-
+						<p>
+							Note that in any case, to avoid potential run-time security issues, the properties of the <a>container root URL</a> are such that a conforming Reading System will parse any relative URL string to a <a>content URL</a>. In other words, even the disallowed URL strings described above will not "leak" outside the container. They are still disallowed for better interoperability with non-conforming or legacy Reading Systems and toolchains.
+						</p>
 					</div>
 
 					<aside class="example" title="Referencing a file in the same directory">
@@ -6115,7 +6184,7 @@ No Entry</pre>
 					<section id="sec-parsing-urls-metainf">
 						<h5>Parsing URLs in the <code>META-INF</code> Directory</h5>
 
-						<p>To parse a URL string <var>url</var> used in files located in the <code>META-INF</code>
+						<p id="sec-container-metainf-url-parsing" data-tests="#ocf-url_relative">To parse a URL string <var>url</var> used in files located in the <code>META-INF</code>
 							directory the <a data-cite="url#concept-url-parser">URL Parser</a> MUST be applied to
 								<var>url</var>, with the <a>container root URL</a> as <a
 								data-cite="url#concept-base-url"><var>base</var></a>.</p>
@@ -10732,8 +10801,14 @@ EPUB/images/cover.png</pre>
 					>Working Group's issue tracker</a>.</p>
 
 			<ul>
-				<li>07-Mar-2022: Add new section on conformance checking and definition for EPUB Conformance Checker.
+				<li>09-Mar-2022: Add new section on conformance checking and definition for EPUB Conformance Checker.
 					See <a href="https://github.com/w3c/epub-specs/pull/2025">pull request 2025</a>.</li>
+				<li>08-Mar-2022: Require use of the fixed layout property values defined in this specification. See <a
+						href="https://github.com/w3c/epub-specs/issues/2039">issue 2039</a>.</li>
+				<li>08-Mar-2022: Clarified that the refines attribute must not be used with global fixed layout property
+					declarations. See <a href="https://github.com/w3c/epub-specs/issues/2036">issue 2036</a>.</li>
+				<li>07-Mar-2022: Consolidated the usage requirements for manifest properties into a new Resource
+					Properties section. See <a href="https://github.com/w3c/epub-specs/issues/2030">issue 2030</a>.</li>
 				<li>05-Mar-2022: Forbid circular references and self-references in refinement chains. See <a
 						href="https://github.com/w3c/epub-specs/issues/2031">issue 2031</a>.</li>
 				<li>19-Feb-2022: Clarified the <a href="#elemdef-smil-audio"><code>audio</code></a> element's definition
