@@ -73,7 +73,9 @@ This note serves to help content authors and publishers try to address some of t
 
 Fixed Layout publications present some unique challenges for accessibility. The requirements laid out in [[EPUB-A11Y-11]] recommend [[WCAG2]] AA, but for many use cases in fixed layout, that might not be possible without fundamental changes to the content.
 
-We want to recognize these challenges for content creators, and in this document will outline some techniques for managing these challenges. We encourage content creators to explore the possibilities that digital publications present, even when creating fixed layout publications.
+In particular, the needs of people with low vision or learning disabilities that rely on the transformation of text are still almost impossible to accommodate in fixed layout content. Content creators concerned about this may choose not to use fixed layout. 
+
+We want to recognize these challenges for content creators, and in this document will outline some techniques for producing more accessible fixed layout content. We encourage content creators to explore the full range of options for accessibility that digital publications present, even when creating fixed layout publications.
 
 ## Reading Order {#reading-order}
 
@@ -266,8 +268,7 @@ If an image splits over two pages, put the full image description of both images
 
 If there are a group of images in sequence, you only have to describe details in the first image. In the proceeding images only mention what has changed. W3 Tutorial on Image Groups
 
-Not all details are needed in writing alt-text for images, and what you do describe relies heavily on context. For example, if the image is described in the surrounding text, you only need to briefly describe it in the Alt-text. For more information on when, and how to describe you can go to the DIAGRAM centre, or AccessibilePublishing.ca. See resources for links.
-    
+Not all details are needed in writing alternative text for images, and what you do describe relies heavily on context. For example, if the image is described in the surrounding text, you only need to briefly describe it in the alt-text. For more information on when, and how to describe you can go to the DIAGRAM centre, or AccessibilePublishing.ca. See resources for links.    
 
 ### Useful Resources for describing images
 
@@ -410,7 +411,6 @@ When constructing a page or chapter, consider the following:
 * Use consistent design patterns for supplemental content on the page so a reader will know its purpose or be able to contextualize it (i.e. definitions or questions)
 * Consider the spacing of sections of text and associated elements, ensure that pages are not too cramped to allow readers to process the contents of the page, but not so spaced out that someone using zoom or magnification may miss adjacent elements 
 
-
 ## Media overlays {#media-overlays}
 TBW
 
@@ -420,7 +420,7 @@ An image of text, or images with text, are not accessible. It is important to tr
 
 The best way to create an accessible table is to present it as tabular data. This is already documented in the DAISY Knowledge Base with directions on creating [semantic tagging for tables](http://kb.daisy.org/publishing/docs/html/tables.html).
 
-If the table needs to remain an image, another option is to use alt-text and caption or ARIA roles to describe the data in logical reading order. The caption could be used as a summary of the table, and the Alt-text would dive deeper. You would start with describing what the header row is followed by what is presented in each row. You could then dive deeper and list all the data as it appears in reading order.
+If the table needs to remain an image, another option is to use alternative text and caption or ARIA roles to describe the data in logical reading order. The caption could be used as a summary of the table, and the alternative text would dive deeper. You would start with describing what the header row is followed by what is presented in each row. You could then dive deeper and list all the data as it appears in reading order.
 
 Depending on the complexity of the image this may require complex description with one of the following formats:
 
@@ -442,6 +442,29 @@ The advantage of aria-details over aria-describedby is that it allows users acce
 
 The aria-describedby attribute's big drawback is that it turns the description into one long text string that users have to listen to. There's no way to navigate the columns and rows or have headers read out, so it's likely going to be very difficult for users to make sense of except for very simple and very small tables.
 
+## Package Metadata 
+
+The [package metadata](https://www.w3.org/TR/epub-33/#sec-fxl-package) used in the EPUB is the primary method for a reading system to determine whether content is fixed layout or reflowable. In addition to identifying the pagination mode with <code>rendition:layout</code>, package metadata can also allow the content creator to have some control over other display characteristics.
+
+These display characteristics include: 
+
+* <code>rendition:orientation</code> - the orientation of the book, can be <code>landscape</code>, <code>portrait</code>, or <code>auto</code>
+* <code>rendition:spread</code> - the spread settings of the book, can be <code>none</code>, <code>landscape</code>, <code>both</code>, or <code>auto</code>
+* <code>rendition:page-spread-*</code> - spread settings for individual spine items, can be <code>left</code>, <code>right</code>, and <code>center</code>
+
+The default value for the <code>orientation</code> and <code>spread</code> properties is <code>auto</code>, which means that the reading system settings or defaults take effect. 
+
+It is recommended that content creators do not set a specific <code>orientation</code> property, as this can interfere with user device preferences. It is especially important for users who may be unable to change the orientation of their device to match the content settings. 
+
+<aside class="example" id="metadata-example-1">
+    <p>An example of package metadata for a fixed layout publication.</p>
+    <pre>
+        &lt;meta property="rendition:layout"&gt;pre-paginated&lt;/meta&gt;
+        &lt;meta property="rendition:orientation"&gt;auto&lt;/meta&gt;
+        &lt;meta property="rendition:spread"&gt;auto&lt;/meta&gt;
+    </pre>
+</aside>
+
 ## Accessibility metadata {#a11y-metadata}
 
 Books with accessible elements require metadata to indicate how they are accessible, and if they present and hazards to the reader.
@@ -457,14 +480,14 @@ A few values that could apply to a Fixed Layout book might be:
 * displayTransformability - Be careful here as images of text would not qualify
 * readingOrder - Be careful here to ensure correct reading order of visual elements
     
-<aside class="example" id="metadata-example-1">
+<aside class="example" id="metadata-example-2">
 <pre>
-<code>&lt;meta property="schema:accessibilityFeature"&gt;
+&lt;meta property="schema:accessibilityFeature"&gt;
     alternativeText
 &lt;/meta&gt;
 &lt;meta property="schema:accessibilityFeature"&gt;
     readingOrder
-&lt;/meta&gt;</code>
+&lt;/meta&gt;
 </pre>
 </aside>
     
@@ -473,21 +496,21 @@ A few values that could apply to a Fixed Layout book might be:
 The schema.org property `accessMode` is used to define the ways in which this book can be consumed be that `visual`, `textual`, `auditory`, or `tactile`.
 
 A picture book would only have an `accessMode` of `visual`
-<aside class="example" id="metadata-example-2">
-<pre><code>&lt;meta property="schema:accessMode"&gt;
+<aside class="example" id="metadata-example-3">
+<pre>&lt;meta property="schema:accessMode"&gt;
     visual
-&lt;/meta&gt;</code></pre>
+&lt;/meta&gt;</pre>
 </aside>
     
 A Fixed Layout book which contains both text and images would have two separate `accessMode`'s defined
-<aside class="example" id="metadata-example-3">
+<aside class="example" id="metadata-example-4">
 <pre>
-<code>&lt;meta property="schema:accessMode"&gt;
+&lt;meta property="schema:accessMode"&gt;
     visual
 &lt;/meta&gt;
 &lt;meta property="schema:accessMode"&gt;
     textual
-&lt;/meta&gt;</code>
+&lt;/meta&gt;
 </pre>
 </aside>    
     
@@ -497,20 +520,28 @@ The schema.org property `accessModeSufficient` is used to define the combination
     
 For picture books with no text, or no alternative text the way one would consume this would be completely visually so having `accessModeSufficient` of `visual` would be solely defined.
     
-<aside class="example" id="metadata-example-4">
-<pre><code>&lt;meta property="schema:accessModeSufficient"&gt;
+<aside class="example" id="metadata-example-5">
+<pre>&lt;meta property="schema:accessModeSufficient"&gt;
     visual
-&lt;/meta&gt;</code></pre>
+&lt;/meta&gt;</pre>
 </aside>
     
 For Fixed Layout books that have both visual and textual elements then having `accessModeSufficient` of `visual,textual` would be appropriate. In addition, if the Fixed Layout book is primarily images that are fully described, `textual` would also apply, as this implies the boook is Screen Reader Friendly and can be fully read by assistive technology.
 
-<aside class="example" id="metadata-example-5">
-<pre><code>&lt;meta property="schema:accessModeSufficient"&gt;
+<aside class="example" id="metadata-example-6">
+<pre>&lt;meta property="schema:accessModeSufficient"&gt;
     visual,textual
-&lt;/meta&gt;</code></pre>
+&lt;/meta&gt;</pre>
 </aside>
+
+If a Fixed Layout book has all images fully described then having `accessModeSufficient` of `textual` would be appropriate which implies this book is Screen Reader Friendly and can be fully read by assistive technology.
     
+<aside class="example" id="metadata-example-7">
+<pre>&lt;meta property="schema:accessModeSufficient"&gt;
+    textual
+&lt;/meta&gt;</pre>
+</aside>
+
 ### Accessibility Hazards {#a11y-metadata-hazards}
 
 The schema.org property `accessibilityHazard` defines any hazards within the book.
@@ -519,20 +550,22 @@ Typically there would be no hazards within a Fixed Layout book, as currently the
     
 If there are no hazards within the book one can simply have `none` or can call out each specific non-hazard explicityly by stating `noFlashingHazard`, `noSoundHazard`, and `noMotionSimulationHazard`.
     
-<aside class="example" id="metadata-example-7">
-<pre><code>&lt;meta property="schema:accessibilityHazard"&gt;
+<aside class="example" id="metadata-example-8">
+<pre>&lt;meta property="schema:accessibilityHazard"&gt;
     none
-&lt;/meta&gt;</code></pre>
+&lt;/meta&gt;</pre>
 </aside>
     
 ### Accessibility Summary {#a11y-metadata-accessibility-summary}
 
 The schema.org property `accessibilitySummary` is a human readable statement on how accessible or inaccessible this book is.
 
-<aside class="example" id="metadata-example-8">
-<pre><code>&lt;meta property="schema:accessibilitySummary"&gt;
-    This Fixed Layout EPUB contains a lot of visual formatting where images can span over two pages.  All images do have a textual description to aid in accessibility. Here is where you can also include any exceptions to the overall accessibility of the book (eg. All complex images are well described other than a few reference materials in the Appendix.)
-&lt;/meta&gt;</code>
+<aside class="example" id="metadata-example-9">
+<pre>&lt;meta property="schema:accessibilitySummary"&gt;
+    This Fixed Layout EPUB contains a lot of visual formatting
+    where images can span over two pages.  All images do have
+    a textual description to aid in accessibility.
+&lt;/meta&gt;
 </pre>
 </aside>
 
