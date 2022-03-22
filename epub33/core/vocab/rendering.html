@@ -1,15 +1,6 @@
 <section id="app-rendering-vocab">
 	<h3>Package Rendering Vocabulary</h3>
 	
-	<p>Not all rendering information can be expressed through the underlying technologies that EPUB is
-		built upon. For example, although HTML with CSS provides powerful layout capabilities, those
-		capabilities are limited to the scope of the document being rendered.</p>
-	
-	<p>This section defines general-purpose properties that allow EPUB Creators to express package-level
-		rendering intentions (i.e., functionality that can only be implemented by the <a>EPUB Reading
-			System</a>). If a Reading System supports the desired rendering, these properties enable the
-		user to be presented the content as the EPUB Creator optimally designed it.</p>
-	
 	<p>The prefix URL for <a href="#sec-default-vocab">referencing these properties</a> is
 		<code>http://www.idpf.org/vocab/rendition/#</code>.</p>
 	
@@ -17,268 +8,95 @@
 		use</a> with the package rendering properties and does not have to be declared in the
 		Package Document.</p>
 	
-	<section id="sec-rendering-general">
-		<h4>General Properties</h4>
+	<div class="note">
+		<p>Unlike the other vocabularies in this appendix, the properties in the Package Rendering Vocabulary
+			consist of a mix of properties (expressed in <a href="#sec-meta-elem"><code>meta</code> elements</a>)
+			and spine overrides (expressed on <a href="#sec-itemref-elem"><code>itemref</code> elements</a>).</p>
 		
-		<section id="flow">
-			<h5>The <code>rendition:flow</code> Property</h5>
-			
-			<p>The <code>rendition:flow</code> property specifies the EPUB Creator preference for how Reading
-				Systems should handle content overflow. </p>
-			
-				<p id="property-flow-global">When the <a href="#flow"><code>rendition:flow</code>
-					property</a> is specified on a <code>meta</code> element, it indicates the EPUB Creator's
-					global preference for overflow content handling (i.e., for all spine items). EPUB Creators MAY
-					indicate a preference for dynamic pagination or scrolling. For scrolled content, it is
-					also possible to specify whether consecutive <a>EPUB Content Documents</a> are to be
-					rendered as a continuous scrolling view or whether each is to be rendered separately
-					(i.e., with a dynamic page break between each).</p>
-				
-			<p>The following values are defined for use with the <code>rendition:flow</code>
-				property:</p>
-			
-			<dl class="variablelist">
-				<dt id="paginated">paginated</dt>
-				<dd id="paginated-dd" data-tests="#pkg-flow-paginated">
-					<p>Dynamically paginate all overflow content.</p>
-				</dd>
-				<dt id="scrolled-continuous">scrolled-continuous</dt>
-				<dd id="scrolled-continuous-dd" data-tests="#pkg-flow-scrolled-continuous">
-					<p>Render all Content Documents such that overflow content is scrollable, and the
-						EPUB Publication is presented as one continuous scroll from spine item to spine
-						item (except where <a href="#layout-property-flow-overrides">locally overridden</a>).</p>
-					<p>Note that EPUB Creators SHOULD NOT create publications in which different resources
-						have different block flow directions, as continuous scrolled rendition in EPUB
-						Reading Systems would be problematic.</p>
-				</dd>
-				<dt id="scrolled-doc">scrolled-doc</dt>
-				<dd id="scrolled-doc-dd" data-tests="#pkg-flow-scrolled-doc">
-					<p>Render all Content Documents such that overflow content is scrollable, and each
-						spine item is presented as a separate scrollable document.</p>
-				</dd>
-				<dt id="auto">auto</dt>
-				<dd>
-					<p>Render overflow content using the Reading System default method or a user
-						preference, whichever is applicable. Default value.</p>
-				</dd>
-			</dl>
-			
-			<p id="html-body-page-break-before">Note that when two reflowable EPUB Content Documents
-					occur sequentially in the spine, the default rendering for their [[!HTML]] <a
-						data-cite="html#the-body-element"
-						><code>body</code></a> elements is consistent with the <a
-							href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
-							><code>page-break-before</code> property</a> [[!CSSSnapshot]] having been set to
-					<code>always</code>. In addition to using the <code>rendition:flow</code> property,
-					EPUB Creators MAY override this behavior through an appropriate style sheet declaration, if
-					the Reading System supports such overrides.</p>
-				
-			<p>The <code>rendition:flow</code> property MUST NOT be declared more than once.</p>
-
-			<figure id="fig-flow-paginated-single">
-				<figcaption>Rendering of an EPUB publication with a single spine item, and with the
-					<code>rendition:flow</code> set to <code>paginated</code>.</figcaption>
-				<img src="images/Rendering_Paginated_Single_Spine.svg" width="600" aria-details="flow-paginated-single-diagram"
-					alt="The continuous progression of paginated content produced for a single document."/>
-			</figure>
-			
-			<details id="flow-paginated-single-diagram" class="desc">
-				<summary>Image description</summary>
-				<p>Three column-like rectangles linked left-to-middle and middle-to-right with respective arrows,
-					with a text flowing from one rectangle to the next one. The text is sectioned with headers
-					figuring 'Chapter 1', '2', and '3'. The leftmost rectangle is enclosed in a schematic view of
-					a tablet.</p>
-			</details>
-			
-			<figure id="fig-flow-paginated-multiple">
-				<figcaption>Rendering of an EPUB publication with multiple spine items, and with the
-					<code>rendition:flow</code> set to <code>paginated</code>.</figcaption>
-				<img src="images/Rendering_Paginated_Multiple_Spine.svg" width="600" aria-details="flow-paginated-multiple-diagram"
-					alt="The continuous progression of paginated content produced for each document with transitions to
-							new pages between documents."/>
-			</figure>
-			
-			<details id="flow-paginated-multiple-diagram" class="desc">
-				<summary>Image description</summary>
-				<p>Three column-like rectangles linked left-to-middle and middle-to-right with respective arrows,
-					with a text flowing from one rectangle to the next one. The text is sectioned with headers
-					figuring 'Chapter 1', '2'. The section with 'Chapter 2' starts at the top of the rightmost
-					rectangle, leaving an empty space at the bottom of the middle rectangle. The leftmost rectangle
-					is enclosed in a schematic view of a tablet.</p>
-			</details>
-			
-			<figure id="fig-flow-scrolled-continuous">
-				<figcaption>Rendering of an EPUB publication with a single spine item, and with the
-						<code>rendition:flow</code> set to <code>scrolled-continuous</code>.</figcaption>
-				<img src="images/Rendering_Scrolled_Continuous.svg" width="220" aria-details="flow-scrolled-continuous"
-						alt="The progression of a continuous scroll of content extends vertically off the user's screen,
-							with new documents added to the bottom as encountered."/>
-			</figure>
-			
-			<details id="flow-scrolled-continuous-diagram" class="desc">
-				<summary>Image description</summary>
-				<p>A single, column-like strip (i.e., a rectangle without a bottom edge) with a text flowing down the strip.
-					The text is sectioned with headers figuring 'Chapter 1', '2'. The top part of the strip
-					is enclosed in a schematic view of a tablet.</p>
-			</details>
-			
-			<figure id="fig-flow-scrolled-doc">
-				<figcaption>Rendering of an EPUB publication with multiple spine items, and with the
-						<code>rendition:flow</code> set to <code>scrolled-doc</code>.</figcaption>
-				<img src="images/Rendering_Scrolled_Doc.svg" width="600" aria-details="flow-scrolled-doc-diagram"
-					alt="The progression of scrollable documents depicting how only the content within each document
-						is scrollable."/>
-			</figure>
-			
-			<details id="flow-scrolled-doc-diagram" class="desc">
-				<summary>Image description</summary>
-				<p>Three column-like strips (i.e., a rectangles without bottom edges) linked left-to-middle
-					and middle-to-right with respective arrows, each containing a text flowing down the strip.
-					The text is sectioned with headers figuring 'Chapter 1', '2' and '3'. Each strip starts with
-					a chapter header and flows down the strip. The top part of the leftmost strip is enclosed
-					in a schematic view of a tablet.</p>
-			</details>
-			
-			<section id="layout-property-flow-overrides">
-				<h5>Spine Overrides</h5>
-				
-				<p id="layout-property-flow-local">EPUB Creators MAY specify the following properties locally on
-					spine <a href="#elemdef-spine-itemref"><code>itemref</code> elements</a> to override the
-					<a href="#property-flow-global">global value</a> for the given spine item:</p>
-				
-				<dl>
-					<dt id="flow-auto">flow-auto</dt>
-					<dd>Indicates no preference for overflow content handling by the EPUB Creator.</dd>
-					
-					<dt id="flow-paginated">flow-paginated</dt>
-					<dd>Indicates the EPUB Creator preference is to dynamically paginate content overflow.</dd>
-					
-					<dt id="flow-scrolled-continuous">flow-scrolled-continuous</dt>
-					<dd>Indicates the EPUB Creator preference is to provide a scrolled view for overflow content,
-						and that consecutive spine items with this property are to be rendered as a
-						continuous scroll.</dd>
-					
-					<dt id="flow-scrolled-doc">flow-scrolled-doc</dt>
-					<dd>Indicates the EPUB Creator preference is to provide a scrolled view for overflow content,
-						and each spine item with this property is to be rendered as a separate scrollable
-						document.</dd>
-				</dl>
-				
-				<p>Only one of these overrides is allowed on any given spine item.</p>
-
-				<aside class="example" id="property-flow-ex1" title="Overriding a global paginated flow declaration">
-					<p>In this example, the EPUB Creator's intent is to have a paginated EPUB Publication
-						with a scrollable table of contents.</p>
-					<pre>&lt;package …>
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:flow"&gt;
-         paginated
-      &lt;/meta&gt;
-      …
-   &lt;/metadata&gt;
-
-   …
-
-   &lt;spine&gt;
-      &lt;itemref
-          idref="toc"
-          properties="rendition:flow-scrolled-doc"/&gt;
-      &lt;itemref
-          idref="c01"/&gt;
-   &lt;/spine&gt;
-&lt;/package></pre>
-				</aside>
-			</section>
-		</section>
+		<p>The usage requirements are also defined in <a href="#sec-rendering-control"></a> not in this appendix.
+			The following table provides a map to the properties, overrides, and where they are defined.</p>
+	</div>
 		
-		<section id="align-x-center">
-			<h5>The <code>rendition:align-x-center</code> Property</h5>
-			
-			<p>The <code>rendition:align-x-center</code> property specifies that the given spine item should
-				be centered horizontally in the viewport or spread. </p>
-			
-			<p>The property cannot be set globally for all EPUB Content Documents. It is only available as a spine
-				override for individual EPUB Content Documents via the <a
-					href="#sec-itemref-elem"><code>itemref</code> element's <code>properties</code>
-					attribute</a>.</p>
-			
-			<div class="note">
-				<p>This property was developed primarily to handle "Naka-Tobira (中扉)" (sectional title
-					pages), in the absence of reliable centering control within the content rendering. As
-					support for paged media evolves in CSS, however, this property is expected to be
-					deprecated. EPUB Creators are encouraged to use CSS solutions when effective.</p>
-			</div>
-		</section>
-	</section>
-	<section id="sec-rendering-fxl">
-		<h4>Fixed-Layout Properties</h4>
-		
-		<p>The following properties belong to the Package Rendering Vocabulary. Refer to their respective
-			definitions in <a href="#sec-fixed-layouts"></a> for the details of their use.</p>
-		
-		<table class="zebra">
-			<thead>
-				<tr>
-					<th>Properties</th>
-					<th>Defined in</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<ul>
-							<li><code>rendition:layout</code></li>
-							<li><code>rendition:layout-pre-paginated</code></li>
-							<li><code>rendition:layout-reflowable</code></li>
-						</ul>
-					</td>
-					<td><a href="#layout"></a></td>
-				</tr>
-				<tr>
-					<td>
-						<ul>
-							<li><code>rendition:orientation</code></li>
-							<li><code>rendition:orientation-auto</code></li>
-							<li><code>rendition:orientation-landscape</code></li>
-							<li><code>rendition:orientation-portrait</code></li>
-						</ul>
-					</td>
-					<td><a href="#orientation"></a></td>
-				</tr>
-				<tr>
-					<td>
-						<ul>
-							<li><code>rendition:spread</code></li>
-							<li><code>rendition:spread-auto</code></li>
-							<li><code>rendition:spread-both</code></li>
-							<li><code>rendition:spread-landscape</code></li>
-							<li><code>rendition:spread-none</code></li>
-							<li><code>rendition:spread-portrait</code></li>
-						</ul>
-					</td>
-					<td><a href="#spread"></a></td>
-				</tr>
-				<tr>
-					<td>
-						<ul>
-							<li><code>rendition:page-spread-center</code></li>
-							<li><code>rendition:page-spread-left</code></li>
-							<li><code>rendition:page-spread-right</code></li>
-						</ul>
-					</td>
-					<td><a href="#page-spread"></a></td>
-				</tr>
-				<tr>
-					<td>
-						<ul>
-							<li><code>rendition:viewport</code></li>
-						</ul>
-					</td>
-					<td><a href="#viewport"></a></td>
-				</tr>
-			</tbody>
-		</table>
-	</section>
+	<table class="zebra">
+		<thead>
+			<tr>
+				<th>Property</th>
+				<th>Overrides</th>
+				<th>Defined in</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>rendition:layout</code></td>
+				<td>
+					<ul>
+						<li><code>rendition:layout-pre-paginated</code></li>
+						<li><code>rendition:layout-reflowable</code></li>
+					</ul>
+				</td>
+				<td><a href="#layout"></a></td>
+			</tr>
+			<tr>
+				<td><code>rendition:orientation</code></td>
+				<td>
+					<ul>
+						<li><code>rendition:orientation-auto</code></li>
+						<li><code>rendition:orientation-landscape</code></li>
+						<li><code>rendition:orientation-portrait</code></li>
+					</ul>
+				</td>
+				<td><a href="#orientation"></a></td>
+			</tr>
+			<tr>
+				<td><code>rendition:spread</code></td>
+				<td>
+					<ul>
+						<li><code>rendition:spread-auto</code></li>
+						<li><code>rendition:spread-both</code></li>
+						<li><code>rendition:spread-landscape</code></li>
+						<li><code>rendition:spread-none</code></li>
+						<li><code>rendition:spread-portrait</code> (Deprecated)</li>
+					</ul>
+				</td>
+				<td><a href="#spread"></a></td>
+			</tr>
+			<tr>
+				<td>&#8212;</td>
+				<td>
+					<ul>
+						<li><code>rendition:page-spread-center</code></li>
+						<li><code>rendition:page-spread-left</code></li>
+						<li><code>rendition:page-spread-right</code></li>
+					</ul>
+				</td>
+				<td><a href="#page-spread"></a></td>
+			</tr>
+			<tr>
+				<td><code>rendition:viewport</code> (Deprecated)</td>
+				<td>&#8212;</td>
+				<td><a href="#viewport"></a></td>
+			</tr>
+			<tr>
+				<td><code>rendition:flow</code></td>
+				<td>
+					<ul>
+						<li><code>rendition:flow-paginated</code></li>
+						<li><code>rendition:flow-scrolled-continuous</code></li>
+						<li><code>rendition:flow-scrolled-doc</code></li>
+						<li><code>rendition:flow-auto</code></li>
+					</ul>
+				</td>
+				<td><a href="#flow"></a></td>
+			</tr>
+			<tr>
+				<td>&#8212;</td>
+				<td>
+					<ul>
+						<li><code>rendition:align-x-center</code></li>
+					</ul>
+				</td>
+				<td><a href="#align-x-center"></a></td>
+			</tr>
+		</tbody>
+	</table>
 </section>
