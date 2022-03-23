@@ -310,7 +310,7 @@
 					<dd>
 						<p>A <a>Publication Resource</a> that conforms to one of the MIME media types [[RFC2046]] listed
 							in <a href="#sec-core-media-types"></a> and, therefore, does not require the provision of a
-								<a href="#sec-foreign-restrictions">fallback</a> (cf. <a>Foreign Resource</a>).</p>
+								<a href="#sec-foreign-resources">fallback</a> (cf. <a>Foreign Resource</a>).</p>
 						<p>The designation "Core Media Type Resource" only applies when a resource is used in the
 							rendering of <a>EPUB Content Documents</a> and <a>Foreign Content Documents</a>. A Core
 							Media Type Resource cannot be used in the <a>spine</a>, for example, without a fallback
@@ -340,7 +340,7 @@
 								<a data-lt="SVG Content Document">SVG</a> definitions to be used in the spine or be
 							referenced from another EPUB Content Document.</p>
 						<p>An EPUB Content Document is a <a>Core Media Type Resource</a>, so <a>EPUB Creators</a> can
-							include it without the provision of <a href="#sec-foreign-restrictions">fallbacks</a>.</p>
+							include it without the provision of <a href="#sec-foreign-resources">fallbacks</a>.</p>
 					</dd>
 
 					<dt>
@@ -440,7 +440,7 @@
 					<dd>
 						<p>A <a>Publication Resource</a> with a MIME media type [[RFC2046]] that does not match any of
 							those listed in <a href="#sec-core-media-types"></a>. Foreign Resources are subject to the
-							fallback requirements defined in <a href="#sec-foreign-restrictions"></a>.</p>
+							fallback requirements defined in <a href="#sec-foreign-resources"></a>.</p>
 						<p>The designation "Foreign Resource" only applies to resources used in the rendering of <a>EPUB
 								Content Documents</a> and <a>Foreign Content Documents</a>.</p>
 						<div class="note">
@@ -741,119 +741,170 @@
 						fallbacks. Some resources can be used in rendering <a>EPUB Content Documents</a>, while others
 						can only be used with fallbacks.</p>
 
-					<p>Trying to understand these differences in isolation by reading the technical definitions of each
-						category of resource can be daunting, so this introduction attempts to provide a higher-level
-						desciption of their uses and interactions.</p>
+					<p>Trying to understand these differences by reading the technical definitions of each category of
+						resource can be complex. To make the categorizations easier to understand, this introduction
+						introduces the concept of different axes in which the resources are used.</p>
 
-					<p>To begin at the highest level is to look at all the resources allowed in the EPUB Container.
-						Primary in this group are Publication Resources, which are all the resources used in rendering
-						an EPUB Publication to the user. <a>EPUB Creators</a> always have to list these resources in the
-						Package Document <a>manifest</a>. Most Publication Resources have to be included in the EPUB
-						Container, but EPUB 3 makes <a href="#sec-resource-locations">exceptions for a few large data
-							formats</a> (audio, video, font and script data resources).</p>
-
-					<p>Publication Resources are not the only resources that may be in the EPUB Container. EPUB 3 also
-						allows EPUB Creators to reference <a>Linked Resources</a>. Linked Resources can be hosted either
-						inside or outside the EPUB Container as they are not used in rendering the EPUB Publication.
-						When included in the EPUB Container, they are not bound to any of the rules of <a>Publication
-							Resources</a> &#8212; they are not listed in the manifest, for example, as their nature and
-						purpose is already defined by their <code>link</code> element, and they are not subject to
-						fallback requirements. (Refer to <a href="#sec-link-elem"></a> for more information.)</p>
-
-					<p>Moving below these broad categorizations, how resources are designated is tied to how they are
-						used within an EPUB Publication. Consequently, the next logical categorization to consider is
-						how resources are used in the <a href="#sec-spine-elem">spine</a>. The spine defines the default
-						reading order of resources, which includes both <a href="#attrdef-itemref-linear">linear and
-							non-linear content</a>. The spine instructs Reading Systems on how to load these documents
-						as the user progresses through the publication. Although many resources may be bundled in an
-						EPUB Container, they are not all allowed by default in the spine.</p>
-
-					<p>EPUB 3 defines a special class of resources called <a>EPUB Content Documents</a> that EPUB
-						Creators can use in the spine without any restrictions. EPUB Content Documents encompass both
-							<a>XHTML Content Documents</a> and <a>SVG Content Documents</a>.</p>
-
-					<p>To use any other type of resource in the spine, called a <a>Foreign Content Document</a>,
-						requires including a fallback to an EPUB Content Document. This extensibility model allows EPUB
-						Creators to experiment with formats while ensuring that Reading Systems are always able to
-						render something for the user to read, as there is no guarantee of support for Foreign Content
-						Documents.</p>
-
-					<p>Fallbacks for spine items are provided through a mechanism called <a
-							href="#sec-manifest-fallbacks">manifest fallbacks</a>. When a <a>Foreign Content
-							Document</a> is used in the spine, its manifest entry must include a <a
-							href="#attrdef-item-fallback"><code>fallback</code> attribute</a> that points to the next
-						possible resource in the manifest to try when its format is not supported. Although not common,
-						a fallback resource can specify another fallback, thereby making chains many resources deep. The
-						one requirement is that there must be at least one EPUB Content Document in a fallback chain.
-						(For more information about manifest fallbacks, refer to <a href="#sec-manifest-fallbacks"
-						></a>.)</p>
-
-					<div class="note">
-						<p>It is possible to provide manifest fallbacks for EPUB Content Documents, but not required.
-							For example, an <a>Scripted Content Document</a> could have a fallback to an unscripted
-							alternative for Reading Systems that do not support scripting.</p>
-					</div>
-
-					<div class="caution">
-						<p>EPUB Creators are strongly discouraged from relying on manifest fallbacks both in the spine
-							and, as discussed next, for Foreign Resources. They have limited support in Reading Systems,
-							which means that unsupported formats may simply fail to render. They also do not provide
-							accessibility benefits (e.g., falling back to an accessible XHTML alternative when images
-							are used in the spine), as users have no choice over what the Reading System renders.</p>
-					</div>
-
-					<p>Moving below <a>EPUB Content Documents</a> and <a>Foreign Content Documents</a> comes the
-						resources used in their rendering. These fall into two broad categories: <a>Core Media Type
-							Resources</a> and <a>Foreign Resources</a>.</p>
-
-					<p>A Core Media Type Resource is one that Reading Systems are expected to support so they can be
-						used without restriction in EPUB Content Documents or Foreign Content Documents. (For more
-						information about Core Media Type Resources, refer to <a href="sec-core-media-types"></a>.)</p>
-
-					<p>Note that being a Core Media Type Resource does not mean that Reading Systems will always render
-						a resource, however, as not all Reading Systems support all features of EPUB 3. A Reading System
-						without a <a>Viewport</a>, for example, will not render visual content such as images.</p>
-
-					<p>Another common point of confusion is the listing of XHTML and SVG Content Documents as Core Media
-						Type Resources. This allows both to be embedded in other EPUB Content Documents (e.g., in an
-						[[HTML]] <a data-cite="html#the-iframe-element"><code>iframe</code></a> tag for XHTML or in an
-							<a data-cite="html#the-img-element"><code>img</code></a> tag for SVG). It does not mean that
-						EPUB Creators can put any Core Media Type Resources in the spine without fallbacks. All other
-						Core Media Type Resources become Foreign Content Documents when used in the spine (i.e., Foreign
-						Content Documents include all Foreign Resources and all Core Media Type Resources except for
-						XHTML and SVG).</p>
-
-					<p>Similar to how using Foreign Content Documents in the spine requires fallbacks to ensure their
-						rendering, using non-Core Media Type Resources, known as <a>Foreign Resources</a>, also requires
-						fallbacks. These fallbacks are provided in one of two ways: using the capabilities of the parent
-						format or via manifest fallbacks.</p>
-
-					<p>The preferred method is to use the fallback capabilities of the parent format. Many HTML
-						elements, for example, have intrinsic fallback capabilities. One example is the
-							<code>picture</code> element, which allows EPUB Creators to specify multiple alternative
-						image formats.</p>
-
-					<p>If an intrinsic fallback method is not available, it is also possible to use manifest fallbacks,
-						but this method, as described above, is strongly discouraged. (For more information about
-						Foreign Resources, refer to <a href="#sec-foreign-resources"></a>.)</p>
-
-					<p>Finally, to make things a little extra interesting, EPUB 3 also carves out some special
-						exceptions to the above resource requirements:</p>
+					<p>The three primary resource axes are:</p>
 
 					<ul>
-						<li>Video resources are neither Core Media Type Resources nor Foreign Resources. EPUB Creators
-							may include any video format without fallbacks, but Reading Systems are not guaranteed to
-							support any video format.</li>
-						<li>Font resources do not require fallbacks because CSS rules will always ensure a default font
-							gets rendered.</li>
-						<li>Any resource type may be used in the [[HTML]] <code>track</code> element to ensure that the
-							accessibility of audio and video is never compromised.</li>
-						<li>Any resource may be referenced from an [[HTML]] <code>link</code> element as these are not
-							used in rendering the XHTML.</li>
+						<li>The <a>publication axis</a> &#8212; The publication axis describes the overarching
+							requirements for all the resources of the EPUB Publication (namely, <a>Publication
+								Resources</a> and <a>Linked Resources</a>).</li>
+						<li>The <a>spine axis</a> &#8212; The spine axis describes the content documents used in
+							rendering the <a>spine</a> (namely, <a>EPUB Content Documents</a> and <a>Foreign Content
+								Documents</a>).</li>
+						<li>The <a>content document axis</a> &#8212; The content document axis describes all the
+							resources used in the rendering of content documents (namely, <a>Core Media Type
+								Resources</a> and <a>Foreign Resources</a>).</li>
 					</ul>
 
-					<p>For more information about the video and font exceptions, refer to <a></a>, and for more
-						information about the element exceptions refer to <a href="#sec-xhtml-fallbacks"></a>.</p>
+					<p>The same resource may exist in more than one axis and will be referred to differently in this
+						specification depending on which axis is being discussed. For example, a Core Media Type
+						Resource used in the rendering of an EPUB Content Document may also be a Foreign Content
+						Document if it is also listed in the spine.</p>
+
+					<p>The following sections describe these axes in more detail.</p>
+
+					<section id="sec-publication-axis">
+						<h5>The Publication Axis</h5>
+
+						<p>To <dfn>publication axis</dfn> defines all the resources of an <a>EPUB Publication</a>.
+							Primary in this group are designated <a>Publication Resources</a>, which are all the
+							resources used in rendering an EPUB Publication to the user. <a>EPUB Creators</a> always
+							have to list these resources in the <a>Package Document</a>
+							<a>manifest</a> but they do not have to locate them all in the <a>EPUB Container</a>. EPUB 3
+							allows <a href="#sec-resource-locations">audio, video, font and script data resources</a> to
+							be hosted outside the Container.</p>
+
+						<p>Publication Resources are further classified by their use(s) in the <a>spine axis</a> and
+								<a>content document axis</a>. Refer to these sections for more information about
+							them.</p>
+
+						<p>The publication axis also contains a set of <a>Linked Resources</a>. These resources are
+							tangential to the direct rendering. They include, for example, metadata records and links to
+							external content (e.g., where to purchase an EPUB Publication). Unlike Publication
+							Resources, there are no restrictions on where Linked Resources are located plus they are not
+							listed in the manifest &#8212; their nature and purpose is already defined by their <a
+								href="#sec-link-elem"><code>link</code> element</a> in the Package Document
+							metadata.</p>
+
+						<p>Refer to <a href="#sec-link-elem"></a> for more information about Linked Resources.</p>
+					</section>
+
+					<section id="sec-spine-axis">
+						<h5>The Spine Axis</h5>
+
+						<p>The <dfn>spine axis</dfn> defines resources used in the default reading order established by
+							the <a>spine</a>, which includes both <a href="#attrdef-itemref-linear">linear and
+								non-linear content</a>. The spine instructs <a>Reading Systems</a> on how to load these
+							documents as the user progresses through the <a>EPUB Publication</a>. Although many
+							resources may be bundled in an <a>EPUB Container</a>, they are not all allowed by default in
+							the spine.</p>
+
+						<p>EPUB 3 defines a special class of resources called <a>EPUB Content Documents</a> that <a>EPUB
+								Creators</a> can use in the spine without any restrictions. EPUB Content Documents
+							encompass both <a>XHTML Content Documents</a> and <a>SVG Content Documents</a>.</p>
+
+						<p>To use any other type of resource in the spine, called a <a>Foreign Content Document</a>,
+							requires including a fallback to an EPUB Content Document. This extensibility model allows
+							EPUB Creators to experiment with formats while ensuring that Reading Systems are always able
+							to render something for the user to read, as there is no guarantee of support for Foreign
+							Content Documents.</p>
+
+						<p>A mechanism called <a href="#sec-manifest-fallbacks">manifest fallbacks</a> allows EPUB
+							Creators to provide fallbacks for Foreign Content Documents. In this model, the
+								<a>manifest</a> entry for the Foreign Content Document must include a <a
+								href="#attrdef-item-fallback"><code>fallback</code> attribute</a> that points to the
+							next possible resource for Reading Systems to try when they do not support its format.
+							Although not common, a fallback resource can specify another fallback, thereby making chains
+							many resources deep. The one requirement is that there must be at least one EPUB Content
+							Document in a fallback chain.</p>
+
+						<p>Refer to <a href="#sec-manifest-fallbacks"></a> for more information.</p>
+
+						<div class="caution" id="caution-fallbacks">
+							<p>Although manifest fallbacks fulfill the technical requirements of EPUB, there is little
+								practical support for them in Reading Systems. Their use is strongly discouraged as it
+								can lead to unreadable publications.</p>
+						</div>
+
+						<div class="note">
+							<p>It is possible to provide manifest fallbacks for EPUB Content Documents, but this is not
+								required or common. For example, a <a>Scripted Content Document</a> could have a
+								fallback to an unscripted alternative for Reading Systems that do not support
+								scripting.</p>
+						</div>
+					</section>
+
+					<section id="sec-content-document-axis">
+						<h5>The Content Document Axis</h5>
+
+						<p>The <dfn>content document axis</dfn> classifies resources based on their use in their
+							rendering <a>EPUB Content Documents</a> and <a>Foreign Content Documents</a>. These
+							resources fall into two broad categories: <a>Core Media Type Resources</a> and <a>Foreign
+								Resources</a>.</p>
+
+						<p>A Core Media Type Resource is one that <a>Reading Systems</a> have to support, so they can be
+							used without restriction in EPUB or Foreign Content Documents. For more information about
+							Core Media Type Resources, refer to <a href="sec-core-media-types"></a>.</p>
+
+						<div class="note">
+							<p>Being a Core Media Type Resource does not mean that Reading Systems will always render
+								the resource, as not all Reading Systems support all features of EPUB 3. A Reading
+								System without a <a>Viewport</a>, for example, will not render visual content such as
+								images.</p>
+						</div>
+
+						<p>The opposite of Core Media Type Resources are Foreign Resources. These are resources that
+							Reading Systems are not guaranteed to support the rendering of. As a result, similar to how
+							using Foreign Content Documents in the spine requires fallbacks to ensure their rendering,
+							using Foreign Resources in content documents also requires fallbacks. These fallbacks are
+							provided in one of two ways: using the capabilities of the parent format or via manifest
+							fallbacks.</p>
+
+						<p>The preferred method is to use the fallback capabilities of the parent format. Many HTML
+							elements, for example, have intrinsic fallback capabilities. One example is the <a
+								href="html#the-picture-element"><code>picture</code> element</a> [[HTML]], which allows
+							EPUB Creators to specify multiple alternative image formats.</p>
+
+						<p>If an intrinsic fallback method is not available, it is also possible to use manifest
+							fallbacks, but this method, as <a href="#caution-fallbacks">cautioned against</a> in the
+							previous section, is discouraged. For more information about Foreign Resources, refer to <a
+								href="#sec-foreign-resources"></a>.</p>
+
+						<p>EPUB 3 also carves out some special exceptions to the above resource requirements:</p>
+
+						<ul>
+							<li>Video resources are neither Core Media Type Resources nor Foreign Resources. EPUB
+								Creators may include any video format without fallbacks, but Reading Systems are not
+								guaranteed to support any video format.</li>
+							<li>Font resources do not require fallbacks because CSS rules will always ensure Reading
+								Systems render a default font.</li>
+							<li>Any resource type may be used in the [[HTML]] <code>track</code> element to ensure that
+								the accessibility of audio and video is never compromised.</li>
+							<li>Any resource may be referenced from an [[HTML]] <code>link</code> element as these are
+								not used in rendering the XHTML.</li>
+						</ul>
+
+						<p>For more information about the video and font exceptions, refer to <a></a>, and for more
+							information about the element exceptions refer to <a href="#sec-xhtml-fallbacks"></a>.</p>
+
+						<div class="note">
+							<p>A common point of confusion arising from Core Media Type Resources is the listing of
+								XHTML and SVG as Core Media Type Resources with the requirement the markup conform to
+								their respective <a>EPUB Content Document</a> definitions. This allows EPUB Creators to
+								embed both XHTML and SVG documents in EPUB Content Documents while keeping consistent
+								requirements for authoring and Reading System support.</p>
+
+							<p>In practice, it means that EPUB Creators can put XHTML and SVG Core Media Type Resources
+								in the spine without any modification or fallback (they are also conforming XHTML and
+								SVG Content Documents), but this is a unique case. All other Core Media Type Resources
+								become Foreign Content Documents when used in the spine (i.e., Foreign Content Documents
+								include all Foreign Resources and all Core Media Type Resources except for XHTML and
+								SVG).</p>
+						</div>
+					</section>
 				</section>
 
 				<section id="sec-core-media-types">
@@ -1047,8 +1098,8 @@
 								<td>
 									<a href="#sec-xhtml">XHTML Content Documents</a>
 								</td>
-								<td><a>XHTML Content Documents</a> that use the <a data-cite="html#xhtml">XHTML
-										syntax</a> [[HTML]]. </td>
+								<td>HTML documents that use the <a data-cite="html#xhtml">XHTML syntax</a>
+									[[HTML]].</td>
 							</tr>
 							<tr>
 								<td id="cmt-js">
@@ -1096,7 +1147,7 @@
 					</div>
 				</section>
 
-				<section id="sec-foreign-restrictions">
+				<section id="sec-foreign-resources">
 					<h5>Foreign Resources</h5>
 
 					<p>A <a>Foreign Resource</a>, unlike a <a href="#sec-core-media-types">Core Media Type Resource</a>
@@ -1189,8 +1240,7 @@
 								href="#sec-spine-elem">spine</a>.</li>
 						<li>To provide fallbacks when intrinsic fallback are not available for elements in EPUB Content
 							Documents (e.g., for the [[HTML]] <a data-cite="html#the-img-element"><code>img</code></a>
-							element) in order to satisfy the requirements in <a href="#sec-foreign-restrictions"
-							></a>.</li>
+							element) in order to satisfy the requirements in <a href="#sec-foreign-resources"></a>.</li>
 					</ol>
 
 					<p>The <a href="#attrdef-item-fallback"><code>fallback</code> attribute</a> on the <a>manifest</a>
@@ -1347,8 +1397,8 @@
 						requirement for EPUB Creators to list them in the <a>manifest</a>.</p>
 
 					<p>EPUB Creators MUST encode Data URLs as Core Media Type Resources or use them where they can
-						provide a fallback (i.e., Data URLs are subject to the <a href="#sec-foreign-restrictions"
-							>Foreign Resource restrictions</a>).</p>
+						provide a fallback (i.e., Data URLs are subject to the <a href="#sec-foreign-resources">Foreign
+							Resource restrictions</a>).</p>
 				</section>
 
 				<section id="sec-xml-constraints">
