@@ -22,7 +22,7 @@ It’s hard to even reason about how HTML’s security issues affect EPUB. If I 
 
 ## Questionnaire
 
-### 1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
+### 1. What information might this feature expose to web sites or other parties, and for what purposes is that exposure necessary?
 
 EPUB Reading Systems typically collect information on the reading habits of their users. In some cases this information is necessary to provide a good user experience; in other cases the information is collected for other users—the reading system company or the publisher of the book. 
 
@@ -59,7 +59,7 @@ Many EPUB reading systems do not support scripting at all. For those that do, sc
 
 EPUB does have requirements for user agents to respond to device orientation (`portrait | landscape`) for fixed-layout EPUBs. 
 
-There has been talk about scripted EPUBs using geolocation information; I don’t know if this has happened in the wild yet, or if any reading systems would allow access to this information. This would happen through existing Web APIs; EPUB does not specify new APIs to interact with sensors. 
+There has been talk about scripted EPUBs using geolocation information; I don’t know if this has happened in the wild yet, or if any reading systems would allow access to this information. This would happen through existing web APIs; EPUB does not specify new APIs to interact with sensors. 
 
 ### 8. What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
 
