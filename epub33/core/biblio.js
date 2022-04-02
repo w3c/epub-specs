@@ -3,6 +3,11 @@ var biblio = {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
 	},
+	"DPUB-ARIA" : {
+		"title": "Digital Publishing WAI-ARIA Module",
+		"href": "https://www.w3.org/TR/dpub-aria/",
+		"publisher": "W3C"
+	},
 	"EPUBContentDocs-301": {
 		"authors":[
 		"Markus Gylling",
