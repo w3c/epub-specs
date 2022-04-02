@@ -3,6 +3,18 @@ var biblio = {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
 	},
+	"DPUB-ARIA" : {
+		"authors": [
+			"Matt Garrish",
+			"Tzviya Siegman",
+			"Markus Gylling",
+			"Shane McCarron"
+		],
+		"title": "Digital Publishing WAI-ARIA Module 1.0",
+		"href": "https://www.w3.org/TR/dpub-aria/",
+		"date": "14 December 2017",
+		"publisher": "W3C"
+	},
 	"EPUBContentDocs-301": {
 		"authors":[
 		"Markus Gylling",
