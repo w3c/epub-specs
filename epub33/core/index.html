@@ -341,10 +341,9 @@
 						<dfn id="dfn-epub-content-document" data-lt="EPUB Content Documents">EPUB Content Document</dfn>
 					</dt>
 					<dd>
-						<p>A <a>Publication Resource</a> referenced from the spine or a <a
-								href="#sec-manifest-fallbacks">manifest fallback chain</a> that conforms to either the
-								<a data-lt="XHTML Content Document">XHTML</a> or <a data-lt="SVG Content Document">SVG
-								Content Document</a> definitions.</p>
+						<p>A <a>Publication Resource</a> referenced from the spine or a <a>manifest fallback chain</a>
+							that conforms to either the <a data-lt="XHTML Content Document">XHTML</a> or <a
+								data-lt="SVG Content Document">SVG Content Document</a> definitions.</p>
 						<p>EPUB Content Documents contain all or part of the content of an EPUB Publication (i.e., the
 							textual, visual and/or audio content).</p>
 						<p><a>EPUB Creators</a> can include EPUB Content Documents in the spine without the provision of
@@ -442,11 +441,10 @@
 					</dt>
 					<dd>
 						<p>Any <a>Publication Resource</a> referenced from a <a>spine</a>
-							<a href="#sec-itemref-elem"><code>itemref</code> element</a>, or a <a
-								href="#sec-manifest-fallbacks">manifest fallback chain</a>, that is not an <a>EPUB
-								Content Document</a>.</p>
+							<a href="#sec-itemref-elem"><code>itemref</code> element</a>, or a <a>manifest fallback
+								chain</a>, that is not an <a>EPUB Content Document</a>.</p>
 						<p>When a Foreign Content Document is referenced from a spine <code>itemref</code> element, it
-							requires a manifest fallback chain with at least one EPUB Content Document.</p>
+							requires a <a>manifest fallback chain</a> with at least one EPUB Content Document.</p>
 						<div class="note">
 							<p>With the exception of XHTML and SVG, all <a>Core Media Type Resources</a> are Foreign
 								Content Documents when referenced directly from the spine.</p>
@@ -844,7 +842,8 @@
 								><code>fallback</code> attribute</a> that points to the next possible resource for
 						Reading Systems to try when they do not support its format. Although not common, a fallback
 						resource can specify another fallback, thereby making chains many resources deep. The one
-						requirement is that there must be at least one EPUB Content Document in a fallback chain.</p>
+						requirement is that there must be at least one EPUB Content Document in a <a>manifest fallback
+							chain</a>.</p>
 
 					<p>Although they are not directly listed in the spine, all of the resources in the fallback chain
 						are considered part of the spine, and by extension part of the spine plane, since any may be
@@ -1165,60 +1164,9 @@
 				<div class="note">
 					<p>Refer to the [[HTML]] and [[SVG]] specifications for the intrinsic fallback capabilities their
 						elements provide.</p>
+					<p><a href="#sec-intrinsic-fallbacks"></a> also provides additional information about how fallbacks
+						are interpreted for specific elements.</p>
 				</div>
-
-				<p>The following sections provide additional clarifications about the intrinsic fallback requirements of
-					specific elements.</p>
-
-				<section id="sec-fallbacks-audio">
-					<h4>HTML <code>audio</code> Fallbacks</h4>
-
-					<p id="confreq-resources-cd-fallback-media">EPUB Creators MUST NOT use embedded [[HTML]] <a
-							data-cite="html#flow-content">flow content</a> within the <a
-							data-cite="html#the-audio-element"><code>audio</code></a> element as an intrinsic fallback
-						for Foreign Resources. Only child <a data-cite="html#the-source-element"><code>source</code>
-							elements</a> [[HTML]] provide intrinsic fallback capabilities.</p>
-
-					<p>Only older Reading Systems that do not recognize the <code>audio</code> element (e.g., EPUB 2
-						Reading Systems) will render the embedded content. When Reading Systems support the
-							<code>audio</code> element but not the available audio formats, they do not render the
-						embedded content for the user.</p>
-
-					<div class="note">
-						<p>As video resources are <a>Exempt Resources</a>, this requirement does not apply to the
-								<code>video</code> element. EPUB Creators may also include flow content in the
-								<code>video</code> element for Reading Systems that do not support the element,
-							however.</p>
-					</div>
-				</section>
-
-				<section id="sec-fallbacks-img">
-					<h4>HTML <code>img</code> Fallbacks</h4>
-
-					<p id="confreq-resources-cd-fallback-img">Due to the variety of sources that EPUB Creators can
-						specify in the [[HTML]] <a data-cite="html#the-img-element"><code>img</code> element</a>, the
-						following fallback conditions apply to its use:</p>
-
-					<ul>
-						<li>
-							<p>If it is the child of a <a data-cite="html#the-picture-element"><code>picture</code>
-									element</a>:</p>
-							<ul>
-								<li>it MUST reference Core Media Type Resources from its <code>src</code> and
-										<code>srcset</code> attributes, when EPUB Creators specify those attributes;
-									and</li>
-								<li>each sibling <a data-cite="html#the-source-element"><code>source</code> element</a>
-									MUST reference a Core Media Type Resource from its <code>src</code> and
-										<code>srcset</code> attributes unless it specifies the MIME media type
-									[[RFC2046]] of a Foreign Resource in its <code>type</code> attribute.</li>
-							</ul>
-						</li>
-
-						<li>Otherwise, it MAY reference Foreign Resources in its <code>src</code> and
-								<code>srcset</code> attributes provided EPUB Creators define a <a
-								href="#sec-manifest-fallbacks">manifest fallback</a>.</li>
-					</ul>
-				</section>
 			</section>
 
 			<section id="sec-exempt-resources">
@@ -1313,74 +1261,128 @@
 					automatically becomes exempt from fallbacks.</p>
 			</section>
 
-			<section id="sec-manifest-fallbacks">
-				<h3>Manifest Fallbacks</h3>
 
-				<div class="caution">
-					<p>Reading System support for manifest fallbacks is poor and should not be relied upon to create
-						interoperable content. In most cases, if a Reading System does not support a format, it will not
-						use its fallback. This can lead to unexpected failures.</p>
+			<section id="sec-resource-fallbacks">
+				<h4>Resource Fallbacks</h4>
 
-					<p>EPUB Creators should use the intrinsic fallback capabilities of HTML and SVG to provide fallback
-						content whenever possible, and avoid using <a>Foreign Content Documents</a> in the spine.</p>
-				</div>
+				<section id="sec-manifest-fallbacks">
+					<h5>Manifest Fallbacks</h5>
 
-				<p>Manifest fallbacks are a feature of the <a>Package Document</a> that create fallback chains, allowing
-					Reading Systems to select an alternative format they can render.</p>
+					<p>Manifest fallbacks are a feature of the <a>Package Document</a> that create a <dfn>manifest
+							fallback chain</dfn> for a <a>Publication Resource</a>, allowing Reading Systems to select
+						an alternative format they can render.</p>
 
-				<p>There are two primary use cases for manifest fallbacks:</p>
+					<p>Fallback chains are created using the <a href="#attrdef-item-fallback"><code>fallback</code>
+							attribute</a> on manifest <a href="sec-item-elem"><code>item</code> elements</a>. This
+						attribute references the ID [[XML]] of another manifest <code>item</code> that is a fallback for
+						the current <code>item</code>. The ordered list of all the references that a Reading System can
+						reach, starting from a given <code>item</code>'s <code>fallback</code> attribute, represents the
+						full fallback chain for that <code>item</code>. This chain also represents the EPUB Creator's
+						preferred fallback order.</p>
 
-				<ol>
-					<li>To specify fallbacks when <a>Foreign Content Documents</a> are referenced from the <a
-							href="#sec-spine-elem">spine</a>.</li>
-					<li>To provide fallbacks when intrinsic fallback are not available for elements in EPUB Content
-						Documents (e.g., for the [[HTML]] <a data-cite="html#the-img-element"><code>img</code></a>
-						element) in order to satisfy the requirements in <a href="#sec-foreign-resources"></a>.</li>
-				</ol>
+					<p>There are two cases for manifest fallbacks:</p>
 
-				<p>The <a href="#attrdef-item-fallback"><code>fallback</code> attribute</a> on the <a>manifest</a>
-					<a href="#elemdef-package-item"><code>item</code></a> element specifies the fallback for the
-					referenced Publication Resource. The <code>fallback</code> attribute's IDREF [[XML]] value MUST
-					resolve to another <code>item</code> in the <code>manifest</code>. This fallback <code>item</code>
-					MAY itself specify another fallback <code>item</code>, and so on.</p>
+					<dl>
+						<dt id="spine-fallbacks">Spine Fallbacks</dt>
+						<dd>
+							<p>EPUB Creators MUST specify a fallback chain for a <a>Foreign Content Document</a> to
+								ensure that Reading Systems can always render the <a>spine</a> item. In this case, the
+								chain MUST contain at least one <a>EPUB Content Document</a>.</p>
+							<p>EPUB Creators MAY provide fallbacks for EPUB Content Documents (e.g., to provide a <a
+									href="#confreq-cd-scripted-flbk">fallback for scripted content</a>).</p>
+							<p>When a fallback chain includes more than one EPUB Content Document, EPUB Creators can use
+								the <a href="#attrdef-properties"><code>properties</code> attribute</a> to differentiate
+								the purpose of each.</p>
+						</dd>
 
-				<p>The ordered list of all the ID references that a Reading System can reach, starting from a given
-					item's <code>fallback</code> attribute, represents the <em>fallback chain</em> for that item. The
-					order of the resources in the fallback chain represents the EPUB Creator's preferred fallback
-					order.</p>
+						<dt id="content-fallbacks">Content Fallbacks</dt>
+						<dd>
+							<div class="note">
+								<p>The original purpose for content fallbacks was to specify fallback images for the
+									[[HTML]] <a data-cite="html#the-img-element"><code>img</code> element</a>. As HTML
+									now has intrinsic fallback mechanism for images, the use of content fallbacks is
+									strongly discouraged. EPUB Creators should always use the intrinsic fallback
+									capabilities of [[HTML]] and [[SVG]] to provide fallback content.</p>
+							</div>
+							<p>EPUB Creators MUST provide a content fallback for <a>Foreign Resources</a> when the
+								elements that reference them do not have intrinsic fallback capabilities. In this case,
+								the fallback chain MUST contain at least one <a>Core Media Type Resource</a>.</p>
+							<p>EPUB Creators MAY also provide manifest fallbacks for <a>Core Media Type Resources</a>
+								(e.g., to allow Reading Systems to select from more than one image format).</p>
+						</dd>
+					</dl>
 
-				<p>Fallback chains MUST conform to one of the following requirements, as appropriate:</p>
+					<p>Regardless of the type of manifest fallback specified, fallback chains MUST NOT contain
+						self-references or circular references to <code>item</code> elements in the chain.</p>
 
-				<ul>
-					<li>
-						<p>For Foreign Content Documents, the chain MUST contain at least one <a>EPUB Content
-								Document</a>.</p>
-					</li>
-					<li>
-						<p>For Foreign Resources for which an EPUB Creator cannot provide an intrinsic fallback, the
-							chain MUST contain at least one <a>Core Media Type Resource</a>.</p>
-					</li>
-				</ul>
+					<div class="note">
+						<p>As it is not possible to use manifest fallbacks for resources represented in <a
+								href="#sec-data-urls">data URLs</a>, EPUB Creators can only represent Foreign Resources
+							as data URLs where an intrinsic fallback mechanism is available.</p>
+					</div>
+				</section>
 
-				<p>Fallback chains MUST NOT contain circular or self-references to <code>item</code> elements in the
-					chain.</p>
+				<section id="sec-intrinsic-fallbacks">
+					<h4>Intrinsic Fallbacks</h4>
 
-				<p>EPUB Creators MAY provide fallbacks for <a>Top-Level Content Documents</a> that are EPUB Content
-					Documents (e.g., to provide <a href="#confreq-cd-scripted-flbk">fallbacks for scripted
-					content</a>).</p>
+					<p>The following sections provide additional clarifications about the intrinsic fallback
+						requirements of specific elements.</p>
 
-				<p>EPUB Creators MAY also provide manifest fallbacks for <a>Core Media Type Resources</a> (e.g., to
-					allow Reading Systems to select from more than one image format).</p>
+					<section id="sec-fallbacks-audio">
+						<h5>HTML <code>audio</code> Fallbacks</h5>
 
-				<div class="note">
-					<p>As it is not possible to use manifest fallbacks for resources represented in <a
-							href="#sec-data-urls">data URLs</a>, EPUB Creators can only represent Foreign Resources as
-						data URLs where an intrinsic fallback mechanism is available.</p>
-				</div>
+						<p id="confreq-resources-cd-fallback-media">EPUB Creators MUST NOT use embedded [[HTML]] <a
+								data-cite="html#flow-content">flow content</a> within the <a
+								data-cite="html#the-audio-element"><code>audio</code></a> element as an intrinsic
+							fallback for Foreign Resources. Only child <a data-cite="html#the-source-element"
+									><code>source</code> elements</a> [[HTML]] provide intrinsic fallback
+							capabilities.</p>
+
+						<p>Only older Reading Systems that do not recognize the <code>audio</code> element (e.g., EPUB 2
+							Reading Systems) will render the embedded content. When Reading Systems support the
+								<code>audio</code> element but not the available audio formats, they do not render the
+							embedded content for the user.</p>
+
+						<div class="note">
+							<p>As video resources are <a>Exempt Resources</a>, this requirement does not apply to the
+									<code>video</code> element. EPUB Creators may also include flow content in the
+									<code>video</code> element for Reading Systems that do not support the element,
+								however.</p>
+						</div>
+					</section>
+
+					<section id="sec-fallbacks-img">
+						<h5>HTML <code>img</code> Fallbacks</h5>
+
+						<p id="confreq-resources-cd-fallback-img">Due to the variety of sources that EPUB Creators can
+							specify in the [[HTML]] <a data-cite="html#the-img-element"><code>img</code> element</a>,
+							the following fallback conditions apply to its use:</p>
+
+						<ul>
+							<li>
+								<p>If it is the child of a <a data-cite="html#the-picture-element"><code>picture</code>
+										element</a>:</p>
+								<ul>
+									<li>it MUST reference Core Media Type Resources from its <code>src</code> and
+											<code>srcset</code> attributes, when EPUB Creators specify those attributes;
+										and</li>
+									<li>each sibling <a data-cite="html#the-source-element"><code>source</code>
+											element</a> MUST reference a Core Media Type Resource from its
+											<code>src</code> and <code>srcset</code> attributes unless it specifies the
+										MIME media type [[RFC2046]] of a Foreign Resource in its <code>type</code>
+										attribute.</li>
+								</ul>
+							</li>
+
+							<li>Otherwise, it MAY reference Foreign Resources in its <code>src</code> and
+									<code>srcset</code> attributes provided EPUB Creators define a <a
+									href="#sec-manifest-fallbacks">manifest fallback</a>.</li>
+						</ul>
+					</section>
+				</section>
 			</section>
-
 			<section id="sec-resource-locations">
-				<h3>Resource Locations</h3>
+				<h4>Resource Locations</h4>
 
 				<p>EPUB Creators MAY host the following types of Publication Resources outside the EPUB Container:</p>
 
@@ -3127,9 +3129,9 @@
 							subcomponents within the Package.</p>
 					</li>
 					<li>
-						<p><a href="#sec-manifest-fallbacks">Manifest fallback chains</a> — a mechanism that defines an
-							ordered list of top-level resources as content equivalents. A Reading System can then choose
-							between the resources based on which it is capable of rendering.</p>
+						<p><a>Manifest fallback chains</a> — a mechanism that defines an ordered list of top-level
+							resources as content equivalents. A Reading System can then choose between the resources
+							based on which it is capable of rendering.</p>
 					</li>
 				</ul>
 
@@ -3203,6 +3205,7 @@
 							<a href="#sec-opf-dctitle"><code>dc:title</code></a>, <a href="#sec-meta-elem"
 								><code>meta</code></a> and <a href="#sec-package-elem"><code>package</code></a>.</p>
 				</section>
+
 
 				<section id="attrdef-href">
 					<h4>The <code>href</code> Attribute</h4>
@@ -4932,9 +4935,13 @@ XHTML:
 							Resources</a>, EPUB Creators MUST use the media type designated in <a
 							href="#sec-core-media-types"></a>.</p>
 
-					<p id="attrdef-item-fallback">The <code>fallback</code> attribute takes an IDREF [[XML]] that
-						identifies a fallback for the Publication Resource referenced from the <code>item</code>
-						element, as defined in <a href="#sec-manifest-fallbacks"></a>.</p>
+					<p id="attrdef-item-fallback">The <code>fallback</code> attribute specifies the fallback for the
+						referenced Publication Resource. The <code>fallback</code> attribute's IDREF [[XML]] value MUST
+						resolve to another <code>item</code> in the <code>manifest</code>.</p>
+
+					<p>The fallback for one <code>item</code> MAY specify a fallback to another <code>item</code>, and
+						so on, creating a chain of fallback options. Refer to <a href="#sec-manifest-fallbacks"></a> for
+						additional requirements related to the use of fallback chains.</p>
 
 					<p id="attrdef-item-media-overlay">The <code>media-overlay</code> attribute takes an IDREF [[XML]]
 						that identifies the <a>Media Overlay Document</a> for the resource described by this
@@ -5083,9 +5090,9 @@ XHTML:
 
 						<aside class="example" id="example-manifest-flbk"
 							title="Foreign Content Document in Spine with Fallback">
-							<p>The following example shows the <a href="#sec-manifest-fallbacks">fallback chain
-									mechanism</a> allowing a <a>Foreign Content Document</a> (JPEG) to be listed in the
-								spine with fallback to an SVG Content Document.</p>
+							<p>The following example shows the <a>manifest fallback chain</a> allowing a <a>Foreign
+									Content Document</a> (JPEG) to be listed in the spine with fallback to an SVG
+								Content Document.</p>
 
 							<pre>&lt;package …>
    …
@@ -5480,15 +5487,12 @@ No Entry</pre>
 						once. </p>
 
 					<p id="confreq-spine-itemtypes">Each referenced manifest <code>item</code> MUST be either a) an
-							<a>EPUB Content Document</a> or b) a <a>Foreign Content Document</a> which, <em>regardless
-							of whether it is a <a>Core Media Type Resource</a> or a <a>Foreign Resource</a></em>, MUST
-						include an EPUB Content Document in its <a href="#sec-manifest-fallbacks">fallback
-						chain</a>.</p>
+							<a>EPUB Content Document</a> or b) a <a>Foreign Content Document</a> that includes an EPUB
+						Content Document in its <a>manifest fallback chain</a>.</p>
 
 					<div class="note">
 						<p>Although EPUB Publications <a href="#confreq-nav">require an EPUB Navigation Document</a>, it
 							is not mandatory to include it in the <code>spine</code>.</p>
-
 					</div>
 
 					<p id="attrdef-itemref-linear">The <code>linear</code> attribute indicates whether the referenced
@@ -6684,7 +6688,6 @@ No Entry</pre>
 					<p>The <code>page-list</code> element provides navigation to static page boundaries in the content.
 						These boundaries may correspond to a statically paginated source such as print or may be defined
 						exclusively for the <a>EPUB Publication</a>.</p>
-
 
 					<p>The <code>page-list</code>
 						<code>nav</code> element is OPTIONAL in EPUB Navigation Documents and MUST NOT occur more than
