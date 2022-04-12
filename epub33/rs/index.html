@@ -163,7 +163,7 @@
 
 				<dl>
 					<dt>
-						<dfn id="dfn-content-display-area">Content Display Area</dfn>
+						<dfn class="export" id="dfn-content-display-area">Content Display Area</dfn>
 					</dt>
 					<dd>
 						<p>The area within the <a>Viewport</a> dedicated to the display of <a>EPUB Content
@@ -216,6 +216,25 @@
 			<p id="confreq-rs-epub-pub-res" class="support" data-tests="#cnt-xhtml-support">Reading Systems MUST process
 					<a data-cite="epub-33#sec-publication-resources">Publication Resources</a> [[EPUB-33]].</p>
 
+			<section id="sec-epub-rs-conf-cmt">
+				<h4>Core Media Types</h4>
+				
+				<p id="confreq-rs-epub3-images"
+					data-tests="#pub-cmt-gif,#pub-cmt-jpg,#pub-cmt-png,#pub-cmt-svg,#pub-cmt-webp">If a Reading System
+					has a <a>Viewport</a>, it MUST support the <a data-cite="epub-33#cmt-grp-image">image Core Media
+						Type Resources</a> [[EPUB-33]].</p>
+				
+				<p id="confreq-rs-epub3-mp3-aac" data-tests="#pub-cmt-mp3,#pub-cmt-mp4,#pub-cmt-opus">If it has the
+					capability to render prerecorded audio, it MUST support the <a data-cite="epub-33#cmt-grp-audio"
+						>audio Core Media Type Resources</a> [[EPUB-33]].</p>
+				
+				<p class="note" id="note-video-codecs">It is recommended that Reading Systems support at least one of
+					the H.264 [[H264]] and VP8 [[RFC6386]] video codecs, but this is not a conformance requirement
+					&#8212; a Reading System may support any video codec, or none at all. Reading System developers
+					should take into consideration factors such as breadth of adoption, playback quality, and technology
+					royalties when deciding which video formats to support.</p>
+			</section>
+			
 			<section id="sec-epub-rs-conf-foreign-res">
 				<h4>Foreign Resources</h4>
 
@@ -227,7 +246,7 @@
 			</section>
 
 			<section id="sec-epub-rs-conf-remote-res">
-				<h4>Remote Resources</h4>
+				<h4>Resource Locations</h4>
 
 				<p id="confreq-rs-remote">Reading Systems SHOULD support <a>Remote Resources</a>, as defined in <a
 						data-cite="epub-33#sec-resource-locations">Resource Locations</a> [[EPUB-33]].</p>
@@ -243,25 +262,6 @@
 					affordance such as a context menu. If a Reading System does not use a top-level browsing context for
 						<a>Top-level Content Documents</a>, for example if the Top-level Content Document is an SVG, it
 					MUST also prevent data URLs from opening as though they are Top-level Content Documents.</p>
-			</section>
-
-			<section id="sec-epub-rs-conf-cmt">
-				<h4>Core Media Types</h4>
-
-				<p id="confreq-rs-epub3-images"
-					data-tests="#pub-cmt-gif,#pub-cmt-jpg,#pub-cmt-png,#pub-cmt-svg,#pub-cmt-webp">If a Reading System
-					has a <a>Viewport</a>, it MUST support the <a data-cite="epub-33#cmt-grp-image">image Core Media
-						Type Resources</a> [[EPUB-33]].</p>
-
-				<p id="confreq-rs-epub3-mp3-aac" data-tests="#pub-cmt-mp3,#pub-cmt-mp4,#pub-cmt-opus">If it has the
-					capability to render prerecorded audio, it MUST support the <a data-cite="epub-33#cmt-grp-audio"
-						>audio Core Media Type Resources</a> [[EPUB-33]].</p>
-
-				<p class="note" id="note-video-codecs">It is recommended that Reading Systems support at least one of
-					the H.264 [[H264]] and VP8 [[RFC6386]] video codecs, but this is not a conformance requirement
-					&#8212; a Reading System may support any video codec, or none at all. Reading System developers
-					should take into consideration factors such as breadth of adoption, playback quality, and technology
-					royalties when deciding which video formats to support.</p>
 			</section>
 
 			<section id="sec-epub-rs-conf-xml">
@@ -373,6 +373,317 @@
 				<div class="note">
 					<p>For more information about security and privacy issues with external links, see <a
 							href="#epub-threat-model"></a>.</p>
+				</div>
+			</section>
+		</section>
+		<section id="sec-ocf">
+			<h2>Open Container Format Processing</h2>
+
+			<p id="confreq-rs-epub3-ocf" class="support" data-tests="#ocf-package_arbitrary">Reading Systems MUST
+				process the <a data-cite="epub-33#sec-ocf">EPUB Container</a> [[EPUB-33]].</p>
+
+			<div class="note">
+				<p>An application that processes EPUB Containers does not have to be a full-fledged Reading System
+					(e.g., an application might only extract the content of a container or check the validity of the
+					packaged content). In these cases, developers of such applications can ignore the rendering
+					requirements for Reading Systems defined in this section.</p>
+			</div>
+
+			<section id="sec-container-abstract">
+				<h3>OCF Abstract Container</h3>
+
+				<section id="sec-container-iri">
+					<h4>URL of the Root Directory</h4>
+
+					<p id="sec-container-iri-root"
+						data-tests="#ocf-url_manifest,#ocf-url_relative,#ocf-url_link-relative">Reading Systems MUST
+						assign a URL [[URL]] to the <a>Root Directory</a> of the <a>OCF Abstract Container</a>. This URL
+						is called the <a data-cite="epub-33#dfn-container-root-url">container root URL</a> [[EPUB-33]].
+						It is implementation specific, but the implementation MUST have the following properties:</p>
+
+					<ul>
+						<li id="sec-container-iri-root-parse"
+							data-tests="#ocf-url_link-path-absolute,#ocf-url_parse-path-absolute">The result of <a
+								data-cite="url#concept-url-parser">parsing</a> [[URL]] "<code>/</code>" with the
+								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
+							the <a>container root URL</a>.</li>
+						<li id="sec-container-iri-step-parse"
+							data-tests="#ocf-url_link-leaking-relative,#ocf-url_parse-leaking-relative">The result of <a
+								data-cite="url#concept-url-parser">parsing</a> [[URL]] "<code>..</code>" with the
+								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
+							the <a>container root URL</a>.</li>
+
+						<li id="sec-container-iri-origin" data-tests="#ocf-url_origin">The <a data-cite="url#origin"
+								>origin</a> of the <a>container root URL</a> is unique for each user-specific instance
+							of an <a>EPUB Publication</a> in a Reading System.</li>
+					</ul>
+
+					<p class="note">The unicity of the <a data-cite="url#origin">origin</a> per each user-specific
+						instance of an EPUB Publication in a Reading System means that if two different users acquire a
+						copy of the same EPUB Publication, the origins will be different for the two users on those
+						copies even if the same Reading System is used.</p>
+
+					<div class="note">
+						<p>The properties of the <a>container root URL</a> are such that a conforming Reading System
+							will parse any relative URL string to a <a>content URL</a>. In other words, relative links
+							do not "leak" outside the container content, which is an important feature for security.</p>
+
+						<p>In practice, the container root URL behaves similarly to a URL defined as follows:</p>
+
+						<table class="zebra">
+							<thead>
+								<tr>
+									<td style="font-weight: bold; text-align: center;">URL component</td>
+									<td style="font-weight: bold; text-align: center;">Values</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>scheme</td>
+									<td><code>http</code> or <code>https</code></td>
+								</tr>
+								<tr>
+									<td>host</td>
+									<td><code>localhost</code></td>
+								</tr>
+								<tr>
+									<td>port</td>
+									<td>a dynamic port uniquely assigned to the EPUB instance</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<p>for example:</p>
+
+						<table class="zebra">
+							<thead>
+								<tr>
+									<td style="font-weight: bold; text-align: center;">Container File</td>
+									<td style="font-weight: bold; text-align: center;">File Path</td>
+									<td style="font-weight: bold; text-align: center;">URL</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Root Directory</td>
+									<td>
+										<var>empty string</var>
+									</td>
+									<td>
+										<code>http://localhost:49152/</code>
+									</td>
+								</tr>
+								<tr>
+									<td>Package Document</td>
+									<td>
+										<code>EPUB/package.opf</code>
+									</td>
+									<td>
+										<code>http://localhost:49152/EPUB/package.opf</code>
+									</td>
+								</tr>
+								<tr>
+									<td>Content Document</td>
+									<td>
+										<code>HTML/file name.xhtml</code>
+									</td>
+									<td>
+										<code>http://localhost:49152/HTML/file%20name.xhtml</code>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table class="zebra">
+							<thead>
+								<tr>
+									<td style="font-weight: bold; text-align: center;">URL string<br />(found for
+										example in the package document)</td>
+									<td style="font-weight: bold; text-align: center;">Content URL</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<code>../HTML/file%20name.xhtml</code>
+									</td>
+									<td>
+										<code>http://localhost:49152/HTML/file%20name.xhtml</code>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<code>/Media/img.png</code>
+									</td>
+									<td>
+										<code>http://localhost:49152/Media/img.png</code>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<code>../../../Media/img.png</code>
+									</td>
+									<td>
+										<code>http://localhost:49152/Media/img.png</code>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<p>Note that the last two links are <a data-cite="epub-33#urls-in-ocf-constraints"
+								>disallowed</a> in an EPUB Publications to ensure better interoperability with
+							non-conforming or legacy Reading Systems and toolchains.</p>
+					</div>
+
+					<div class="note">
+						<p>Some language specifications reference <a href="https://www.ietf.org/standards/rfcs/"
+								>Requests For Comments</a> that preceded [[URL]], in which case the earlier RFC applies
+							for content in that particular language.</p>
+					</div>
+
+					<div class="note">
+						<p>Unlike most language specifications, Reading Systems must use the <a>container root URL</a>
+							as the <a data-cite="url#concept-base-url">base URL</a> [[URL]] for all files within the
+								<code>META-INF</code> directory. See also the section on <a
+								data-cite="epub-33#sec-parsing-urls-metainf">Parsing URLs in the <code>META-INF</code>
+								Directory</a> in [[!EPUB-33]].</p>
+					</div>
+				</section>
+
+				<section id="sec-container-filenames">
+					<h4>File Names</h4>
+
+					<p>Although EPUB Creators are required to follow various <a
+							data-cite="epub-33#sec-container-filenames">File Name and File Path restrictions</a>
+						[[EPUB-33]] for maximum interoperability, Reading Systems SHOULD attempt to process File Names
+						and Paths that do not adhere to these requirements. Invalid File Names and Paths may only be
+						problematic on some operating systems.</p>
+
+					<p>This specification does not specify how a Reading System that is unable to represent OCF File
+						Names and Paths would handle this incompatibility.</p>
+				</section>
+
+				<section id="sec-container-metainf">
+					<h4><code>META-INF</code> Directory</h4>
+
+					<dl class="conformance-list">
+						<dt id="sec-container-metainf-container.xml">Container File (<code>container.xml</code>)</dt>
+						<dd>
+							<p id="container-default-rendition"
+								data-tests="#ocf-package_arbitrary,#ocf-package_multiple">A Reading System MUST, by
+								default, use the <a>Package Document</a> referenced the from first <a
+									data-cite="epub-33#sec-container.xml-rootfile-elem"><code>rootfile</code>
+									element</a> [[EPUB-33]] to render the <a>EPUB Publication</a>. If the Reading System
+								recognizes a means of selecting from the other available options, it MAY choose a more
+								appropriate Package Document.</p>
+						</dd>
+
+						<dt id="sec-container-metainf-metadata.xml">Metadata File (<code>metadata.xml</code>)</dt>
+						<dd>
+							<p>Reading Systems SHOULD ignore <a data-cite="epub-33#sec-container-metainf-metadata.xml"
+										><code>metadata.xml</code> files</a> [[EPUB-33]] with unrecognized root
+								elements.</p>
+						</dd>
+
+						<dt id="sec-container-metainf-manifest.xml">Manifest File (<code>manifest.xml</code>)</dt>
+						<dd>
+							<p>Reading Systems MUST NOT use ancillary manifest information contained in the ZIP archive
+								or in the <a data-cite="epub-33#sec-container-metainf-manifest.xml"
+										><code>manifest.xml</code> file</a> [[EPUB-33]] for processing an <a>EPUB
+									Publication</a>.</p>
+						</dd>
+
+						<dt id="sec-container-metainf-signature.xml">Signature File (<code>signature.xml</code>)</dt>
+						<dd>
+							<p>Before computing the digest used to validate the signature in the <a
+									data-cite="epub-33#sec-container-metainf-signature.xml"><code>signature.xml</code>
+									file</a> [[EPUB-33]], Reading Systems MUST decrypt any data encrypted after signing
+								&#8212; data encrypted before signing MUST NOT be decrypted.</p>
+							<p>Refer to Decryption Transform for XML Signature [[XMLENC-DECRYPT]] for more information
+								about identifying data encrypted after signing.</p>
+						</dd>
+
+						<dt id="sec-container-metainf-inc">Other Files</dt>
+						<dd>
+							<p>Reading Systems MUST NOT fail when encountering configuration files in the <code
+									class="filename">META-INF</code> directory not listed in <a
+									data-cite="epub-33#sec-container-metainf-files">Reserved Files</a> [[EPUB-33]].</p>
+						</dd>
+					</dl>
+				</section>
+			</section>
+
+			<section id="sec-container-zip">
+				<h3>OCF ZIP Container</h3>
+
+				<p>A Reading System:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-zip-mult">MUST treat any OCF Containers that specify the [[ZIP]] file is split
+							across multiple storage media as in error.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-comp">MUST treat any OCF Containers that use compression techniques other
+							than Deflate [[RFC1951]] as in error.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-64">MUST support the ZIP64 extensions defined as "Version 1" [[ZIP]].</p>
+					</li>
+					<li>
+						<p id="confreq-zip-enc">MUST treat OCF ZIP Containers that use [[ZIP]] encryption features as in
+							error.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-rootdir">MAY generate a physical directory for the <a>Root Directory</a> of
+							the OCF Abstract Container if it unzips the contents.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-preserve">does not have to preserve information from an OCF ZIP Container
+							through load and save operations outside the context of the OCF Abstract Container. In
+							particular, a Reading System does not have to preserve CRC values, comment fields or fields
+							that hold file system information corresponding to a particular operating system (e.g., <em
+								class="firstterm">External file attributes</em> and <em class="firstterm">Extra
+								field</em>).</p>
+					</li>
+				</ul>
+
+				<p>With respect to specific fields in the OCF ZIP Container archive, the Reading System:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-zip-fld-version">MUST treat <code>version needed to extract</code> field values
+							other than <code>10</code>, <code>20</code> or <code>45</code> in the local file header
+							table [[ZIP]] as being in error.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-fld-comp">MUST treat <code>compression</code> method field values other than
+								<code>0</code> or <code>8</code> in the local file header table [[ZIP]] as being in
+							error.</p>
+					</li>
+					<li>
+						<p id="confreq-zip-fld-er">MUST treat OCF ZIP Containers with an <code>Archive decryption
+								header</code> or an <code>Archive extra data record</code> [[ZIP]] as being in
+							error.</p>
+					</li>
+				</ul>
+			</section>
+
+			<section id="sec-container-fobfus">
+				<h3>Font Obfuscation</h3>
+
+				<p id="confreq-ocf-fobfus">Reading Systems SHOULD support deobfuscation of fonts as defined in <a
+						data-cite="epub-33#sec-font-obfuscation">Font Obfuscation</a> [[EPUB-33]].</p>
+
+				<p>To restore the original data, Reading Systems should simply reverse the process: the source file
+					becomes the obfuscated data, and the destination file contains the raw data.</p>
+
+				<div class="note">
+					<p>EPUB 3 allowed font obfuscation prior to EPUB 3.0.1, but did not specify the order of obfuscation
+						and compression. As a result, Reading Systems might encounter invalid fonts after decompression
+						and deobfuscation. In such instances, deobfuscating the data before inflating it may return a
+						valid font. Reading Systems do not have to support this method of retrieval, but developers
+						should consider it when supporting EPUB 3 content generally.</p>
 				</div>
 			</section>
 		</section>
@@ -1405,317 +1716,6 @@
 					[[EPUB-33]].</p>
 			</section>
 		</section>
-		<section id="sec-ocf">
-			<h2>Open Container Format Processing</h2>
-
-			<p id="confreq-rs-epub3-ocf" class="support" data-tests="#ocf-package_arbitrary">Reading Systems MUST
-				process the <a data-cite="epub-33#sec-ocf">EPUB Container</a> [[EPUB-33]].</p>
-
-			<div class="note">
-				<p>An application that processes EPUB Containers does not have to be a full-fledged Reading System
-					(e.g., an application might only extract the content of a container or check the validity of the
-					packaged content). In these cases, developers of such applications can ignore the rendering
-					requirements for Reading Systems defined in this section.</p>
-			</div>
-
-			<section id="sec-container-abstract">
-				<h3>OCF Abstract Container</h3>
-
-				<section id="sec-container-iri">
-					<h4>URL of the Root Directory</h4>
-
-					<p id="sec-container-iri-root"
-						data-tests="#ocf-url_manifest,#ocf-url_relative,#ocf-url_link-relative">Reading Systems MUST
-						assign a URL [[URL]] to the <a>Root Directory</a> of the <a>OCF Abstract Container</a>. This URL
-						is called the <a data-cite="epub-33#dfn-container-root-url">container root URL</a> [[EPUB-33]].
-						It is implementation specific, but the implementation MUST have the following properties:</p>
-
-					<ul>
-						<li id="sec-container-iri-root-parse"
-							data-tests="#ocf-url_link-path-absolute,#ocf-url_parse-path-absolute">The result of <a
-								data-cite="url#concept-url-parser">parsing</a> [[URL]] "<code>/</code>" with the
-								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
-							the <a>container root URL</a>.</li>
-						<li id="sec-container-iri-step-parse"
-							data-tests="#ocf-url_link-leaking-relative,#ocf-url_parse-leaking-relative">The result of <a
-								data-cite="url#concept-url-parser">parsing</a> [[URL]] "<code>..</code>" with the
-								<a>container root URL</a> as <a data-cite="url#concept-base-url"><var>base</var></a> is
-							the <a>container root URL</a>.</li>
-
-						<li id="sec-container-iri-origin" data-tests="#ocf-url_origin">The <a data-cite="url#origin"
-								>origin</a> of the <a>container root URL</a> is unique for each user-specific instance
-							of an <a>EPUB Publication</a> in a Reading System.</li>
-					</ul>
-
-					<p class="note">The unicity of the <a data-cite="url#origin">origin</a> per each user-specific
-						instance of an EPUB Publication in a Reading System means that if two different users acquire a
-						copy of the same EPUB Publication, the origins will be different for the two users on those
-						copies even if the same Reading System is used.</p>
-
-					<div class="note">
-						<p>The properties of the <a>container root URL</a> are such that a conforming Reading System
-							will parse any relative URL string to a <a>content URL</a>. In other words, relative links
-							do not "leak" outside the container content, which is an important feature for security.</p>
-
-						<p>In practice, the container root URL behaves similarly to a URL defined as follows:</p>
-
-						<table class="zebra">
-							<thead>
-								<tr>
-									<td style="font-weight: bold; text-align: center;">URL component</td>
-									<td style="font-weight: bold; text-align: center;">Values</td>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>scheme</td>
-									<td><code>http</code> or <code>https</code></td>
-								</tr>
-								<tr>
-									<td>host</td>
-									<td><code>localhost</code></td>
-								</tr>
-								<tr>
-									<td>port</td>
-									<td>a dynamic port uniquely assigned to the EPUB instance</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<p>for example:</p>
-
-						<table class="zebra">
-							<thead>
-								<tr>
-									<td style="font-weight: bold; text-align: center;">Container File</td>
-									<td style="font-weight: bold; text-align: center;">File Path</td>
-									<td style="font-weight: bold; text-align: center;">URL</td>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Root Directory</td>
-									<td>
-										<var>empty string</var>
-									</td>
-									<td>
-										<code>http://localhost:49152/</code>
-									</td>
-								</tr>
-								<tr>
-									<td>Package Document</td>
-									<td>
-										<code>EPUB/package.opf</code>
-									</td>
-									<td>
-										<code>http://localhost:49152/EPUB/package.opf</code>
-									</td>
-								</tr>
-								<tr>
-									<td>Content Document</td>
-									<td>
-										<code>HTML/file name.xhtml</code>
-									</td>
-									<td>
-										<code>http://localhost:49152/HTML/file%20name.xhtml</code>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<table class="zebra">
-							<thead>
-								<tr>
-									<td style="font-weight: bold; text-align: center;">URL string<br />(found for
-										example in the package document)</td>
-									<td style="font-weight: bold; text-align: center;">Content URL</td>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<code>../HTML/file%20name.xhtml</code>
-									</td>
-									<td>
-										<code>http://localhost:49152/HTML/file%20name.xhtml</code>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<code>/Media/img.png</code>
-									</td>
-									<td>
-										<code>http://localhost:49152/Media/img.png</code>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<code>../../../Media/img.png</code>
-									</td>
-									<td>
-										<code>http://localhost:49152/Media/img.png</code>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<p>Note that the last two links are <a data-cite="epub-33#urls-in-ocf-constraints"
-								>disallowed</a> in an EPUB Publications to ensure better interoperability with
-							non-conforming or legacy Reading Systems and toolchains.</p>
-					</div>
-
-					<div class="note">
-						<p>Some language specifications reference <a href="https://www.ietf.org/standards/rfcs/"
-								>Requests For Comments</a> that preceded [[URL]], in which case the earlier RFC applies
-							for content in that particular language.</p>
-					</div>
-
-					<div class="note">
-						<p>Unlike most language specifications, Reading Systems must use the <a>container root URL</a>
-							as the <a data-cite="url#concept-base-url">base URL</a> [[URL]] for all files within the
-								<code>META-INF</code> directory. See also the section on <a
-								data-cite="epub-33#sec-parsing-urls-metainf">Parsing URLs in the <code>META-INF</code>
-								Directory</a> in [[!EPUB-33]].</p>
-					</div>
-				</section>
-
-				<section id="sec-container-filenames">
-					<h4>File Names</h4>
-
-					<p>Although EPUB Creators are required to follow various <a
-							data-cite="epub-33#sec-container-filenames">File Name and File Path restrictions</a>
-						[[EPUB-33]] for maximum interoperability, Reading Systems SHOULD attempt to process File Names
-						and Paths that do not adhere to these requirements. Invalid File Names and Paths may only be
-						problematic on some operating systems.</p>
-
-					<p>This specification does not specify how a Reading System that is unable to represent OCF File
-						Names and Paths would handle this incompatibility.</p>
-				</section>
-
-				<section id="sec-container-metainf">
-					<h4><code>META-INF</code> Directory</h4>
-
-					<dl class="conformance-list">
-						<dt id="sec-container-metainf-container.xml">Container File (<code>container.xml</code>)</dt>
-						<dd>
-							<p id="container-default-rendition"
-								data-tests="#ocf-package_arbitrary,#ocf-package_multiple">A Reading System MUST, by
-								default, use the <a>Package Document</a> referenced the from first <a
-									data-cite="epub-33#sec-container.xml-rootfile-elem"><code>rootfile</code>
-									element</a> [[EPUB-33]] to render the <a>EPUB Publication</a>. If the Reading System
-								recognizes a means of selecting from the other available options, it MAY choose a more
-								appropriate Package Document.</p>
-						</dd>
-
-						<dt id="sec-container-metainf-metadata.xml">Metadata File (<code>metadata.xml</code>)</dt>
-						<dd>
-							<p>Reading Systems SHOULD ignore <a data-cite="epub-33#sec-container-metainf-metadata.xml"
-										><code>metadata.xml</code> files</a> [[EPUB-33]] with unrecognized root
-								elements.</p>
-						</dd>
-
-						<dt id="sec-container-metainf-manifest.xml">Manifest File (<code>manifest.xml</code>)</dt>
-						<dd>
-							<p>Reading Systems MUST NOT use ancillary manifest information contained in the ZIP archive
-								or in the <a data-cite="epub-33#sec-container-metainf-manifest.xml"
-										><code>manifest.xml</code> file</a> [[EPUB-33]] for processing an <a>EPUB
-									Publication</a>.</p>
-						</dd>
-
-						<dt id="sec-container-metainf-signature.xml">Signature File (<code>signature.xml</code>)</dt>
-						<dd>
-							<p>Before computing the digest used to validate the signature in the <a
-									data-cite="epub-33#sec-container-metainf-signature.xml"><code>signature.xml</code>
-									file</a> [[EPUB-33]], Reading Systems MUST decrypt any data encrypted after signing
-								&#8212; data encrypted before signing MUST NOT be decrypted.</p>
-							<p>Refer to Decryption Transform for XML Signature [[XMLENC-DECRYPT]] for more information
-								about identifying data encrypted after signing.</p>
-						</dd>
-
-						<dt id="sec-container-metainf-inc">Other Files</dt>
-						<dd>
-							<p>Reading Systems MUST NOT fail when encountering configuration files in the <code
-									class="filename">META-INF</code> directory not listed in <a
-									data-cite="epub-33#sec-container-metainf-files">Reserved Files</a> [[EPUB-33]].</p>
-						</dd>
-					</dl>
-				</section>
-			</section>
-
-			<section id="sec-container-zip">
-				<h3>OCF ZIP Container</h3>
-
-				<p>A Reading System:</p>
-
-				<ul class="conformance-list">
-					<li>
-						<p id="confreq-zip-mult">MUST treat any OCF Containers that specify the [[ZIP]] file is split
-							across multiple storage media as in error.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-comp">MUST treat any OCF Containers that use compression techniques other
-							than Deflate [[RFC1951]] as in error.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-64">MUST support the ZIP64 extensions defined as "Version 1" [[ZIP]].</p>
-					</li>
-					<li>
-						<p id="confreq-zip-enc">MUST treat OCF ZIP Containers that use [[ZIP]] encryption features as in
-							error.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-rootdir">MAY generate a physical directory for the <a>Root Directory</a> of
-							the OCF Abstract Container if it unzips the contents.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-preserve">does not have to preserve information from an OCF ZIP Container
-							through load and save operations outside the context of the OCF Abstract Container. In
-							particular, a Reading System does not have to preserve CRC values, comment fields or fields
-							that hold file system information corresponding to a particular operating system (e.g., <em
-								class="firstterm">External file attributes</em> and <em class="firstterm">Extra
-								field</em>).</p>
-					</li>
-				</ul>
-
-				<p>With respect to specific fields in the OCF ZIP Container archive, the Reading System:</p>
-
-				<ul class="conformance-list">
-					<li>
-						<p id="confreq-zip-fld-version">MUST treat <code>version needed to extract</code> field values
-							other than <code>10</code>, <code>20</code> or <code>45</code> in the local file header
-							table [[ZIP]] as being in error.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-fld-comp">MUST treat <code>compression</code> method field values other than
-								<code>0</code> or <code>8</code> in the local file header table [[ZIP]] as being in
-							error.</p>
-					</li>
-					<li>
-						<p id="confreq-zip-fld-er">MUST treat OCF ZIP Containers with an <code>Archive decryption
-								header</code> or an <code>Archive extra data record</code> [[ZIP]] as being in
-							error.</p>
-					</li>
-				</ul>
-			</section>
-
-			<section id="sec-container-fobfus">
-				<h3>Font Obfuscation</h3>
-
-				<p id="confreq-ocf-fobfus">Reading Systems SHOULD support deobfuscation of fonts as defined in <a
-						data-cite="epub-33#sec-font-obfuscation">Font Obfuscation</a> [[EPUB-33]].</p>
-
-				<p>To restore the original data, Reading Systems should simply reverse the process: the source file
-					becomes the obfuscated data, and the destination file contains the raw data.</p>
-
-				<div class="note">
-					<p>EPUB 3 allowed font obfuscation prior to EPUB 3.0.1, but did not specify the order of obfuscation
-						and compression. As a result, Reading Systems might encounter invalid fonts after decompression
-						and deobfuscation. In such instances, deobfuscating the data before inflating it may return a
-						valid font. Reading Systems do not have to support this method of retrieval, but developers
-						should consider it when supporting EPUB 3 content generally.</p>
-				</div>
-			</section>
-		</section>
 		<section id="sec-media-overlays">
 			<h2>Media Overlays Processing</h2>
 
@@ -2319,12 +2319,7 @@
 			</section>
 		</section>
 		<section id="app-epubReadingSystem">
-			<h2><dfn>epubReadingSystem</dfn> Object</h2>
-
-			<p class="issue atrisk" title="Are there enough implementations?">Although this section is
-					<em>normative</em>, it is not clear whether implementations of this interface are widespread enough
-				to warrant this status. If it turns out not to be the case, this section will be marked as
-					<em>non-normative</em> in the final version of the specification.</p>
+			<h2><dfn class="export">epubReadingSystem</dfn> Object</h2>
 
 			<p class="note">Reading Systems act as the core rendering engines of EPUB Publications and provide a
 				scripting environment based on the [[DOM]] specification. So, although this interface definition uses
@@ -2334,8 +2329,7 @@
 			<section id="app-ers-idl">
 				<h3>Interface Definition</h3>
 
-				<p>This specification extends the the <a data-cite="html#the-navigator-object"><dfn>Navigator</dfn>
-						object</a> [[HTML]] as follows.</p>
+				<p>This specification extends the {{Navigator}} object [[HTML]] as follows.</p>
 
 				<pre class="idl">[Exposed=(Window)]
 interface EpubReadingSystem {
@@ -2350,8 +2344,7 @@ partial interface Navigator {
 
 				<div class="note">
 					<p>This specification does not define an <code>epubReadingSystem</code> property extension for the
-							<a data-cite="html#the-workernavigator-object"><code>WorkerNavigator</code> object</a>
-						[[HTML]]. Reading Systems therefore do not have to expose the <code>epubReadingSystem</code>
+						{{WorkerNavigator}} object [[HTML]]. Reading Systems therefore do not have to expose the <code>epubReadingSystem</code>
 						object in the scripting context of Workers, and EPUB Creators cannot rely on its presence.</p>
 				</div>
 			</section>
@@ -2359,7 +2352,7 @@ partial interface Navigator {
 			<section id="app-ers-desc">
 				<h3>Description</h3>
 
-				<p>The <code><dfn>Navigator.epubReadingSystem</dfn></code> object provides an interface through which a
+				<p>The <code><dfn class="export">Navigator.epubReadingSystem</dfn></code> object provides an interface through which a
 						<a>Scripted Content Document</a> can query information about a user's Reading System.</p>
 
 				<p>The object exposes <a href="#app-ers-properties">properties</a> of the Reading System (its name and
