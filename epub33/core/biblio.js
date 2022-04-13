@@ -86,6 +86,11 @@ var biblio = {
 	"US-ASCII": {
 		"title": "&quot;Coded Character Set - 7-bit American Standard Code for Information Interchange&quot;, ANSI X3.4, 1986."
 	},
+	"WAI-ARIA": {
+		"title": "Accessible Rich Internet Applications (WAI-ARIA)",
+		"href": "https://www.w3.org/TR/wai-aria/",
+		"publisher": "W3C"
+	},
 	"WCAG2": {
 		"title": "Web Content Accessibility Guidelines (WCAG) 2",
 		"href": "https://www.w3.org/TR/WCAG2/",
