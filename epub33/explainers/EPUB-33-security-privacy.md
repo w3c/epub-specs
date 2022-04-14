@@ -6,7 +6,7 @@ Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 
 
 * [EPUB 3.3 Overview](https://w3c.github.io/epub-specs/epub33/overview/), a non-normative overview of EPUB 3.3
 * [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core/), the specification of the file format
-* [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB Reading Systems. 
+* [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB reading systems. 
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/), the specification for accessibility. 
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/), an informative document on accessibility techniques. 
 * [EPUB Multiple-Rendition Publications 1.1](https://w3c.github.io/epub-specs/epub33/multi-rend/), a non-normative description of a largely-unimplemented feature allowing multiple EPUB publications to be packaged in the same container. 
@@ -14,7 +14,7 @@ Written by Dave Cramer (invited expert) and the EPUB 3 Working Group, April 29, 
 
 ## Introduction
 
-EPUB files are presented to end users by EPUB Reading Systems, which can be constructed as web applications but are more likely to be native apps using browser rendering engines. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
+EPUB files are presented to end users by EPUB reading systems, which can be constructed as web applications but are more likely to be native apps using browser rendering engines. The EPUB specifications define the file format in great detail, but generally give user agents wide latitude, subject mostly to the requirements of the embedded technologies, such as HTML, SVG, XML, and CSS. 
 
 This makes it hard to think about security issues. Most of the security implications around EPUB depend on the architectural details and the business model of the reading system, rather than the specifications themselves. 
 
@@ -24,7 +24,7 @@ It’s hard to even reason about how HTML’s security issues affect EPUB. If I 
 
 ### 1. What information might this feature expose to web sites or other parties, and for what purposes is that exposure necessary?
 
-EPUB Reading Systems typically collect information on the reading habits of their users. In some cases this information is necessary to provide a good user experience; in other cases the information is collected for other users—the reading system company or the publisher of the book. 
+EPUB reading systems typically collect information on the reading habits of their users. In some cases this information is necessary to provide a good user experience; in other cases the information is collected for other users—the reading system company or the publisher of the book. 
 
 1. Tracking reading position. You really do want the reading system to remember that you just started chapter 5. 
 2. Remembering highlights, notes, bookmarks. 
@@ -100,4 +100,4 @@ No.
 
 ### 17. What should this questionnaire have asked?
 
-I am somewhat concerned about a feature of app platform web views that could lead to user confusion. In testing, if an EPUB reading system opens an EPUB that contains a non-HTML content document, the Reading System will often offer to the user the opportunity to download the file. This is a spec violation, but I’ve seen this behaviour in multiple user agents. It seems to be browser-level issue: request a `.dmg` file, for example, and you get a download dialogue. 
+I am somewhat concerned about a feature of app platform web views that could lead to user confusion. In testing, if an EPUB reading system opens an EPUB that contains a non-HTML content document, the reading system will often offer to the user the opportunity to download the file. This is a spec violation, but I’ve seen this behaviour in multiple user agents. It seems to be browser-level issue: request a `.dmg` file, for example, and you get a download dialogue. 
