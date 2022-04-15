@@ -14,8 +14,8 @@ target communities. This metadata falls into two categories:
 of publications; and
 2. EPUB-defined metadata properties for reporting aspects of conformance
 
-Usage of these properties means that they are regularly included in the Package Document
-metadata for their EPUB Publications (as appropriate for each title).
+Usage of these properties means that they are regularly included in the package document
+metadata for their EPUB publications (as appropriate for each title).
 
 ## Publisher Implementations
 

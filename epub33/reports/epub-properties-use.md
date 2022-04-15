@@ -13,8 +13,8 @@ target communities. This metadata falls into two categories:
 1. metadata for expressing information about the publication in the package document; and
 2. metadata for expressing preferred rendering of the content
 
-Usage of these properties means that they are regularly included in the Package Document
-metadata for their EPUB Publications (as appropriate for each title).
+Usage of these properties means that they are regularly included in the package document
+metadata for their EPUB publications (as appropriate for each title).
 
 ## Publisher Implementations
 
@@ -102,7 +102,7 @@ Manifest properties are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-meta-auth"><s>meta-auth</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -178,21 +178,21 @@ Link relationships are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-marc21xml-record"><s>marc21xml-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mods-record"><s>mods-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix-record"><s>onix-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -215,14 +215,14 @@ Link relationships are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xml-signature"><s>xml-signature</s></a></td>
             <td>
-            	<p>This property deprecated and is no longer recommended for use in EPUB Publications.
+            	<p>This property deprecated and is no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xmp-record"><s>xmp-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -422,7 +422,7 @@ and as overrides in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-portrait"><s>rendition:spread-portrait</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -453,7 +453,7 @@ and as overrides in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#viewport"><s>rendition:viewport</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -536,7 +536,7 @@ Manifest properties are expressed in the
     </tbody>
 </table>
 
-### Spine Properties Vocabulary
+### Spine properties vocabulary
 
 The following table lists publishers who have stated that they are currently using
 the [spine properties](https://w3c.github.io/epub-specs/epub33/core/#app-itemref-properties-vocab)
