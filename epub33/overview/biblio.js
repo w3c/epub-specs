@@ -1,9 +1,9 @@
 var biblio = {
-	"CSSSnapshot": {
+	"csssnapshot": {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
 	},
-	"EPUB-31": {
+	"epub-31": {
 		"authors":[
 		"Markus Gylling",
 		"Tzviya Siegman",
@@ -13,7 +13,7 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUB-32": {
+	"epub-32": {
 		"authors":[
 		"Matt Garrish",
 		"Dave Cramer"],
@@ -22,7 +22,7 @@ var biblio = {
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"EPUBChanges-30": {
+	"epubchanges-30": {
 		"authors":[
 		"William McCoy",
 		"Markus Gylling"],
@@ -31,7 +31,7 @@ var biblio = {
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
-	"EPUBChanges-301": {
+	"epubchanges-301": {
 		"authors":[
 		"Markus Gylling",
 		"Matt Garrish"],
@@ -40,7 +40,7 @@ var biblio = {
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
-	"EPUBChanges-31": {
+	"epubchanges-31": {
 		"authors":[
 		"Markus Gylling",
 		"Matt Garrish"],
@@ -49,7 +49,7 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUBChanges-32": {
+	"epubchanges-32": {
 		"authors":[
 		"Matt Garrish",
 		"Dave Cramer"],
@@ -58,50 +58,50 @@ var biblio = {
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"EPUBContentDocs-30": {
+	"epubcontentdocs-30": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
 		"Elika J. Etimad",
 		"Matt Garrish"],
-		"title": "EPUB content documents 3.0",
+		"title": "EPUB Content Documents 3.0",
 		"href": "http://idpf.org/epub/30/spec/epub30-contentdocs-20111011.html",
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
-	"EPUBContentDocs-301": {
+	"epubcontentdocs-301": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
 		"Elika J. Etimad",
 		"Matt Garrish"],
-		"title": "EPUB content documents 3.0.1",
+		"title": "EPUB Content Documents 3.0.1",
 		"href": "http://idpf.org/epub/301/spec/epub-contentdocs-20140626.html",
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
-	"EPUBContentDocs-31": {
+	"epubcontentdocs-31": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
 		"Dave Cramer",
 		"Elika J. Etimad",
 		"Matt Garrish"],
-		"title": "EPUB content documents 3.1",
+		"title": "EPUB Content Documents 3.1",
 		"href": "http://idpf.org/epub/31/spec/epub-contentdocs-20170105.html",
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUBContentDocs-32": {
+	"epubcontentdocs-32": {
 		"authors":[
 		"Dave Cramer",
 		"Matt Garrish"],
-		"title": "EPUB content documents 3.2",
+		"title": "EPUB Content Documents 3.2",
 		"href": "https://www.w3.org/publishing/epub32/epub-contentdocs.html",
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"EPUBMediaOverlays-30": {
+	"epubmediaoverlays-30": {
 		"authors":[
 		"Marisa DeMeglio",
 		"Daniel Weck"],
@@ -110,7 +110,7 @@ var biblio = {
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
-	"EPUBMediaOverlays-301": {
+	"epubmediaoverlays-301": {
 		"authors":[
 		"Marisa DeMeglio",
 		"Daniel Weck"],
@@ -119,7 +119,7 @@ var biblio = {
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
-	"EPUBMediaOverlays-31": {
+	"epubmediaoverlays-31": {
 		"authors":[
 		"Marisa DeMeglio",
 		"Daniel Weck"],
@@ -128,7 +128,7 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUBMediaOverlays-32": {
+	"epubmediaoverlays-32": {
 		"authors":[
 		"Marisa DeMeglio",
 		"Daniel Weck"],
@@ -137,7 +137,7 @@ var biblio = {
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"EPUBPackages-31": {
+	"epubpackages-31": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
@@ -147,7 +147,7 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"EPUBPackages-32": {
+	"epubpackages-32": {
 		"authors":[
 		"Matt Garrish",
 		"Dave Cramer"],
@@ -156,33 +156,33 @@ var biblio = {
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"EPUBPublications-30": {
+	"epubpublications-30": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
 		"Matt Garrish"],
-		"title": "EPUB publications 3.0",
+		"title": "EPUB Publications 3.0",
 		"href": "http://idpf.org/epub/30/spec/epub30-publications-20111011.html",
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
-	"EPUBPublications-301": {
+	"epubpublications-301": {
 		"authors":[
 		"Markus Gylling",
 		"William McCoy",
 		"Matt Garrish"],
-		"title": "EPUB publications 3.0.1",
+		"title": "EPUB Publications 3.0.1",
 		"href": "http://idpf.org/epub/301/spec/epub-publications-20140626.html",
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
-	"OCF-201": {
+	"ocf-201": {
 		"title": "EPUB Open Container Format (OCF) 2.0.1",
 		"href": "http://www.idpf.org/epub/20/spec/OCF_2.0.1_draft.doc",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
-	"OCF-30": {
+	"ocf-30": {
 		"authors":[
 		"James Pritchett",
 		"Markus Gylling"],
@@ -191,7 +191,7 @@ var biblio = {
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
-	"OCF-301": {
+	"ocf-301": {
 		"authors":[
 		"James Pritchett",
 		"Markus Gylling"],
@@ -200,7 +200,7 @@ var biblio = {
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
-	"OCF-31": {
+	"ocf-31": {
 		"authors":[
 		"James Pritchett",
 		"Markus Gylling"],
@@ -209,7 +209,7 @@ var biblio = {
 		"date": "05 January 2017",
 		"publisher": "IDPF"
 	},
-	"OCF-32": {
+	"ocf-32": {
 		"authors":[
 		"Garth Conboy"],
 		"title": "Open Container Format (OCF) 3.2",
@@ -217,19 +217,19 @@ var biblio = {
 		"date": "08 May 2019",
 		"publisher": "EPUB 3 Community Group"
 	},
-	"OPF-201": {
+	"opf-201": {
 		"title": "Open Packaging Format 2.0.1",
 		"href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
-	"OPS-201": {
+	"ops-201": {
 		"title": "Open Publication Structure 2.0.1",
 		"href": "http://www.idpf.org/epub/20/spec/OPS_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
-	"SVG": {
+	"svg": {
 		"title": "SVG",
 		"href": "https://www.w3.org/TR/SVG/",
 		"publisher": "W3C"
