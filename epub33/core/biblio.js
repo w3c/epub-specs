@@ -74,7 +74,7 @@ var biblio = {
 	},
 	"opf-201": {
 		"title": "Open Packaging Format 2.0.1",
-		"href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
+		"href": "http://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
