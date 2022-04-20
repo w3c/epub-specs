@@ -178,7 +178,7 @@ var biblio = {
 	},
 	"ocf-201": {
 		"title": "EPUB Open Container Format (OCF) 2.0.1",
-		"href": "http://www.idpf.org/epub/20/spec/OCF_2.0.1_draft.doc",
+		"href": "http://idpf.org/epub/20/spec/OCF_2.0.1_draft.doc",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
@@ -219,13 +219,13 @@ var biblio = {
 	},
 	"opf-201": {
 		"title": "Open Packaging Format 2.0.1",
-		"href": "http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
+		"href": "http://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
 	"ops-201": {
 		"title": "Open Publication Structure 2.0.1",
-		"href": "http://www.idpf.org/epub/20/spec/OPS_2.0.1_draft.htm",
+		"href": "http://idpf.org/epub/20/spec/OPS_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
