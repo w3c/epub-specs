@@ -1,5 +1,3 @@
-# EPUB Accessibility 1.1 Metadata Usage Report
-
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
