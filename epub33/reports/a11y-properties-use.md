@@ -53,7 +53,7 @@ Discovery properties are expressed in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -95,7 +95,7 @@ Discovery properties are expressed in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -137,7 +137,7 @@ Discovery properties are expressed in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -179,7 +179,7 @@ Discovery properties are expressed in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -221,7 +221,7 @@ Discovery properties are expressed in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -285,7 +285,7 @@ and in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -327,7 +327,7 @@ and in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
@@ -369,7 +369,7 @@ and in the
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
                     <li>Formac Lorimer</li>
-            		<li>Goose Lane</li>
+            		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
