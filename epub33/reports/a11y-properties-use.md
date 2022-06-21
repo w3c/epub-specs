@@ -41,25 +41,40 @@ Discovery properties are expressed in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -68,25 +83,40 @@ Discovery properties are expressed in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -95,25 +125,40 @@ Discovery properties are expressed in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -122,25 +167,40 @@ Discovery properties are expressed in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -149,25 +209,40 @@ Discovery properties are expressed in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -198,25 +273,40 @@ and in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -225,25 +315,40 @@ and in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
@@ -252,25 +357,40 @@ and in the
             <td>
             	<ul>
             		<li>Acorn Press</li>
+                    <li>alto Éditeur d'étonnant</li>
             		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
+                    <li>Brick Books</li>
+                    <li>Brush Education Inc.</li>
+                    <li>Dog Training Press</li>
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
+                    <li>Flanker Press</li>
+                    <li>Formac Lorimer</li>
             		<li>Goose Lane</li>
             		<li>Guilford Press</li>
+                    <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
             		<li>Kogan Page</li>
+                    <li>Linda Leith Publishing</li>
             		<li>Macmillan Learning</li>
+                    <li>md</li>
+                    <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
+                    <li>Pearson</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
+                    <li>Simon &amp; Schuster</li>
+                    <li>Taylor &amp; Francis</li>
             		<li>Tidewater Press</li>
+                    <li>UBC Press</li>
             		<li>University of Michigan Press</li>
             		<li>Wiley</li>
             		<li>Wilfred Laurier University Press</li>
+                    <li>XYZ</li>
             	</ul>
             </td>
         </tr>
