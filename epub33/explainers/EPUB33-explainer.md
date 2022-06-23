@@ -29,7 +29,7 @@ EPUB 3.3 includes the following specifications:
 
 * [EPUB 3.3 Overview](https://w3c.github.io/epub-specs/epub33/overview/), a non-normative overview of EPUB 3.3
 * [EPUB 3.3 Core](https://w3c.github.io/epub-specs/epub33/core/), the specification of the file format
-* [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB Reading Systems. 
+* [EPUB 3.3 Reading Systems](https://w3c.github.io/epub-specs/epub33/rs/), the specification for user agents, known as EPUB reading systems. 
 * [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/)
 * [EPUB Accessibility Techniques 1.1](https://w3c.github.io/epub-specs/epub33/a11y-tech/)
 
@@ -117,7 +117,7 @@ The package file is the heart of any EPUB, and includes publication metadata, a 
 
 EPUB uses the XML serialization of HTML5. There have been many attempts to allow the HTML serialization, but they failed because much of the existing supply chain depends on XML-based tools to process EPUBs, and there has not been implementor interest. 
 
-Scripting is poorly supported in existing EPUB Reading Systems. Since EPUBs are not generally presented to end users via the web, and since most EPUBs are sold by retailers rather than publishers, the idea of an origin is less useful as the basis for a security model. 
+Scripting is poorly supported in existing EPUB reading systems. Since EPUBs are not generally presented to end users via the web, and since most EPUBs are sold by retailers rather than publishers, the idea of an origin is less useful as the basis for a security model. 
 
 
 
