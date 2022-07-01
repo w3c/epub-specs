@@ -417,4 +417,16 @@ The tool additionally allows authors to generate discovery and certifier metadat
 
 ## Vendor Implementations
 
-The accessibility metadata provided by publishers is used to aid discovery of publications by ...
+The following is a list of vendors who have stated that they are currently including
+the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
+in production on behalf of the publishers they serve.
+
+- Amnet
+- Apex
+- Canadian Electronic Library
+- Codemantra
+- Lumina Datamatics
+- Newgen
+- S4Carlisle
+- Westchester Publishing
+
