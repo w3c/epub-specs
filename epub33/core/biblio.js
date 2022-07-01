@@ -53,6 +53,11 @@ var biblio = {
 		"href": "https://www.itu.int/ITU-T/recommendations/rec.aspx?rec=13189",
 		"date": "2017-04-13"
 	},
+	"iso22424": {
+		"title": "ISO/IEC TS 22424-1:2020 — Digital publishing — EPUB3 preservation",
+		"href": "https://www.iso.org/standard/73163.html",
+		"date": "2020-01"
+	},
 	"isoschematron": {
 		"title": "ISO/IEC 19757-3: Rule-based validation — Schematron",
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip",
