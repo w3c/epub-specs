@@ -116,7 +116,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-source-of">source-of</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -132,7 +132,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-title-type">title-type</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -325,7 +325,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -349,7 +349,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -381,7 +381,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -397,7 +397,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-both">rendition:spread-both</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -405,7 +405,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-landscape">rendition:spread-landscape</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -428,7 +428,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-center">rendition:page-spread-center</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -436,7 +436,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-left">rendition:page-spread-left</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -444,7 +444,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-right">rendition:page-spread-right</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -479,7 +479,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -495,7 +495,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -519,7 +519,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-svg">svg</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -555,7 +555,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left">page-spread-left</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -563,7 +563,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right">page-spread-right</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -591,7 +591,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-active-class">active-class</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -599,7 +599,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-duration">duration</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>

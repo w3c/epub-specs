@@ -38,7 +38,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityFeature">schema:accessibilityFeature</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -46,7 +46,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilityHazard">schema:accessibilityHazard</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -54,7 +54,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessibilitySummary">schema:accessibilitySummary</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -62,7 +62,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessMode">schema:accessMode</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -70,7 +70,7 @@ Discovery properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#confreq-schema-accessModeSufficient">schema:accessModeSufficient</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -100,7 +100,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#dcterms-conformsTo">dcterms:conformsTo</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -108,7 +108,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifiedBy">a11y:certifiedBy</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -116,7 +116,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierCredential">a11y:certifierCredential</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
