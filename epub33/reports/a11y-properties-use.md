@@ -419,7 +419,13 @@ The tool additionally allows authors to generate discovery and certifier metadat
 
 The following is a list of vendors who have stated that they are currently including
 the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
-in production on behalf of the publishers they serve.
+and for those publishers who have received third-party certification they also include the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) in production on behalf of the publishers they serve.
+
+Conformance properties are expressed in the
+[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+and in the
+[`link` element's `rel` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-link-rel).
+
 
 - Amnet
 - Apex
