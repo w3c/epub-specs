@@ -500,6 +500,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
