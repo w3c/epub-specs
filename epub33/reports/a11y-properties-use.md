@@ -445,4 +445,8 @@ and the [conformance reporting metadata properties](https://w3c.github.io/epub-s
 - [VitalSource](https://www.vitalsource.com)
 
 
+## Catalog Feed
 
+The following is a list of Vendors who provide in their catalog feed to partners this [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package) and the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) if present or who are in the process of rolling out their implementations for every EPUB in their collection.
+
+- [VitalSource](https://www.vitalsource.com)
