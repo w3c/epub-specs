@@ -1,5 +1,3 @@
-# EPUB Accessibility 1.1 Metadata Usage Report
-
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
@@ -14,8 +12,8 @@ target communities. This metadata falls into two categories:
 of publications; and
 2. EPUB-defined metadata properties for reporting aspects of conformance
 
-Usage of these properties means that they are regularly included in the Package Document
-metadata for their EPUB Publications (as appropriate for each title).
+Usage of these properties means that they are regularly included in the package document
+metadata for their EPUB publications (as appropriate for each title).
 
 ## Publisher Implementations
 
@@ -55,6 +53,7 @@ Discovery properties are expressed in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -97,6 +96,7 @@ Discovery properties are expressed in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -139,6 +139,7 @@ Discovery properties are expressed in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -181,6 +182,7 @@ Discovery properties are expressed in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -223,6 +225,7 @@ Discovery properties are expressed in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -287,6 +290,7 @@ and in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -329,6 +333,7 @@ and in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>
@@ -371,6 +376,7 @@ and in the
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Hurtubise</li>
             		<li>Invisible Publishing</li>
             		<li>Jones and Bartlett Learning</li>

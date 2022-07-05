@@ -1,5 +1,3 @@
-# EPUB 3.3 Metadata Usage Report
-
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
@@ -13,8 +11,8 @@ target communities. This metadata falls into two categories:
 1. metadata for expressing information about the publication in the package document; and
 2. metadata for expressing preferred rendering of the content
 
-Usage of these properties means that they are regularly included in the Package Document
-metadata for their EPUB Publications (as appropriate for each title).
+Usage of these properties means that they are regularly included in the package document
+metadata for their EPUB publications (as appropriate for each title).
 
 ## Publisher Implementations
 
@@ -71,7 +69,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq">display-seq</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -79,7 +77,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-file-as">file-as</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -95,14 +93,14 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type">identifier-type</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-meta-auth"><s>meta-auth</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -110,7 +108,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-role">role</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -118,7 +116,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-source-of">source-of</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -134,7 +133,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-title-type">title-type</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -178,21 +178,21 @@ Link relationships are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-marc21xml-record"><s>marc21xml-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mods-record"><s>mods-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix-record"><s>onix-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -215,14 +215,14 @@ Link relationships are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xml-signature"><s>xml-signature</s></a></td>
             <td>
-            	<p>This property deprecated and is no longer recommended for use in EPUB Publications.
+            	<p>This property deprecated and is no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xmp-record"><s>xmp-record</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -289,7 +289,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -327,7 +327,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -351,7 +351,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -383,7 +383,8 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -399,7 +400,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-both">rendition:spread-both</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -407,7 +408,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-landscape">rendition:spread-landscape</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -422,7 +423,7 @@ and as overrides in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-portrait"><s>rendition:spread-portrait</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -430,7 +431,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-center">rendition:page-spread-center</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -438,7 +439,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-left">rendition:page-spread-left</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -446,14 +447,14 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-right">rendition:page-spread-right</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#viewport"><s>rendition:viewport</s></a></td>
             <td>
-            	<p>This property is deprecated and no longer recommended for use in EPUB Publications.
+            	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
@@ -481,7 +482,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -497,7 +499,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -521,7 +523,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-svg">svg</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -536,7 +538,7 @@ Manifest properties are expressed in the
     </tbody>
 </table>
 
-### Spine Properties Vocabulary
+### Spine properties vocabulary
 
 The following table lists publishers who have stated that they are currently using
 the [spine properties](https://w3c.github.io/epub-specs/epub33/core/#app-itemref-properties-vocab)
@@ -557,7 +559,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left">page-spread-left</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -565,7 +567,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right">page-spread-right</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -593,7 +595,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-active-class">active-class</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -601,7 +603,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-duration">duration</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
