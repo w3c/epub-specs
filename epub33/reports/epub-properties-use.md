@@ -69,7 +69,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq">display-seq</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -77,7 +77,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-file-as">file-as</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -93,7 +93,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type">identifier-type</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -108,7 +108,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-role">role</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -117,6 +117,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -133,6 +134,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -287,7 +289,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -382,6 +384,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -480,6 +483,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
@@ -496,6 +500,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Pearson</li>
             	</ul>
             </td>
         </tr>
