@@ -70,6 +70,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -78,6 +79,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -94,6 +96,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -109,6 +112,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -118,6 +122,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -135,6 +140,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -484,6 +490,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -491,7 +498,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mathml">mathml</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>Wiley</li>
             	</ul>
             </td>
         </tr>
@@ -501,6 +508,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Wiley</li>
             	</ul>
             </td>
         </tr>
