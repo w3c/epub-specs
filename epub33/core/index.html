@@ -5863,7 +5863,7 @@ No Entry</pre>
 							<h6>The <code>base</code> element</h6>
 
 							<p id="confreq-html-vocab-base"> The [[html]] <a data-lt="base"><code>base</code>
-									element</a> can be used to specify the [=document base URL=] for the purposes of
+								</a> element can be used to specify the [=document base URL=] for the purposes of
 								parsing URLs. When using it in an [=EPUB publication=], the interpretation of the
 									<code>base</code> element may inadvertently result in references to [=remote
 								resources=]. It may also cause [=reading systems=] to misinterpret the location of
@@ -7511,13 +7511,24 @@ No Entry</pre>
 								containing block</a> [[css2]] in the manner applicable to their format:</p>
 
 						<dl class="conformance-list" id="sec-fxl-html-svg-dimensions">
-							<dt id="sec-fxl-icb-html" data-tests="#fxl-xhtml-icb">Expressing in XHTML</dt>
+							<dt id="sec-fxl-icb-html" data-tests="#fxl-xhtml-icb,#fxl-xhtml-icb_multi">Expressing in
+								XHTML</dt>
 							<dd>
 								<p>For XHTML [=fixed-layout documents=], the <a
 										href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-										containing block</a> [[css2]] dimensions MUST be expressed in a
-										<code>viewport</code>
-									<code>meta</code> tag using the syntax defined in [[css-device-adapt-1]].</p>
+										containing block</a> [[css2]] is obtained from the REQUIRED <code>height</code>
+									and <code>width</code> definitions in a <a href="#app-viewport-meta"
+											><code>viewport</code> meta tag</a>, where:</p>
+								<ul>
+									<li>the <code>height</code>
+										<a href="#viewport.ebnf.property">property</a> MUST have as its <a
+											href="#viewport.ebnf.value">value</a> a positive number or the keyword
+											<code>device-height</code>; and</li>
+									<li>the <code>width</code> property MUST have as its value a positive number or the
+										keyword <code>device-width</code>.</li>
+								</ul>
+								<p>The <code>device-width</code> and <code>device-height</code> values refer to the 100%
+									of the width and height, respectively, of the reading system's [=viewport=].</p>
 								<aside class="example"
 									title="Specifying the initial containing block in a viewport meta tag">
 									<pre>&lt;html …>
@@ -7533,7 +7544,7 @@ No Entry</pre>
 								</aside>
 							</dd>
 
-							<dt id="sec-fxl-icb-svg">Expressing in SVG</dt>
+							<dt id="sec-fxl-icb-svg" data-tests="#fxl-svg-icb_multi">Expressing in SVG</dt>
 							<dd>
 								<p>For SVG [=fixed-layout documents=], the initial containing block [[css2]] dimensions
 									MUST be expressed using the <a
@@ -7553,6 +7564,10 @@ No Entry</pre>
 								</aside>
 							</dd>
 						</dl>
+
+						<p class="note"> The initial containing block definition affects only the document where it is
+							defined. The dimensions of the containing blocks in the other content documents within the
+							same publication may be different. </p>
 					</section>
 				</section>
 			</section>
@@ -10618,6 +10633,140 @@ html.my-document-playing * {
 				</section>
 			</section>
 		</section>
+		<section id="app-viewport-meta" class="appendix">
+			<h2>The <code>viewport</code>
+				<code>meta</code> tag</h2>
+
+			<section id="app-viewport-meta-intro" class="informative">
+				<h3>Introduction</h3>
+
+				<p>As the <a
+						href="https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html#//apple_ref/doc/uid/TP40008193-SW6"
+						>Safari HTML definition</a> of the <code>viewport</code>
+					<code>meta</code> tag, that was used in earlier versions of EPUB 3, is not an officially recognized standard, this specification defines a basic
+					syntax in order to allow [=EPUB creators=] to express <a href="#sec-fxl-icb-html">width and height
+						dimensions</a> for use rendering [=fixed-layout documents=].</p>
+
+				<p>The syntax of this grammar is also influenced by the processing model for transforming
+						<code>viewport</code>
+					<code>meta</code> tags to <code>@viewport</code> CSS rules, as defined in [[css-device-adapt]].</p>
+
+				<p>The syntax is intentionally left as generic as possible as it is not in this specification's scope to
+					define all the possible properties and values. It only defines the basic requirements for defining a
+					property and value pair as well as the possible separators between expressions.</p>
+			</section>
+
+			<section id="app-viewport-meta-syntax">
+				<h3>Syntax</h3>
+
+				<p>A <code>viewport</code> [^meta^] tag [[html]] MUST have <code>name</code> and <code>content</code>
+					attributes that conform to the following definition:</p>
+
+				<dl>
+					<dt id="viewport-name-attr">name</dt>
+					<dd>The value of the [^meta/name^] attribute [[html]] after <a data-cite="xml#AVNormalize"
+							>whitespace normalization</a> [[xml]] MUST be <code>viewport</code>.</dd>
+
+					<dt id="viewport-content-attr">content</dt>
+					<dd>
+						<p>The value of the [^meta/content^] attribute [[html]] after <a data-cite="xml#AVNormalize"
+								>whitespace normalization</a> [[xml]] MUST be of the following form:</p>
+						<table class="productionset">
+							<caption>(EBNF productions <a href="https://www.iso.org/standard/26153.html">ISO/IEC
+									14977</a>)<br /> All terminal symbols are in the Unicode Block 'Basic Latin' (U+0000
+								to U+007F).</caption>
+
+							<tr>
+								<td id="viewport.ebnf.def">
+									<a href="#viewport.ebnf.def">viewport</a>
+								</td>
+								<td>=</td>
+								<td><a href="#viewport.ebnf.property">property</a>, {<a href="#viewport.ebnf.sep"
+										>sep</a>, <a href="#viewport.ebnf.property">property</a>} ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.property">
+									<a href="#viewport.ebnf.property">property</a>
+								</td>
+								<td>=</td>
+								<td><a href="viewport.ebnf.name">name</a>, <a href="viewport.ebnf.assign">assign</a>, <a
+										href="viewport.ebnf.value">value</a> ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.name">
+									<a href="#viewport.ebnf.name">name</a>
+								</td>
+								<td>=</td>
+								<td>? character data ? ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.value">
+									<a href="#viewport.ebnf.value">value</a>
+								</td>
+								<td>=</td>
+								<td>? character data ? ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.sep">
+									<a href="#viewport.ebnf.sep">sep</a>
+								</td>
+								<td>=</td>
+								<td>
+									<a href="#viewport.ebnf.sep-char">sep-char</a>, { <a href="#viewport.ebnf.sep-char"
+										>sep-char</a> } ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.sep-char">
+									<a href="#viewport.ebnf.sep-char">sep-char</a>
+								</td>
+								<td>=</td>
+								<td>( ";" | "," | <a href="#viewport.ebnf.space">space</a> ) ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.assign">
+									<a href="#viewport.ebnf.assign">assign</a>
+								</td>
+								<td>=</td>
+								<td>[<a href="#viewport.ebnf.space">space</a>], "=", [<a href="#viewport.ebnf.space"
+										>space</a>] ;</td>
+							</tr>
+							<tr>
+								<td id="viewport.ebnf.space">
+									<a href="#viewport.ebnf.space">space</a>
+								</td>
+								<td>=</td>
+								<td>#x20 ;</td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+
+				<p>This specification only defines <a href="#viewport.ebnf.value">value</a> requirements for the
+						<code>height</code> and <code>width</code> properties (see <a href="#sec-fxl-content-dimensions"
+					></a>). It imposes no restrictions on other property names and values except that they MUST NOT
+					contain <a href="#viewport.ebnf.sep-char">separator characters</a> or the <a
+						href="#viewport.ebnf.assign">assignment character</a>.</p>
+
+				<p>There are no restrictions on any other attributes allowed on the [^meta^] element by the [[html]]
+					grammar.</p>
+
+				<div class="note">
+					<p>Although the <code>viewport</code>
+						<code>meta</code> tag allows EPUB creators to use properties other than <code>height</code> and
+							<code>width</code>, such use is strongly discouraged. Setting other properties may have
+						unintended consequences on the rendering of [=fixed-layout documents=].</p>
+				</div>
+
+				<div class="note">
+					<p>The authoring requirements in this section apply <em>after</em>
+						<a data-cite="xml#AVNormalize">whitespace normalization</a> [[xml]] (i.e., after a reading
+						system strips leading and trailing whitespace and compacts all instances of multiple whitespace
+						within the attribute to single spaces). EPUB creators can include any valid HTML whitespace
+						characters (e.g., tabs, line feeds) in the authored tag so long as the result is valid to this
+						definition.</p>
+				</div>
+			</section>
+		</section>
 		<section id="app-schemas" class="appendix informative">
 			<h2>Schemas</h2>
 
@@ -11580,6 +11729,9 @@ EPUB/images/cover.png</pre>
 						Recommendation</a></h3>
 
 				<ul>
+					<li>18-July-2022: The viewport <code>meta</code> element for specifying the initial containing boundary
+						in fixed-layout documents is now formally defined. See <a
+							href="https://github.com/w3c/epub-specs/issues/2292">issue 2292</a>. </li>
 					<li>14-July-2022: Clarified that the markup in the SVG <code>title</code> element is restricted to
 						HTML elements. See <a href="https://github.com/w3c/epub-specs/issues/2355">issue 2355</a>.</li>
 					<li>10-June-2022: Clarified that data blocks are exempt from fallback requirements. See <a
