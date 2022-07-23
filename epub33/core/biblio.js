@@ -19,6 +19,22 @@ var biblio = {
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
+	"epubcfi" : {
+		"authors": [
+			"Peter Sorotokin",
+			"Garth Conboy",
+			"Brady Duga",
+			"John Rivlin",
+			"Don Beaver",
+			"Kevin Ballard",
+			"Alastair Fettes",
+			"Daniel Weck"
+		],
+		"title": "EPUB Canonical Fragment Identifier (epubcfi) Specification",
+		"href": "https://idpf.org/epub/linking/cfi/epub-cfi-20111011.html",
+		"publisher": "IDPF",
+		"date": "11 October 2011"
+	},
 	"epubpackages-32": {
 		"authors":[
 		"Matt Garrish",
