@@ -406,24 +406,17 @@ and in the
 ## Validation and Authoring Tool Implementations
 
 The [Ace by DAISY](https://daisy.github.io/ace/) validator provides machine checking of the EPUB Accessibility
-specification requirements. A new version that supports the 1.1 specification will be released in 2022.
+specification requirements. A version that supports the 1.1 specification was released in July 2022.
 
 The [Ace SMART](https://smart.daisy.org) tool assists users with carrying out manual verification of the EPUB
-Accessibility specification. A new version that supports the 1.1 specification will also be released in early 2022.
+Accessibility specification. A version that supports the 1.1 specification was also released in July 2022.
 The tool additionally allows authors to generate discovery and certifier metadata for use in their publications.
 
 
 ## Vendor Implementations
 
 The following is a list of vendors who have stated that they are currently including
-the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
-and for those publishers who have received third-party certification they also include the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) in production on behalf of the publishers they serve.
-
-Conformance properties are expressed in the
-[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
-and in the
-[`link` element's `rel` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-link-rel).
-
+the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package) for the publishers they serve. For publishers who have received third-party certification, they also include the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) on their behalf.
 
 - Amnet
 - Apex
@@ -436,8 +429,8 @@ and in the
 
 ## Bookstore Implementations
 
-The following is a list of Bookstore's who display this [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
-and the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) if present or who are in the process of rolling out their implementations for every EPUB in their collection.
+The following is a list of Bookstore's who display the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package)
+and the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
 
 - [RedShelf](https://redshelf.com)
 - [VitalSource](https://www.vitalsource.com)
@@ -445,6 +438,6 @@ and the [conformance reporting metadata properties](https://w3c.github.io/epub-s
 
 ## Catalog Feed
 
-The following is a list of Vendors who provide in their catalog feed to partners this [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package) and the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) if present or who are in the process of rolling out their implementations for every EPUB in their collection.
+The following is a list of Vendors who provide the [schema.org discovery metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-disc-package) and the [conformance reporting metadata properties](https://w3c.github.io/epub-specs/epub33/a11y/#sec-conf-reporting) in their catalog feed to partners when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
 
 - [VitalSource](https://www.vitalsource.com)
