@@ -37,7 +37,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate-script">alternate-script</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -45,7 +45,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-authority">authority</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -53,7 +53,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection">belongs-to-collection</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -61,7 +61,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-collection-type">collection-type</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -87,7 +87,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-group-position">group-position</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -130,7 +130,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-term">term</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -169,7 +169,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-acquire">acquire</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -177,7 +177,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate">alternate</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -206,7 +206,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-record">record</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -214,7 +214,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-voicing">voicing</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -256,7 +256,7 @@ Link properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix">onix</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -264,7 +264,7 @@ Link properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xmp">xmp</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -303,7 +303,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-align-x-center">rendition:align-x-center</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -341,7 +341,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -349,7 +349,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -365,7 +365,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-auto">rendition:orientation-auto</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -373,7 +373,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-landscape">rendition:orientation-landscape</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -381,7 +381,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait">rendition:orientation-portrait</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -398,7 +398,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -422,7 +422,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-none">rendition:spread-none</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -516,7 +516,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources">remote-resources</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -524,7 +524,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-scripted">scripted</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -540,7 +540,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-switch">switch</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -620,7 +620,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-narrator">narrator</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
@@ -628,7 +628,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class">playback-active-class</a></td>
             <td>
             	<ul>
-            		<li>TBD</li>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
