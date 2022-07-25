@@ -40,7 +40,6 @@ Discovery properties are expressed in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -83,7 +82,6 @@ Discovery properties are expressed in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -126,7 +124,6 @@ Discovery properties are expressed in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -169,7 +166,6 @@ Discovery properties are expressed in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -212,7 +208,6 @@ Discovery properties are expressed in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -277,7 +272,6 @@ and in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -320,7 +314,6 @@ and in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
@@ -363,7 +356,6 @@ and in the
             	<ul>
             		<li>Acorn Press</li>
                     <li>alto Éditeur d'étonnant</li>
-            		<li>House of Anansi Press</li>
             		<li>Annick Press</li>
             		<li>Au Press</li>
             		<li>Book*hug Press</li>
