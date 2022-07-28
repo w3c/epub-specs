@@ -173,7 +173,9 @@
 				</div>
 			</section>
 
-			<section id="conformance"></section>
+			<section id="conformance">
+				<p>All algorithm explanations are <em>non-normative</em>.</p>
+			</section>
 
 			<section id="sec-intro-relations" class="informative">
 				<h3>Relationship to other specifications</h3>
@@ -2057,6 +2059,9 @@
 
 			<ul class="conformance-list">
 				<li>
+					<p id="confreq-rs-epubtype-expand">MAY <a>obtain an expanded URL</a> for each value.</p>
+				</li>
+				<li>
 					<p id="confreq-rs-epubtype-beh">MAY associate behaviors with none, some, or all of the terms defined
 						in the <a data-cite="epub-33#sec-epub-type-attribute">default vocabulary</a> [[epub-33]].</p>
 				</li>
@@ -2068,41 +2073,70 @@
 				</li>
 			</ul>
 		</section>
-		<section id="sec-vocab-assoc">
-			<h2>Vocabulary association mechanisms</h2>
+		<section id="sec-property-values">
+			<h2>Processing <code>property</code> values</h2>
 
-			<p id="confreq-rs-vocab-assoc" class="support">[=Reading systems=] MAY support <a
-					data-cite="epub-33#sec-vocab-assoc">vocabulary association mechanisms</a> [[epub-33]] in [=EPUB
-				content documents=].</p>
+			<p id="confreq-rs-vocab-assoc" class="support">[=Reading systems=] MAY support the <a
+					data-cite="epub-33#sec-vocab-assoc">vocabulary association mechanisms</a> for processing <a
+					data-cite="epub-33#sec-property-datatype"><code>property</code> data type values</a>
+				[[epub-33]].</p>
 
 			<p>This section defines an algorithm for obtaining an expanded URL from a <code>property</code> data type
-				value using the [[epub-33]] vocabulary association mechanisms.</p>
+				value. It applies only to [=reading systems=] that support the [[epub-33]] vocabulary association
+				mechanisms.</p>
+
+			<p>Reading systems that do not support the [[epub-33]] vocabulary association mechanisms MAY process
+					<code>property</code> values as plain [=string=] values [[infra]]. It is not required to support the
+				expansion of these values to URLs to add reading system behaviors based on their presence.</p>
 
 			<p>The algorithm describes the process using the terminology and data types defined in [[infra]], and, if
-				successful, results in [=string=] value with the expanded URL being returned. A <a
+				successful, results in a [=string=] value with the expanded URL being returned. A <a
 					data-cite="infra#nulls">null</a> value is returned for invalid properties.</p>
 
 			<p>This algorithm takes the following arguments:</p>
 
 			<ul>
 				<li><var>value</var>: the <code>property</code> value to process.</li>
-				<li><var>attr</var>: the attribute that contains <var>value</var>.</li>
-				<li><var>elem</var>: the element that <var>attr</var> is attached to.</li>
+				<li><var>attr</var>: the name of the attribute that contains <var>value</var>.</li>
+				<li><var>elem</var>: the name of the element that <var>attr</var> is attached to.</li>
 				<li><var>doc</var>: the document being processed (e.g., [=package document=], [=media overlay
 					document=], [=epub content document=]).</li>
 			</ul>
 
-			<p>To <strong>obtain an expanded <code>property</code> URL</strong>, apply the following steps:</p>
+			<p>To <dfn>obtain an expanded URL</dfn>, apply the following steps:</p>
 
 			<ol class="algorithm">
-				<li>Let <var>baseURL</var>, <var>expandedURL</var>, <var>propertyPrefix</var>, and
-						<var>propertyValue</var> be empty [=strings=].</li>
 				<li>
-					<p>Obtain the values of <var>propertyPrefix</var> and <code>propertyValue</code> as follows:</p>
+					<p>Let <var>baseURL</var>, <var>expandedURL</var>, <var>propertyPrefix</var>, and
+							<var>propertyName</var> be empty [=strings=].</p>
+					<details class="explanation">
+						<summary>Explanation</summary>
+						<p>In this algorithm:</p>
+						<ul>
+							<li><var>baseURL</var> will hold the base URL associated with the value, whether this URL is
+								assigned by the EPUB creator, corresponds to a default vocabulary, or comes from a
+								reserved prefix.</li>
+							<li><var>expandedURL</var> will hold the final URL that results from the concatenation of
+								the base URL and property name.</li>
+							<li><var>propertyPrefix</var> will hold the prefix for the property (i.e., the value before
+								the colon). Properties from a default vocabulary will not have a prefix, but all others
+								will.</li>
+							<li><var>propertyName</var> will hold the name of the property (i.e., the value after the
+								prefix). All valid properties require a name.</li>
+						</ul>
+					</details>
+				</li>
+				<li>
+					<p>Obtain the values of <var>propertyPrefix</var> and <var>propertyName</var> as follows:</p>
 					<ol>
 						<li>
-							<p>If <var>value</var> does not contain a colon, set <var>propertyValue</var> to
+							<p>If <var>value</var> does not contain a colon, set <var>propertyName</var> to
 									<var>value</var> and continue processing at the next step.</p>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>If a <code>property</code> value does not have a colon, it does not have a prefix. In
+									this case, the value is drawn from the default vocabulary.</p>
+							</details>
 						</li>
 						<li>
 							<p>Otherwise, if <var>value</var> contains a single colon:</p>
@@ -2112,14 +2146,26 @@
 											data-cite="infra#nulls">null</a>.</p>
 								</li>
 								<li>
-									<p>Otherwise, if <var>value</var> contains a single colon, split <var>value</var> on
-										the colon and set <var>propertyPrefix</var> to the string before the colon and
-										set <var>propertyValue</var> to the string after.</p>
+									<p>Otherwise, let <var>tokens</var> be the result of [=strictly split a
+										string|splitting=] <var>value</var> using a colon (U+003A) as the delimiter. Set
+											<var>propertyPrefix</var> to <var>tokens[0]</var> and set
+											<var>propertyName</var> to <var>tokens[1]</var>.</p>
 								</li>
 							</ol>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>If a <code>property</code> value has a single colon, it has a prefix.</p>
+								<p>A colon at the beginning of the value is invalid, however, as it indicates the prefix
+									is not set. Likewise, a colon at the end of the value indicates that there is only a
+									prefix and no value.</p>
+							</details>
 						</li>
 						<li>
 							<p>Otherwise, the value is invalid. Return <a data-cite="infra#nulls">null</a>.</p>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>A <code>property</code> value cannot have more than one colon.</p>
+							</details>
 						</li>
 					</ol>
 				</li>
@@ -2144,6 +2190,15 @@
 									[[epub-33]], set <var>baseURL</var> to
 										<br /><code>http://idpf.org/epub/vocab/package/itemref/#</code></li>
 							</ol>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>If the <code>property</code> value does not have a prefix, then this step assigns the
+									default vocabulary URL to use based on the attribute or element to which it belongs.
+									When an element in the package document has more than one attribute that takes a
+										<code>property</code> data type, those attributes share the same default
+									vocabulary. For this reason, it is not necessary to check both the element and
+									attribute to determine what URL to assign.</p>
+							</details>
 						</li>
 						<li>
 							<p>Otherwise:</p>
@@ -2156,27 +2211,55 @@
 								</li>
 								<li>
 									<p>Otherwise, if <var>propertyPrefix</var> matches a <a
-											data-cite="epub-33#sec-reserved-prefixes">reserved prefixe</a> [[epub-33]]
+											data-cite="epub-33#sec-reserved-prefixes">reserved prefix</a> [[epub-33]]
 										for <var>doc</var>, set <var>baseURL</var> to the URL associated with the
 										reserved prefix.</p>
 								</li>
 							</ol>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>When a <code>property</code> value has a prefix, the first place to check for its
+									base URL is in a <code>prefix</code> attribute declaration on the document
+									element.</p>
+								<p>If the author has not assigned a URL for the prefix, the next step is to check if the
+									prefix matches one of the reserved prefixes.</p>
+								<p>Note that author-assigned prefix URLs override the reserved prefix URLs.</p>
+							</details>
 						</li>
 					</ol>
 					<p>If <var>baseURL</var> is an empty string, the property value is invalid. Return <a
 							data-cite="infra#nulls">null</a>.</p>
+					<details class="explanation">
+						<summary>Explanation</summary>
+						<p>If the base URL is empty at the end of this processing step, then either the prefix is not
+							mapped or reserved, or the element or attribute being processed does not accept
+								<code>property</code> data types as defined in [[epub-33]].</p>
+						<p>Without a base URL, it is impossible to generate an expanded URL, so the value is
+							invalid.</p>
+					</details>
 				</li>
 				<li>Set <var>expandedURL</var> to the concatenated values of <var>baseURL</var> and
-						<var>propertyValue</var>.</li>
+						<var>propertyName</var>. Do not add a separator when concatenating the values.</li>
 				<li>
 					<p>If <var>expandedURL</var> is not a [=valid URL string=], the value is invalid. Return <a
 							data-cite="infra#nulls">null</a>.</p>
 					<p>Otherwise, return <var>expandedURL</var>.</p>
+					<details class="explanation">
+						<summary>Explanation</summary>
+						<p>Although an expanded value may be obtained, it is not necessarily the case that it is a valid
+							URL. This is only likely to occur when the EPUB creator assigns an invalid base URL to a
+							prefix.</p>
+					</details>
 				</li>
 			</ol>
 
-			<p>Reading systems do not have to [=url parser | parse the resulting URL=] [[url]] or attempt to dereference
-				the resource.</p>
+			<div class="note">
+				<p>Reading systems do not have to [=url parser | parse the resulting URL=] [[url]] or attempt to
+					dereference the resulting expanded URL. Expanding a <code>property</code> data type value to a full
+					URL only ensures a reading system has encountered the value it expects (i.e., because different EPUB
+					creators can assign the same prefix to different URLs, two values may appear the same until
+					expanded).</p>
+			</div>
 		</section>
 		<section id="sec-epub-rs-conf-backward">
 			<h3>Backward compatibility</h3>
