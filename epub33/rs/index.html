@@ -2108,7 +2108,7 @@
 			<ol class="algorithm">
 				<li>
 					<p>Let <var>baseURL</var>, <var>expandedURL</var>, <var>propertyPrefix</var>, and
-							<var>propertyName</var> be empty [=strings=].</p>
+							<var>propertyReference</var> be empty [=strings=].</p>
 					<details class="explanation">
 						<summary>Explanation</summary>
 						<p>In this algorithm:</p>
@@ -2117,25 +2117,28 @@
 								assigned by the EPUB creator, corresponds to a default vocabulary, or comes from a
 								reserved prefix.</li>
 							<li><var>expandedURL</var> will hold the final URL that results from the concatenation of
-								the base URL and property name.</li>
-							<li><var>propertyPrefix</var> will hold the prefix for the property (i.e., the value before
-								the colon). Properties from a default vocabulary will not have a prefix, but all others
-								will.</li>
-							<li><var>propertyName</var> will hold the name of the property (i.e., the value after the
-								prefix). All valid properties require a name.</li>
+								the base URL and property reference.</li>
+							<li><var>propertyPrefix</var> will hold the property's <a
+									data-cite="epub-33#property.ebnf.prefix">prefix</a> [[epub-33]] (i.e., the value
+								before the colon). Properties from a default vocabulary will not have a prefix, but all
+								others will.</li>
+							<li><var>propertyReference</var> will hold the property's <a
+									data-cite="epub-33#property.ebnf.reference">reference</a> [[epub-33]] (i.e., the
+								value after the prefix). All valid properties require a reference.</li>
 						</ul>
 					</details>
 				</li>
 				<li>
-					<p>Obtain the values of <var>propertyPrefix</var> and <var>propertyName</var> as follows:</p>
+					<p>Obtain the values of <var>propertyPrefix</var> and <var>propertyReference</var> as follows:</p>
 					<ol>
 						<li>
-							<p>If <var>value</var> does not contain a colon (U+003A), set <var>propertyName</var> to
-									<var>value</var> and continue processing at the next step.</p>
+							<p>If <var>value</var> does not contain a colon (U+003A), set <var>propertyReference</var>
+								to <var>value</var>.</p>
 							<details class="explanation">
 								<summary>Explanation</summary>
 								<p>If a <code>property</code> value does not have a colon, it does not have a prefix. In
-									this case, the value is drawn from the default vocabulary as described in the next step of the algorithm.</p>
+									this case, the value is drawn from the default vocabulary as described in the next
+									step of the algorithm.</p>
 							</details>
 						</li>
 						<li>
@@ -2147,38 +2150,26 @@
 									set.</p>
 							</details>
 						</li>
-						<li id="property-exp-colon-no-slash">
-							<p>Otherwise, if <var>value</var> does not contain a slash (U+002F) and <var>value</var>
-								ends with a colon or has more than one colon, the value is invalid. Return <a
-									data-cite="infra#nulls">null</a>.</p>
-							<details class="explanation">
-								<summary>Explanation</summary>
-								<p>If a <code>property</code> does not contain any slashes, then the colon represents
-									the prefix delimiter. It is not valid for the value to end with a colon, as that
-									would indicate there is only a prefix and no name.</p>
-								<p>Likewise, there cannot be more than one colon, as the name must be a
-									[=path-relative-scheme-less-URL string=] (i.e., any colons must be after the first
-									[=URL-path-segment string=]).</p>
-								<p>For example, the following is a valid <code>property</code> value as the second colon
-									follows a slash: <code>foo:bar/ba:z</code>. This example shows an invalid value, as
-									the second colon could represent a scheme: <code>foo:bar:baz/qux</code>.</p>
-							</details>
-						</li>
 						<li>
 							<p>Otherwise, split <var>value</var> on the first colon and set <var>propertyPrefix</var> to
-								the string before the colon and set <var>propertyName</var> to the string after the
+								the string before the colon and set <var>propertyReference</var> to the string after the
 								colon.</p>
 						</li>
 					</ol>
-					<p>If <var>propertyName</var> contains a colon, and that colon occurs before a slash character, the
-						value is invalid. Return <a data-cite="infra#nulls">null</a>.</p>
+					<p>If <var>propertyReference</var> is an empty string or is not a valid
+						[=path-relative-scheme-less-URL string=], as required by the <a
+							data-cite="epub-33#property.ebnf.reference"><code>property</code> data type definition</a>
+						[[epub-33]], the value is invalid. Return <a data-cite="infra#nulls">null</a>.</p>
 					<details class="explanation">
 						<summary>Explanation</summary>
-						<p>If a <var>propertyName</var> has a colon at this stage, then there were multiple colons in
-							the original value. The first delimited the prefix. Any subsequent ones left in the name
-							must occur after a slash, otherwise the name is not a valid [=path-relative-scheme-less-URL
-							string=]. (Refer to the explanation for <a href="#property-exp-colon-no-slash">substep 3</a>
-							for additional explanation about valid path-relative-scheme-less-URL strings.)</p>
+						<p>If the reference is an empty string, the colon separating the prefix from the reference must
+							have been at the end of <var>value</var>. A prefix without a reference is invalid.</p>
+						<p>The path-relative-scheme-less-URL string definition has a number of restrictions that apply
+							to the reference whether it has a prefix or not.</p>
+						<p>For example, the reference must not begin with a [=URL-scheme string=] followed by a colon.
+							This restriction means that the following is not a valid <code>property</code> value as the
+							second colon could represent a scheme: <code>foo:bar:baz/qux</code>.</p>
+						<p>There are also restrictions on what characters must be percent encoded.</p>
 					</details>
 				</li>
 				<li>
@@ -2251,7 +2242,7 @@
 					</details>
 				</li>
 				<li>Set <var>expandedURL</var> to the concatenated values of <var>baseURL</var> and
-						<var>propertyName</var>. Do not add a separator when concatenating the values.</li>
+						<var>propertyReference</var>. Do not add a separator when concatenating the values.</li>
 				<li>
 					<p>If <var>expandedURL</var> is not a [=valid URL string=], the value is invalid. Return <a
 							data-cite="infra#nulls">null</a>.</p>
