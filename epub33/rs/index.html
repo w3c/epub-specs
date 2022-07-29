@@ -2130,7 +2130,7 @@
 					<p>Obtain the values of <var>propertyPrefix</var> and <var>propertyName</var> as follows:</p>
 					<ol>
 						<li>
-							<p>If <var>value</var> does not contain a colon, set <var>propertyName</var> to
+							<p>If <var>value</var> does not contain a colon (U+003A), set <var>propertyName</var> to
 									<var>value</var> and continue processing at the next step.</p>
 							<details class="explanation">
 								<summary>Explanation</summary>
@@ -2139,35 +2139,47 @@
 							</details>
 						</li>
 						<li>
-							<p>Otherwise, if <var>value</var> contains a single colon:</p>
-							<ol>
-								<li>
-									<p>If <var>value</var> begins or ends with a colon, the value is invalid. Return <a
-											data-cite="infra#nulls">null</a>.</p>
-								</li>
-								<li>
-									<p>Otherwise, let <var>tokens</var> be the result of [=strictly split a
-										string|splitting=] <var>value</var> using a colon (U+003A) as the delimiter. Set
-											<var>propertyPrefix</var> to <var>tokens[0]</var> and set
-											<var>propertyName</var> to <var>tokens[1]</var>.</p>
-								</li>
-							</ol>
+							<p>Otherwise, if <var>value</var> begins with a colon, the value is invalid. Return <a
+									data-cite="infra#nulls">null</a>.</p>
 							<details class="explanation">
 								<summary>Explanation</summary>
-								<p>If a <code>property</code> value has a single colon, it has a prefix.</p>
-								<p>A colon at the beginning of the value is invalid, however, as it indicates the prefix
-									is not set. Likewise, a colon at the end of the value indicates that there is only a
-									prefix and no value.</p>
+								<p>A colon at the beginning of the value is invalid as it indicates the prefix is not
+									set.</p>
+							</details>
+						</li>
+						<li id="property-exp-colon-no-slash">
+							<p>Otherwise, if <var>value</var> does not contain a slash (U+002F) and <var>value</var>
+								ends with a colon or has more than one colon, the value is invalid. Return <a
+									data-cite="infra#nulls">null</a>.</p>
+							<details class="explanation">
+								<summary>Explanation</summary>
+								<p>If a <code>property</code> does not contain any slashes, then the colon represents
+									the prefix delimiter. It is not valid for the value to end with a colon, as that
+									would indicate there is only a prefix and no name.</p>
+								<p>Likewise, there cannot be more than one colon, as the name must be a
+									[=path-relative-scheme-less-URL string=] (i.e., any colons must be after the first
+									[=URL-path-segment string=]).</p>
+								<p>For example, the following is a valid <code>property</code> value as the second colon
+									follows a slash: <code>foo:bar/ba:z</code>. This example shows an invalid value, as
+									the second colon could represent a scheme: <code>foo:bar:baz/qux</code>.</p>
 							</details>
 						</li>
 						<li>
-							<p>Otherwise, the value is invalid. Return <a data-cite="infra#nulls">null</a>.</p>
-							<details class="explanation">
-								<summary>Explanation</summary>
-								<p>A <code>property</code> value cannot have more than one colon.</p>
-							</details>
+							<p>Otherwise, split <var>value</var> on the first colon and set <var>propertyPrefix</var> to
+								the string before the colon and set <var>propertyName</var> to the string after the
+								colon.</p>
 						</li>
 					</ol>
+					<p>If <var>propertyName</var> contains a colon, and that colon occurs before a slash character, the
+						value is invalid. Return <a data-cite="infra#nulls">null</a>.</p>
+					<details class="explanation">
+						<summary>Explanation</summary>
+						<p>If a <var>propertyName</var> has a colon at this stage, then there were multiple colons in
+							the original value. The first delimited the prefix. Any subsequent ones left in the name
+							must occur after a slash, otherwise the name is not a valid [=path-relative-scheme-less-URL
+							string=]. (Refer to the explanation for <a href="#property-exp-colon-no-slash">substep 3</a>
+							for additional explanation about valid path-relative-scheme-less-URL strings.)</p>
+					</details>
 				</li>
 				<li>
 					<p>Obtain the value of <var>baseURL</var> as follows:</p>
