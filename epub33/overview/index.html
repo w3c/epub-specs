@@ -65,23 +65,96 @@
 		<section id="intro">
 			<h2>Introduction</h2>
 
-			<p>EPUB 3.3 [[epub-33]] is the current version of EPUB 3.</p>
+			<section id="reading-overview">
+				<h3>Reading this document</h3>
 
-			<figure id="fig-epub-structure">
-				<figcaption> The following example visually represents the structure of an EPUB publication. </figcaption>
+				<p>The EPUB 3 format offers publishers the ability to create advanced reading experiences by leveraging
+					the features and functionality of the Open Web Platform. The ability to use HTML, SVG, CSS, and
+					JavaScript enables not only rich and interactive reading experiences, but allows content to be
+					produced for languages regardless of their default horizontal or vertical writing directions. The
+					choice of these technologies also allows [=EPUB publications=] to be accessibly produced for a wide
+					range of user needs.</p>
+
+				<p>This overview explores, at a high level, the authoring features of EPUB 3 that provide this
+					functionality. This document is not intended as a tutorial on creating EPUB publications and does
+					not delve into the technical details of the format or how reading systems operate. Rather, it is
+					intended for a more general audience seeking to understand the benefits of creating their digital
+					publications using the EPUB 3 format without having to read through technical specifications.</p>
+
+				<p>Before jumping straight into the features, it is helpful to have a basic conceptual understanding of
+					how an EPUB publication is constructed. An EPUB file is effectively just a ZIP file with some
+					identifying metadata that allows reading systems to recognize and render the publication inside (the
+					ZIP file is formally called the [-EPUB container=] in the specifications). The key file in this
+					rendering process is called the [=package document=]. It provides the metadata about the
+					publication, lists all of the resources, and specifies the order in which to present the [=EPUB
+					content documents=] (i.e., the XHTML and SVG documents that, when rendered, provide the
+					content).</p>
+
+				<p>Another key file is the [=EPUB navigation document=]. This document includes the table of contents
+					for the publication as well as any other navigation aids the publisher has defined (e.g., a page
+					list or list of landmarks).</p>
+
+				<p id="fig-epub-structure">The following figure visually represents the structure of an EPUB
+					publication:</p>
+
 				<img src="images/epub.svg" width="600" aria-details="fig-epub-structure-diagram"
 					alt="Visual structure of the main constituents of an EPUB publication" />
-			</figure>
 
-			<details id="fig-epub-structure-diagram" class="desc">
-				<summary style="font-weight: normal; font-style: italic">Image description</summary>
-				<p> 'EPUB (OCF) container' as the outer most component which encapsulates the 'EPUB publication'
-					containing two documents 'Publication Document' and 'EPUB navigation document' along with a inner
-					component labelled 'publication resources' which contains multiple 'EPUB content documents' (XHTML,
-					SVG), and multiple 'Other resources' (CSS, png, mp3, mov, ...). </p>
-			</details>
+				<details id="fig-epub-structure-diagram" class="desc">
+					<summary style="font-weight: normal; font-style: italic">Image description</summary>
+					<p>'EPUB (OCF) container' as the outer most component which encapsulates the 'EPUB publication'
+						containing two documents 'Publication Document' and 'EPUB navigation document' along with a
+						inner component labelled 'publication resources' which contains multiple 'EPUB content
+						documents' (XHTML, SVG), and multiple 'Other resources' (CSS, png, mp3, mov, etc.). </p>
+				</details>
 
-			<p>This overview document concentrates on the authoring format of EPUB 3.3.</p>
+				<p>The body of this document explains the features of these files and the others in an EPUB publication
+					in greater detail.</p>
+			</section>
+
+			<section id="reading-specs">
+				<h3>Reading the specifications</h3>
+
+				<p>For those interested in going beyond the general introduction presented in this document, the EPUB
+					3.3 specification contains all the essential authoring information.</p>
+
+				<p>Prior to EPUB 3.3, reading the EPUB 3 specifications could be challenging. The format was split
+					across multiple documents, and each document interspersed authoring and [=reading system=]
+					requirements. With the release of EPUB 3.3 [[epub-33]], however, there is now only one the document
+					to read.</p>
+
+				<p>It is also strongly recommended to read through and follow the accessibility requirements for [=EPUB
+					publications=] outlined in the EPUB Accessibility specification [[epub-a11y-11]].</p>
+
+				<p>While reading the Reading Systems specification [[epub-rs-33]] can help understand how content gets
+					rendered, the technical details of this process are not necessary for authoring content.</p>
+
+				<div class="note">
+					<p>For a list of all the recommendation-track EPUB 3 specifications and non-normative notes, refer
+						to <a href="#app-documents"></a>.</p>
+				</div>
+			</section>
+
+			<section id="version-num">
+				<h3>Version numbering</h3>
+
+				<p>A common point of confusion is the difference between "EPUB 3" the format and the specification
+					numbering. The current version of EPUB 3 is defined in the EPUB 3.3 specification [[epub-33]]. The
+					minor number attached to the specification (".3") differentiates one release of the specification
+					from the next, but each new release does not represent a new format.</p>
+
+				<p>The W3C working group that maintains EPUB 3 strives not to invalidate content produced to earlier
+					versions of the specification, so an EPUB 3 publication produced to the EPUB 3.0 specification, for
+					example, should also be valid to the EPUB 3.3 requirements.</p>
+
+				<p>That is also why this overview is for "EPUB 3", as it typically does not change significantly from
+					one specification release to the next.</p>
+
+				<div class="note">
+					<p>For a general overview of the changes made in each revision, refer to <a
+							href="#app-revision-history"></a>.</p>
+				</div>
+			</section>
 		</section>
 		<section id="sec-container">
 			<h2>Container</h2>
@@ -185,9 +258,21 @@
 					creators may also include the EPUB navigation document in the [=EPUB spine | spine=] [[epub-33]] to
 					make use of the richer markup.</p>
 
+				<p>The EPUB navigation document can also be reused in the body of an EPUB publication by including it in
+					the [=EPUB spine | spine=]. To avoid the situation in highly structured documents where it might not
+					be desirable to display the complete table of contents to users in the body of the publication, the
+					display level can be modified using the <a data-cite="epub-33#sec-nav-doc-use-spine"
+							><code>hidden</code> attribute</a> [[epub-33]]. This attribute is ignored by reading systems
+					when they render the table of contents outside the [=EPUB spine | spine=] (e.g., in their own
+					specialized views), which avoids minimizing the information that is available.</p>
+
 				<p>EPUB navigation documents also provide a flexible means of tailoring the navigation display using CSS
 					and the <a data-cite="epub-33#sec-nav-doc-use-spine"><code>hidden</code> attribute</a> [[epub-33]]
 					while not impacting access to information for accessible reading systems.</p>
+
+				<p>EPUB creators are also encouraged to supply additional [^nav^] elements if their EPUB publications
+					contain non-structural points of interest, such as figures, tables, etc., to further enhance access
+					to the content.</p>
 
 				<p>The structure and semantics of EPUB navigation documents are defined in the dedicated <a
 						data-cite="epub-33#sec-nav">section</a> of [[epub-33]].</p>
@@ -202,15 +287,6 @@
 				video clips).</p>
 
 			<p>[=XHTML content documents=] are defined by a profile of [[html]].</p>
-
-			<section id="sec-semantic-enrichment">
-				<h3>Semantic enrichment</h3>
-
-				<p>XHTML content documents also include the means of annotating document markup with rich metadata,
-					making them more semantically meaningful and useful both for processing and accessibility purposes.
-					Both RDFa [[rdfa-in-html]] and Microdata [[microdata]] attributes can be used in XHTML content
-					documents for that purpose. </p>
-			</section>
 
 			<section id="sec-rendering">
 				<h2>Rendering and CSS</h2>
@@ -235,6 +311,7 @@
 				<p>EPUB 3 also supports CSS styles that enable both horizontal and vertical layout and both
 					left-to-right and right-to-left writing.</p>
 			</section>
+
 			<section id="sec-multimedia">
 				<h2>Multimedia</h2>
 
@@ -246,13 +323,14 @@
 				<p id="para-media-overlay">Another key multimedia feature in EPUB 3 is the inclusion of <a>media overlay
 						documents</a> [[epub-33]]. When pre-recorded narration is available for an EPUB publication,
 					media overlays provide the ability to synchronize that audio with the text of a Content Document
-					(see also <a href="#sec-access-overlays"></a>).</p>
+					(see also <a href="#sec-mediaoverlays"></a>).</p>
 
 				<p>The <a data-cite="epub-33#sec-media-overlays">structure and semantics of media overlay documents</a>
 					are defined in [[epub-33]].</p>
 
 
 			</section>
+
 			<section id="sec-fonts">
 				<h2>Fonts</h2>
 
@@ -270,6 +348,7 @@
 					details.</p>
 
 			</section>
+
 			<section id="sec-scripting">
 				<h2>Scripting</h2>
 
@@ -294,29 +373,61 @@
 					systems and creates barriers to accessibility and content reusability.</p>
 
 			</section>
+
+			<section id="sec-semantic-enrichment">
+				<h3>Semantic enrichment</h3>
+
+				<p>XHTML content documents also include the means of annotating document markup with rich metadata,
+					making them more semantically meaningful and useful both for processing and accessibility purposes.
+					Both RDFa [[rdfa-in-html]] and Microdata [[microdata]] attributes can be used in XHTML content
+					documents for that purpose. </p>
+			</section>
+
+			<section id="sec-structural-semantics">
+				<h3>Structural semantics</h3>
+
+				<p>EPUB 3 also includes the [^/epub:type^] attribute [[epub-33]], which allows the inclusion of
+					additional information to any element in an EPUB content document to express its purpose and meaning
+					within the work. Refer to the section on <a data-cite="epub-33#app-structural-semantics">Expressing
+						Structural Semantics</a> [[epub-33]] for more information.</p>
+			</section>
 		</section>
-		<section id="sec-fxl">
-			<h2>Fixed layouts</h2>
+		<section id="sec-layouts">
+			<h2>Layouts</h2>
 
-			<p>Although EPUB's history is steeped in enabling reflowable content, not all publications lend themselves
-				easily to reflowing. Page-precise layouts are required to meaningfully represent children's books,
-				comics and manga, magazines, and many other content forms.</p>
+			<section id="sec-reflow">
+				<h3>Reflowable layouts</h3>
 
-			<p>EPUB 3 includes metadata that allows the creation of <a data-cite="epub-33#sec-fixed-layouts"
-					>fixed-layout XHTML content documents</a> [[epub-33]], in addition to existing capabilities for
-				fixed layouts in SVG. This metadata enables the control of the <a
-					data-cite="epub-33#sec-fxl-content-dimensions">page dimensions</a> [[epub-33]], creating a canvas on
-				which elements can be absolutely positioned.</p>
+				<p>At its core, EPUB is designed for dynamic layout: content is typically intended to be formatted on
+					the fly rather than being typeset in a paginated manner in advance. This core capability is useful
+					for optimizing rendering onto different-sized device screens or window sizes, and it facilitates and
+					simplifies content accessibility.</p>
+			</section>
 
-			<p>The metadata does not just flag whether content is to be fixed or reflowed, but also allows EPUB creators
-				to specify the desired <a data-cite="epub-33#orientation">orientation of pages</a> [[epub-33]], when to
-					<a data-cite="epub-33#spread">create synthetic spreads</a> [[epub-33]], and <a
-					data-cite="epub-33#page-spread">how to position pages</a> [[epub-33]] within those spreads,
-				providing a broad range of control over the presentation of EPUB publications.</p>
+			<section id="sec-fxl">
+				<h3>Fixed layouts</h3>
 
-			<p>The <a data-cite="epub-33#sec-fixed-layouts">structure and semantics of EPUB Documents with Fixed
-					Layouts</a> are defined in [[epub-33]].</p>
+				<p>Although EPUB's history is steeped in enabling reflowable content, not all publications lend
+					themselves easily to reflowing. Page-precise layouts are required to meaningfully represent
+					children's books, comics and manga, magazines, and many other content forms.</p>
 
+				<p>EPUB 3 includes metadata that allows the creation of <a data-cite="epub-33#sec-fixed-layouts"
+						>fixed-layout XHTML content documents</a> [[epub-33]], in addition to existing capabilities for
+					fixed layouts in SVG. This metadata enables the control of the <a
+						data-cite="epub-33#sec-fxl-content-dimensions">page dimensions</a> [[epub-33]], creating a
+					canvas on which elements can be absolutely positioned.</p>
+
+				<p>The metadata does not just flag whether content is to be fixed or reflowed, but also allows EPUB
+					creators to specify the desired <a data-cite="epub-33#orientation">orientation of
+					pages</a> [[epub-33]], when to <a data-cite="epub-33#spread">create synthetic
+					spreads</a> [[epub-33]], and <a data-cite="epub-33#page-spread">how to position
+					pages</a> [[epub-33]] within those spreads, providing a broad range of control over the presentation
+					of EPUB publications.</p>
+
+				<p>The <a data-cite="epub-33#sec-fixed-layouts">structure and semantics of EPUB Documents with Fixed
+						Layouts</a> are defined in [[epub-33]].</p>
+
+			</section>
 		</section>
 		<section id="sec-gls">
 			<h2>Global language support</h2>
@@ -350,7 +461,7 @@
 					[[epub-33]]).</p>
 			</section>
 
-			<!-- <section id="sec-gls-fonts">
+			<section id="sec-gls-fonts">
 				<h2>Fonts</h2>
 
 				<p>EPUB 3 does not require that reading systems come with a set of built-in system fonts. As occurs in
@@ -365,17 +476,6 @@
 
 				<p>Support for embedded fonts also ensures that characters and glyphs unique to an EPUB publication can
 					be embedded for proper display.</p>
-
-			</section> -->
-
-			<section id="sec-gls-tts">
-				<h2>Text-to-speech</h2>
-
-				<p>EPUB 3's support for PLS documents and SSML attributes increases the pronunciation control that EPUB
-					creators have over the rendering of any natural language in text-to-speech-enabled reading systems.
-					Refer to <a href="#sec-tts"></a> in the Features section for more information on these
-					capabilities.</p>
-
 			</section>
 
 			<section id="sec-gls-container">
@@ -383,116 +483,65 @@
 
 				<p>The OCF container format supports UTF-8, allowing for internationalized file and directory naming of
 					content resources.</p>
-
 			</section>
+		</section>
+		<section id="sec-mediaoverlays">
+			<h2>Media overlays</h2>
 
+			<p><a data-cite="epub-33#sec-media-overlays">Media overlays</a> [[epub-33]] provide the ability to
+				synchronize the text and audio content of an EPUB publication. Beyond benefiting accessibility, overlays
+				have other applications, e.g., synchronizing text and audio as a tool for learning to read.</p>
+
+			<p>Aural renderings of content are important for accessibility and are a desirable feature for many users. A
+				baseline to facilitate aural rendering is to utilize semantic HTML designed for dynamic layout.</p>
 		</section>
 		<section id="sec-accessibility">
 			<h2>Accessibility</h2>
 
-			<p>A major goal of EPUB is to facilitate content accessibility, and a variety of features in EPUB 3 support
-				this requirement. This section reviews these features, detailing some established best practices for
-				ensuring that EPUB publications are accessible where applicable.</p>
-
-			<p>EPUB 3 also includes an Accessibility specification [[epub-a11y-11]] that leverages the extensive work
-				done to make web content accessible in [[wcag21]]. The specification defines requirements to produce
-				EPUB publications that can be accessed by a wide range of users. It is accompanied by a techniques
+			<p>EPUB 3 includes an Accessibility specification [[epub-a11y-11]] that leverages the extensive work done to
+				make web content accessible in [[wcag21]]. The specification defines requirements to produce EPUB
+				publications that can be accessed by a wide range of users. It is accompanied by a techniques
 				document [[epub-a11y-tech-11]] that outlines best practices for meeting these requirements.</p>
+
+			<p>A major goal of EPUB is to facilitate content accessibility, and a variety of features in EPUB 3 support
+				this requirement.</p>
 
 			<p>It is important to note that while accessibility is important in its own right, accessible content is
 				also more valuable content: an accessible EPUB publication will be adaptable to more devices and be
 				easier to reuse, in whole or in part, via human and automated workflows. The EPUB Working Group strongly
 				recommends that EPUB creators ensure that they generate accessible content.</p>
 
-			<section id="sec-access-nav">
-				<h2>Navigation</h2>
+			<p>[[html]] supports a number of elements that make markup more semantically meaningful (e.g., [^section^],
+				[^nav^], and [^aside^]). EPUB creators are encouraged to use these elements, in conjunction with best
+				practices for authoring well-structured web content, when creating EPUB XHTML content documents. These
+				additions allow content to be better grouped and defined, both to represent the structure of documents
+				and to facilitate their logical navigation. XHTML content documents also natively support the inclusion
+				of ARIA role and state attributes and events, including the dedicated [[dpub-aria-1.0]] roles, enhancing
+				the ability of Assistive Technologies to interact with the content.</p>
 
-				<p>As noted in <a href="#sec-nav-nav-doc"></a> above, the navigation features represent a universal and
-					flexible navigation system.</p>
+			<p>While it is possible to incorporate more highly formatted content in EPUB — for example via bitmap images
+				or SVG graphics, or even use of CSS explicit positioning and/or table elements to achieve particular
+				visual layouts — EPUB creators are strongly discouraged from utilizing such techniques. These techniques
+				are not reliable in EPUB since many reading systems render content in a paginated manner rather than
+				creating a single scrolling [=viewport=] and since each reading system might define its own pagination
+				algorithm. In general, it is preferable to achieve visual richness by using CSS Style Sheets without
+				absolute sizing or positioning.</p>
 
-				<p>The EPUB navigation document can also be reused in the body of an EPUB publication by including it in
-					the [=EPUB spine | spine=]. To avoid the situation in highly structured documents where it might not
-					be desirable to display the complete table of contents to users in the body of the publication, the
-					display level can be modified using the <a data-cite="epub-33#sec-nav-doc-use-spine"
-							><code>hidden</code> attribute</a> [[epub-33]]. This attribute is ignored by reading systems
-					when they render the table of contents outside the [=EPUB spine | spine=] (e.g., in their own
-					specialized views), which avoids minimizing the information that is available.</p>
+			<p>EPUB 3 adopts a progressive enhancement approach for scripted content, whereby scripting is not allowed
+				to interfere with the integrity of the document (i.e., not result in information loss when scripting is
+				not available). Consequently, although documents that do employ scripting <a
+					data-cite="epub-33#sec-scripted-content">can provide fallbacks</a> [[epub-33]] to further facilitate
+				access to their contents, the documents have to be accessible without them.</p>
 
-				<p>EPUB creators are also encouraged to supply additional [^nav^] elements if their EPUB publications
-					contain non-structural points of interest, such as figures, tables, etc., to further enhance access
-					to the content.</p>
-			</section>
-
-			<section id="sec-access-semantic-markup">
-				<h2>Semantic markup</h2>
-
-				<p>[[html]] supports a number of elements that make markup more semantically meaningful (e.g.,
-					[^section^], [^nav^], and [^aside^]). EPUB creators are encouraged to use these elements, in
-					conjunction with best practices for authoring well-structured web content, when creating EPUB XHTML
-					content documents. These additions allow content to be better grouped and defined, both to represent
-					the structure of documents and to facilitate their logical navigation. XHTML content documents also
-					natively support the inclusion of ARIA role and state attributes and events, including the dedicated
-					[[dpub-aria-1.0]] roles, enhancing the ability of Assistive Technologies to interact with the
-					content.</p>
-
-				<p>EPUB 3 also includes the [^/epub:type^] attribute [[epub-33]], which allows the inclusion of
-					additional information to any element in an EPUB content document to express its purpose and meaning
-					within the work. Refer to the section on <a data-cite="epub-33#app-structural-semantics">Expressing
-						Structural Semantics</a> [[epub-33]] for more information.</p>
-			</section>
-
-			<section id="sec-access-layout">
-				<h2>Dynamic layouts</h2>
-
-				<p>At its core, EPUB is designed for dynamic layout: content is typically intended to be formatted on
-					the fly rather than being typeset in a paginated manner in advance. This core capability is useful
-					for optimizing rendering onto different-sized device screens or window sizes, and it facilitates and
-					simplifies content accessibility.</p>
-
-				<p>While it is possible to incorporate more highly formatted content in EPUB — for example via bitmap
-					images or SVG graphics, or even use of CSS explicit positioning and/or table elements to achieve
-					particular visual layouts — EPUB creators are strongly discouraged from utilizing such techniques.
-					These techniques are not reliable in EPUB since many reading systems render content in a paginated
-					manner rather than creating a single scrolling [=viewport=] and since each reading system might
-					define its own pagination algorithm. In general, it is preferable to achieve visual richness by
-					using CSS Style Sheets without absolute sizing or positioning.</p>
-
-				<p class="ednote"> If and when the WG publishes a fxl accessibility note then it is worth referring to
-					it from here </p>
-			</section>
-
-			<section id="sec-access-overlays">
-				<h2>Aural renditions and media overlays</h2>
-
-				<p>Aural renderings of content are important for accessibility and are a desirable feature for many
-					users. A baseline to facilitate aural rendering is to utilize semantic HTML designed for dynamic
-					layout.</p>
-
-				<p><a data-cite="epub-33#sec-media-overlays">Media overlays</a> [[epub-33]] provide the ability to
-					synchronize the text and audio content of an EPUB publication. Beyond benefiting accessibility,
-					overlays have other applications, e.g., synchronizing text and audio as a tool for learning to
-					read.</p>
-			</section>
-
-			<section id="sec-access-scripting">
-				<h2>Scripting</h2>
-
-				<p>EPUB 3 adopts a progressive enhancement approach for scripted content, whereby scripting is not
-					allowed to interfere with the integrity of the document (i.e., not result in information loss when
-					scripting is not available). Consequently, although documents that do employ scripting <a
-						data-cite="epub-33#sec-scripted-content">can provide fallbacks</a> [[epub-33]] to further
-					facilitate access to their contents, the documents have to be accessible without them.</p>
-
-				<p>EPUB creators should always implement best practices for accessible scripting in web documents, such
-					as provided in [[wai-aria]], and reserve the use of scripting for situations in which interactivity
-					is critical to the user experience.</p>
-			</section>
+			<p>EPUB creators should always implement best practices for accessible scripting in web documents, such as
+				provided in [[wai-aria]], and reserve the use of scripting for situations in which interactivity is
+				critical to the user experience.</p>
 		</section>
-		<section id="sec-documents" class="appendix">
-			<h2>EPUB 3 family of documents</h2>
+		<section id="app-documents" class="appendix">
+			<h2>EPUB 3 documents</h2>
 
 			<section id="sec-doc-rec">
-				<h3>Recommendation-track documents</h3>
+				<h3>Specifications</h3>
 
 				<p>EPUB 3 is currently defined by the following specifications:</p>
 
@@ -516,7 +565,7 @@
 			</section>
 
 			<section id="sec-doc-notes">
-				<h3>Working group notes</h3>
+				<h3>Notes</h3>
 
 				<p>Although the following documents are informative, they provide guidance related to implementing the
 					EPUB 3 specifications as well as define experimental features.</p>
@@ -538,7 +587,7 @@
 				</ul>
 			</section>
 		</section>
-		<section id="sec-revision-history" class="appendix">
+		<section id="app-revision-history" class="appendix">
 			<h2>EPUB revision history</h2>
 
 			<section id="epub2">
@@ -623,7 +672,7 @@
 					the thorough testing regime developed by the <a
 						href="https://www.w3.org//publishing/groups/epub-wg/">W3C EPUB 3 Working Group</a>, this
 					restructuring led to the separation of Recommendations and Working Group Notes (see also <a
-						href="#sec-documents">the detailed list of documents</a> ). Features specified in the
+						href="#app-documents">the detailed list of documents</a> ). Features specified in the
 					Recommendations are thoroughly tested, are widely implemented in reading systems, and they can be
 					considered as interoperable. On the other hand, features specified in Working Group Notes, although
 					they may have some authoring uptakes, still lack support in reading systems; as a result, these
