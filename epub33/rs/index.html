@@ -1866,6 +1866,9 @@
 			<section id="sec-behaviors-interaction">
 				<h4>Interacting with the EPUB content document</h4>
 
+				<p class="note">Earlier versions of this specification included some information about embedded audio and 
+					video [epubmediaoverlays-32]. This feature has been deprecated.</p>
+
 				<section id="sec-rsconf-navigation">
 					<h5>Navigation</h5>
 
@@ -1896,113 +1899,6 @@
 							synchronized with user navigation of table rows and cells. The reading system might also
 							play the corresponding table header preceding the contents of the cell.</p>
 					</div>
-				</section>
-
-				<section id="sec-embedded-media">
-					<h5>Embedded audio and video</h5>
-
-					<p>An [=EPUB content document=] with which a media overlay is associated MAY itself contain embedded
-						video and audio media. The media overlay elements MAY point to these elements. Unlike text and
-						images, video and audio media have an intrinsic duration. <span id="mol-embed-override"
-							data-tests="#mol-embed,#mol-embed_fxl">Consequently, when a reading system renders the
-							synchronization described by a media overlay, it MUST override the default playback behavior
-							of audio and video media embedded within the associated EPUB content document.</span></p>
-
-					<p>Note that the rules below apply only to <em>referenced</em> [[html]] <span data-cite="html"
-							>[^video^] or [^audio^]</span> elements within the associated EPUB content document. That is
-						to say, the rules apply to only those elements pointed to by [^text^] elements [[epub-33]]
-						within the media overlay (i.e., via the <code>src</code> attribute). These rules do not apply to
-						embedded media not referenced by media overlay elements.</p>
-
-					<ul>
-						<li>
-							<p>
-								<span id="mol-embed-deactivate-playback"  data-tests="#mol-embed_deactivate_playback">Reading
-								systems MUST deactivate the public playback interface for all referenced audio and video
-								media embedded within an EPUB content document (typically: play/pause control, time
-								slider, volume level, etc.). 
-								</span>
-								This behavior avoids interference between the scheduled
-								playback sequence defined by the media overlay, and the arbitrary playback behavior due
-								to user interaction or script execution. As a result, when the reading system is in
-								playback mode, it SHOULD:</p>
-							<ul>
-								<li>
-									<p>Hide the individual video/audio UI controls from the page, which overrides the
-										default behavior defined by the [[html]] [^audio/controls^] attribute.</p>
-								</li>
-								<li>
-									<p>Prevent scripts embedded within the EPUB content document from invoking the
-										JavaScript audio/video playback API (i.e., authored as part of the default
-										behavior).</p>
-								</li>
-							</ul>
-						</li>
-						<li id="mol-embed-init-to-stop" data-tests="#mol-embed,#mol-embed_fxl">
-							<p>Reading systems MUST initialize all referenced audio and video media embedded within an
-								EPUB content document to their "stopped" state, and ready them to play from the
-								zero-position within their content stream (possibly displaying the image specified using
-								the [[html]] [^video/poster^] attribute). This requirement overrides the default behavior
-								defined by the [[html]] [^video/autoplay^] attribute.</p>
-						</li>
-						<li>
-							<p>When an EPUB content document element becomes active, the CSS Style Sheet visual
-								highlighting rules apply regardless of the content type referred to by that element's
-									<code>src</code> attribute (e.g., the CSS class name defined by the <a
-									data-cite="epub-33#active-class"><code>active-class</code> metadata property</a>
-								[[epub-33]] SHOULD be applied to visible video and audio player controls within the host
-								EPUB content document).</p>
-						</li>
-						<li>
-							<p id="mol-embed-start-and-stop" data-tests="#mol-embed,#mol-embed_fxl">In addition to the
-								default behavior of media overlay activation for textual fragments and images, audio and
-								video playback MUST be started and stopped according to the duration implied by the
-								authored media overlay synchronization (as per the standard [[smil3]] timing model).
-								There are two possible scenarios:</p>
-							<ul>
-								<li>
-									<p data-cite="epub-33">When a media overlay <code>text</code> element has no
-										[^audio^] [[epub-33]] sibling within its [^par^] [[epub-33]] parent container,
-										the referenced EPUB content document audio or video media MUST play until it
-										ends, at which point the <code>text</code> element's lifespan terminates. In
-										this case, the implicit duration of the <code>text</code> element (and by
-										inference, of the parent <code>par</code> container) is that of the referenced
-										audio or video clip.</p>
-								</li>
-								<li>
-									<p>When a media overlay <code>text</code> element has an <code>audio</code> sibling
-										within its <code>par</code> parent container, reading systems MUST constrain the
-										playback duration of the referenced EPUB content document audio or video media
-										by the duration of the <code>audio</code> sibling. In this case, the actual
-										duration of the parent <code>par</code> container is that of the child audio
-										clip, regardless of the duration of the video or audio media pointed to by the
-											<code>text</code> element. This behavior can result in embedded video or
-										audio media ending playback prematurely (before reaching its full duration), or
-										ending before the playback of the parallel media overlay <code>audio</code> is
-										finished (in which case the last-played video frame SHOULD remain visible until
-										the parent <code>par</code> container finally ends). This behavior is equivalent
-										of the media overlay <code>audio</code> element implicitly carrying the behavior
-										of the [[smil3]] <a data-cite="smil3/smil-timing.html#adef-endsync"
-												><code>endsync</code></a> attribute.</p>
-									<p>Furthermore, reading systems SHOULD expose user controls for the volume levels of
-										each independent audio track (i.e., from the <code>audio</code> element of the
-										media overlay, and from the embedded audio or video media within the EPUB
-										content document), so that users can adjust the audio output to match their
-										requirements. Note that having overlapping audio tracks is typically an
-										authoring-time concern: content producers usually add a layer of audio
-										information over a video track for description purposes. Reading systems
-										handling of simultaneous volume levels in any specific way is OPTIONAL.</p>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<p id="mol-text-inactive">When a <code>text</code> element becomes inactive in the media
-								overlay, and when it points to embedded video or audio media, that referenced media MUST
-								be reset to its initial "stopped" state, ready to be played from the zero-position
-								within their content stream (possibly displaying the poster image specified using the
-								[[html]] markup).</p>
-						</li>
-					</ul>
 				</section>
 
 				<section id="sec-text-to-speech">
