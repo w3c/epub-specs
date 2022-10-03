@@ -3,6 +3,11 @@ var biblio = {
 		"title": "CSS Snapshot",
 		"href": "https://www.w3.org/TR/CSS/"
 	},
+	"css-viewport-1": {
+		"title": "CSS Viewport Module Level 1",
+		"href": "https://drafts.csswg.org/css-viewport/",
+		"publisher": "W3C"
+	},
 	"dpub-aria" : {
 		"title": "Digital Publishing WAI-ARIA Module",
 		"href": "https://www.w3.org/TR/dpub-aria/",
