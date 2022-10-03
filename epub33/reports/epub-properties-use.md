@@ -70,6 +70,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -79,6 +80,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -112,6 +114,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -122,6 +125,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -140,6 +144,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -335,6 +340,7 @@ and as overrides in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -342,7 +348,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -350,7 +356,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -366,7 +372,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-auto">rendition:orientation-auto</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -374,7 +380,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-landscape">rendition:orientation-landscape</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -382,7 +388,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait">rendition:orientation-portrait</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -393,6 +399,7 @@ and as overrides in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -400,7 +407,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -409,6 +416,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -417,6 +425,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -424,7 +433,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-none">rendition:spread-none</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -440,6 +449,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -448,6 +458,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -456,6 +467,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -493,6 +505,7 @@ Manifest properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -511,6 +524,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -527,7 +541,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-scripted">scripted</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -536,6 +550,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -573,6 +588,7 @@ Spine properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -582,8 +598,9 @@ Spine properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
-            	</ul>
-            </td>
+                    <li>Penguin Random House North America</li>
+             	</ul>
+           </td>
         </tr>
     </tbody>
 </table>
@@ -610,6 +627,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -618,6 +636,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -625,7 +644,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-narrator">narrator</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
@@ -633,7 +652,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class">playback-active-class</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Penguin Random House North America</li>
             	</ul>
             </td>
         </tr>
