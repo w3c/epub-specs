@@ -63,6 +63,7 @@ Discovery properties are expressed in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
@@ -105,6 +106,7 @@ Discovery properties are expressed in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
@@ -147,6 +149,7 @@ Discovery properties are expressed in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
@@ -189,6 +192,7 @@ Discovery properties are expressed in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
@@ -231,6 +235,7 @@ Discovery properties are expressed in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
@@ -295,6 +300,7 @@ and in the
                     <li>Nimbus Publishing</li>
             		<li>Playwrights Canada</li>
                     <li>Pearson</li>
+                    <li>Penguin Random House North America</li>
             		<li>Radiant Press</li>
             		<li>Saint Jean</li>
                     <li>Simon &amp; Schuster</li>
