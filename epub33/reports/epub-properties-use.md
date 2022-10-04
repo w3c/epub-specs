@@ -533,7 +533,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -552,6 +553,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-scripted">scripted</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
