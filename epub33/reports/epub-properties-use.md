@@ -513,7 +513,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
