@@ -70,6 +70,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Hachette Book Group</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -100,6 +101,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>Hachette Book Group</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Wiley</li>
             	</ul>
@@ -117,6 +119,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Hachette Book Group</li>
+                    <li>Macmillan Publishers</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -128,6 +131,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -148,6 +152,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -516,6 +521,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -526,6 +532,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mathml">mathml</a></td>
             <td>
             	<ul>
+                    <li>Macmillan Publishers</li>
             		<li>Wiley</li>
             	</ul>
             </td>
@@ -536,6 +543,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>Macmillan Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
