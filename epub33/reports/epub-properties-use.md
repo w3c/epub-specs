@@ -99,7 +99,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type">identifier-type</a></td>
             <td>
             	<ul>
-            		<li>Pearson</li>
+            		<li>Hachette Book Group</li>
+                    <li>Pearson</li>
                     <li>Wiley</li>
             	</ul>
             </td>
