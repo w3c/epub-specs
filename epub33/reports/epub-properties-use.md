@@ -69,7 +69,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq">display-seq</a></td>
             <td>
             	<ul>
-            		<li>Pearson</li>
+            		<li>Hachette Book Group</li>
+                    <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
             	</ul>
@@ -114,6 +115,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-role">role</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -143,7 +145,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-title-type">title-type</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
@@ -339,7 +342,8 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -349,6 +353,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -365,7 +370,8 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
             	</ul>
             </td>
         </tr>
@@ -373,6 +379,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-auto">rendition:orientation-auto</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -397,7 +404,8 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
             <td>
             	<ul>
-            		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Hachette Book Group</li>
+                    <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -408,6 +416,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
