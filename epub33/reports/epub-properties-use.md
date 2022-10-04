@@ -579,10 +579,8 @@ Manifest properties are expressed in the
         <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-switch"><s>switch</s></a></td>
             <td>
-            	<ul>
-            		<li>The switch property is for indicating that the deprecated switch element is present.
-                        It is only listed for completeness of reporting.</li>
-            	</ul>
+            	<p>This property indicates that the deprecated switch element is present.
+                    It is only listed for completeness of reporting.</p>
             </td>
         </tr>
     </tbody>
