@@ -79,6 +79,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-file-as">file-as</a></td>
             <td>
             	<ul>
+                    <li>Hachette Book Group</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Wiley</li>
