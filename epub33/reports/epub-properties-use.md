@@ -22,7 +22,7 @@ The following table lists publishers who have stated that they are currently usi
 the [meta properties](https://w3c.github.io/epub-specs/epub33/core/#app-meta-property-vocab)
 in production.
 
-Manifest properties are expressed in the
+Meta properties are expressed in the
 [`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
 
 <table>
@@ -311,6 +311,38 @@ and as overrides in the
             <td>
             	<ul>
             		<li>Pearson</li>
+            	</ul>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-auto</a></td>
+            <td>
+            	<ul>
+            		<li>-</li>
+            	</ul>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-paginated</a></td>
+            <td>
+            	<ul>
+            		<li>-</li>
+            	</ul>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-scrolled-continuous</a></td>
+            <td>
+            	<ul>
+            		<li>-</li>
+            	</ul>
+            </td>
+        </tr>
+        <tr>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-scrolled-doc</a></td>
+            <td>
+            	<ul>
+            		<li>-</li>
             	</ul>
             </td>
         </tr>
