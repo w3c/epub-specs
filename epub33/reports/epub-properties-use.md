@@ -315,7 +315,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-auto</a></td>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-auto">rendition:flow-auto</a></td>
             <td>
             	<ul>
             		<li>-</li>
@@ -323,7 +323,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-paginated</a></td>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-paginated">rendition:flow-paginated</a></td>
             <td>
             	<ul>
             		<li>-</li>
@@ -331,7 +331,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-scrolled-continuous</a></td>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
             <td>
             	<ul>
             		<li>-</li>
@@ -339,7 +339,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow-scrolled-doc</a></td>
+            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
             <td>
             	<ul>
             		<li>-</li>
