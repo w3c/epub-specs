@@ -7597,6 +7597,9 @@ No Entry</pre>
 								</ul>
 								<p>The <code>device-width</code> and <code>device-height</code> values refer to the 100%
 									of the width and height, respectively, of the reading system's [=viewport=].</p>
+								<p>EPUB creators MUST NOT specify duplicate <code>height</code> or <code>width</code>
+									definitions either within a single <code>viewport meta</code> tag or by specifying
+									multiple <code>viewport meta</code> tags.</p>
 								<aside class="example"
 									title="Specifying the initial containing block in a viewport meta tag">
 									<pre>&lt;html …>
@@ -10666,9 +10669,9 @@ html.my-document-playing * {
 			<section id="app-viewport-meta-syntax">
 				<h3>Syntax</h3>
 
-				<p>A <code>viewport</code>
-					<a data-cite="html#meta"><code>meta</code></a> tag [[html]] MUST have <code>name</code> and
-						<code>content</code> attributes that conform to the following definition:</p>
+				<p>For [=fixed-layout documents=], a <code>viewport</code> [^meta^] tag [[html]] MUST have
+						<code>name</code> and <code>content</code> attributes that conform to the following
+					definition:</p>
 
 				<dl>
 					<dt id="viewport-name-attr">name</dt>
@@ -10689,16 +10692,16 @@ html.my-document-playing * {
 									<a href="#viewport.ebnf.def">viewport</a>
 								</td>
 								<td>=</td>
-								<td><a href="#viewport.ebnf.property">property</a>, {<a href="#viewport.ebnf.sep"
-										>sep</a>, <a href="#viewport.ebnf.property">property</a>} ;</td>
+								<td><a href="#viewport.ebnf.property">property</a>, { <a href="#viewport.ebnf.sep"
+										>sep</a>, <a href="#viewport.ebnf.property">property</a> } ;</td>
 							</tr>
 							<tr>
 								<td id="viewport.ebnf.property">
 									<a href="#viewport.ebnf.property">property</a>
 								</td>
 								<td>=</td>
-								<td><a href="viewport.ebnf.name">name</a>, <a href="viewport.ebnf.assign">assign</a>, <a
-										href="viewport.ebnf.value">value</a> ;</td>
+								<td><a href="#viewport.ebnf.name">name</a>, [ <a href="#viewport.ebnf.assign"
+									>assign</a>, <a href="#viewport.ebnf.value">value</a> ] ;</td>
 							</tr>
 							<tr>
 								<td id="viewport.ebnf.name">
@@ -10735,8 +10738,8 @@ html.my-document-playing * {
 									<a href="#viewport.ebnf.assign">assign</a>
 								</td>
 								<td>=</td>
-								<td>[<a href="#viewport.ebnf.space">space</a>], "=", [<a href="#viewport.ebnf.space"
-										>space</a>] ;</td>
+								<td>[ <a href="#viewport.ebnf.space">space</a> ], "=", [ <a href="#viewport.ebnf.space"
+										>space</a> ] ;</td>
 							</tr>
 							<tr>
 								<td id="viewport.ebnf.space">
@@ -10749,31 +10752,28 @@ html.my-document-playing * {
 					</dd>
 				</dl>
 
-				<p>This specification only defines <a href="#viewport.ebnf.value">value</a> requirements for the
-						<code>height</code> and <code>width</code> properties (see <a href="#sec-fxl-content-dimensions"
-					></a>). It imposes no restrictions on other property names and values except that they MUST NOT
-					contain <a href="#viewport.ebnf.sep-char">separator characters</a> or the <a
-						href="#viewport.ebnf.assign">assignment character</a>.</p>
+				<p>The only restriction on property <a href="#viewport.ebnf.name">names</a> and <a
+						href="#viewport.ebnf.value">values</a> is that they MUST NOT contain <a
+						href="#viewport.ebnf.sep-char">separator characters</a> or the <a href="#viewport.ebnf.assign"
+						>assignment character</a>.</p>
 
-				<p> The [^meta/content^] attribute MUST NOT include several <code>height</code>, respectively
-						<code>width</code>, assignments. </p>
+				<p>The authoring requirements in this section apply <em>after</em>
+					<a data-cite="xml#AVNormalize">whitespace normalization</a> [[xml]] (i.e., after a reading system
+					strips leading and trailing whitespace and compacts all instances of multiple whitespace within the
+					attribute to single spaces). EPUB creators MAY include any valid [=ascii whitespace=] [[infra]] in
+					the authored tag so long as the result is valid to this definition.</p>
 
 				<p>There are no restrictions on any other attributes allowed on the [^meta^] element by the [[html]]
 					grammar.</p>
 
 				<div class="note">
-					<p>Although the <code>viewport meta</code> tag allows EPUB creators to use properties other than
-							<code>height</code> and <code>width</code>, such use is strongly discouraged. Setting other
-						properties may have unintended consequences on the rendering of [=fixed-layout documents=].</p>
-				</div>
+					<p>For more information about specifying the required <code>height</code> and <code>width</code>
+						properties, and their required values, refer to <a href="#sec-fxl-content-dimensions"></a>.</p>
 
-				<div class="note">
-					<p>The authoring requirements in this section apply <em>after</em>
-						<a data-cite="xml#AVNormalize">whitespace normalization</a> [[xml]] (i.e., after a reading
-						system strips leading and trailing whitespace and compacts all instances of multiple whitespace
-						within the attribute to single spaces). EPUB creators can include any valid HTML whitespace
-						characters (e.g., tabs, line feeds) in the authored tag so long as the result is valid to this
-						definition.</p>
+					<p>Although the <code>viewport meta</code> tag allows EPUB creators to use properties other than
+							<code>height</code> and <code>width</code>, and to not include values for these properties,
+						such use is strongly discouraged. Setting other properties may have unintended consequences on
+						the rendering of fixed-layout documents.</p>
 				</div>
 			</section>
 		</section>
@@ -11750,6 +11750,8 @@ EPUB/images/cover.png</pre>
 						Recommendation</a></h3>
 
 				<ul>
+					<li>15-Oct-2022: Allow properties without values in <code>viewport meta</code> tag definition. See
+							<a href="https://github.com/w3c/epub-specs/pull/2457">pull request 2457</a>.</li>
 					<li>11-Oct-2022: Added additional requirement that <code>viewport meta</code> height and width not
 						be declared multiple times. See <a href="https://github.com/w3c/epub-specs/issues/2442">issue
 							2442</a>.</li>
