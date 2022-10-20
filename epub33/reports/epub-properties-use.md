@@ -102,7 +102,9 @@ Meta properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
+                    <li>new harbinger publications</li>
                     <li>Pearson</li>
+                    <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -157,6 +159,7 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -565,6 +568,7 @@ Manifest properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -588,6 +592,7 @@ Manifest properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
             </td>
