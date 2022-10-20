@@ -73,6 +73,7 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -104,6 +105,7 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
                     <li>Pearson</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
@@ -125,6 +127,7 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -137,6 +140,7 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -277,6 +281,7 @@ Link properties are expressed in the
             <td>
             	<ul>
             		<li>Liturgical Press</li>
+                    <li>Taylor &amp; Francis</lt>
             	</ul>
             </td>
         </tr>
@@ -568,6 +573,7 @@ Manifest properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
@@ -578,6 +584,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Macmillan Learning</li>
+                    <li>Taylor &amp; Francis</lt>
             		<li>Wiley</li>
             	</ul>
             </td>
@@ -592,6 +599,7 @@ Manifest properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
                     <li>The Quarto Group</li>
                     <li>Wiley</li>
             	</ul>
@@ -612,6 +620,7 @@ Manifest properties are expressed in the
                     <li>Hachette Book Group</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
             	</ul>
             </td>
         </tr>
@@ -622,6 +631,7 @@ Manifest properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>Taylor &amp; Francis</lt>
             	</ul>
             </td>
         </tr>
