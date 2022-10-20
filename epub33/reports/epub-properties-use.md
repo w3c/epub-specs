@@ -37,7 +37,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate-script">alternate-script</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -53,7 +53,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection">belongs-to-collection</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -61,7 +61,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-collection-type">collection-type</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -92,7 +92,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-group-position">group-position</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -119,6 +119,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Hachette Book Group</li>
+            		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -142,7 +143,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-term">term</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -152,6 +153,7 @@ Meta properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -192,7 +194,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate">alternate</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -221,7 +223,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-record">record</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -271,7 +273,7 @@ Link properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix">onix</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>Liturgical Press</li>
             	</ul>
             </td>
         </tr>
@@ -310,6 +312,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow</a></td>
             <td>
             	<ul>
+            		<li>Liturgical Press</li>
             		<li>Pearson</li>
             	</ul>
             </td>
@@ -383,6 +386,7 @@ and as overrides in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -400,6 +404,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -434,6 +439,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait">rendition:orientation-portrait</a></td>
             <td>
             	<ul>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -506,6 +512,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -515,6 +522,7 @@ and as overrides in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -553,6 +561,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+            		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -575,6 +584,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -595,6 +605,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Hachette Book Group</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -604,6 +615,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -641,6 +653,7 @@ Spine properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -651,6 +664,7 @@ Spine properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
              	</ul>
            </td>
@@ -680,6 +694,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
+            		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
