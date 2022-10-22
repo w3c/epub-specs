@@ -53,6 +53,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection">belongs-to-collection</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -73,7 +74,8 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -85,6 +87,7 @@ Meta properties are expressed in the
                     <li>Hachette Book Group</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -93,6 +96,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-group-position">group-position</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -105,8 +109,9 @@ Meta properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
                     <li>Pearson</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -123,11 +128,13 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Hachette Book Group</li>
+                    <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -136,11 +143,12 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-source-of">source-of</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -164,6 +172,7 @@ Meta properties are expressed in the
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>The Quarto Group</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -281,7 +290,7 @@ Link properties are expressed in the
             <td>
             	<ul>
             		<li>Liturgical Press</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
         </tr>
@@ -391,6 +400,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
@@ -403,6 +413,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -412,6 +423,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -456,6 +468,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
@@ -468,6 +481,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -477,6 +491,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-both">rendition:spread-both</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -486,6 +501,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-landscape">rendition:spread-landscape</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -495,6 +511,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-none">rendition:spread-none</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -510,6 +527,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-center">rendition:page-spread-center</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -519,6 +537,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-left">rendition:page-spread-left</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -529,6 +548,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-right">rendition:page-spread-right</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -566,15 +586,18 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>Industrial Press, Inc.</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -584,7 +607,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Macmillan Learning</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
             		<li>Wiley</li>
             	</ul>
             </td>
@@ -593,14 +616,17 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
+                    <li>University of Minnesota Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -620,7 +646,7 @@ Manifest properties are expressed in the
                     <li>Hachette Book Group</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
         </tr>
@@ -631,7 +657,7 @@ Manifest properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
-                    <li>Taylor &amp; Francis</lt>
+                    <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
         </tr>
@@ -666,6 +692,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left">page-spread-left</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
@@ -677,6 +704,7 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right">page-spread-right</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
@@ -708,6 +736,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-active-class">active-class</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -718,6 +747,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-duration">duration</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -735,6 +765,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class">playback-active-class</a></td>
             <td>
             	<ul>
+                    <li>BookFusion Inc</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
