@@ -240,6 +240,7 @@ Link relationships are expressed in the
             <td>
             	<ul>
             		<li>Liturgical Press</li>
+                    <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
         </tr>
