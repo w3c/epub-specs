@@ -72,6 +72,7 @@ Meta properties are expressed in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
+                    <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
@@ -85,6 +86,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Hachette Book Group</li>
+                    <li>Moody Publishers</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>University of Minnesota Press</li>
@@ -131,6 +133,7 @@ Meta properties are expressed in the
                     <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
+                    <li>Moody Publishers</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
@@ -406,6 +409,7 @@ and as overrides in the
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -416,6 +420,7 @@ and as overrides in the
             	<ul>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -436,6 +441,7 @@ and as overrides in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>Moody Publishers</li>
             	</ul>
             </td>
         </tr>
@@ -473,6 +479,7 @@ and as overrides in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
+                    <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -484,6 +491,7 @@ and as overrides in the
             	<ul>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -513,6 +521,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>BookFusion Inc</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -594,6 +603,7 @@ Manifest properties are expressed in the
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
+                    <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
@@ -623,6 +633,7 @@ Manifest properties are expressed in the
                     <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
+                    <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
@@ -646,6 +657,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Hachette Book Group</li>
             		<li>Liturgical Press</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
@@ -657,6 +669,7 @@ Manifest properties are expressed in the
             	<ul>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
+                    <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
