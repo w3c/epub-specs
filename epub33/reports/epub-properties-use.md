@@ -37,6 +37,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate-script">alternate-script</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -53,6 +54,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection">belongs-to-collection</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
             	</ul>
@@ -62,6 +64,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-collection-type">collection-type</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -70,6 +73,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq">display-seq</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -85,6 +89,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-file-as">file-as</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
                     <li>Moody Publishers</li>
             		<li>Pearson</li>
@@ -107,6 +112,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type">identifier-type</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
@@ -129,6 +135,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-role">role</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
@@ -136,6 +143,8 @@ Meta properties are expressed in the
                     <li>Moody Publishers</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
                     <li>University of Minnesota Press</li>
                     <li>Wiley</li>
@@ -146,6 +155,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-source-of">source-of</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Macmillan Learning</li>
@@ -168,12 +178,14 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-title-type">title-type</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
                     <li>Wiley</li>
@@ -242,6 +254,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-record">record</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
@@ -293,6 +306,7 @@ Link properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix">onix</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
@@ -333,6 +347,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
             		<li>Pearson</li>
             	</ul>
@@ -404,6 +419,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -411,6 +427,8 @@ and as overrides in the
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -418,10 +436,12 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -429,6 +449,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -442,6 +463,8 @@ and as overrides in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Moody Publishers</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -449,8 +472,10 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-auto">rendition:orientation-auto</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -458,7 +483,9 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-landscape">rendition:orientation-landscape</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -466,8 +493,10 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait">rendition:orientation-portrait</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -475,6 +504,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -482,6 +512,8 @@ and as overrides in the
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -489,10 +521,12 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -500,6 +534,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-both">rendition:spread-both</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
@@ -510,9 +545,11 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-landscape">rendition:spread-landscape</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
+                    <li>Simon &amp; Schuster</li>
             	</ul>
             </td>
         </tr>
@@ -520,6 +557,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-none">rendition:spread-none</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -537,6 +575,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-center">rendition:page-spread-center</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
@@ -547,6 +586,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-left">rendition:page-spread-left</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
@@ -558,6 +598,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-right">rendition:page-spread-right</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
@@ -596,6 +637,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -606,6 +648,8 @@ Manifest properties are expressed in the
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
@@ -627,6 +671,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -636,6 +681,8 @@ Manifest properties are expressed in the
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
+                    <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
@@ -655,6 +702,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-scripted">scripted</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
@@ -667,6 +715,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-svg">svg</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
@@ -706,11 +755,13 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left">page-spread-left</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
             	</ul>
             </td>
         </tr>
@@ -718,11 +769,13 @@ Spine properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right">page-spread-right</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>PRH UK</li>
              	</ul>
            </td>
         </tr>
@@ -750,6 +803,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-active-class">active-class</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
@@ -761,6 +815,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-duration">duration</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
@@ -771,6 +826,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-narrator">narrator</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -779,6 +835,7 @@ Media Overlays properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class">playback-active-class</a></td>
             <td>
             	<ul>
+                    <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Penguin Random House North America</li>
             	</ul>
