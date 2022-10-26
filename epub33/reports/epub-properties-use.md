@@ -90,6 +90,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Moody Publishers</li>
             		<li>Pearson</li>
@@ -113,6 +114,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
@@ -136,6 +138,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
             		<li>Liturgical Press</li>
@@ -157,6 +160,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>Chicago Distribution Center</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
@@ -639,6 +643,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
@@ -673,6 +678,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
