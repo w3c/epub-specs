@@ -11,14 +11,15 @@ target communities. This metadata falls into two categories:
 1. metadata for expressing information about the publication in the package document; and
 2. metadata for expressing preferred rendering of the content
 
-Usage of these properties means that they are regularly included in the package document
-metadata for their EPUB publications (as appropriate for each title).
+Usage of these properties, as listed in the following tables, means that the organizations regularly
+include the metadata in the package document (for publishers) or use them in bookshelves, content
+rendering, etc. (for reading system developers).
 
 ## Publisher Implementations
 
 ### Meta Properties Vocabulary
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [meta properties](https://w3c.github.io/epub-specs/epub33/core/#app-meta-property-vocab)
 in production.
 
@@ -38,6 +39,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -81,6 +83,8 @@ Meta properties are expressed in the
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
+                    <li>VitalSource Technologies, LLC</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -96,6 +100,7 @@ Meta properties are expressed in the
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -114,6 +119,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>BroadStreet Publishing Group LLC</li>
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
@@ -122,6 +128,7 @@ Meta properties are expressed in the
                     <li>Taylor &amp; Francis</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -138,9 +145,11 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>BroadStreet Publishing Group LLC</li>
                     <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -149,7 +158,10 @@ Meta properties are expressed in the
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>Teacher Created Materials</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
+                    <li>VitalSource Technologies, LLC</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -174,7 +186,10 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-term">term</a></td>
             <td>
             	<ul>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
+                    <li>University of Nebraska Press</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -183,6 +198,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>BroadStreet Publishing Group LLC</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
@@ -192,6 +208,7 @@ Meta properties are expressed in the
                     <li>Simon &amp; Schuster</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -202,7 +219,7 @@ Meta properties are expressed in the
 ### Link Vocabulary
 #### Link Relationships
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [link relationships](https://w3c.github.io/epub-specs/epub33/core/#sec-link-rel)
 in production.
 
@@ -291,7 +308,7 @@ Link relationships are expressed in the
 
 #### Link Properties
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [link properties](https://w3c.github.io/epub-specs/epub33/core/#sec-link-properties)
 in production.
 
@@ -330,7 +347,7 @@ Link properties are expressed in the
 ### Package Rendering Vocabulary
 #### General Properties
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [general package rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-general)
 in production.
 
@@ -354,6 +371,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
             		<li>Pearson</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -361,7 +379,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-auto">rendition:flow-auto</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -369,7 +387,8 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-paginated">rendition:flow-paginated</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>Kaplan North America, LLC</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -377,7 +396,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -385,7 +404,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -393,7 +412,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-align-x-center">rendition:align-x-center</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -402,7 +421,7 @@ and as overrides in the
 
 #### Fixed-Layout Properties
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [fixed-layout rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-fxl)
 in production.
 
@@ -433,6 +452,7 @@ and as overrides in the
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -446,6 +466,8 @@ and as overrides in the
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>Teacher Created Materials</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -457,6 +479,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -469,6 +492,7 @@ and as overrides in the
                     <li>Moody Publishers</li>
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -480,6 +504,8 @@ and as overrides in the
                     <li>Hachette Book Group</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>Teacher Created Materials</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -490,6 +516,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -501,6 +528,7 @@ and as overrides in the
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -518,6 +546,8 @@ and as overrides in the
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>Teacher Created Materials</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -531,6 +561,7 @@ and as overrides in the
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -542,6 +573,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -554,6 +586,7 @@ and as overrides in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -565,6 +598,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -583,6 +617,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -595,6 +630,7 @@ and as overrides in the
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -607,6 +643,7 @@ and as overrides in the
             		<li>House of Anansi Press/Groundwood Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -622,7 +659,7 @@ and as overrides in the
 
 ### Manifest Properties Vocabulary
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [manifest properties](https://w3c.github.io/epub-specs/epub33/core/#app-item-properties-vocab)
 in production.
 
@@ -647,6 +684,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>Kaplan North America, LLC</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
@@ -656,8 +694,12 @@ Manifest properties are expressed in the
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>Teacher Created Materials</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
+                    <li>VitalSource Technologies, LLC</li>
+                    <li>W. W. Norton & Company, Inc. (Educational)</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -668,6 +710,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>VitalSource Technologies, LLC</li>
             		<li>Wiley</li>
             	</ul>
             </td>
@@ -682,6 +725,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -690,8 +734,12 @@ Manifest properties are expressed in the
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>Teacher Created Materials</li>
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
+                    <li>University of Nebraska Press</li>
+                    <li>VitalSource Technologies, LLC</li>
+                    <li>W. W. Norton & Company, Inc. (Educational)</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -700,7 +748,8 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources">remote-resources</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>VitalSource Technologies, LLC</li>
+                    <li>W. W. Norton & Company, Inc. (Educational)</li>
             	</ul>
             </td>
         </tr>
@@ -714,6 +763,8 @@ Manifest properties are expressed in the
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>VitalSource Technologies, LLC</li>
+                    <li>W. W. Norton & Company, Inc. (Educational)</li>
             	</ul>
             </td>
         </tr>
@@ -723,10 +774,12 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -742,7 +795,7 @@ Manifest properties are expressed in the
 
 ### Spine properties vocabulary
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [spine properties](https://w3c.github.io/epub-specs/epub33/core/#app-itemref-properties-vocab)
 in production.
 
@@ -768,6 +821,8 @@ Spine properties are expressed in the
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
+                    <li>Teacher Created Materials</li>
+                    <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
@@ -782,6 +837,8 @@ Spine properties are expressed in the
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
+                    <li>Teacher Created Materials</li>
+                    <li>VitalSource Technologies, LLC</li>
              	</ul>
            </td>
         </tr>
@@ -790,7 +847,7 @@ Spine properties are expressed in the
 
 ### Media Overlays Vocabulary
 
-The following table lists publishers who have stated that they are currently using
+The following table lists organizations that have stated that they are currently using
 the [Media Overlays properties](https://w3c.github.io/epub-specs/epub33/core/#app-overlays-vocab)
 in production.
 
@@ -812,8 +869,10 @@ Media Overlays properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>Kaplan North America, LLC</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
+                    <li>Teacher Created Materials</li>
             	</ul>
             </td>
         </tr>
@@ -825,6 +884,7 @@ Media Overlays properties are expressed in the
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Penguin Random House North America</li>
+                    <li>Teacher Created Materials</li>
             	</ul>
             </td>
         </tr>
