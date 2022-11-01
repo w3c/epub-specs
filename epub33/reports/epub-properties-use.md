@@ -40,6 +40,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -48,7 +49,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-authority">authority</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             	</ul>
             </td>
         </tr>
@@ -58,6 +59,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -122,6 +124,7 @@ Meta properties are expressed in the
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
                     <li>Pearson</li>
@@ -150,6 +153,7 @@ Meta properties are expressed in the
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -174,6 +178,7 @@ Meta properties are expressed in the
                     <li>BookFusion Inc</li>
                     <li>Chicago Distribution Center</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -187,6 +192,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>University of Nebraska Press</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -201,6 +207,7 @@ Meta properties are expressed in the
                     <li>BroadStreet Publishing Group LLC</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Pearson</li>
@@ -246,6 +253,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate">alternate</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             	</ul>
             </td>
@@ -285,7 +293,7 @@ Link relationships are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-voicing">voicing</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             	</ul>
             </td>
         </tr>
@@ -328,6 +336,7 @@ Link properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
@@ -369,6 +378,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             		<li>Pearson</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -379,6 +389,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-auto">rendition:flow-auto</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
@@ -388,6 +399,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
@@ -396,6 +408,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
@@ -404,6 +417,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
@@ -412,6 +426,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-align-x-center">rendition:align-x-center</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
@@ -446,6 +461,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
@@ -463,6 +479,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
@@ -477,6 +494,7 @@ and as overrides in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -489,6 +507,7 @@ and as overrides in the
             	<ul>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
@@ -502,6 +521,7 @@ and as overrides in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
                     <li>Teacher Created Materials</li>
@@ -514,6 +534,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -525,6 +546,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
@@ -540,6 +562,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
@@ -558,6 +581,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
@@ -572,6 +596,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
@@ -584,6 +609,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -596,6 +622,7 @@ and as overrides in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -616,6 +643,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
@@ -628,6 +656,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -641,6 +670,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -685,6 +715,7 @@ Manifest properties are expressed in the
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
@@ -708,6 +739,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mathml">mathml</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -726,6 +758,7 @@ Manifest properties are expressed in the
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -748,6 +781,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources">remote-resources</a></td>
             <td>
             	<ul>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
                     <li>W. W. Norton & Company, Inc. (Educational)</li>
             	</ul>
@@ -759,6 +793,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>Hachette Book Group</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -775,6 +810,7 @@ Manifest properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -817,6 +853,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -833,6 +870,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -870,6 +908,7 @@ Media Overlays properties are expressed in the
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>Teacher Created Materials</li>
@@ -883,6 +922,7 @@ Media Overlays properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Teacher Created Materials</li>
             	</ul>
@@ -893,6 +933,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
@@ -903,6 +944,7 @@ Media Overlays properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
             	</ul>
             </td>
