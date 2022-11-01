@@ -98,6 +98,7 @@ Meta properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
+                    <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
             		<li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -125,6 +126,7 @@ Meta properties are expressed in the
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Lerner Publishing Group</li>
                     <li>Macmillan Learning</li>
                     <li>new harbinger publications</li>
                     <li>Pearson</li>
@@ -132,6 +134,7 @@ Meta properties are expressed in the
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
                     <li>University of Nebraska Press</li>
+                    <li>Westchester Publishing Services</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -166,6 +169,7 @@ Meta properties are expressed in the
                     <li>University of Minnesota Press</li>
                     <li>University of Nebraska Press</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -183,6 +187,7 @@ Meta properties are expressed in the
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
+                    <li>Westchester Publishing Services</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -216,6 +221,7 @@ Meta properties are expressed in the
                     <li>The Quarto Group</li>
                     <li>University of Minnesota Press</li>
                     <li>University of Nebraska Press</li>
+                    <li>Westchester Publishing Services</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -463,6 +469,7 @@ and as overrides in the
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -508,10 +515,12 @@ and as overrides in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
                     <li>PRH UK</li>
                     <li>Simon &amp; Schuster</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
             	</ul>
             </td>
         </tr>
@@ -564,6 +573,7 @@ and as overrides in the
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
+                    <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
                     <li>Penguin Random House North America</li>
@@ -571,6 +581,7 @@ and as overrides in the
                     <li>Simon &amp; Schuster</li>
                     <li>Teacher Created Materials</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
             	</ul>
             </td>
         </tr>
@@ -717,6 +728,7 @@ Manifest properties are expressed in the
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -731,6 +743,7 @@ Manifest properties are expressed in the
                     <li>University of Nebraska Press</li>
                     <li>VitalSource Technologies, LLC</li>
                     <li>W. W. Norton & Company, Inc. (Educational)</li>
+                    <li>Westchester Publishing Services</li>
                     <li>Wiley</li>
             	</ul>
             </td>
@@ -743,6 +756,7 @@ Manifest properties are expressed in the
                     <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
             		<li>Wiley</li>
             	</ul>
             </td>
@@ -759,6 +773,7 @@ Manifest properties are expressed in the
                     <li>Industrial Press, Inc.</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -772,6 +787,7 @@ Manifest properties are expressed in the
                     <li>University of Minnesota Press</li>
                     <li>University of Nebraska Press</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
                     <li>W. W. Norton & Company, Inc. (Educational)</li>
                     <li>Wiley</li>
             	</ul>
@@ -800,6 +816,7 @@ Manifest properties are expressed in the
                     <li>Taylor &amp; Francis</li>
                     <li>VitalSource Technologies, LLC</li>
                     <li>W. W. Norton & Company, Inc. (Educational)</li>
+                    <li>Westchester Publishing Services</li>
             	</ul>
             </td>
         </tr>
@@ -816,6 +833,7 @@ Manifest properties are expressed in the
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
                     <li>VitalSource Technologies, LLC</li>
+                    <li>Westchester Publishing Services</li>
             	</ul>
             </td>
         </tr>
@@ -855,6 +873,7 @@ Spine properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
@@ -872,6 +891,7 @@ Spine properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>PRH UK</li>
@@ -909,6 +929,7 @@ Media Overlays properties are expressed in the
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Lerner Publishing Group</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
                     <li>Teacher Created Materials</li>
@@ -923,6 +944,7 @@ Media Overlays properties are expressed in the
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Lerner Publishing Group</li>
                     <li>Penguin Random House North America</li>
                     <li>Teacher Created Materials</li>
             	</ul>
