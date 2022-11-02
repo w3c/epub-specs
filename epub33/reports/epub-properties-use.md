@@ -39,6 +39,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -49,6 +50,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-authority">authority</a></td>
             <td>
             	<ul>
+                    <li>American Academy of Pediatrics</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             	</ul>
             </td>
@@ -78,6 +80,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -96,6 +99,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Lerner Publishing Group</li>
@@ -122,7 +126,9 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>BroadStreet Publishing Group LLC</li>
+                    <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -151,7 +157,9 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>BroadStreet Publishing Group LLC</li>
+                    <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
@@ -179,6 +187,7 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>BookFusion Inc</li>
                     <li>Chicago Distribution Center</li>
             		<li>House of Anansi Press/Groundwood Books</li>
@@ -196,6 +205,7 @@ Meta properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-term">term</a></td>
             <td>
             	<ul>
+                    <li>American Academy of Pediatrics</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -209,7 +219,9 @@ Meta properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
                     <li>BroadStreet Publishing Group LLC</li>
+                    <li>Charisma Media</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -464,6 +476,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -484,6 +497,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -500,6 +514,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -512,6 +527,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
+                    <li>Beaufort Books</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -529,6 +545,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -543,6 +560,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
@@ -555,6 +573,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -568,6 +587,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -590,6 +610,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -618,6 +639,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -632,6 +654,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
@@ -720,7 +743,10 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -766,7 +792,10 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>American Academy of Pediatrics</li>
+                    <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
