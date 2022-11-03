@@ -100,6 +100,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>Chicago Distribution Center</li>
                     <li>Hachette Book Group</li>
                     <li>Lerner Publishing Group</li>
@@ -127,6 +128,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
@@ -158,6 +160,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
@@ -220,6 +223,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
             		<li>Hachette Book Group</li>
@@ -476,6 +480,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
@@ -497,6 +502,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
@@ -527,6 +533,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -545,6 +552,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -560,6 +568,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -573,6 +582,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -587,6 +597,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>Hachette Book Group</li>
@@ -610,6 +621,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Hachette Book Group</li>
@@ -626,6 +638,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -639,6 +652,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
@@ -675,6 +689,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -688,6 +703,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -702,6 +718,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -744,6 +761,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
@@ -778,6 +796,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mathml">mathml</a></td>
             <td>
             	<ul>
+                    <li>Amnet</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
@@ -793,6 +812,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
@@ -837,6 +857,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -854,6 +875,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -898,6 +920,7 @@ Spine properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -916,6 +939,7 @@ Spine properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -954,6 +978,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
@@ -970,6 +995,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>BookFusion Inc</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -984,6 +1010,7 @@ Media Overlays properties are expressed in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>Amnet</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
             	</ul>
