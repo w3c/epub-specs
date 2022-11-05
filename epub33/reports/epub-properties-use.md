@@ -307,6 +307,7 @@ Link relationships are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
             		<li>Liturgical Press</li>
+                    <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
@@ -360,6 +361,7 @@ Link properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
+                    <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
             	</ul>
             </td>
@@ -847,6 +849,7 @@ Manifest properties are expressed in the
             <td>
             	<ul>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>Macmillan Learning</li>
                     <li>VitalSource Technologies, LLC</li>
                     <li>W. W. Norton & Company, Inc. (Educational)</li>
             	</ul>
@@ -861,6 +864,7 @@ Manifest properties are expressed in the
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
+                    <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
@@ -880,6 +884,7 @@ Manifest properties are expressed in the
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
+                    <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
                     <li>Taylor &amp; Francis</li>
