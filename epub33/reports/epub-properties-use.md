@@ -40,6 +40,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -81,6 +82,7 @@ Meta properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
@@ -102,6 +104,7 @@ Meta properties are expressed in the
                     <li>American Academy of Pediatrics</li>
                     <li>Amnet</li>
                     <li>Chicago Distribution Center</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
@@ -164,6 +167,7 @@ Meta properties are expressed in the
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
                     <li>Kaplan North America, LLC</li>
@@ -226,6 +230,7 @@ Meta properties are expressed in the
                     <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -402,6 +407,7 @@ and as overrides in the
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             		<li>Pearson</li>
@@ -413,6 +419,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-auto">rendition:flow-auto</a></td>
             <td>
             	<ul>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
@@ -422,6 +429,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-paginated">rendition:flow-paginated</a></td>
             <td>
             	<ul>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -441,6 +449,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
             <td>
             	<ul>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
@@ -485,6 +494,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -507,6 +517,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
@@ -524,6 +535,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -537,6 +549,7 @@ and as overrides in the
             	<ul>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -556,6 +569,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -572,6 +586,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>Simon &amp; Schuster</li>
@@ -586,6 +601,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
                     <li>Penguin Random House North America</li>
@@ -602,6 +618,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -626,6 +643,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
@@ -642,6 +660,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -657,6 +676,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -672,6 +692,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -693,6 +714,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
@@ -707,6 +729,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -722,6 +745,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -768,6 +792,7 @@ Manifest properties are expressed in the
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
@@ -819,6 +844,7 @@ Manifest properties are expressed in the
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
@@ -927,6 +953,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
@@ -946,6 +973,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
@@ -985,6 +1013,7 @@ Media Overlays properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -1002,6 +1031,7 @@ Media Overlays properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lerner Publishing Group</li>
@@ -1016,6 +1046,7 @@ Media Overlays properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
             	</ul>
@@ -1027,6 +1058,7 @@ Media Overlays properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>BookFusion Inc</li>
+                    <li>EDRLab (Thorium Reader)</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
             	</ul>
