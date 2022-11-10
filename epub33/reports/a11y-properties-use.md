@@ -402,7 +402,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierReport">a11y:certifierReport</a></td>
             <td>
             	<ul>
-            		<li>-</li>
+            		<li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
         </tr>
