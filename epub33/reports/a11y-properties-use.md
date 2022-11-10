@@ -49,6 +49,7 @@ Discovery properties are expressed in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -92,6 +93,7 @@ Discovery properties are expressed in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -178,6 +180,7 @@ Discovery properties are expressed in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -221,6 +224,7 @@ Discovery properties are expressed in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -286,6 +290,7 @@ and in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -329,6 +334,7 @@ and in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -371,6 +377,7 @@ and in the
             		<li>ECW Press</li>
             		<li>Éditions Bourton d'or Acadie</li>
                     <li>Flanker Press</li>
+                    <li>Fondazione LIA</li>
                     <li>Formac Lorimer</li>
             		<li>Goose Lane Editions</li>
             		<li>Guilford Press</li>
@@ -402,6 +409,7 @@ and in the
         	<td><a href="https://w3c.github.io/epub-specs/epub33/a11y/#a11y-certifierReport">a11y:certifierReport</a></td>
             <td>
             	<ul>
+                    <li>Fondazione LIA</li>
             		<li>VitalSource Technologies, LLC</li>
             	</ul>
             </td>
