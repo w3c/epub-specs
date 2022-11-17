@@ -104,6 +104,7 @@ Meta properties are expressed in the
                     <li>American Academy of Pediatrics</li>
                     <li>Amnet</li>
                     <li>Chicago Distribution Center</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>Lerner Publishing Group</li>
@@ -135,6 +136,7 @@ Meta properties are expressed in the
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>Consonance</li>
             		<li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lerner Publishing Group</li>
@@ -167,6 +169,7 @@ Meta properties are expressed in the
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
@@ -230,6 +233,7 @@ Meta properties are expressed in the
                     <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
                     <li>Charisma Media</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -494,6 +498,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -549,6 +554,7 @@ and as overrides in the
             	<ul>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -618,6 +624,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -714,6 +721,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -792,6 +800,7 @@ Manifest properties are expressed in the
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -844,6 +853,7 @@ Manifest properties are expressed in the
                     <li>BookFusion Inc</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
@@ -906,6 +916,7 @@ Manifest properties are expressed in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
+                    <li>Consonance</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -953,6 +964,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -973,6 +985,7 @@ Spine properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>BookFusion Inc</li>
+                    <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
                     <li>KnowledgeWorks Global Ltd.</li>
