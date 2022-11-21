@@ -103,6 +103,7 @@ Meta properties are expressed in the
                     <li>Advantage | ForbesBooks</li>
                     <li>American Academy of Pediatrics</li>
                     <li>Amnet</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
@@ -134,6 +135,7 @@ Meta properties are expressed in the
                     <li>American Academy of Pediatrics</li>
                     <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
@@ -167,6 +169,7 @@ Meta properties are expressed in the
                     <li>American Academy of Pediatrics</li>
                     <li>Amnet</li>
                     <li>BroadStreet Publishing Group LLC</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
@@ -498,6 +501,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
@@ -554,6 +558,7 @@ and as overrides in the
             	<ul>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
@@ -575,6 +580,7 @@ and as overrides in the
                     <li>Advantage | ForbesBooks</li>
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
+                    <li>Carson Dellosa Education</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -624,6 +630,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
@@ -650,6 +657,7 @@ and as overrides in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Carson Dellosa Education</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -798,6 +806,7 @@ Manifest properties are expressed in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
@@ -851,6 +860,7 @@ Manifest properties are expressed in the
                     <li>Amnet</li>
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
+                    <li>Carson Dellosa Education</li>
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
@@ -884,6 +894,7 @@ Manifest properties are expressed in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources">remote-resources</a></td>
             <td>
             	<ul>
+                    <li>Carson Dellosa Education</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Macmillan Learning</li>
                     <li>VitalSource Technologies, LLC</li>
