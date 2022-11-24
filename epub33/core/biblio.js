@@ -20,7 +20,7 @@ var biblio = {
 		"Elika J. Etimad",
 		"Matt Garrish"],
 		"title": "EPUB Content Documents 3.0.1",
-		"href": "http://idpf.org/epub/301/spec/epub-contentdocs-20140626.html",
+		"href": "https://idpf.org/epub/301/spec/epub-contentdocs-20140626.html",
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
@@ -55,7 +55,7 @@ var biblio = {
 		"William McCoy",
 		"Matt Garrish"],
 		"title": "EPUB Publications 3.0",
-		"href": "http://idpf.org/epub/30/spec/epub30-publications-20111011.html",
+		"href": "https://idpf.org/epub/30/spec/epub30-publications-20111011.html",
 		"date": "11 October 2011",
 		"publisher": "IDPF"
 	},
@@ -65,7 +65,7 @@ var biblio = {
 		"William McCoy",
 		"Matt Garrish"],
 		"title": "EPUB Publications 3.0.1",
-		"href": "http://idpf.org/epub/301/spec/epub-publications-20140626.html",
+		"href": "https://idpf.org/epub/301/spec/epub-publications-20140626.html",
 		"date": "26 June 2014",
 		"publisher": "IDPF"
 	},
@@ -100,7 +100,7 @@ var biblio = {
 	},
 	"opf-201": {
 		"title": "Open Packaging Format 2.0.1",
-		"href": "http://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
+		"href": "https://idpf.org/epub/20/spec/OPF_2.0.1_draft.htm",
 		"date": "04 September 2010",
 		"publisher": "IDPF"
 	},
