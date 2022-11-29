@@ -329,6 +329,7 @@ Link relationships are expressed in the
             <td>
             	<ul>
                     <li>KnowledgeWorks Global Ltd.</li>
+                    <li>CYPAC/Voice of DAISY 5 version 5.7</li>
             	</ul>
             </td>
         </tr>
@@ -810,6 +811,7 @@ Manifest properties are expressed in the
                     <li>Charisma Media</li>
                     <li>Chicago Distribution Center</li>
                     <li>Consonance</li>
+                    <li>CYPAC/Voice of DAISY 5 version 5.7</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
