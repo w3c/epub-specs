@@ -540,22 +540,15 @@
 							render the EPUB publication as the [=EPUB creator=] intends. Examples of publication
 							resources include the [=package document=], [=EPUB content documents=], CSS Style Sheets,
 							audio, video, images, embedded fonts, and scripts.</p>
-						<p>EPUB creators typically list publication resources in the package document [=EPUB manifest |
-							manifest=] and bundle them in the [=EPUB container=], with the following exceptions:</p>
-						<ul>
-							<li>
-								<p>they do not have to list resources encoded as <a href="#sec-data-urls">data URLs</a>
-									in the manifest; and</p>
-							</li>
-							<li>
-								<p>they may locate resources listed in <a href="#sec-resource-locations"></a> outside
-									the EPUB container.</p>
-							</li>
-						</ul>
+						<p>EPUB creators list publication resources in the package document [=EPUB manifest | manifest=]
+							and typically bundle them all in the [=EPUB container=] (the exception being they may locate
+							resources listed in <a href="#sec-resource-locations"></a> outside the EPUB container).</p>
 						<div class="note">
 							<p>Resources on the web identified in outbound hyperlinks (e.g., referenced from the
 									<code>href</code> attribute of an [[html]] [^a^] element) are not publication
 								resources.</p>
+							<p><a href="#sec-data-urls">Data urls</a> are also not publication resources &#8212; they
+								are considered part of the resource they are embedded in.</p>
 						</div>
 					</dd>
 
@@ -1470,15 +1463,22 @@
 					directly into a URL string. The advantage of this scheme is that it allows [=EPUB creators=] to
 					embed a resource within another, avoiding the need for an external file.</p>
 
+				<p>A consequence of embedding is that data URLs are not considered their own unique publication
+					resources (i.e., they are part of their containing publication resource). As a result, EPUB creators
+					cannot declare data URLs in the [=manifest=] &#8212; the manifest [^item^] element's <a
+						href="#attrdef-item-href"><code>href</code></a> attribute does not allow the <code>data:</code>
+					scheme.</p>
+
+				<p>Although data URLs are considered part of their containing resource, because they have their own
+					media types they are still subject to the <a href="#sec-foreign-resources">foreign resource
+						restrictions</a>. EPUB creators MUST therefore encode data URLs as core media type resources or
+					use them where they can provide a fallback.</p>
+
 				<p>EPUB creators MAY use data URLs in [=EPUB publications=] provided their use does not result in a
 					[=top-level content document=] or [=top-level browsing context=] [[html]]. This restriction applies
 					to data URLs used in the following scenarios:</p>
 
 				<ul>
-					<li>
-						<p>in [EPUB manifest | manifest=] [^item^] elements referenced from the [=EPUB spine |
-							spine=];</p>
-					</li>
 					<li>
 						<p>in the <code>href</code> attribute on [[html]] or [[svg]] <code>a</code> elements (except
 							when inside an [^iframe^] element [[html]]);</p>
@@ -1492,21 +1492,21 @@
 					</li>
 				</ul>
 
+				<p>These restrictions on their use are to prevent security issues and also to ensure that [=reading
+					systems=] can determine where to take a user next (i.e., because data URLs cannot be referenced from
+					the [=spine=]).</p>
+
 				<div class="note">
 					<p>The list of prohibited uses for data URLs is subject to change as the respective standards that
 						allow their use evolve.</p>
 				</div>
 
-				<p>This restriction on their use is to prevent security issues and also to ensure that [=reading
-					systems=] can determine where to take a user next (i.e., because these resources are not be listed
-					in the spine).</p>
-
-				<p>Resources represented as data URLs are not publication resources so are exempt from the requirement
-					for EPUB creators to list them in the manifest.</p>
-
-				<p>EPUB creators MUST encode Data URLs as core media type resources or use them where they can provide a
-					fallback (i.e., data URLs are subject to the <a href="#sec-foreign-resources">foreign resource
-						restrictions</a>).</p>
+				<div class="note">
+					<p>The restrictions in this section do not apply to the use of data URLs in manifest [^link^]
+						elements (i.e., for [=linked resources=]). The <code>link</code> element's <code>href</code>
+						attribute does not restrict schemes, for example, and linked resources are not subject to
+						fallback requirements.</p>
+				</div>
 			</section>
 
 			<section id="sec-file-urls">
@@ -4828,7 +4828,7 @@ XHTML:
 								</li>
 								<li>
 									<p>
-										<a href="#attrdef-href">
+										<a href="#attrdef-item-href">
 											<code>href</code>
 										</a>
 										<code>[required]</code>
@@ -4874,12 +4874,12 @@ XHTML:
 						</dd>
 					</dl>
 
-					<p>Each <code>item</code> element identifies a publication resource by the URL [[url]] in its
-							<code>href</code> attribute. The value MUST be an <a data-lt="absolute-url string"
-							>absolute-</a> or <a data-lt="path-relative-scheme-less-url string"
-							>path-relative-scheme-less-URL</a> string [[url]]. [=EPUB creators=] MUST ensure each URL is
-						unique within the <code>manifest</code> scope after <a href="#sec-parse-package-urls"
-							>parsing</a>.</p>
+					<p id="attrdef-item-href">Each <code>item</code> element identifies a publication resource by the
+						URL [[url]] in its <a href="#attrdef-href"><code>href</code> attribute</a>. The value MUST be an
+							<a data-lt="absolute-url string">absolute-</a> or <a
+							data-lt="path-relative-scheme-less-url string">path-relative-scheme-less-URL</a>
+						string [[url]]. [=EPUB creators=] MUST ensure each URL is unique within the
+							<code>manifest</code> scope after <a href="#sec-parse-package-urls">parsing</a>.</p>
 
 					<p id="attrdef-item-media-type">The publication resource identified by an <code>item</code> element
 						MUST conform to the applicable specification(s) as inferred from the MIME media type [[rfc2046]]
@@ -11772,6 +11772,9 @@ EPUB/images/cover.png</pre>
 						Recommendation</a></h3>
 
 				<ul>
+					<li>29-Nov-2022: Clarified that data URLs are not unique publication resources (i.e, never listed in
+						manifest) but are subject to fallback requirements. See <a
+							href="https://github.com/w3c/epub-specs/issues/2485">issue 2485</a>.</li>
 					<li>17-Nov-2022: Updated file paths and names to identify that they are scalar value strings in the
 						OCF abstract container, not just case sensitive. See <a
 							href="https://github.com/w3c/epub-specs/issues/2461">issue 2461</a>.</li>
