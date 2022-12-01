@@ -84,6 +84,7 @@ Meta properties are expressed in the
                     <li>American Academy of Pediatrics</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
+                    <li>KADOKAWA</li>
                     <li>Macmillan Learning</li>
                     <li>Moody Publishers</li>
                     <li>Pearson</li>
@@ -108,6 +109,7 @@ Meta properties are expressed in the
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
+                    <li>KADOKAWA</li>
                     <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
             		<li>Pearson</li>
@@ -176,6 +178,7 @@ Meta properties are expressed in the
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>KADOKAWA</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -416,6 +419,7 @@ and as overrides in the
             	<ul>
                     <li>Advantage | ForbesBooks</li>
                     <li>EDRLab (Thorium Reader)</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
             		<li>Pearson</li>
@@ -448,6 +452,7 @@ and as overrides in the
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
             <td>
             	<ul>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>VitalSource Technologies, LLC</li>
             	</ul>
@@ -507,6 +512,7 @@ and as overrides in the
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
                     <li>Lerner Publishing Group</li>
@@ -529,6 +535,7 @@ and as overrides in the
                     <li>BookFusion Inc</li>
                     <li>EDRLab (Thorium Reader)</li>
                     <li>Hachette Book Group</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -564,6 +571,7 @@ and as overrides in the
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lerner Publishing Group</li>
                     <li>Moody Publishers</li>
@@ -636,6 +644,7 @@ and as overrides in the
                     <li>EDRLab (Thorium Reader)</li>
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
                     <li>Lerner Publishing Group</li>
@@ -709,6 +718,7 @@ and as overrides in the
                     <li>Beaufort Books</li>
                     <li>BookFusion Inc</li>
                     <li>EDRLab (Thorium Reader)</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Moody Publishers</li>
                     <li>Penguin Random House North America</li>
@@ -733,6 +743,7 @@ and as overrides in the
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Penguin Random House North America</li>
                     <li>VitalSource Technologies, LLC</li>
@@ -816,6 +827,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>KADOKAWA</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
@@ -870,6 +882,7 @@ Manifest properties are expressed in the
             		<li>Hachette Book Group</li>
                     <li>House of Anansi Press/Groundwood Books</li>
                     <li>Industrial Press, Inc.</li>
+                    <li>KADOKAWA</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lerner Publishing Group</li>
@@ -931,6 +944,7 @@ Manifest properties are expressed in the
                     <li>Amnet</li>
                     <li>Consonance</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>Kaplan North America, LLC</li>
                     <li>KnowledgeWorks Global Ltd.</li>
             		<li>Liturgical Press</li>
@@ -980,6 +994,7 @@ Spine properties are expressed in the
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
                     <li>Lerner Publishing Group</li>
@@ -1001,6 +1016,7 @@ Spine properties are expressed in the
                     <li>Consonance</li>
                     <li>EDRLab (Thorium Reader)</li>
             		<li>House of Anansi Press/Groundwood Books</li>
+                    <li>KADOKAWA</li>
                     <li>KnowledgeWorks Global Ltd.</li>
                     <li>Lee & Low Books</li>
                     <li>Lerner Publishing Group</li>
