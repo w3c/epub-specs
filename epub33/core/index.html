@@ -1474,33 +1474,26 @@
 					directly into a URL string. The advantage of this scheme is that it allows [=EPUB creators=] to
 					embed a resource within another, avoiding the need for an external file.</p>
 
-				<p>A consequence of embedding is that data URLs are not considered their own unique [=publication
-					resources=] (i.e., they are part of their containing publication resource). As a result, EPUB
-					creators MUST NOT declare data URLs in the manifest [^item^] element's <a href="#attrdef-item-href"
-							><code>href</code></a> attribute.</p>
-
-				<p>EPUB creators MAY use data URLs anywhere else in [=EPUB publications=] provided their use does not
-					result in a [=top-level content document=] or [=top-level browsing context=] [[html]]. This
-					restriction applies to data URLs used in the following scenarios:</p>
+				<p>EPUB creators MUST NOT use data URLs in the following scenarios where they can result in a
+					[=top-level content document=] or [=top-level browsing context=] [[html]]:</p>
 
 				<ul>
 					<li>
-						<p>in the <code>href</code> attribute on [[html]] or [[svg]] <code>a</code> elements (except
-							when inside an [^iframe^] element [[html]]);</p>
+						<p>in <code>href</code> attributes in the package document &#8212; this applies both to manifest
+							[^item^] elements and metadata [^link^] elements;</p>
 					</li>
 					<li>
-						<p>in the <code>href</code> attribute on [[html]] <code>area</code> elements (except when inside
-							an <code>iframe</code> element);</p>
+						<p>in the <code>href</code> attribute on [[html]] or [[svg]] <code>a</code> elements, except
+							when inside an [^iframe^] element [[html]];</p>
+					</li>
+					<li>
+						<p>in the <code>href</code> attribute on [[html]] <code>area</code> elements, except when inside
+							an <code>iframe</code> element;</p>
 					</li>
 					<li>
 						<p>in calls to [[ecmascript]] <code>window.open</code> or <code>document.open</code>.</p>
 					</li>
 				</ul>
-
-				<p>Although data URLs are considered part of their containing resource, because they have their own
-					media types they are still subject to the <a href="#sec-foreign-resources">foreign resource
-						restrictions</a>. EPUB creators MUST therefore encode data URLs as [=core media type resources=]
-					or provide a fallback using the intrinsic fallback mechanisms of the host format.</p>
 
 				<div class="note">
 					<p>These restrictions on the use of data URLs are to prevent security issues and also to ensure that
@@ -1511,10 +1504,12 @@
 						allow their use evolve.</p>
 				</div>
 
-				<div class="note">
-					<p>The restrictions in this section do not apply to the use of data URLs in manifest [^link^]
-						elements (i.e., for [=linked resources=]).</p>
-				</div>
+				<p>A consequence of embedding is that the data in a data URL is not considered its own unique
+					[=publication resource=] for manifest reporting purposes (i.e., only its containing publication
+					resource gets listed). As this data has its own media type, however, it is still subject to <a
+						href="#sec-foreign-resources">foreign resource restrictions</a>. EPUB creators MUST therefore
+					encode data URLs as [=core media type resources=] or provide a fallback using the intrinsic fallback
+					mechanisms of the host format.</p>
 			</section>
 
 			<section id="sec-file-urls">
@@ -4624,14 +4619,8 @@ XHTML:
 						resources outside the EPUB container.</p>
 
 					<p id="attrdef-link-media-type">The <a href="#attrdef-media-type"><code>media-type</code>
-							attribute</a> is OPTIONAL when:</p>
-
-					<ul>
-						<li>a linked resource is located outside the EPUB container (more than one media type could be
-							served from the same URL [[?url]]); or</li>
-						<li>the resource is encoded as a <a href="#sec-data-urls">data URL</a> in the <code>href</code>
-							attribute (the data URL provides the media type).</li>
-					</ul>
+							attribute</a> is OPTIONAL when a linked resource is located outside the EPUB container (more
+						than one media type could be served from the same URL [[?url]]).</p>
 
 					<p>EPUB creators MUST specify the attribute for all linked resources within the EPUB container.</p>
 
@@ -11788,8 +11777,8 @@ EPUB/images/cover.png</pre>
 						Recommendation</a></h3>
 
 				<ul>
-					<li>29-Nov-2022: Clarified that data URLs are not unique publication resources (i.e., never listed
-						in the manifest) but are subject to fallback requirements. See <a
+					<li>29-Nov-2022: Clarified that data URLs are not unique publication resources, and not allowed in
+						the package document, but are subject to fallback requirements. See <a
 							href="https://github.com/w3c/epub-specs/issues/2485">issue 2485</a>.</li>
 					<li>29-Nov-2022: Clarified the <code>epub:type</code> attribute is not allowed on the
 							<code>head</code> element and metadata content in XHTML content documents. See <a
