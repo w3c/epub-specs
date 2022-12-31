@@ -279,14 +279,6 @@ Link relationships are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-acquire">acquire</a></td>
-            <td>
-            	<ul>
-            		<li>-</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
             <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate">alternate</a></td>
             <td>
             	<ul>
@@ -379,14 +371,6 @@ Link properties are expressed in the
             		<li>Liturgical Press</li>
                     <li>Macmillan Learning</li>
                     <li>Taylor &amp; Francis</li>
-            	</ul>
-            </td>
-        </tr>
-        <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xmp">xmp</a></td>
-            <td>
-            	<ul>
-            		<li>-</li>
             	</ul>
             </td>
         </tr>
