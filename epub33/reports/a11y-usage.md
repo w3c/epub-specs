@@ -16,4 +16,4 @@ new revision does not introduce stricter content requirements.
 
 ## Publisher Implementations
 
-- todo
+- Fondazione LIA
