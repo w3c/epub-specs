@@ -16,4 +16,50 @@ new revision does not introduce stricter content requirements.
 
 ## Publisher Implementations
 
+- Acorn Press
+- Annick Press
+- Au Press
+- BTL Book
+- Book*hug Press
+- Brick Books
+- Brush Education Inc.
+- Coach House Books
+- Cormorant Books
+- DCB
+- Dog Training Press
+- Dundurn Press
+- ECW Press
+- Éditions Alto
+- Éditions Bourton d'or Acadie
+- Éditions MultiMondes
+- Flanker Press
 - Fondazione LIA
+- Formac Lorimer
+- Goose Lane Editions
+- Guilford Press
+- House of Anansi Press/Groundwood Books
+- Heritage Group Distribution
+- Hurtubise
+- Invisible Publishing
+- Jones and Bartlett Learning
+- Kogan Page
+- Les Éditions Perce-Neige
+- Linda Leith Publishing
+- Macmillan Learning
+- md
+- Nimbus Publishing
+- Pearson
+- Planète rebelle
+- Playwrights Canada
+- Radiant Press
+- Saint Jean
+- Second Story Press
+- Simon &amp; Schuster
+- Taylor &amp; Francis
+- Tidewater Press
+- UBC Press
+- University of Michigan Press
+- University of Ottawa Press
+- Wiley
+- Wilfred Laurier University Press
+- XYZ
