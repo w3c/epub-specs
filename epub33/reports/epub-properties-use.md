@@ -1,7 +1,7 @@
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
-the [EPUB 3.3](https://w3c.github.io/epub-specs/epub33/core/) specification for consideration
+the [EPUB 3.3](https://www.w3.org/TR/epub-33/) specification for consideration
 as a W3C Proposed Recommendation after documenting implementation of each feature.
 
 For this specification to advance to Proposed Recommendation, it has to be
@@ -20,11 +20,11 @@ rendering, etc. (for reading system developers).
 ### Meta Properties Vocabulary
 
 The following table lists organizations that have stated that they are currently using
-the [meta properties](https://w3c.github.io/epub-specs/epub33/core/#app-meta-property-vocab)
+the [meta properties](https://www.w3.org/TR/epub-33/#app-meta-property-vocab)
 in production.
 
 Meta properties are expressed in the
-[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
+[`meta` element's `property` attribute](https://www.w3.org/TR/epub-33/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -35,7 +35,7 @@ Meta properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate-script">alternate-script</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-alternate-script">alternate-script</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -48,7 +48,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-authority">authority</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-authority">authority</a></td>
             <td>
             	<ul>
                     <li>American Academy of Pediatrics</li>
@@ -57,7 +57,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-belongs-to-collection">belongs-to-collection</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-belongs-to-collection">belongs-to-collection</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -68,7 +68,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-collection-type">collection-type</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-collection-type">collection-type</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -77,7 +77,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-display-seq">display-seq</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-display-seq">display-seq</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -98,7 +98,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-file-as">file-as</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-file-as">file-as</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -121,7 +121,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-group-position">group-position</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-group-position">group-position</a></td>
             <td>
             	<ul>
                     <li>BookFusion Inc</li>
@@ -130,7 +130,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-identifier-type">identifier-type</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-identifier-type">identifier-type</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -157,14 +157,14 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-meta-auth"><s>meta-auth</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-meta-auth"><s>meta-auth</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-role">role</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-role">role</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -199,7 +199,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-source-of">source-of</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-source-of">source-of</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -218,7 +218,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-term">term</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-term">term</a></td>
             <td>
             	<ul>
                     <li>American Academy of Pediatrics</li>
@@ -231,7 +231,7 @@ Meta properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-title-type">title-type</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-title-type">title-type</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -264,11 +264,11 @@ Meta properties are expressed in the
 #### Link Relationships
 
 The following table lists organizations that have stated that they are currently using
-the [link relationships](https://w3c.github.io/epub-specs/epub33/core/#sec-link-rel)
+the [link relationships](https://www.w3.org/TR/epub-33/#sec-link-rel)
 in production.
 
 Link relationships are expressed in the
-[`link` element's `rel` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-link-rel).
+[`link` element's `rel` attribute](https://www.w3.org/TR/epub-33/#attrdef-link-rel).
 
 <table>
     <thead>
@@ -279,7 +279,7 @@ Link relationships are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-alternate">alternate</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-alternate">alternate</a></td>
             <td>
             	<ul>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -288,28 +288,28 @@ Link relationships are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-marc21xml-record"><s>marc21xml-record</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-marc21xml-record"><s>marc21xml-record</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mods-record"><s>mods-record</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-mods-record"><s>mods-record</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix-record"><s>onix-record</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-onix-record"><s>onix-record</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-record">record</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-record">record</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -320,7 +320,7 @@ Link relationships are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-voicing">voicing</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-voicing">voicing</a></td>
             <td>
             	<ul>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -329,14 +329,14 @@ Link relationships are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xml-signature"><s>xml-signature</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-xml-signature"><s>xml-signature</s></a></td>
             <td>
             	<p>This property deprecated and is no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-xmp-record"><s>xmp-record</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-xmp-record"><s>xmp-record</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
@@ -348,11 +348,11 @@ Link relationships are expressed in the
 #### Link Properties
 
 The following table lists organizations that have stated that they are currently using
-the [link properties](https://w3c.github.io/epub-specs/epub33/core/#sec-link-properties)
+the [link properties](https://www.w3.org/TR/epub-33/#sec-link-properties)
 in production.
 
 Link properties are expressed in the
-[`link` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
+[`link` element's `properties` attribute](https://www.w3.org/TR/epub-33/#attrdef-properties).
 
 <table>
     <thead>
@@ -363,7 +363,7 @@ Link properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-onix">onix</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-onix">onix</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -381,13 +381,13 @@ Link properties are expressed in the
 #### General Properties
 
 The following table lists organizations that have stated that they are currently using
-the [general package rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-general)
+the [general package rendering properties](https://www.w3.org/TR/epub-33/#sec-rendering-general)
 in production.
 
 General package rendering properties are expressed both globally in the
-[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+[`meta` element's `property` attribute](https://www.w3.org/TR/epub-33/#attrdef-meta-property)
 and as overrides in the
-[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
+[`itemref` element's `properties` attribute](https://www.w3.org/TR/epub-33/#attrdef-properties).
 
 <table>
     <thead>
@@ -398,7 +398,7 @@ and as overrides in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-flow">rendition:flow</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-flow">rendition:flow</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -412,7 +412,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-auto">rendition:flow-auto</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#flow-auto">rendition:flow-auto</a></td>
             <td>
             	<ul>
                     <li>EDRLab (Thorium Reader)</li>
@@ -422,7 +422,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-paginated">rendition:flow-paginated</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#flow-paginated">rendition:flow-paginated</a></td>
             <td>
             	<ul>
                     <li>EDRLab (Thorium Reader)</li>
@@ -433,7 +433,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#flow-scrolled-continuous">rendition:flow-scrolled-continuous</a></td>
             <td>
             	<ul>
                     <li>KADOKAWA</li>
@@ -443,7 +443,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#flow-scrolled-doc">rendition:flow-scrolled-doc</a></td>
             <td>
             	<ul>
                     <li>EDRLab (Thorium Reader)</li>
@@ -453,7 +453,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-align-x-center">rendition:align-x-center</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-align-x-center">rendition:align-x-center</a></td>
             <td>
             	<ul>
                     <li>KnowledgeWorks Global Ltd.</li>
@@ -467,13 +467,13 @@ and as overrides in the
 #### Fixed-Layout Properties
 
 The following table lists organizations that have stated that they are currently using
-the [fixed-layout rendering properties](https://w3c.github.io/epub-specs/epub33/core/#sec-rendering-fxl)
+the [fixed-layout rendering properties](https://www.w3.org/TR/epub-33/#sec-rendering-fxl)
 in production.
 
 Fixed-layout properties are expressed both globally in the
-[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property)
+[`meta` element's `property` attribute](https://www.w3.org/TR/epub-33/#attrdef-meta-property)
 and as overrides in the
-[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
+[`itemref` element's `properties` attribute](https://www.w3.org/TR/epub-33/#attrdef-properties).
 
 <table>
     <thead>
@@ -484,7 +484,7 @@ and as overrides in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout">rendition:layout</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#layout">rendition:layout</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -510,7 +510,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#layout-pre-paginated">rendition:layout-pre-paginated</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -530,7 +530,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#layout-reflowable">rendition:layout-reflowable</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#layout-reflowable">rendition:layout-reflowable</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -545,7 +545,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation">rendition:orientation</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#orientation">rendition:orientation</a></td>
             <td>
             	<ul>
                     <li>Amnet</li>
@@ -567,7 +567,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-auto">rendition:orientation-auto</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#orientation-auto">rendition:orientation-auto</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -585,7 +585,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-landscape">rendition:orientation-landscape</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#orientation-landscape">rendition:orientation-landscape</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -600,7 +600,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#orientation-portrait">rendition:orientation-portrait</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#orientation-portrait">rendition:orientation-portrait</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -616,7 +616,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread">rendition:spread</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread">rendition:spread</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -644,7 +644,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-auto">rendition:spread-auto</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread-auto">rendition:spread-auto</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -663,7 +663,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-both">rendition:spread-both</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread-both">rendition:spread-both</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -678,7 +678,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-landscape">rendition:spread-landscape</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread-landscape">rendition:spread-landscape</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -695,7 +695,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-none">rendition:spread-none</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread-none">rendition:spread-none</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -711,14 +711,14 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#spread-portrait"><s>rendition:spread-portrait</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#spread-portrait"><s>rendition:spread-portrait</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-center">rendition:page-spread-center</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#page-spread-center">rendition:page-spread-center</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -735,7 +735,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-left">rendition:page-spread-left</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#page-spread-left">rendition:page-spread-left</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -751,7 +751,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#page-spread-right">rendition:page-spread-right</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#page-spread-right">rendition:page-spread-right</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -767,7 +767,7 @@ and as overrides in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#viewport"><s>rendition:viewport</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#viewport"><s>rendition:viewport</s></a></td>
             <td>
             	<p>This property is deprecated and no longer recommended for use in EPUB publications.
             		It is only listed for completeness of reporting.</p>
@@ -779,11 +779,11 @@ and as overrides in the
 ### Manifest Properties Vocabulary
 
 The following table lists organizations that have stated that they are currently using
-the [manifest properties](https://w3c.github.io/epub-specs/epub33/core/#app-item-properties-vocab)
+the [manifest properties](https://www.w3.org/TR/epub-33/#app-item-properties-vocab)
 in production.
 
 Manifest properties are expressed in the
-[`item` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
+[`item` element's `properties` attribute](https://www.w3.org/TR/epub-33/#attrdef-properties).
 
 <table>
     <thead>
@@ -794,7 +794,7 @@ Manifest properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-cover-image">cover-image</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-cover-image">cover-image</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -836,7 +836,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-mathml">mathml</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-mathml">mathml</a></td>
             <td>
             	<ul>
                     <li>Amnet</li>
@@ -850,7 +850,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-nav">nav</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-nav">nav</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -890,7 +890,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-remote-resources">remote-resources</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-remote-resources">remote-resources</a></td>
             <td>
             	<ul>
                     <li>Carson Dellosa Education</li>
@@ -902,7 +902,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-scripted">scripted</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-scripted">scripted</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -921,7 +921,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-svg">svg</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-svg">svg</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -942,7 +942,7 @@ Manifest properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-switch"><s>switch</s></a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-switch"><s>switch</s></a></td>
             <td>
             	<p>This property indicates that the deprecated switch element is present.
                     It is only listed for completeness of reporting.</p>
@@ -954,11 +954,11 @@ Manifest properties are expressed in the
 ### Spine properties vocabulary
 
 The following table lists organizations that have stated that they are currently using
-the [spine properties](https://w3c.github.io/epub-specs/epub33/core/#app-itemref-properties-vocab)
+the [spine properties](https://www.w3.org/TR/epub-33/#app-itemref-properties-vocab)
 in production.
 
 Spine properties are expressed in the
-[`itemref` element's `properties` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-properties).
+[`itemref` element's `properties` attribute](https://www.w3.org/TR/epub-33/#attrdef-properties).
 
 <table>
     <thead>
@@ -969,7 +969,7 @@ Spine properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-left">page-spread-left</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-page-spread-left">page-spread-left</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -991,7 +991,7 @@ Spine properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-page-spread-right">page-spread-right</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-page-spread-right">page-spread-right</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -1018,11 +1018,11 @@ Spine properties are expressed in the
 ### Media Overlays Vocabulary
 
 The following table lists organizations that have stated that they are currently using
-the [Media Overlays properties](https://w3c.github.io/epub-specs/epub33/core/#app-overlays-vocab)
+the [Media Overlays properties](https://www.w3.org/TR/epub-33/#app-overlays-vocab)
 in production.
 
 Media Overlays properties are expressed in the
-[`meta` element's `property` attribute](https://w3c.github.io/epub-specs/epub33/core/#attrdef-meta-property).
+[`meta` element's `property` attribute](https://www.w3.org/TR/epub-33/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -1033,7 +1033,7 @@ Media Overlays properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-active-class">active-class</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-active-class">active-class</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -1051,7 +1051,7 @@ Media Overlays properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-duration">duration</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-duration">duration</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -1067,7 +1067,7 @@ Media Overlays properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-narrator">narrator</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-narrator">narrator</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -1079,7 +1079,7 @@ Media Overlays properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://w3c.github.io/epub-specs/epub33/core/#sec-playback-active-class">playback-active-class</a></td>
+            <td><a href="https://www.w3.org/TR/epub-33/#sec-playback-active-class">playback-active-class</a></td>
             <td>
             	<ul>
                     <li>Advantage | ForbesBooks</li>
@@ -1098,4 +1098,3 @@ Media Overlays properties are expressed in the
 Where machine-testable assertions are made about the use of this metadata, conformance is checked by EPUBCheck.
 In particular, it is able to determine if authors have not set manifest properties correctly.
 
-(TBD what authoring tools support the metadata.)

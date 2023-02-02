@@ -1,9 +1,13 @@
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
-the [EPUB Accessibility 1.1](https://w3c.github.io/epub-specs/epub33/a11y/) specification for
+the [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/) specification for
 consideration as a W3C Proposed Recommendation after documenting that publishers can
 meet the requirements at WCAG 2.0 Level AA.
+
+For this specification to advance to Proposed Recommendation, it has to be
+proven that at least 5 publishers will produce at least 1 EPUB publication each that 
+conform to [EPUB Accessibility 1.1 - WCAG 2.0 Level AA](https://www.w3.org/TR/epub-a11y-11/#sec-conf-reporting-pub).
 
 Publishers are not expected to be producing content that claims conformance
 to the specification prior to it becoming a recommendation, only that they have
