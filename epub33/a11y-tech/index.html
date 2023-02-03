@@ -1018,8 +1018,8 @@
 				</section>
 			</section>
 
-			<section id="sec-wcag-semantics">
-				<h3>Semantics</h3>
+			<section id="sec-wcag-roles">
+				<h3>Roles</h3>
 
 				<section id="sem-001">
 					<h4>ARIA roles and <code>epub:type</code></h4>
@@ -1066,7 +1066,7 @@
 				</section>
 
 				<section id="sem-002">
-					<h4>Do not repeat semantics across chunked content</h4>
+					<h4>Do not repeat roles across chunked content</h4>
 
 					<p>Although <a href="https://www.w3.org/TR/epub/#dfn-epub-publication">EPUB publications</a> appear
 						as single contiguous documents to users when read, they are typically composed of many
@@ -1093,35 +1093,54 @@
 					<p>To counteract this destructuring effect, EPUB creators sometimes think to re-add or re-identify
 						structures in the belief that having this information in every document will be helpful to users
 						(e.g., adding an extra [[html]] <a data-lt="section"><code>section</code> element</a> around a
-						chapter to indicate it belongs to a part, or putting the part semantic on the
-						<code>body</code> tag). All this practice does, however, is add repetition that is not only
-						disruptive when reading but can make the structure of the publication harder to follow. EPUB
-						creators are therefore advised not to attempt to rebuild structures in these ways.</p>
+						chapter to indicate it belongs to a part). All this practice does, however, is add repetition
+						that is not only disruptive when reading but can make the structure of the publication harder to
+						follow. EPUB creators are therefore advised not to attempt to rebuild structures in these
+						ways.</p>
 
 					<p>For example, consider a book that has five parts and each part contains five chapters.
 						Structurally, each chapter belongs to its part (i.e., is grouped with it), as in the following
 						markup:</p>
 
-					<pre>&lt;section
-    role="doc-part">
-   &lt;h1>Part 1&lt;/h1>
-   
-   &lt;section
-       role="doc-chapter">
-      &lt;h2>Chapter 1&lt;/h2>
-      …
-   &lt;/section>
+					<pre>&lt;html … >
    …
-&lt;/section></pre>
+   &lt;body>
+      &lt;section
+          role="doc-part"
+          aria-labelledby="p1">
+         
+         &lt;h1 id="p1">Part 1&lt;/h1>
+         
+         &lt;section
+             role="doc-chapter"
+             aria-labelledby="c1">
+            
+            &lt;h2 id="c1">Chapter 1&lt;/h2>
+            …
+         &lt;/section>
+         …
+      &lt;/section>
+      …
+   &lt;/body>
+&lt;/html></pre>
+
+					<div class="note">
+						<p>When more than one instance of a role is included in a document, each must be uniquely
+							identified. The <code>aria-labelledby</code> attribute provides the name of each landmark in
+							the preceding example. The attribute is not required if only one instance is present, so it
+							is omitted from the following examples.</p>
+					</div>
 
 					<p>Since this would lead to a large content file, the part heading is typically split out into its
 						own EPUB content document so that it will appear on its own page:</p>
 
 					<pre>&lt;html … >
    …
-   &lt;body
-       role="doc-part">
-      &lt;h1>Part 1&lt;/h1>
+   &lt;body>
+      &lt;section 
+          role="doc-part">
+         &lt;h1 id="p1">Part 1&lt;/h1>
+      &lt;/section>
    &lt;/body>
 &lt;/html></pre>
 
@@ -1129,29 +1148,20 @@
 
 					<pre>&lt;html … >
    …
-   &lt;body
-       role="doc-chapter">
-      &lt;h2>Chapter 1&lt;/h2>
-      …
-   &lt;/body>
-&lt;/html></pre>
-
-					<p>It is not necessary to add a part wrapper to each chapter, as in the following example:</p>
-
-					<pre>&lt;html … >
-   …
-   &lt;body
-       role="doc-part">
-      &lt;section
+   &lt;body>
+      &lt;section
           role="doc-chapter">
-         &lt;h2>Chapter 1&lt;/h2>
+         
+         &lt;h2>Chapter 1&lt;/h2>
          …
       &lt;/section>
    &lt;/body>
 &lt;/html></pre>
 
-					<p>Doing so introduces a new <code>part</code> landmark into each document, which will cause an
-						assistive technology to inform the user that the landmark is available to navigate to.</p>
+					<p>If another <code>section</code> tag were added around the chapter in the preceding example to
+						indicate it is in part one (e.g., using the <code>aria-label</code> attribute so the heading is
+						not visible) users would hear "Part 1 Part 1 Chapter 1" because "Part 1" is also the heading in
+						the document that precedes the first chapter.</p>
 				</section>
 
 				<section id="sem-003">
