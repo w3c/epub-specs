@@ -1,5 +1,6 @@
-function modifyCopyright() {
-    // find the place to put the current year
-    const span = document.getElementById("thisyear");
-    span.innerHTML = (new Date()).getFullYear();
+function modifyCopyright(utils, content, url) {
+	// find the place to put the current year
+    return content.replace("%thisyear%", (new Date()).getFullYear());
 }
+
+// 1999-2022
