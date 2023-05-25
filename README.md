@@ -16,6 +16,7 @@ The Working Group maintains an [errata](https://w3c.github.io/epub-specs/epub33/
 erratum, please follow the guidelines in that file.
 
 Some issues have been left open by the Working Groups as [deferred issues](https://github.com/w3c/epub-specs/issues?q=is:issue+is:open+label:Status-Deferred).
+Issues for specifications not actively maintained have been [marked as abandoned and closed](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+label%3AStatus-Abandoned+is%3Aclosed). These issues may be resurrected in the future if work is resumed on their respective specifications.
 
 ## Repository Structure
 
