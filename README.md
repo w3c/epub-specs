@@ -8,8 +8,13 @@ As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/
 
 ## Current version of EPUB: EPUB 3.3
 
-On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) published three 
-EPUB 3.3 Recommendations ([EPUB 3.3](https://www.w3.org/TR/epub-33/), [EPUB Reading Systems 3.3](https://www.w3.org/TR/epub-rs-33/), and [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/)), as well as a number of Working Group Notes. For a complete list of the publications by the Working Group, see the
+On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) published the following EPUB 3.3 Recommendations:
+
+- [EPUB 3.3](https://www.w3.org/TR/epub-33/),
+- [EPUB Reading Systems 3.3](https://www.w3.org/TR/epub-rs-33/), and
+- [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/)).
+
+For a complete list of publications by the Working Group, including all Working Group Notes, see the
 [separate index page](https://www.w3.org/publishing/epub33/).
 
 The Working Group maintains an [errata](https://w3c.github.io/epub-specs/epub33/errata.html) file for all the specifications and notes. If you want to report a new
