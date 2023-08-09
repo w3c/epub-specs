@@ -11,9 +11,13 @@ function addCautionHeaders() {
 		var parent_hd = parent_section.querySelector('h2,h3,h4,h5,h6');
 		var parent_num = parent_hd.localName.replace('h','');
 		
+		var aria_level = Number(parent_num) + 1;
+		
+		if (aria_level > 6) { aria_level = 6; }
+		
 		var caution_hd = document.createElement('div');
 			caution_hd.setAttribute('role', 'heading');
-			caution_hd.setAttribute('aria-level', parent_num+1);
+			caution_hd.setAttribute('aria-level', aria_level);
 			caution_hd.setAttribute('class','caution-title marker');
 		
 		var caution_label = document.createElement('span');
