@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<title>EPUB Fixed Layout Accessibility Techniques</title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+		<script src="../common/js/css-inline.js" class="remove"></script>
+		<script src="../common/js/copyright.js" class="remove"></script>
+		<script class="remove">
+			//<![CDATA[
+            var respecConfig = {
+                group: "pm",
+                wgPublicList: "public-pm-wg",
+                specStatus: "ED",
+                shortName: "epub-fxl-a11y-tech",
+                edDraftURI: "https://w3c.github.io/epub-specs/epub33/fxl-a11y-tech/",
+                previousPublishDate: "2023-10-16",
+                previousMaturity: "NOTE",
+                copyrightStart: "2023",
+                noRecTrack: true,
+                editors:[ {
+                    name: "Wendy Reid",
+                    company: "Rakuten Kobo",
+                    companyURL: "https://www.kobo.com",
+					w3cid: 102009
+                }],
+                includePermalinks: true,
+                permalinkEdge: true,
+                permalinkHide: false,
+                github: {
+                    repoURL: "https://github.com/w3c/epub-specs",
+                    branch: "main"
+                },
+                pluralize: true,
+                localBiblio: {
+					"wcag2": {
+						"title": "Web Content Accessibility Guidelines (WCAG) 2",
+						"href": "https://www.w3.org/TR/WCAG2/",
+						"publisher": "W3C"
+					}
+                },
+                preProcess:[inlineCustomCSS]
+            };//]]>
+      </script>
+        
+        <style> /*prevent examples from horizontal scrolling*/
+			pre {
+				white-space: break-spaces !important;
+			}
+        </style>
+	</head>
+    <body>
+        <section id="abstract">
+            <p>This document, EPUB Fixed Layout Accessibility Techniques, outlines the techniques content authors and publishers can use to make their Fixed Layout EPUB content accessible.</p>
+        </section>
+
+        <section id="sotd"></section>
+        <section id="toc"></section>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+        </section>
+
+        <section id="content-a11y">
+            <h2>Content Accessibility</h2>
+
+            <section id="reading-order">
+                <h3>Reading Order</h3>
+
+                <section id="reading-order-position">
+                    <h4>The page position problem</h4>
+    
+                    <p>For complex designs, the position of objects on the fixed-layout page is not a reliable indicator of their reading order.</p>
+    
+                    <figure>
+                        <img src="images/reading_order_ex1.png" width="600" alt="A two-page spread featuring a layout with a prominent heading followed by paragraphs of text on the left-hand page, and a series of images with descriptive captions on the right-hand page."/>
+                        <figcaption>In the example page above, the top level heading is inferred by its styling rather than its position. The steps are reading across left to right but in two rows.</figcaption>
+                    </figure>
+    
+                    <figure>
+                        <img src="images/reading_order_ex2.png"  width="600" alt="The same two-page spread, with outlined green boxes surrounding the text elements, each one labelled with a reading order number." />
+                        <figcaption>The correct reading order indicated with overlaid regions.</figcaption>
+                    </figure>
+    
+                    <p>In a multi-column document, the linear presentation of the content flows from the top of a column to the bottom of the column, then to the top of the next column.</p>
+    
+                    <p>For further guidance, you can also refer to this example from <a href="https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence">"Understanding WCAG Success Criteria 1.3.2: Meaningful Sequence".</a></p>
+                </section>     
+    
+                <section id="reading-order-stacking">
+                    <h4>The stacking order problem</h4>
+    
+                    <p>The default reading order for Text to Speech (TTS) is determined by the order of the elements in the XHTML page (DOM). Many EPUB production tools export the page content in the order of the stacking order of objects on the page rather than their page position. The topmost objects sits above other objects and so is written last in the HTML.</p>
+    
+                    <figure>
+                        <img src="images/reading_order_ex3.png" width="600" alt="Screenshot demonstrating how the order of layers in a publication dictates the reading order, with the top-most object being the highest layer in the order." />
+                        <figcaption>The stacking order is commonly used by layout applications to dictate the reading order.</figcaption>
+                    </figure>
+    
+                    <p>In HTML, the design above would be rendered in reverse reading order.</p>
+    
+                    <aside class="example" title="Reverse Reading Order">
+                        <pre>
+&lt;body style="width:595px;height:842px"&gt;
+    &lt;div style="width:500px;height:200px;top:400px;position:absolute;"&gt;
+        &lt;p …&gt;Bottom object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="width:500px;height:200px;top:225px;position:absolute;"&gt;
+        &lt;p …&gt;Middle object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="width:500px;height:200px;top:50px;position:absolute;"&gt;
+        &lt;p …&gt;Top object&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+                        </pre>
+                    </aside>
+                </section>
+                
+                <section id="reading-order-altering">
+                    <h4>Altering the reading order</h4>
+
+                    <p>Automatic exports can derive their reading order either by analysing the position of the page and / or the stacking order in order to influence the reading order. Neither is suitable. Altering the stacking order to dictate the reading order has the potential to alter and disrupt the design of the page.</p>
+
+                    <figure>
+                        <img src="images/reading_order_ex4.png" width="600" alt="Screenshot demonstrating how altering the layer order to fix the reading order in export alters the visual design, causing the bottom-most layer to appear over top the other ones." />
+                        <figcaption>Altering the stacking order will the alter reading order but may also disrupt the design of the page.</figcaption>
+                    </figure>
+    
+                    <p>The recommended best practice solution is to adjust the order of the elements in the XHTML page and to preserve the design using CSS <code>z-index</code>.</p>
+    
+                    <aside class="example" title="Using z-index for visual placement">
+                        <pre>
+&lt;body style="width:595px;height:842px"&gt;
+    &lt;div style="z-index:3;width:500px;height:200px;top:50px;position:absolute;"&gt;
+        &lt;p …&gt;Top object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="z-index:2;width:500px;height:200px;top:225px;position:absolute;"&gt;
+        &lt;p …&gt;Middle object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="z-index:1;width:500px;height:200px;top:400px;position:absolute;"&gt;
+        &lt;p …&gt;Bottom object&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+                        </pre>
+                    </aside>
+                </section>
+
+                <section id="reading-order-removing">
+                    <h4>Removing items from the reading order</h4>
+    
+                    <p>There may be cases when text appears on the page but is unnecessary, duplicated or otherwise confusing for it to be added to the reading order. e.g. page numbers, section or chapter headings which are already part of the publication’s structure or text used for visual effects.</p>
+    
+                    <p>There are multiple ways to hide content from users visually, in the accessibility tree, or both. [TODO: Add more information about hiding content].</p>
+    
+                    <aside class="example" title="Using aria-hidden">
+                        <pre>
+&lt;div aria-hidden="true"&gt;
+    &lt;p class="folio"&gt;210&lt;/p&gt;
+&lt;/div&gt;
+                        </pre>
+                    </aside>
+                </section>
+            </section>
+
+            <section id="images">
+                <h3>Images</h3>
+            </section>
+
+            <section id="navigation">
+                <h3>Navigation</h3>
+            </section>
+
+            <section id="legibility">
+                <h3>Legibility</h3>
+            </section>
+
+            <section id="media-overlays">
+                <h3>Media Overlays</h3>
+            </section>
+
+            <section id="tables">
+                <h3>Tables</h3>
+            </section>
+        </section>
+
+        <section id="metadata">
+            <h2>Accessibility Metadata for Fixed Layout EPUB</h2>
+        </section>
+    </body>
+</html>
