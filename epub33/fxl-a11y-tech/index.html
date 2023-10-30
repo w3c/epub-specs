@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<title>EPUB Fixed Layout Accessibility Techniques</title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+		<script src="../common/js/css-inline.js" class="remove"></script>
+		<script src="../common/js/copyright.js" class="remove"></script>
+		<script class="remove">
+			//<![CDATA[
+            var respecConfig = {
+                group: "pm",
+                wgPublicList: "public-pm-wg",
+                specStatus: "ED",
+                shortName: "epub-fxl-a11y-tech",
+                edDraftURI: "https://w3c.github.io/epub-specs/epub33/fxl-a11y-tech/",
+                previousPublishDate: "2023-10-16",
+                previousMaturity: "NOTE",
+                copyrightStart: "2023",
+                noRecTrack: true,
+                editors:[ {
+                    name: "Wendy Reid",
+                    company: "Rakuten Kobo",
+                    companyURL: "https://www.kobo.com",
+					w3cid: 102009
+                }],
+                includePermalinks: true,
+                permalinkEdge: true,
+                permalinkHide: false,
+                github: {
+                    repoURL: "https://github.com/w3c/epub-specs",
+                    branch: "main"
+                },
+                pluralize: true,
+                localBiblio: {
+					"wcag2": {
+						"title": "Web Content Accessibility Guidelines (WCAG) 2",
+						"href": "https://www.w3.org/TR/WCAG2/",
+						"publisher": "W3C"
+					}
+                },
+                preProcess:[inlineCustomCSS]
+            };//]]>
+      </script>
+        
+        <style> /*prevent examples from horizontal scrolling*/
+			pre {
+				white-space: break-spaces !important;
+			}
+        </style>
+	</head>
+    <body>
+        <section id="abstract">
+            <p>This document, EPUB Fixed Layout Accessibility Techniques, outlines the techniques content authors and publishers can use to make their Fixed Layout EPUB content accessible.</p>
+        </section>
+
+        <section id="sotd"></section>
+        <section id="toc"></section>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+        </section>
+
+        <section id="content-a11y">
+            <h2>Content Accessibility</h2>
+
+            <section id="reading-order">
+                <h3>Reading Order</h3>
+
+                <section id="reading-order-position">
+                    <h4>The page position problem</h4>
+    
+                    <p>For complex designs, the position of objects on the fixed-layout page is not a reliable indicator of their reading order.</p>
+    
+                    <figure>
+                        <img src="images/reading_order_ex1.png" width="600" alt="A two-page spread featuring a layout with a prominent heading followed by paragraphs of text on the left-hand page, and a series of images with descriptive captions on the right-hand page."/>
+                        <figcaption>In the example page above, the top level heading is inferred by its styling rather than its position. The steps are reading across left to right but in two rows.</figcaption>
+                    </figure>
+    
+                    <figure>
+                        <img src="images/reading_order_ex2.png"  width="600" alt="The same two-page spread, with outlined green boxes surrounding the text elements, each one labelled with a reading order number." />
+                        <figcaption>The correct reading order indicated with overlaid regions.</figcaption>
+                    </figure>
+    
+                    <p>In a multi-column document, the linear presentation of the content flows from the top of a column to the bottom of the column, then to the top of the next column.</p>
+    
+                    <p>For further guidance, you can also refer to this example from <a href="https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence">"Understanding WCAG Success Criteria 1.3.2: Meaningful Sequence".</a></p>
+                </section>     
+    
+                <section id="reading-order-stacking">
+                    <h4>The stacking order problem</h4>
+    
+                    <p>The default reading order for Text to Speech (TTS) is determined by the order of the elements in the XHTML page (DOM). Many EPUB production tools export the page content in the order of the stacking order of objects on the page rather than their page position. The topmost objects sits above other objects and so is written last in the HTML.</p>
+    
+                    <figure>
+                        <img src="images/reading_order_ex3.png" width="600" alt="Screenshot demonstrating how the order of layers in a publication dictates the reading order, with the top-most object being the highest layer in the order." />
+                        <figcaption>The stacking order is commonly used by layout applications to dictate the reading order.</figcaption>
+                    </figure>
+    
+                    <p>In HTML, the design above would be rendered in reverse reading order.</p>
+    
+                    <aside class="example" title="Reverse Reading Order">
+                        <pre>
+&lt;body style="width:595px;height:842px"&gt;
+    &lt;div style="width:500px;height:200px;top:400px;position:absolute;"&gt;
+        &lt;p …&gt;Bottom object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="width:500px;height:200px;top:225px;position:absolute;"&gt;
+        &lt;p …&gt;Middle object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="width:500px;height:200px;top:50px;position:absolute;"&gt;
+        &lt;p …&gt;Top object&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+                        </pre>
+                    </aside>
+                </section>
+                
+                <section id="reading-order-altering">
+                    <h4>Altering the reading order</h4>
+
+                    <p>Automatic exports can derive their reading order either by analysing the position of the page and / or the stacking order in order to influence the reading order. Neither is suitable. Altering the stacking order to dictate the reading order has the potential to alter and disrupt the design of the page.</p>
+
+                    <figure>
+                        <img src="images/reading_order_ex4.png" width="600" alt="Screenshot demonstrating how altering the layer order to fix the reading order in export alters the visual design, causing the bottom-most layer to appear over top the other ones." />
+                        <figcaption>Altering the stacking order will the alter reading order but may also disrupt the design of the page.</figcaption>
+                    </figure>
+    
+                    <p>The recommended best practice solution is to adjust the order of the elements in the XHTML page and to preserve the design using CSS <code>z-index</code>.</p>
+    
+                    <aside class="example" title="Using z-index for visual placement">
+                        <pre>
+&lt;body style="width:595px;height:842px"&gt;
+    &lt;div style="z-index:3;width:500px;height:200px;top:50px;position:absolute;"&gt;
+        &lt;p …&gt;Top object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="z-index:2;width:500px;height:200px;top:225px;position:absolute;"&gt;
+        &lt;p …&gt;Middle object&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="z-index:1;width:500px;height:200px;top:400px;position:absolute;"&gt;
+        &lt;p …&gt;Bottom object&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+                        </pre>
+                    </aside>
+                </section>
+
+                <section id="reading-order-removing">
+                    <h4>Removing items from the reading order</h4>
+    
+                    <p>There may be cases when text appears on the page but is unnecessary, duplicated or otherwise confusing for it to be added to the reading order. e.g. page numbers, section or chapter headings which are already part of the publication’s structure or text used for visual effects.</p>
+    
+                    <p>There are multiple ways to hide content from users visually, in the accessibility tree, or both. [TODO: Add more information about hiding content].</p>
+    
+                    <aside class="example" title="Using aria-hidden">
+                        <pre>
+&lt;div aria-hidden="true"&gt;
+    &lt;p class="folio"&gt;210&lt;/p&gt;
+&lt;/div&gt;
+                        </pre>
+                    </aside>
+                </section>
+            </section>
+
+            <section id="images">
+                <h3>Images</h3>
+
+                <p>As much as possible, we recommend making the text on the page its own layer, using technologies such as SVG and CSS to achieve the desired styling and placement, while also making the text more accessible to the user. When text is rasterized into the image, it is recommended to use the alternative text and image description recommendations described in this section.</p>
+
+                <section id="images-svg">
+                    <h4>SVG (Scaleable Vector Graphics)</h4>
+    
+                    <p>SVG provides two elements for describing images:</p>
+    
+                    <ul>
+                        <li><code>title</code> - the equivalent of the HTML <code>alt</code> attribute; it is used to provide alternative text for an entire SVG image and individual components within it.</li>
+                        <li><code>desc</code> - used to provide an extended description for the entire SVG image and individual components within it.</li>
+                    </ul>
+    
+                    <p>When a publication is made of <a href="http://kb.daisy.org/publishing/docs/fxl/svg.html">fixed-layout SVG pages</a> these two elements can be used to describe the content. Note that ARIA attributes (<code>role</code> and <code>aria-describedby</code>) are added to improve support in assistive technologies as SVG is still not well supported.</p>
+    
+                    <aside class="example" title="SVG example using ARIA">
+                        <pre>
+        &lt;body style="width:595px;height:842px"&gt;
+        &lt;svg xmlns="http://www.w3.org/2000/svg" xml:lang="en" role="group" aria-describedby="svgtitle svgdesc"&gt;
+            &lt;title id="svgtitle"&gt;The Hydrologic Cycle&lt;/title&gt;
+            &lt;desc id="svgdesc"&gt;The continuous cycle by which water …&lt;/desc&gt;
+                …
+        &lt;/svg&gt;
+        &lt;/body&gt;
+                        </pre>
+                    </aside>
+    
+                    <aside class="note">
+                        The role `group` is given to the image because it contains additional text content (not shown) that the user will interact with. If the image were entirely graphical, the role `img` would be used instead.
+                    </aside>
+    
+                    <p>The <code>title</code> and <code>desc</code> SVG elements can also be used to annotate components of a larger image.</p>
+    
+                    <aside class="example" title="Example for annotating individual components in SVG">
+                        <pre>
+        &lt;svg style="width:595px;height:842px"&gt;
+        &lt;g fill="lightgray" stroke="gray" role="img" aria-describedby="gtitle"&gt;
+        &lt;title id="gtitle"&gt;Rain clouds&lt;/title&gt;
+            …
+        &lt;/g&gt;
+        &lt;/svg&gt;
+                        </pre>
+                    </aside>
+    
+                    <p>The one problem with using these elements to annotate SVG images is that their content is typically only made available to users of assistive technologies.</p>
+    
+                    <p>A more advanced approach would be to add a link or button to view the description using script or animations (e.g., open the description like a pop-out). EPUB reading system support for such approaches is likely to be limited and testing is encouraged.</p>
+                </section>
+    
+                <section id="image-html">
+                    <h4>HTML</h4>
+    
+                    <p>When an image is embedded in an HTML fixed layout page, there are more options available for including accessible descriptions. As with SVG fixed layouts, the primary consideration is once again the limitation of having only limited screen space in which to include the description.</p>
+    
+                    <p>For this reason, descriptions are typically hidden from view using a variety of HTML, ARIA and CSS techniques. Descriptions can be hidden, clipped, made opaque, layered under an image, etc. The <a href="http://kb.daisy.org/publishing/docs/html/hidden.html">knowledge base page on hidden content</a> delves into these possibilities in more detail.</p>
+    
+                    <aside class="note">
+                        Hiding content as described in the DAISY Knowledge Base should be considered carefully. Hidden content is only available to users of assistive technologies, which could prevent others who may benefit from the same information from accessing it. 
+                    </aside>
+    
+                    <p>Support for scripting in XHTML content documents in EPUB is generally much better than is available for SVG, so there are more reliable techniques that can be used to make the descriptions viewable by a wider range of users. Clicking or tapping on an image can be used to show its description, for example. The <a href="http://idpf.github.io/epub3-samples/30/samples.html#the-voyage-of-life-tol">Voyage of Life sample EPUB</a> contains an experimental example of this technique.</p>
+    
+                    <p>Unlike reflowable publications, the CSS <code>background-image</code> property can be used with fixed layouts to set the background image for a page. It is best to limit this practice to backgrounds that are purely presentational as much as possible, however, as it complicates the ability to provide a description that any user will be able to reach (i.e., it often involves hiding the description only for assistive technologies).</p>
+                </section>
+            </section>
+
+            <section id="navigation">
+                <h3>Navigation</h3>
+
+                <section id="navigation-xhtml-titles">
+                    <h4>XHTML page titles</h4>
+    
+                    <p>The title of each XHTML page may be displayed to the end reader. As such it should be a meaningful description of the page contents or a page number.</p>
+    
+                    <aside class="example" title="XHTML title example">
+                        <pre>
+        &lt;title&gt;The Technical Basics&lt;/title&gt;
+                        </pre>
+                    </aside>
+                </section>
+
+                <section id="navigation-hiding-content">
+                    <h4>Hiding content</h4>
+    
+                    <p>Alongside the main content of the publication, auxiliary content that enhances or augments the primary content and can be accessed out of sequence. Examples of auxiliary content include: notes, descriptions and answers to quizzes. See <a href="https://www.w3.org/TR/epub/#sec-itemref-elem">EPUB 3.3 Section 5.7.2</a>.</p>
+                </section>
+
+                <section id="navigation-structure">
+                    <h4>Structural hierarchy</h4>
+    
+                    <p>The use of heading tags ensures users do not have to rely on visual styling to understand and navigate the document outline. The structural hierarchy is already being considered at the design stage of visual page layout. By adding this information into the styles on the page and the tags used on export, we pull can this structure into EPUB. For example:</p>
+    
+                    <aside class="example" title="Content hierarchy example">
+                        <pre>
+        &lt;h2 class="Main-Head"&gt;The Technical Basics&lt;/h2&gt;
+        &lt;p class="Paragraph"&gt;Photography, in its best form, is a mesh of science and art. You need both. For science, you need to understand the technical elements that affect the image – depth of field, diffraction, exposure, focus, magnification and more. On the artistic side, there are so many considerations from composition, colour, contrast, understanding what “beauty” is perceived as, narratives and storytelling elements and beyond.&lt;/p&gt;
+        &lt;p class="Paragraph"&gt;The deeper you can weave the mesh of these two elements, science and art, the more magical your images will become.&lt;/p&gt;
+        &lt;h3 class="Subhead"&gt;Understanding Depth of Field&lt;/h3&gt;
+        &lt;p class="Paragraph"&gt;There are three primary considerations for how much depth of field – the amount of the scene in focus in the resulting photograph. The size of your aperture, the focal length of your lens, and the distance from your subject all have an impact on how much you’ll get in focus in a single frame.&lt;/p&gt;
+                        </pre>
+                    </aside>
+                </section>
+
+                <section id="navigation-regionbased">
+                    <h4>Region-based navigation</h4>
+    
+                    <p>Within a page it may be possible to add the navigation to regions of interest within that page. Especially useful for splitting up a larger visual element or creating a layout for reading on smaller screens.</p>
+    
+                    <p>The <a href="http://idpf.org/epub/renditions/region-nav/epub-region-nav-20150826.html">EPUB Region-Based Navigation</a> specification introduces conventions for navigation through a publication based on regions of interest.</p>
+    
+                    <aside class="note">
+                        EPUB Region-Based Navigation is currently only supported by a few reading systems. Content creators are advised to test any EPUBs that use this feature.
+                    </aside>
+                </section>
+            </section>
+
+            <section id="legibility">
+                <h3>Legibility</h3>
+            </section>
+
+            <section id="media-overlays">
+                <h3>Media Overlays</h3>
+            </section>
+
+            <section id="tables">
+                <h3>Tables</h3>
+            </section>
+        </section>
+
+        <section id="metadata">
+            <h2>Accessibility Metadata for Fixed Layout EPUB</h2>
+        </section>
+    </body>
+</html>
