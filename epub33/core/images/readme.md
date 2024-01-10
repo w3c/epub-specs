@@ -11,6 +11,11 @@ Here is the link to the individual files:
 - [example_spread_landscape.svg](https://docs.google.com/drawings/d/1d1Q-pjutZFl09FSx-P5Hl_TswiiuW_jTX4lqv47PVfQ/edit?usp=drive_link)
 - [example_spread_none.svg](https://docs.google.com/drawings/d/1uJVY_IkZwWiz3Tux3WfqStfA8cNTbF4jBzHFz84ir7A/edit?usp=drive_link)
 - [example_spread_page_spread_right.svg](https://docs.google.com/drawings/d/1rTwzPcksrs0xPMQPIh3bAMkkt9zV9XUChzCJ2pWjnF8/edit?usp=drive_link)
+- [example_rendering_FXL_paginated_multiple_spine.svg](https://docs.google.com/drawings/d/13vh7wpr11bddJ-HilCq04WnkaRbr_ixaAPzx2YN0wtI/edit?usp=sharing)
+- [example_rendering_FXL_scrolled_doc.svg](https://docs.google.com/drawings/d/1QP_Iea9-_e60qqz1sbLfQ9AMEFRhCBi2qUMqYNJwjgg/edit?usp=sharing)
+- [example_rendering_FXL_scrolled_continuous.svg](https://docs.google.com/drawings/d/1EE98CX1LuAQcTIXe5JMSahU-TwgWXeOmADppe5_48mc/edit?usp=sharing)
+
+
 
 
 All files should be publicly visible and can be commented upon. If there is any access issue, please contact [Ivan Herman](ivan@w3.org).
