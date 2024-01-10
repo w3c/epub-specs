@@ -16,9 +16,15 @@ Here is the link to the individual files:
 - [example_rendering_FXL_scrolled_continuous.svg](https://docs.google.com/drawings/d/1EE98CX1LuAQcTIXe5JMSahU-TwgWXeOmADppe5_48mc/edit?usp=sharing)
 
 
-
-
 All files should be publicly visible and can be commented upon. If there is any access issue, please contact [Ivan Herman](ivan@w3.org).
 
+The workflow for adding these to the document is as follows:
+
+- Create/modify the drawing on Google Doc
+- Export the content into SVG
+- Modify the SVG file:
+  - The `viewBox` attribute should be modified to make it as close to the "real" content as possible, otherwise too much empty space is left in the final document. Unfortunately, this is pretty much a trial-and-error process. (A good trick: add, temporarily, a `<rect x="0" y="0", width={viewBox width} height={viewBox height} fill="yellow"/>` at the very beginning of the file and then play with the rectangle dimension to find the smallest enclosing rectangle for the content. That will set the final `viewBox` values.)
+  - If your editor has a formatting possibility it may be useful to run it; it may help others to possibly consult the SVG content
+- Add a reference via an `<image>` element to the SVG file. The `width` argument may have to be modified to make the drawing appear on a proper size in the document.
 
 
