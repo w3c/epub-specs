@@ -11,9 +11,20 @@ Here is the link to the individual files:
 - [example_spread_landscape.svg](https://docs.google.com/drawings/d/1d1Q-pjutZFl09FSx-P5Hl_TswiiuW_jTX4lqv47PVfQ/edit?usp=drive_link)
 - [example_spread_none.svg](https://docs.google.com/drawings/d/1uJVY_IkZwWiz3Tux3WfqStfA8cNTbF4jBzHFz84ir7A/edit?usp=drive_link)
 - [example_spread_page_spread_right.svg](https://docs.google.com/drawings/d/1rTwzPcksrs0xPMQPIh3bAMkkt9zV9XUChzCJ2pWjnF8/edit?usp=drive_link)
+- [example_rendering_FXL_paginated_multiple_spine.svg](https://docs.google.com/drawings/d/13vh7wpr11bddJ-HilCq04WnkaRbr_ixaAPzx2YN0wtI/edit?usp=sharing)
+- [example_rendering_FXL_scrolled_doc.svg](https://docs.google.com/drawings/d/1QP_Iea9-_e60qqz1sbLfQ9AMEFRhCBi2qUMqYNJwjgg/edit?usp=sharing)
+- [example_rendering_FXL_scrolled_continuous.svg](https://docs.google.com/drawings/d/1EE98CX1LuAQcTIXe5JMSahU-TwgWXeOmADppe5_48mc/edit?usp=sharing)
 
 
 All files should be publicly visible and can be commented upon. If there is any access issue, please contact [Ivan Herman](ivan@w3.org).
 
+The workflow for adding these to the document is as follows:
+
+- Create/modify the drawing on Google Doc
+- Export the content into SVG
+- Modify the SVG file:
+  - The `viewBox` attribute should be modified to make it as close to the "real" content as possible, otherwise too much empty space is left in the final document. Unfortunately, this is pretty much a trial-and-error process. (A good trick: add, temporarily, a `<rect x="0" y="0", width={viewBox width} height={viewBox height} fill="yellow"/>` at the very beginning of the file and then play with the rectangle dimension to find the smallest enclosing rectangle for the content. That will set the final `viewBox` values.)
+  - If your editor has a formatting possibility it may be useful to run it; it may help others to possibly consult the SVG content
+- Add a reference via an `<image>` element to the SVG file. The `width` argument may have to be modified to make the drawing appear on a proper size in the document.
 
 
