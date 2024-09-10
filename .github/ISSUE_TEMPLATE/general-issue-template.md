@@ -23,3 +23,10 @@ This repository is dedicated to the maintenance of the following W3C documents:
 * [EPUB Fixed Layout Accessibility](https://www.w3.org/TR/epub-fxl-a11y/), WG Note
 
 Only issues related to these documents are relevant. This means that questions or issues related to the implementation issues of specific reading systems, to the usage of EPUB to achieve specific styling, and other, similar general questions will be considered as out of scope, and the issue will be closed without further actions.
+
+Some possible alternative locations get help to your problems may be:
+
+- the [epub forum](https://www.mobileread.com/forums/forumdisplay.php?f=179) at mobileread
+- the [W3C publishing community group](https://github.com/w3c/publishingcg/issues)
+- the [ebooks section](https://ebooks.stackexchange.com/questions/tagged/epub) at stackexchange
+
