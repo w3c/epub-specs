@@ -28,4 +28,13 @@ Some possible alternative locations get help to your problems:
 * the [epub forum](https://www.mobileread.com/forums/forumdisplay.php?f=179) at mobileread
 * the [W3C publishing community group](https://github.com/w3c/publishingcg/issues)
 * the [ebooks section](https://ebooks.stackexchange.com/questions/tagged/epub) at stackexchange
+## Which standard or note is this issue related to?
+
+Please include the title and version number. For bug reports, include the relevant section.
+
+## Describe the problem? 
+
+What is not working? What would you like to see improved? For bug reports, cite the relevant text from the specification.
+
+## Describe the fix or new feature you propose?
 
