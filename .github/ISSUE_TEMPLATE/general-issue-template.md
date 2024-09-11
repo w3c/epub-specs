@@ -6,6 +6,7 @@ labels: ''
 assignees: ''
 
 ---
+## Before opening an issue
 This repository is only for issues with the following W3C documents. Questions or issues with specific reading systems, achieving specific styling, understanding validation errors, and similar will be considered as out of scope and will be closed without further action.
 
 * [EPUB 3 Overview](https://www.w3.org/TR/epub-overview-33/), WG Note
