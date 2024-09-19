@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 ## Before opening an issue
-This repository is only for issues with the following W3C documents. Questions or issues with specific reading systems, achieving specific styling, understanding validation errors, and similar will be considered as out of scope and will be closed without further action.
+This repository is only for issues with the following W3C documents; please, use the appropriate issue templates for questions/issues related to those documents. Questions or issues with specific reading systems, achieving specific styling, understanding validation errors, and similar will be considered as out of scope and will be closed without further action.
 
 * [EPUB 3 Overview](https://www.w3.org/TR/epub-overview-33/), WG Note
 * [EPUB 3.3](https://www.w3.org/TR/epub-33/), Recommendation
@@ -22,19 +22,11 @@ This repository is only for issues with the following W3C documents. Questions o
 * [EPUB Type to ARIA Role Authoring Guide 1.1](https://www.w3.org/TR/epub-aria-authoring-11/), WG Note
 * [EPUB Fixed Layout Accessibility](https://www.w3.org/TR/epub-fxl-a11y/), WG Note
 
-
 Some possible alternative locations get help to your problems:
 
 * the [epub forum](https://www.mobileread.com/forums/forumdisplay.php?f=179) at mobileread
 * the [W3C publishing community group](https://github.com/w3c/publishingcg/issues)
 * the [ebooks section](https://ebooks.stackexchange.com/questions/tagged/epub) at stackexchange
-## Which standard or note is this issue related to?
 
-Please include the title and version number. For bug reports, include the relevant section.
 
-## Describe the problem? 
-
-What is not working? What would you like to see improved? For bug reports, cite the relevant text from the specification.
-
-## Describe the fix or new feature you propose?
 
