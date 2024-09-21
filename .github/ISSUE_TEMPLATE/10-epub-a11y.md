@@ -1,5 +1,5 @@
 ---
-name: EPUB Accessibility
+name: EPUB Accessibility 1.1
 about: Issue related to the “EPUB Accessibility 1.1” Recommendation
 title: ''
 labels: Spec-Accessibility
