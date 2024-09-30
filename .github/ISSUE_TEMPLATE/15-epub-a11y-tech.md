@@ -1,5 +1,5 @@
 ---
-name: EPUB 3 Accessibility Techniques
+name: EPUB Accessibility Techniques 1.1
 about: Issue related to the “EPUB Accessibility Techniques 1.1” Working Group Note
 title: ''
 labels: Spec-A11yTechniques
