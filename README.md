@@ -12,7 +12,7 @@ On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishi
 
 - [EPUB 3.3](https://www.w3.org/TR/epub-33/),
 - [EPUB Reading Systems 3.3](https://www.w3.org/TR/epub-rs-33/), and
-- [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/)).
+- [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/).
 
 For a complete list of publications by the Working Group, including all Working Group Notes, see the
 [separate index page](https://www.w3.org/publishing/epub33/).
