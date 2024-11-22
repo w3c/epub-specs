@@ -1,8 +1,8 @@
 ---
-name: EPUB 3 Text-to-Speech
+name: EPUB 3 Structural Semantics Vocabulary
 about: Issue related to the “EPUB 3 Structural Semantics Vocabulary 1.1” Working Group Note
 title: ''
-labels: Spec-TTS
+labels: Spec-SSV
 assignees: ''
 
 ---
