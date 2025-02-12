@@ -13,6 +13,16 @@ var biblio = {
 		"href": "https://www.w3.org/TR/dpub-aria/",
 		"publisher": "W3C"
 	},
+	"epub-a11y-12": {
+		"title": "EPUB Reading Systems 3.4",
+		"href": "https://w3c.github.io/epub-specs/epub34/rs/",
+		"publisher": "W3C"
+	},
+	"epub-rs-34": {
+		"title": "EPUB Reading Systems 3.4",
+		"href": "https://w3c.github.io/epub-specs/epub34/rs/",
+		"publisher": "W3C"
+	},
 	"epubcontentdocs-301": {
 		"authors":[
 		"Markus Gylling",
