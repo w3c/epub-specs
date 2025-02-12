@@ -14,8 +14,8 @@ var biblio = {
 		"publisher": "W3C"
 	},
 	"epub-a11y-12": {
-		"title": "EPUB Reading Systems 3.4",
-		"href": "https://w3c.github.io/epub-specs/epub34/rs/",
+		"title": "EPUB Accessibility 1.2",
+		"href": "https://w3c.github.io/epub-specs/epub34/a11y/",
 		"publisher": "W3C"
 	},
 	"epub-rs-34": {
