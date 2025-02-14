@@ -12,11 +12,11 @@ The EPUB 3.4 revision started on February 11, 2025. It is chartered to run until
 
 Editor's Drafts of documents under active development:
 
-[EPUB 3 Overview](https://w3c.github.io/epub-specs/epub34/overview/)
-[EPUB 3.4](https://w3c.github.io/epub-specs/epub34/authoring/) (On Recommendation track)
-[EPUB Reading Systems 3.4](https://w3c.github.io/epub-specs/epub34/rs/) (On Recommendation track)
-[EPUB Accessibility 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y/) (On Recommendation track)
-[EPUB Accessibility Techniques 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y-tech/)
+- [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub34/overview/)
+- [EPUB 3.4](https://w3c.github.io/epub-specs/epub34/authoring/) (On Recommendation track)
+- [EPUB Reading Systems 3.4](https://w3c.github.io/epub-specs/epub34/rs/) (On Recommendation track)
+- [EPUB Accessibility 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y/) (On Recommendation track)
+- [EPUB Accessibility Techniques 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y-tech/)
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [Publishing Maintenance Working Group's home page](https://www.w3.org/groups/wg/pm/), or contribute to this repository via issues and comments.
 
