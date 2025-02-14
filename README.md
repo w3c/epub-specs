@@ -42,7 +42,8 @@ Issues for specifications not actively maintained have been [marked as abandoned
 The contents of each folder are as follows:
 
 - [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
-- [`epub33`](/epub33) -- The specifications being revised as part of the 3.3 revision.
+- [`epub33`](/epub33) -- The specifications revised as part of the 3.3 revision.
+- [`epub33`](/epub34) -- The specifications being revised as part of the 3.4 revision.
 
 ## Contributing to the Repository
 
@@ -69,4 +70,4 @@ W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
 
 ---
 
-For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), [Dave Cramer](dauwhe@gmail.com), or [Matt Garrish](matt.garrish@gmail.com).
+For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), or [Matt Garrish](matt.garrish@gmail.com).
