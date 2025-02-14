@@ -13,8 +13,8 @@ var biblio = {
 		"href": "https://www.w3.org/TR/dpub-aria/",
 		"publisher": "W3C"
 	},
-	"epub-a11y-12": {
-		"title": "EPUB Accessibility 1.2",
+	"epub-a11y-111": {
+		"title": "EPUB Accessibility 1.1.1",
 		"href": "https://w3c.github.io/epub-specs/epub34/a11y/",
 		"publisher": "W3C"
 	},
