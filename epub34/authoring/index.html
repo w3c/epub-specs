@@ -114,8 +114,8 @@
 							and present their content to users.</p>
 					</li>
 					<li>
-						<p><a data-cite="epub-a11y-111#">EPUB Accessibility</a> [[epub-a11y-111]] — defines accessibility
-							conformance and discovery requirements for EPUB publications.</p>
+						<p><a data-cite="epub-a11y-111#">EPUB Accessibility</a> [[epub-a11y-111]] — defines
+							accessibility conformance and discovery requirements for EPUB publications.</p>
 					</li>
 				</ul>
 
@@ -1184,6 +1184,15 @@
 					resources=]. It is most similar to a [=foreign resource=] in that it is not guaranteed [=reading
 					system=] support, but, like a core media type resource, does not require a fallback.</p>
 
+				<p>In some cases, the exemptions defined in this section overlap with how existing core media type
+					resources are included in [=EPUB content documents=] (e.g., using the [[html]] <a
+						data-cite="html#the-link-element"><code>link</code></a> element to include CSS style sheets,
+					importing fonts into CSS, or using the [[html]] [^script^] element for JavaScripts). Although this
+					superficially makes the resources similar in terms of not requiring fallbacks, core media types are
+					differentiated by having stronger support expectations in reading systems. A core media type
+					resource does not become an exempt resource just because they share the same inclusion mechanism.
+					And without an exemption, an exempt resource would be a [=foreign resource=].</p>
+
 				<p>There are only a small set of special cases for exempt resources. Video, for example, are exempt from
 					fallbacks because there is no consensus on a core media type video format at this time (i.e., there
 					is no format to fallback to). Similarly, audio and video tracks are exempt to allow [=EPUB
@@ -1196,8 +1205,7 @@
 				<dl>
 					<dt id="exempt-fonts">Fonts</dt>
 					<dd id="confreq-resources-cd-fonts">
-						<p>All font resources not already covered as <a href="#cmt-grp-font">font core media types</a>
-							are exempt resources.</p>
+						<p>Font resources are exempt resources.</p>
 						<p>This exemption allows EPUB creators to use any font format without a fallback, regardless of
 							reading system support expectations, as CSS rules will ensure a fallback font in case of no
 							support.</p>
@@ -1208,19 +1216,23 @@
 					<dt id="exempt-links">Linked resources</dt>
 					<dd id="confreq-resources-cd-fallback-link">
 						<p>Any resource referenced from the [[html]] <a data-cite="html#the-link-element"
-									><code>link</code></a> element that is not already a core media type resource (e.g.,
-							CSS style sheets) is an exempt resource.</p>
+									><code>link</code></a> element is an exempt resource.</p>
+					</dd>
+
+					<dt id="exempt-script">Scripts</dt>
+					<dd id="confreq-resources-cd-fallback-script">
+						<p>Any resource [[html]] allows the [^script^] element to reference is an exempt resource.</p>
 					</dd>
 
 					<dt id="exempt-track">Tracks</dt>
 					<dd id="confreq-resources-cd-fallback-track">
-						<p>All audio and video tracks (e.g., [[?webvtt]] captions, subtitles and descriptions)
-							referenced from the [[html]]&#160;[^track^] element are exempt resources.</p>
+						<p>Audio and video tracks (e.g., [[?webvtt]] captions, subtitles and descriptions) referenced
+							from the [[html]]&#160;[^track^] element are exempt resources.</p>
 					</dd>
 
 					<dt id="exempt-video">Video</dt>
 					<dd id="confreq-resources-cd-fallback-video">
-						<p>All video codecs referenced from the [[html]] [^video^] —&#160;including any child [^source^]
+						<p>Video codecs referenced from the [[html]] [^video^] —&#160;including any child [^source^]
 							elements&#160;— are exempt resources.</p>
 						<div class="note">
 							<p>Although reading systems are encouraged to support at least one of the H.264 [[?h264]]
@@ -1233,8 +1245,8 @@
 
 				<div class="note">
 					<p>The exemptions made above do not apply to the [=EPUB spine | spine=]. If an exempt resource is
-						used in the spine, and it is not also an [=EPUB content document=], it will require a fallback
-						in that context.</p>
+						used in the spine, and it is not also an EPUB content document, it will require a fallback in
+						that context.</p>
 				</div>
 
 				<p id="confreq-foreign-no-fallback">In addition to the content-specific exemptions, a resource is
@@ -1246,23 +1258,31 @@
 							document=]); <strong><em>and</em></strong></p>
 					</li>
 					<li>
-						<p>it is not embedded directly in EPUB content documents (e.g., via [[?html]]&#160;[=embedded
-							content=] and [[?svg]]&#160;<a href="https://www.w3.org/TR/SVG/embedded.html#ImageElement"
-									><code>image</code></a> and <a
-								href="https://www.w3.org/TR/SVG/embedded.html#ForeignObjectElement"
-									><code>foreignObject</code></a> elements).</p>
+						<p>it is not directly rendered in its native format in an EPUB content document.</p>
 					</li>
 				</ul>
 
 				<p>This exemption allows EPUB creators to include resources in the [=EPUB container=] that are not for
-					use by EPUB reading systems. The primary case for this exemption is to allow data files to travel
-					with an [=EPUB publication=], whether for scripts to use in their constituent EPUB content documents
-					or for external applications to use (e.g., a scientific journal might include a data set with
-					instructions on how to extract it from the EPUB container).</p>
+					use by EPUB reading systems. Resources that benefit from this exemption include:</p>
 
-				<p>It also allows EPUB creators to use foreign resources in foreign content documents without reading
-					systems or [=EPUB conformance checkers=] having to understand the fallback capabilities of those
-					resources (i.e., the requirement for a fallback for the foreign content document covers any
+				<ul>
+					<li>script code modules, such as WebAssembly [[?wasm-core-2]];</li>
+					<li>script inputs, such as fetched [[?fetch]] data or images (refer to <a
+							href="#confreq-cd-scripted-flbk"></a> for restrictions on dynamically adding such resources
+						to EPUB content documents);</li>
+					<li>data files for use by external applications (e.g., a scientific journal might include a data set
+						with instructions on how to extract it from the EPUB container).</li>
+				</ul>
+
+				<div class="note">
+					<p>An example of a resource not exempted by this rule would be a foreign image resource referenced
+						by a <a data-cite="css-values#urls"><code>url</code> function</a> [[css-values]] in a CSS style
+						sheet, as this would result in the non-core media type format being displayed.</p>
+				</div>
+
+				<p>The exemption also allows EPUB creators to use foreign resources in foreign content documents without
+					reading systems or [=EPUB conformance checkers=] having to understand the fallback capabilities of
+					those resources (i.e., the requirement for a fallback for the foreign content document covers any
 					rendering issues within it). As the resource is not referenced from an EPUB content document, it
 					automatically becomes exempt from fallbacks.</p>
 			</section>
@@ -9466,8 +9486,8 @@ html.my-document-playing * {
 				These guidelines also form the basis for defining accessibility in [=EPUB publications=].</p>
 
 			<p>As the current WCAG guidelines (version 2) are heavily focused on web pages, a separate specification, <a
-					data-cite="epub-a11y-111#">EPUB Accessibility</a> [[epub-a11y-111]], defines how to apply the standard
-				to EPUB publications. It also adds EPUB-specific requirements and recommendations for metadata,
+					data-cite="epub-a11y-111#">EPUB Accessibility</a> [[epub-a11y-111]], defines how to apply the
+				standard to EPUB publications. It also adds EPUB-specific requirements and recommendations for metadata,
 				pagination, and media overlays.</p>
 
 			<p>This specification recommends that EPUB publications <a href="#confreq-a11y">conform to the accessibility
@@ -11899,18 +11919,23 @@ EPUB/images/cover.png</pre>
 			<h2>Change log</h2>
 
 			<p>Note that this change log only identifies substantive changes since <a
-					href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a> — those that may affect the conformance of
-				[=EPUB publications=].</p>
+					href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a> — those that may affect the conformance of [=EPUB
+				publications=].</p>
 
 			<p>For a list of all issues addressed, refer to the <a
 					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue%20is%3Aclosed%20label%3AEPUB34%20label%3ASpec-EPUB3%20"
 					>Working Group's issue tracker</a>.</p>
 
 			<details id="changes-epub-33">
-				<summary>Substantive changes since <a href="https://www.w3.org/TR/epub-33/">EPUB
-					3.3</a></summary>
+				<summary>Substantive changes since <a href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a></summary>
 				<ul>
-					<li>No substantive changes have been made.</li>
+					<li>19-Feb-2025: Clarified that resources referenced from <code>script</code> elements are exempt.
+						See <a href="https://github.com/w3c/epub-specs/issues/2649">issue 2649</a>.</li>
+					<li>19-Feb-2025: Clarified that script modules, such as WebAssembly, fall under the existing
+						exemption for resources not used by reading systems. See <a
+							href="https://github.com/w3c/epub-specs/issues/2649">issue 2649</a>.</li>
+					<li>19-Feb-2025: Clarified that embedded resources only refers to the HTML and SVG definitions. See
+							<a href="https://github.com/w3c/epub-specs/issues/2656">issue 2656</a>.</li>
 				</ul>
 			</details>
 		</section>
