@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<title>EPUB 3 Structural Semantics Vocabulary 1.1</title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer=""></script>
+		<script src="../common/js/fix-errata.js" class="remove"></script>
+		<script src="../common/js/css-inline.js" class="remove"></script>
+		<script src="../common/js/copyright.js" class="remove"></script>
+		<script class="remove">
+			//<![CDATA[
+			var respecConfig = {
+				group: "pm",
+				wgPublicList: "public-pm-wg",
+				specStatus: "ED",
+				shortName: "epub-ssv-11",
+				errata: "https://w3c.github.io/epub-specs/epub33/errata.html",
+				edDraftURI: "https://w3c.github.io/epub-specs/epub33/ssv/",
+				noRecTrack: true,
+				editors: [
+					{
+						name: "Ivan Herman",
+						url: "https://www.w3.org/People/Ivan/",
+						company: "W3C",
+						w3cid: 7382,
+						orcid: "0000-0003-0782-2704",
+						companyURL: "https://www.w3.org",
+					},
+					{
+						name: "Matt Garrish",
+						company: "DAISY Consortium",
+						companyURL: "https://daisy.org",
+						w3cid: 51655
+                                        }
+				],
+				formerEditors: [
+					{
+						name: "Tzviya Siegman",
+						company: "John Wiley & Sons",
+						companyURL: "http://wiley.com",
+						w3cid: 65542
+					},
+					{
+						name: "Markus Gylling",
+						company: "International Digital Publishing Forum (IDPF)",
+						companyURL: "http://idpf.org",
+						w3cid: 106061
+					}
+				],
+				localBiblio: {
+					"epub-dict-10": {
+						"title": "EPUB Dictionaries and Glossaries 1.0",
+						"href": "http://idpf.org/epub/dict",
+						"editors": [
+							"Jeffrey Alexander",
+							"Romain Deltour"
+						],
+						"date": "26 August 2015",
+						"publisher": "IDPF"
+					},
+					"epub-indexes-10": {
+						"title": "EPUB Indexes 1.0",
+						"href": "http://idpf.org/epub/idx",
+						"editors": [
+							"Michele Combs",
+							"Tzviya Siegman"
+						],
+						"date": "26 August 2015",
+						"publisher": "IDPF"
+					},
+					"epub-region-nav-10": {
+						"title": "EPUB Region-Based Navigation 1.0",
+						"href": "http://idpf.org/epub/renditions/region-nav",
+						"editors": [
+							"Matthieu Kopp",
+							"Brady Kroupa",
+							"Jim Lester",
+							"Matt Garrish"
+						],
+						"date": "26 August 2015",
+						"publisher": "IDPF"
+					},
+    			},
+				includePermalinks: true,
+				permalinkEdge: true,
+				permalinkHide: false,
+				diffTool: "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+				github: {
+					repoURL: "https://github.com/w3c/epub-specs",
+					branch: "main"
+				},
+				xref: {
+					profile: "web-platform",
+					specs: ["epub-rs-33","epub-33"]
+				},
+				preProcess:[inlineCustomCSS],
+				postProcess: [fixErrataField]
+			};//]]>
+		</script>
+		<style>
+			section#structure-vocab dd > p:first-child {
+				margin-top: 1rem !important;
+			}
+			
+			section#structure-vocab dd + dd {
+				font-size: 90%;
+			}
+			
+			.subproplabel {
+				font-style: italic;
+			}</style>
+	</head>
+	<body>
+		<div data-include="../common/copyright.html" data-oninclude="modifyCopyright" data-include-replace="true"></div>
+		<section id="abstract">
+			<p>This vocabulary, a part of EPUB® 3, defines a set of properties relating to the description of structural
+				semantics of written works.</p>
+		</section>
+		<section id="sotd"></section>
+		<section id="sec-introduction">
+			<h2>Introduction</h2>
+
+			<p>Structural semantics add additional meaning about the specific structural purpose an HTML (or SVG)
+				element plays. The [^/epub:type^] attribute [[epub-33]] is used to express domain-specific semantics in
+				[=EPUB content documents=] and <a>media overlay documents</a> [[epub-33]], with the structural
+				information it carries complementing the underlying vocabulary.</p>
+
+			<p>The applied semantics refine the meaning of their containing elements without changing their nature for
+				assistive technologies, as happens when using the similar [^/role^] attribute [[html]]. The attribute
+				does not enhance the accessibility of the content, in other words, only provides hints about the
+				purpose.</p>
+
+			<p>Semantic metadata enriches content for use in publishing workflows and for author-defined purposes. It
+				also allows reading systems to learn more about the structure and content of a document (e.g., to enable
+					<a data-cite="epub-33#sec-behaviors-skip-escape">skippability and escapability</a> in <a>media
+					overlay documents</a>).</p>
+
+			<p>The [[epub-33]] specification defines a method for adding structural semantics using <em>the attribute
+					axis</em>: instead of adding new elements, EPUB creators can append the <code>epub:type</code>
+				attribute to existing elements to add the desired semantics. This document defines a set of property
+				values, i.e., a vocabulary, that can be used for that purpose.</p>
+
+			<section id="structure-vocab">
+				<h3>About this vocabulary</h3>
+
+				<p>While the EPUB Structural Semantics vocabulary is generally host language agnostic, it has been
+					constructed primarily to enable semantic inflection of elements in the HTML vocabulary.</p>
+
+				<p>The <i>HTML usage context</i> fields indicate contexts in HTML documents where the given property is
+					considered relevant. EPUB creators may use the properties on HTML markup elements not specifically
+					listed, but must ensure that the semantics they express represent a subset of the carrying element's
+					semantics and do not attach an existing element's meaning to a semantically neutral element.</p>
+
+				<p data-cite="html">The <i>DPUB-ARIA role</i> fields indicate the [[dpub-aria-1.0]] roles that can
+					alternatively be used with the [[html]] <code>role</code> attribute to improve accessibility. These
+					roles may have more restrictive usage contexts, however, so may not be valid wherever the
+					[^/epub:type^] attribute [[epub-33]] is used (e.g., roles are not allowed on the [[?html]] [^body^]
+					element). Refer to [[html-aria]] for more information about where the roles are allowed.</p>
+
+				<p>When processing HTML documents, reading systems may ignore such non-compliant properties, unless
+					their usage context is explicitly overridden or extended by the host specification.</p>
+
+				<p>The <i>Usage details</i> field, when present, identifies a specification that defines or utilizes the
+					designated property. Authors are only required to follow these usage details if they are creating
+					content that conforms to the specified specification, or if the rules apply to all EPUB
+					publications. In all other cases, the properties may be used however needed.</p>
+			</section>
+		</section>
+		<section id="sec-partitions">
+			<h2>Document partitions</h2>
+
+			<dl>
+				<dt id="backmatter">backmatter</dt>
+				<dd>
+					<p>Ancillary material occurring after the main content of a publication, such as indices,
+						appendices, etc.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+
+				<dt id="bodymatter">bodymatter</dt>
+				<dd>
+					<p>The main content of a publication.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+
+				<dt id="cover">cover</dt>
+				<dd>
+					<p>A section that introduces the work, often consisting of a marketing image, the title, author, and
+						publisher, and select quotes and reviews.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-cover">doc-cover</a> (only allowed on cover image tag)</p>
+				</dd>
+
+				<dt id="frontmatter">frontmatter</dt>
+				<dd>
+					<p>Preliminary material to the main content of a publication, such as tables of contents,
+						dedications, etc.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-divisions">
+			<h2>Document divisions</h2>
+
+			<dl>
+				<dt id="chapter">chapter</dt>
+				<dd>
+					<p>A major thematic section of content in a work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-chapter">doc-chapter</a>
+					</p>
+				</dd>
+
+				<dt id="division">division</dt>
+				<dd>
+					<p>A major structural division that may also appear as a substructure of a part (esp. in
+						legislation).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+
+				<dt id="subchapter">subchapter<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A major sub-division of a chapter.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+
+				<dt id="part">part</dt>
+				<dd>
+					<p>A major structural division in a work that contains a set of related sections dealing with a
+						particular subject, narrative arc, or similar encapsulated theme.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-part">doc-part</a>
+					</p>
+				</dd>
+
+				<dt id="volume">volume</dt>
+				<dd>
+					<p>A component of a collection.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#the-body-element">body</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-sections">
+			<h2>Document sections and components</h2>
+
+			<p>Sections and components that typically occur in the publication bodymatter.</p>
+
+			<dl>
+				<dt id="abstract-1">abstract<span class="status draft"> [draft]</span>
+				</dt>
+				<dd>
+					<p>A short summary of the principle ideas, concepts, and conclusions of the work, or of a section or
+						excerpt within it.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-abstract">doc-abstract</a>
+					</p>
+				</dd>
+
+				<dt id="afterword">afterword</dt>
+				<dd>
+					<p>A closing statement from the author or a person of importance, typically providing insight into
+						how the content came to be written, its significance, or related events that have transpired
+						since its timeline.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-afterword">doc-afterword</a>
+					</p>
+				</dd>
+
+				<dt id="conclusion">conclusion</dt>
+				<dd>
+					<p>A concluding section or statement that summarizes the work or wraps up the narrative.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-conclusion">doc-conclusion</a>
+					</p>
+				</dd>
+
+				<dt id="epigraph">epigraph</dt>
+				<dd>
+					<p>A quotation set at the start of the work or a section that establishes the theme or sets the
+						mood.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-epigraph">doc-epigraph</a>
+					</p>
+				</dd>
+
+				<dt id="epilogue">epilogue</dt>
+				<dd>
+					<p>A concluding section of narrative that wraps up or comments on the actions and events of the
+						work, typically from a future perspective.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-epilogue">doc-epilogue</a>
+					</p>
+				</dd>
+
+				<dt id="foreword">foreword</dt>
+				<dd>
+					<p>An introductory section that precedes the work, typically not written by the author of the
+						work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-foreword">doc-foreword</a>
+					</p>
+				</dd>
+
+				<dt id="introduction">introduction</dt>
+				<dd>
+					<p>A preliminary section that typically introduces the scope or nature of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-introduction">doc-introduction</a>
+					</p>
+				</dd>
+
+				<dt id="preamble">preamble</dt>
+				<dd>
+					<p>A section in the beginning of the work, typically containing introductory and/or explanatory
+						prose regarding the scope or nature of the work's content</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="preface">preface</dt>
+				<dd>
+					<p>An introductory section that precedes the work, typically written by the author of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-preface">doc-preface</a>
+					</p>
+				</dd>
+
+				<dt id="prologue">prologue</dt>
+				<dd>
+					<p>An introductory section that sets the background to a work, typically part of the narrative.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-prologue">doc-prologue</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-navigation">
+			<h2>Document navigation</h2>
+
+			<dl>
+				<dt id="landmarks">landmarks</dt>
+				<dd>
+					<p>A collection of references to well-known/recurring components within the publication</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a data-cite="epub-33#sec-nav-landmarks">The <code>landmarks nav</code> Element</a> [[epub-33]]
+					</p>
+				</dd>
+
+				<dt id="loa">loa</dt>
+				<dd>
+					<p>A listing of audio clips included in the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="loi">loi</dt>
+				<dd>
+					<p>A listing of illustrations included in the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="lot">lot</dt>
+				<dd>
+					<p>A listing of tables included in the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="lov">lov</dt>
+				<dd>
+					<p>A listing of video clips included in the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="toc-1">toc</dt>
+				<dd>
+					<p>A navigational aid that provides an ordered list of links to the major sectional headings in the
+						content. A table of contents may cover an entire work, or only a smaller section of it.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-toc">doc-toc</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a data-cite="epub-33#sec-nav-toc">The <code>toc nav</code> Element</a> [[epub-33]] </p>
+				</dd>
+
+				<dt id="toc-brief">toc-brief<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>An abridged version of the table of contents.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-document-references">
+			<h2>Document reference sections</h2>
+
+			<dl>
+				<dt id="appendix">appendix</dt>
+				<dd>
+					<p>A section of supplemental information located after the primary content that informs the content
+						but is not central to it.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-appendix">doc-appendix</a>
+					</p>
+				</dd>
+
+				<dt id="colophon">colophon</dt>
+				<dd>
+					<p>A short section of production notes particular to the edition (e.g., describing the typeface
+						used), often located at the end of a work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-colophon">doc-colophon</a>
+					</p>
+				</dd>
+
+				<dt id="credits">credits<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A collection of <a href="#credit">credits</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-credits">doc-credits</a>
+					</p>
+				</dd>
+
+				<dt id="keywords">keywords<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A collection of <a href="#keyword">keywords</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+			</dl>
+
+			<section id="bibliographies">
+				<h3 id="h_bibliographies">Bibliographies</h3>
+
+				<dl>
+					<dt id="biblioentry">biblioentry</dt>
+					<dd>
+						<p>A single reference to an external source in a <a href="#bibliography">bibliography</a>. A
+							biblioentry typically provides more detailed information than its reference(s) in the
+							content (e.g., full title, author(s), publisher, publication date, etc.).</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#bibliography">bibliography</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>
+							<a data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">DPUB-ARIA role: </span>
+							<a data-cite="dpub-aria-1.0#doc-biblioentry">doc-biblioentry</a> (Deprecated)</p>
+					</dd>
+					<dt id="bibliography">bibliography</dt>
+					<dd>
+						<p>A list of external references cited in the work, which may be to print or digital
+							sources.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">DPUB-ARIA role: </span>
+							<a data-cite="dpub-aria-1.0#doc-bibliography">doc-bibliography</a>
+						</p>
+					</dd>
+				</dl>
+			</section>
+
+			<section id="dictionaries">
+				<h3>Dictionaries</h3>
+
+				<dl>
+					<dt id="antonym-group">antonym-group</dt>
+					<dd>
+						<p>A group of terms, each having an opposite or nearly opposite meaning from a headword or
+							idiom.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.9.2">Antonym Groups</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="condensed-entry">condensed-entry</dt>
+					<dd>
+						<p>A condensed dictionary entry designed for constrained lookup viewports.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.2.2.2">The Condensed Entry</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="def">def</dt>
+					<dd>
+						<p>The definition of a particular meaning of a headword or idiom.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.6">Definitions</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="dictentry">dictentry</dt>
+					<dd>
+						<p>A dictionary entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#dictionary">dictionary</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=article=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.2.1">The Dictionary Entry</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="dictionary">dictionary</dt>
+					<dd>
+						<p>A collection of dictionary entries.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>
+							<a data-cite="html#the-body-element">body</a> or [=section=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.1">The Dictionary Container</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="etymology">etymology</dt>
+					<dd>
+						<p>An explanation of the historical origin of a headword.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.6">Etymologies</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="example">example</dt>
+					<dd>
+						<p>An illustration of the usage of a defined term or phrase.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.8.3">Examples</a> [[epub-dict-10]]
+						</p>
+					</dd>
+
+					<dt id="gram-info">gram-info</dt>
+					<dd>
+						<p>Supplemental grammatical information related to the headword and modifying a part of speech
+							or a particular meaning.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.5.2">Related Grammatical
+								Information</a> [[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="idiom">idiom</dt>
+					<dd>
+						<p>A defining instance of a phrase.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a> or <a href="#phrase-group">phrase-group</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=dfn=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.8.2">Idioms</a> [[epub-dict-10]]
+						</p>
+					</dd>
+
+					<dt id="part-of-speech">part-of-speech</dt>
+					<dd>
+						<p>The grammatical function of a headword.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.1">The Dictionary Container</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="part-of-speech-list">part-of-speech-list</dt>
+					<dd>
+						<p>A list of part of speech groups in a dictionary entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=ol=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.2">Part of Speech Lists</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="part-of-speech-group">part-of-speech-group</dt>
+					<dd>
+						<p>A unit that associates a part of speech with its related sense and phrase groups.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.3">Part of Speech Groups</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="phonetic-transcription">phonetic-transcription</dt>
+					<dd>
+						<p>A phonetic transcription of the pronunciation of a headword or other component of a
+							dictionary entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a> or <a href="#glossary">glossary</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.4">Phonetic Transcriptions</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="phrase-list">phrase-list</dt>
+					<dd>
+						<p>A list of phrase groups in a dictionary entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=ol=] or [=ul=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.8.4">Phrase Lists</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="phrase-group">phrase-group</dt>
+					<dd>
+						<p>A unit for organizing information pertaining to an idiom or example.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.8.5">Phrase Groups</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="sense-list">sense-list</dt>
+					<dd>
+						<p>A list of sense groups in a dictionary entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=ol=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.4">Sense Lists</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="sense-group">sense-group</dt>
+					<dd>
+						<p>A unit for organizing information pertaining to a particular meaning of a headword or
+							idiom.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.5">Sense Groups</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="synonym-group">synonym-group</dt>
+					<dd>
+						<p>A group of terms, each having identical or similar meaning to a headword or idiom.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.9.1">Synonym Groups</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="tran">tran</dt>
+					<dd>
+						<p>The translation of a particular meaning of a source language headword, idiom, or example into
+							a target language.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#dictentry">dictentry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.7">Translations</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="tran-info">tran-info</dt>
+					<dd>
+						<p>Grammatical or usage information related to a translation.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required ancestor context:</span>
+							<span class="subpropref">
+								<a href="#tran">tran</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.2.7.8">Translation-Related
+								Information</a> [[epub-dict-10]] </p>
+					</dd>
+				</dl>
+			</section>
+
+			<section id="glossaries">
+				<h3 id="h_glossaries">Glossaries</h3>
+
+				<dl>
+					<dt id="glossary">glossary</dt>
+					<dd>
+						<p>A brief dictionary of new, uncommon, or specialized terms used in the content.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=dl=], [=sectioning content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">DPUB-ARIA role: </span>
+							<a data-cite="dpub-aria-1.0#doc-glossary">doc-glossary</a>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.3.1">The Glossary Container</a>
+							[[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="glossdef">glossdef</dt>
+					<dd>
+						<p>The definition of a <a href="#glossterm">term in a glossary</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#glossary">glossary</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>The glossdef property is implied on
+							[=dd=] elements within a [=dl=] element marked with the <a href="#glossary">glossary</a>
+							property.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.3.2">Glossary Terms and
+								Definitions</a> [[epub-dict-10]] </p>
+					</dd>
+
+					<dt id="glossterm">glossterm</dt>
+					<dd>
+						<p>A glossary term.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#glossary">glossary</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>The glossterm property is implied on
+							[=dd=] elements within a [=dl=] element marked with the <a href="#glossary">glossary</a>
+							property.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/dict/epub-dict.html#sec-2.3.2">Glossary Terms and
+								Definitions</a> [[epub-dict-10]] </p>
+					</dd>
+				</dl>
+			</section>
+
+			<section id="indexes">
+				<h3 id="h_indexes">Indexes</h3>
+
+				<dl>
+					<dt id="index">index</dt>
+					<dd>
+						<p>A navigational aid that provides a detailed list of links to key subjects, names and other
+							important topics covered in the work.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#the-body-element">body</a>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-index">index property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">DPUB-ARIA role: </span>
+							<a data-cite="dpub-aria-1.0#doc-index">doc-index</a>
+						</p>
+					</dd>
+
+					<dt id="index-editor-note">index-editor-note</dt>
+					<dd>
+						<p>Editorial note pertaining to a single entry.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-editor-note">index-editor-note
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-entry">index-entry</dt>
+					<dd>
+						<p>One term with any attendant subentries, locators, cross references, and/or editorial
+							note.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry-list">index-entry-list</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=li=]; this property is implied when
+							parent ul is of type index-entry-list (implicit or explicit)</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-entry">index-entry property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-entry-list">index-entry-list</dt>
+					<dd>
+						<p>Collection of consecutive main entries or subentries.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>, <span class="subpropref">
+								<a href="#index-group">index-group</a>, </span> and <span class="subpropref">
+								<a href="#index">index</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=ul=]; this property is implied when
+							the ul has an ancestor of index except within index-headnotes</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-entry-list">index-entry-list
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-group">index-group</dt>
+					<dd>
+						<p>Collection of consecutive main entries that share a common characteristic, for example the
+							starting letter of the main entries.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index">index</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-group">index-group property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-headnotes">index-headnotes</dt>
+					<dd>
+						<p>Narrative or other content to assist users in using the index.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index">index</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#the-header-element">header</a>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-headnotes">index-headnotes
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-legend">index-legend</dt>
+					<dd>
+						<p>List of symbols, abbreviations or special formatting used in the index, and their
+							meanings.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-headnotes">index-headnotes</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], [=dl=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-legend">index-legend property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-locator">index-locator</dt>
+					<dd>
+						<p>A reference to an occurrence of the indexed content in the publication.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>, <span class="subpropref">
+								<a href="#index-locator-list">index-locator-list</a>
+							</span>, and <span class="subpropref">
+								<a href="#index-locator-range">index-locator-range</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=a=]; this property is implied when
+							parent context is index-locator-list or index-locator-range</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-locator">index-locator property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-locator-list">index-locator-list</dt>
+					<dd>
+						<p>Collection of sequential locators or locator ranges.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=ul=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-locator-list">index-locator-list
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-locator-range">index-locator-range</dt>
+					<dd>
+						<p>A pair of locators that connects a term to a range of content rather than a single point.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-locator-list">index-locator-list</a>
+							</span> and <span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-locator-range">index-locator-range
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-term">index-term</dt>
+					<dd>
+						<p>Word, phrase, string, glyph, or image representing the indexable content.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-xref-related">index-xref-related</a>
+							</span>, <span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span> and <span class="subpropref">
+								<a href="#index-xref-preferred">index-xref-preferred</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=phrasing content=]; typically
+							[=span=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-term">index-term property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-term-categories">index-term-categories</dt>
+					<dd>
+						<p>Wrapper for a list of the term categories belonging to an index.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-xref-related">index-xref-related</a>
+							</span> and <span class="subpropref">
+								<a href="#index-xref-preferred">index-xref-preferred</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-term-categories"
+								>index-term-categories property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-term-category">index-term-category</dt>
+					<dd>
+						<p>Word, phrase, string, glyph, or image representing a category of terms in the index.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-xref-related">index-xref-related</a>
+							</span> and <span class="subpropref">
+								<a href="#index-xref-preferred">index-xref-preferred</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-term-category">index-term-category
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-xref-preferred">index-xref-preferred</dt>
+					<dd>
+						<p>Reference from one term to one or more preferred terms or term categories in an index
+							(analogous to "See xxx").</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-xref">index-xref-preferred
+								property</a> [[epub-indexes-10]] </p>
+					</dd>
+
+					<dt id="index-xref-related">index-xref-related</dt>
+					<dd>
+						<p>Reference from one term to one or more related terms or term categories in an index
+							(analogous to "See also xxx").</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Required parent context:</span>
+							<span class="subpropref">
+								<a href="#index-entry">index-entry</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">Usage details: </span>
+							<a href="http://idpf.org/epub/idx/epub-indexes.html#bb-xref">index-xref-related property</a>
+							[[epub-indexes-10]] </p>
+					</dd>
+				</dl>
+			</section>
+		</section>
+		<section id="sec-preliminary">
+			<h2>Preliminary sections and components</h2>
+
+			<p>Preliminary sections and components, typically occurring in the publication frontmatter.</p>
+
+			<dl>
+				<dt id="acknowledgments">acknowledgments</dt>
+				<dd>
+					<p>A section or statement that acknowledges significant contributions by persons, organizations,
+						governments, and other entities to the realization of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-acknowledgments">doc-acknowledgments</a>
+					</p>
+				</dd>
+
+				<dt id="contributors">contributors</dt>
+				<dd>
+					<p>A list of contributors to the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="copyright-page">copyright-page</dt>
+				<dd>
+					<p>The copyright page of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="dedication">dedication</dt>
+				<dd>
+					<p>An inscription at the front of the work, typically addressed in tribute to one or more persons
+						close to the author.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-dedication">doc-dedication</a>
+					</p>
+				</dd>
+
+				<dt id="errata">errata</dt>
+				<dd>
+					<p>A set of corrections discovered after initial publication of the work, sometimes referred to as
+						corrigenda.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], [=aside=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-errata">doc-errata</a>
+					</p>
+				</dd>
+
+				<dt id="halftitlepage">halftitlepage</dt>
+				<dd>
+					<p>The half title page of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="imprimatur">imprimatur</dt>
+				<dd>
+					<p>A formal statement authorizing the publication of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="imprint">imprint</dt>
+				<dd>
+					<p>Information relating to the publication or distribution of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="other-credits">other-credits</dt>
+				<dd>
+					<p>Acknowledgments of previously published parts of the work, illustration credits, and permission
+						to quote from copyrighted material.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="revision-history">revision-history</dt>
+				<dd>
+					<p>A record of changes made to a work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="seriespage">seriespage <span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>Marketing section used to list related publications.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+
+				<dt id="titlepage">titlepage</dt>
+				<dd>
+					<p>The title page of the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-complementary">
+			<h2>Complementary content</h2>
+
+			<dl>
+				<dt id="case-study">case-study<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A detailed analysis of a specific topic.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="help">help<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>Helpful information that clarifies some aspect of the content or assists in its
+						comprehension.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=], [=phrasing content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="#tip">tip</a>
+						</span>
+					</p>
+				</dd>
+
+				<dt id="marginalia">marginalia<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>Content, both textual and graphical, that is offset in the margin.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=], [=phrasing content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref"> [=aside=] </span>
+					</p>
+				</dd>
+
+				<dt id="notice">notice</dt>
+				<dd>
+					<p>Notifies the user of consequences that might arise from an action or event. Examples include
+						warnings, cautions and dangers.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-notice">doc-notice</a>
+					</p>
+				</dd>
+
+				<dt id="pullquote">pullquote<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A distinctively placed or highlighted quotation from the current content designed to draw
+						attention to a topic or highlight a key point.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-pullquote">doc-pullquote</a>
+					</p>
+				</dd>
+
+				<dt id="sidebar">sidebar<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>Secondary or supplementary content, typically formatted as an inset or box.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref"> [=aside=] </span>
+					</p>
+				</dd>
+
+				<dt id="tip">tip</dt>
+				<dd>
+					<p>Helpful information that clarifies some aspect of the content or assists in its
+						comprehension.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=], [=phrasing content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-tip">doc-tip</a>
+					</p>
+				</dd>
+
+				<dt id="warning">warning<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A warning.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=section=], <a
+							data-cite="html#grouping-content">grouping content</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="#notice">notice</a>
+						</span>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-titles">
+			<h2>Titles and headings</h2>
+
+			<dl>
+				<dt id="bridgehead">bridgehead <span class="status deprecated">[deprecated]</span></dt>
+				<dd>
+					<p>A structurally insignificant heading that does not contribute to the hierarchical structure of
+						the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=flow content=], typically [=p=],
+						[=div=] or [=span=] </p>
+				</dd>
+
+				<dt id="covertitle">covertitle</dt>
+				<dd>
+					<p>The title of the work as displayed on the work's cover.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=heading content=]. This property should
+						only appear once within the document scope.</p>
+				</dd>
+
+				<dt id="fulltitle">fulltitle</dt>
+				<dd>
+					<p>The full title of the work, either simple, in which case it is identical to <a href="#doc-title"
+							>title</a>, or compound, in which case it consists of a <a href="#doc-title">title</a> and a
+							<a href="#subtitle">subtitle</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Same as:</span>
+						<span class="subpropref">
+							<a href="http://purl.org/dc/terms/title">http://purl.org/dc/terms/title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=heading content=]. This property should
+						only appear once within the document scope.</p>
+				</dd>
+
+				<dt id="halftitle">halftitle</dt>
+				<dd>
+					<p>The title appearing on the first page of a work or immediately before the text.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=heading content=]. This property should
+						only appear once within the document scope.</p>
+				</dd>
+
+				<dt id="label">label<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>The text label that precedes an <a href="#ordinal">ordinal</a> in a component title (e.g.,
+						'Chapter', 'Part', 'Figure', 'Table').</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=Phrasing content=] descendants of <a
+							data-cite="html#heading-content">heading content</a>, [=li=] and <a
+							data-cite="html#the-figcaption-element">figcaption</a>
+					</p>
+				</dd>
+
+				<dt id="ordinal">ordinal<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>An ordinal specifier for a component in a sequence of components (e.g., '1', 'IV', 'B-1').</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=Phrasing content=] descendants of
+						[=heading content=], [=li=] and [=figcaption=] </p>
+				</dd>
+
+				<dt id="subtitle">subtitle</dt>
+				<dd>
+					<p>An explanatory or alternate title for the work, or a section or component within it.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="#doc-title">title</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=heading content=], [=phrasing content=]
+						descendants of [=heading content=], <a data-lt="p">paragraphs</a>, [=div | divs=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-subtitle">doc-subtitle</a>
+					</p>
+				</dd>
+
+				<dt id="doc-title">title</dt>
+				<dd>
+					<p>The primary name of a document component, such as a list, table, or figure.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=heading content=], [=phrasing content=]
+						descendants of [=heading content=].</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-educational">
+			<h2>Educational content</h2>
+
+			<section id="learning-obj">
+				<h3 id="h_learning-obj">Learning objectives</h3>
+
+				<dl>
+					<dt id="learning-objective">learning-objective</dt>
+					<dd>
+						<p>An explicit designation or description of a learning objective or a reference to an explicit
+							learning objective.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=], [=phrasing
+							content=] </p>
+					</dd>
+
+					<dt id="learning-objectives">learning-objectives<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#learning-objective">learning-objectives</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="learning-outcome">learning-outcome<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>The understanding or ability a student is expected to achieve as a result of a lesson or
+							activity.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+
+					<dt id="learning-outcomes">learning-outcomes<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#learning-outcome">learning-outcomes</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="learning-resource">learning-resource</dt>
+					<dd>
+						<p>A resource provided to enhance learning, or a reference to such a resource.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=flow content=] </p>
+					</dd>
+
+					<dt id="learning-resources">learning-resources<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#learning-resource">learning-resources</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="learning-standard">learning-standard<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A formal set of expectations or requirements typically issued by a government or a standards
+							body.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], [=phrasing
+							content=] </p>
+					</dd>
+
+					<dt id="learning-standards">learning-standards<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#learning-standard">learning-standards</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+				</dl>
+			</section>
+
+			<section id="testing">
+				<h3 id="h_testing">Testing</h3>
+
+				<dl>
+					<dt id="answer">answer<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>The component of a self-assessment problem that provides the answer to the question.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="answers">answers<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#answer">answers</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="assessment">assessment</dt>
+					<dd>
+						<p>A test, quiz, or other activity that helps measure a student's understanding of what is being
+							taught.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+					</dd>
+
+					<dt id="assessments">assessments<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#assessment">assessments</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+					</dd>
+
+					<dt id="feedback">feedback<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>Instruction to the reader based on the result of an assessment.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>
+							<a data-cite="html#grouping-content">grouping content</a>, [=phrasing content=] </p>
+					</dd>
+
+					<dt id="fill-in-the-blank-problem">fill-in-the-blank-problem<span class="status draft">
+							[draft]</span></dt>
+					<dd>
+						<p>A problem that requires the reader to input a text answer to complete a sentence, statement
+							or similar.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="general-problem">general-problem<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A problem with a free-form solution.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="match-problem">match-problem<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A problem that requires the reader to match the contents of one list with the corresponding
+							items in another list.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="multiple-choice-problem">multiple-choice-problem<span class="status draft">
+						[draft]</span></dt>
+					<dd>
+						<p>A problem with a set of potential answers to choose from ‒ some, all, or none of which may be
+							correct.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="practice">practice<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A review exercise or sample.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">See also:</span>
+							<span class="subpropref">
+								<a href="#practices">practices</a>
+							</span>
+						</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="practices">practices<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A collection of <a href="#practice">practices</a>.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+					</dd>
+
+					<dt id="qna">qna</dt>
+					<dd>
+						<p>A section of content structured as a series of questions and answers, such as an interview or
+							list of frequently asked questions.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>lists or [=sectioning content=] </p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">DPUB-ARIA role: </span>
+							<a data-cite="dpub-aria-1.0#doc-qna">doc-qna</a>
+						</p>
+					</dd>
+
+					<dt id="question">question<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>The component of a self-assessment problem that identifies the question to be solved.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span>
+							<a data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+
+					<dt id="true-false-problem">true-false-problem<span class="status draft"> [draft]</span></dt>
+					<dd>
+						<p>A problem with either a true or false answer.</p>
+					</dd>
+					<dd>
+						<p>
+							<span class="subproplabel">HTML usage context: </span> [=aside=], <a
+								data-cite="html#grouping-content">grouping content</a>
+						</p>
+					</dd>
+				</dl>
+			</section>
+		</section>
+		<section id="sec-comics">
+			<h2>Comics</h2>
+
+			<dl>
+				<dt id="balloon">balloon</dt>
+				<dd>
+					<p>An area in a comic <a href="#panel">panel</a> that contains the words, spoken or thought, of a
+						character.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=li=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a href="http://idpf.org/epub/renditions/region-nav">EPUB Region-Based Navigation</a>
+						[[epub-region-nav-10]] </p>
+				</dd>
+
+				<dt id="panel">panel</dt>
+				<dd>
+					<p>An individual frame, or drawing.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=li=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a href="http://idpf.org/epub/renditions/region-nav">EPUB Region-Based Navigation</a>
+						[[epub-region-nav-10]] </p>
+				</dd>
+
+				<dt id="panel-group">panel-group</dt>
+				<dd>
+					<p>A group of <a href="#panel">panels</a> (e.g., a strip).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=li=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a href="http://idpf.org/epub/renditions/region-nav">EPUB Region-Based Navigation</a>
+						[[epub-region-nav-10]] </p>
+				</dd>
+
+				<dt id="sound-area">sound-area</dt>
+				<dd>
+					<p>An area of text in a comic <a href="#panel">panel</a> that represents a sound.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=li=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a href="http://idpf.org/epub/renditions/region-nav">EPUB Region-Based Navigation</a>
+						[[epub-region-nav-10]] </p>
+				</dd>
+
+				<dt id="text-area">text-area</dt>
+				<dd>
+					<p>An area of text in a comic <a href="#panel">panel</a>. Used to represent titles, narrative text,
+						character dialogue (inside a <a href="#balloon">balloon</a> or not) and similar.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=li=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a href="http://idpf.org/epub/renditions/region-nav">EPUB Region-Based Navigation</a>
+						[[epub-region-nav-10]] </p>
+				</dd>
+			</dl>
+		</section>
+		<section id="notes">
+			<h2>Notes and annotations</h2>
+
+			<dl>
+				<dt id="annotation">annotation<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>Explanatory information about passages in the work.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#complementary">xhv:complementary</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=aside=], [=phrasing content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="http://idpf.org/epub/oa">Open Annotation in EPUB</a>
+						</span>
+					</p>
+				</dd>
+
+				<dt id="endnote">endnote</dt>
+				<dd>
+					<p>One of a collection of notes that occur at the end of a work, or a section within it, that
+						provides additional context to a referenced passage of text.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#endnotes">endnotes</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>On the <a
+							data-cite="html#the-aside-element">aside</a> element when identifying a single endnote, or
+						on descendants of sectioning content when identifying individual endnotes in a group (refer to
+							<a href="#footnotes">footnotes</a> and <a href="#endnotes">endnotes</a>).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-endnote">doc-endnote</a> (Deprecated)</p>
+				</dd>
+
+				<dt id="endnotes">endnotes</dt>
+				<dd>
+					<p>A collection of notes at the end of a work or a section within it.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#endnote">endnote</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-endnotes">doc-endnotes</a>
+					</p>
+				</dd>
+
+				<dt id="footnote">footnote</dt>
+				<dd>
+					<p>Ancillary information, such as a citation or commentary, that provides additional context to a
+						referenced passage of text.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#footnotes">footnotes</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>On the <a
+							data-cite="html#the-aside-element">aside</a> element when identifying a single footnote, or
+						on descendants of sectioning content when identifying individual footnotes in a group (refer to
+							<a href="#footnotes">footnotes</a> and <a href="#endnotes">endnotes</a>).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-footnote">doc-footnote</a>
+					</p>
+				</dd>
+
+				<dt id="footnotes">footnotes</dt>
+				<dd>
+					<p>A collection of <a href="#footnote">footnotes</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#footnote">footnote</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+
+				<dt id="note">note<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A note. This property does not carry spatial positioning semantics, as do the <a href="#footnote"
+							>footnote</a> and <a href="#endnote">endnote</a> properties. It can be used to identify
+						footnotes, endnotes, marginal notes, inline notes, and similar when legacy naming conventions
+						are not desired.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>On the <a
+							data-cite="html#the-aside-element">aside</a> element when identifying a single note, or on
+						descendants of sectioning content when identifying individual notes in a group (refer to <a
+							href="#footnotes">footnotes</a> and <a href="#endnotes">endnotes</a>).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="#footnote">footnote</a>, <a href="#endnote">endnote</a>
+						</span>
+					</p>
+				</dd>
+
+				<dt id="rearnote">rearnote<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A note appearing in the rear (backmatter) of the work, or at the end of a section.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#rearnotes">rearnotes</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>On the <a
+							data-cite="html#the-aside-element">aside</a> element when identifying a single rearnote, or
+						on descendants of sectioning content when identifying individual rearnotes in a group (refer to
+							<a href="#footnotes">footnotes</a> and <a href="#rearnotes">rearnotes</a>).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="#endnote">endnote</a>
+						</span>
+					</p>
+				</dd>
+
+				<dt id="rearnotes">rearnotes<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A collection of notes appearing at the rear (backmatter) of the work, or at the end of a
+						section.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#rearnote">rearnote</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="#endnotes">endnotes</a>
+						</span>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="links">
+			<h2>References</h2>
+
+			<dl>
+				<dt id="annoref">annoref<span class="status deprecated"> [deprecated]</span></dt>
+				<dd>
+					<p>A reference to an annotation.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#link">xhv:link</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#annotation">annotation</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Replaced by:</span>
+						<span class="subpropref">
+							<a href="http://idpf.org/epub/oa">Open Annotation in EPUB</a>
+						</span>
+					</p>
+				</dd>
+
+				<dt id="backlink">backlink<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A link that allows the user to return to a related location in the content (e.g., from a <a
+							href="#footnote">footnote</a> to its reference or from a <a href="#glossdef">glossary
+							definition</a> to where a <a href="#glossterm">term</a> is used).</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#link">xhv:link</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-backlink">doc-backlink</a>
+					</p>
+				</dd>
+
+				<dt id="biblioref">biblioref<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A reference to a <a href="#biblioentry">bibliography entry</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#link">xhv:link</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-biblioref">doc-biblioref</a>
+					</p>
+				</dd>
+
+				<dt id="glossref">glossref<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>A reference to a <a href="#glossdef">glossary definition</a>.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#link">xhv:link</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-glossref">doc-glossref</a>
+					</p>
+				</dd>
+
+				<dt id="noteref">noteref</dt>
+				<dd>
+					<p>A reference to a note, typically appearing as a superscripted number or symbol in the main body
+						of text.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Inherits from:</span>
+						<span class="subpropref">
+							<a href="http://www.w3.org/1999/xhtml/vocab/#link">xhv:link</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">See also:</span>
+						<span class="subpropref">
+							<a href="#note">note</a>
+						</span>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=a=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-noteref">doc-noteref</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="document-text">
+			<h2>Document text</h2>
+
+			<p>Terms for describing components at the phrasing level.</p>
+
+			<dl>
+				<dt id="concluding-sentence">concluding-sentence</dt>
+				<dd>
+					<p>A phrase or sentence serving as a concluding summary of the containing paragraph.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=phrasing content=] </p>
+				</dd>
+
+				<dt id="credit">credit<span class="status draft"> [draft]</span></dt>
+				<dd>
+					<p>An acknowledgment of the source of integrated content from third-party sources, such as photos.
+						Typically identifies the creator, copyright, and any restrictions on reuse.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=phrasing content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-credit">doc-credit</a>
+					</p>
+				</dd>
+
+				<dt id="keyword">keyword</dt>
+				<dd>
+					<p>A key word or phrase.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=phrasing content=] </p>
+				</dd>
+
+				<dt id="topic-sentence">topic-sentence</dt>
+				<dd>
+					<p>A phrase or sentence serving as an introductory summary of the containing paragraph.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=phrasing content=] </p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-pagination">
+			<h2>Pagination</h2>
+
+			<dl>
+				<dt id="page-list">page-list</dt>
+				<dd>
+					<p>A navigational aid that provides a list of links to the <a href="#pagebreak">pagebreaks</a> in
+						the content.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=sectioning content=] </p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-pagelist">doc-pagelist</a>
+					</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Usage details: </span>
+						<a data-cite="epub-33#sec-nav-pagelist">The <code>page-list nav</code> Element</a> [[epub-33]]
+					</p>
+				</dd>
+
+				<dt id="pagebreak">pagebreak</dt>
+				<dd>
+					<p>A separator denoting the position before which a break occurs between two contiguous pages in a
+						statically paginated version of the content.</p>
+					<p>Page break locators are also commonly used to provide static markers in purely digital
+						publications (i.e., where no statically paginated equivalent exists). These markers provide
+						consistent navigation regardless of differences in font and screen size that can otherwise
+						affect the dynamic pagination of the content.</p>
+					<p>EPUB creators must ensure the name of the page break is an end user-consumable page number that
+						identifies the page that is beginning.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span> [=phrasing content | phrasing=] and
+						[=flow content | flow=] content, where the value of the carrying elements title attribute takes
+						precedence over element content for the purposes of representing the pagebreak value</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">DPUB-ARIA role: </span>
+						<a data-cite="dpub-aria-1.0#doc-pagebreak">doc-pagebreak</a>
+					</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-tables">
+			<h2>Tables</h2>
+
+			<dl>
+				<dt id="table">table</dt>
+				<dd>
+					<p>A structure containing data or content laid out in tabular form.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable table structure.</p>
+				</dd>
+
+				<dt id="table-row">table-row</dt>
+				<dd>
+					<p>A row of data or content in a tabular structure.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable table row.</p>
+				</dd>
+
+				<dt id="table-cell">table-cell</dt>
+				<dd>
+					<p>A single cell of tabular data or content.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable table cell.</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-lists">
+			<h2>Lists</h2>
+
+			<dl>
+				<dt id="list">list</dt>
+				<dd>
+					<p>A structure that contains an enumeration of related content items.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context: </span>Identifies a [^seq^] or [^par^]
+						as an escapable or skippable list structure.</p>
+				</dd>
+
+				<dt id="list-item">list-item</dt>
+				<dd>
+					<p>A single item in an enumeration.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable list item.</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-figures">
+			<h2>Figures</h2>
+
+			<dl>
+				<dt id="figure">figure</dt>
+				<dd>
+					<p>An illustration, diagram, photo, code listing or similar, referenced from the text of a work, and
+						typically annotated with a title, caption and/or credits.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable figure.</p>
+				</dd>
+			</dl>
+		</section>
+		<section id="sec-asides">
+			<h2>Asides</h2>
+
+			<dl>
+				<dt id="aside">aside</dt>
+				<dd>
+					<p>Secondary or supplementary content.</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">HTML usage context: </span>Not Allowed</p>
+				</dd>
+				<dd>
+					<p>
+						<span class="subproplabel">Media overlays usage context:</span> Identifies a [^seq^] or [^par^]
+						as an escapable or skippable aside.</p>
+				</dd>
+			</dl>
+		</section>
+		<div data-include="../common/acknowledgements.html" data-include-replace="true"></div>
+	</body>
+</html>
