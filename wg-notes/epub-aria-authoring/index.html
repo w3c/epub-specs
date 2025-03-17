@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<title>EPUB Type to ARIA Role Authoring Guide 1.1</title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer="defer"></script>
+		<script src="../../common/js/fix-errata.js" class="remove"></script>
+		<script src="../../common/js/css-inline.js" class="remove"></script>
+		<script src="../../common/js/copyright.js" class="remove"></script>
+		<script class="remove">
+			var respecConfig = {
+                group: "pm",
+                wgPublicList: "public-pm-wg",
+                specStatus: "ED",
+				noRecTrack: true,
+                shortName: "epub-aria-authoring-11",
+				edDraftURI: "https://w3c.github.io/epub-specs/epub33/epub-aria-authoring/",
+				errata: "https://w3c.github.io/epub-specs/epub33/errata.html",
+				copyrightStart: "2021",
+				editors:[ {
+					name: "Matt Garrish",
+					company: "DAISY Consortium",
+					companyURL: "https://daisy.org",
+					w3cid: 51655
+				}],
+				includePermalinks: true,
+				permalinkEdge:     true,
+				permalinkHide:     false,
+				github:			 {
+                    repoURL: "https://github.com/w3c/epub-specs",
+					branch: "main"
+				},
+                preProcess: [inlineCustomCSS],
+				localBiblio: {
+					"dpub-aria": {
+						"title": "Digital Publishing WAI-ARIA Module",
+						"url": "https://www.w3.org/TR/dpub-aria/",
+						"publisher": "W3C"
+					},
+					"epub-3": {
+						"title": "EPUB 3",
+						"url": "https://www.w3.org/TR/epub/",
+						"publisher": "W3C"
+					},
+					"wai-aria": {
+						"title": "Accessible Rich Internet Applications (WAI-ARIA)",
+						"url": "https://www.w3.org/TR/wai-aria/",
+						"publisher": "W3C"
+					}
+				}
+			};
+		</script>
+		<style>
+			ul.col {
+				columns: 4;
+			}</style>
+	</head>
+	<body>
+		<div data-include="../../common/copyright.html" data-oninclude="modifyCopyright" data-include-replace="true"></div>
+		<section id="abstract">
+			<p>This document provides guidance for publishers looking to move from the use of the EPUB 3
+					<code>epub:type</code> attribute to ARIA roles for accessibility.</p>
+		</section>
+		<section id="sotd"></section>
+		<section id="sec-intro">
+			<h2>Introduction</h2>
+
+			<p>It is important to understand the differences between the <a
+					href="https://www.w3.org/TR/epub/#sec-epub-type-attribute"><code>epub:type</code> attribute</a>
+				[[epub-3]] and the <a href="https://www.w3.org/TR/wai-aria/#host_general_role"><code>role</code>
+					attribute</a> [[wai-aria]] to ensure that they are properly applied for their intended purposes and
+				audiences.</p>
+
+			<p>The biggest of these differences is in their primary applications. The <code>epub:type</code> attribute
+				has evolved to aid publisher workflows. It has limited use enabling reading system behaviors outside of
+				some core functionality of EPUB (identifying navigation elements and enhancing media overlay documents).
+				Although it was hoped the attribute would also expose information to assistive technologies, in practice
+				it does not.</p>
+
+			<p>The primary purpose of the <code>role</code> attribute, on the other hand, is to expose information to
+				assistive technologies. It is not to facilitate user agent behaviors.</p>
+
+			<p>The result of these differences is that the application of <code>epub:type</code> semantics is largely
+				harmless, but misapplication of ARIA roles can have negative impacts on the reading experience, from
+				over-announcement of information to broken rendering for assistive technology users.</p>
+
+			<p>This guide addresses key authoring differences to be aware of when migrating to ARIA roles from the
+					<code>epub:type</code> attribute, or when using both attributes together. The goal is to help
+				publishers avoid the pitfalls of applying ARIA roles like they would <code>epub:type</code> semantics
+				and breaking the reading experience for users of assistive technologies.</p>
+
+			<p class="note">This guide is not intended as a comprehensive overview of ARIA roles. For more information
+				about ARIA and how to apply it to HTML document, refer to [[wai-aria]] and [[html-aria]],
+				respectively.</p>
+		</section>
+		<section id="sec-mappings">
+			<h2>Mapping types to roles</h2>
+
+			<p>ARIA roles are more restricted in where you can use them than EPUB's structural semantics. Although there
+				are elements that accept any role, you need to take care to ensure that roles are only used where they
+				will make sense to users of assistive technologies.</p>
+
+			<p>The following table maps the semantics from the <a href="https://www.w3.org/TR/epub-ssv-11/">EPUB
+					Structural Semantics Vocabulary</a> [[epub-ssv-11]] to the corresponding roles in [[wai-aria]] and
+				the [[dpub-aria]] module.</p>
+
+			<p>As the use of the <a href="https://www.w3.org/TR/epub/#sec-epub-type-attribute"><code>epub:type</code>
+					attribute</a> [[epub-3]] is much more liberal than the <a
+					href="https://www.w3.org/TR/wai-aria/#host_general_role"><code>role</code> attribute</a>
+				[[wai-aria]], you cannot interchange types and roles on every HTML element, even when a role mapping
+				exists. The elements you are allowed to use roles on are identified in the last column of the table. In
+				addition, refer to the note at the end of the table for the <a href="#role-general">list of elements
+					that accept any role value</a>.</p>
+
+			<table id="mappings" class="zebra">
+				<thead>
+					<tr>
+						<th>[[epub-ssv-11]]</th>
+						<th>[[epub-3]] manifest</th>
+						<th>[[dpub-aria]]</th>
+						<th>[[wai-aria]]</th>
+						<th>Elements Allowed On<a href="#role-general" role="doc-noteref" aria-label="note">*</a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#abstract">abstract</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-abstract">doc-abstract</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#acknowledgments">acknowledgments</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-acknowledgments">doc-acknowledgments</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#afterword">afterword</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-afterword">doc-afterword</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#answer">answer</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#answers">answers</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#appendix">appendix</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-appendix">doc-appendix</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#assessment">assessment</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#assessments">assessments</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#backmatter">backmatter</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#balloon">balloon</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#biblioentry">biblioentry</a></td>
+						<td></td>
+						<td>doc-biblioentry <br />
+							<strong>Deprecated</strong>
+							<br /> See <a href="#sec-lists">List Roles</a></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#bibliography">bibliography</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-bibliography">doc-bibliography</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#biblioref">biblioref</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-biblioref">doc-biblioref</a></td>
+						<td></td>
+						<td><code>a</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#bodymatter">bodymatter</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#bridgehead">bridgehead</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#case-study">case-study</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#chapter">chapter</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-chapter">doc-chapter</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#colophon">colophon</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-colophon">doc-colophon</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#concluding-sentence">concluding-sentence</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#conclusion">conclusion</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-conclusion">doc-conclusion</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#contributors">contributors</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#copyright-page">copyright-page</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#cover">cover</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><em hidden="hidden">cover</em></td>
+						<td><a href="https://www.w3.org/TR/epub/#cover-image">cover-image</a></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-cover">doc-cover</a></td>
+						<td></td>
+						<td><code>img</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#covertitle">covertitle</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#credit">credit</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-credit">doc-credit</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#credits">credits</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-credits">doc-credits</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#dedication">dedication</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-dedication">doc-dedication</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#division">division</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#endnote">endnote</a></td>
+						<td></td>
+						<td>doc-endnote <br />
+							<strong>Deprecated</strong>
+							<br /> See <a href="#sec-lists">List Roles</a>.</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#endnotes">endnotes</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-endnotes">doc-endnotes</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#epigraph">epigraph</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-epigraph">doc-epigraph</a></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#epilogue">epilogue</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-epilogue">doc-epilogue</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#errata">errata</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-errata">doc-errata</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><em>No Equivalent</em></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-example">doc-example</a></td>
+						<td></td>
+						<td><code>aside</code>, <code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#feedback">feedback</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#figure">figure</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#figure">figure</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#fill-in-the-blank-problem"
+								>fill-in-the-blank-problem</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#footnote">footnote</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-footnote">doc-footnote</a></td>
+						<td></td>
+						<td><code>aside</code>, <code>footer</code>, <code>header</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#footnotes">footnotes</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#foreword">foreword</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-foreword">doc-foreword</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#frontmatter">frontmatter</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#fulltitle">fulltitle</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#general-problem">general-problem</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#glossary">glossary</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-glossary">doc-glossary</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#glossterm">glossterm</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#term">term</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#glossdef">glossdef</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#definition">definition</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#glossref">glossref</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-glossref">doc-glossref</a></td>
+						<td></td>
+						<td><code>a</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#halftitle">halftitle</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#halftitlepage">halftitlepage</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#imprint">imprint</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#imprimatur">imprimatur</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index">index</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-index">doc-index</a></td>
+						<td></td>
+						<td><code>nav</code>, <code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-headnotes">index-headnotes</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-legend">index-legend</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-group">index-group</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-entry-list">index-entry-list</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-entry">index-entry</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-term">index-term</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-editor-note">index-editor-note</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-locator">index-locator</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-locator-list">index-locator-list</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-locator-range">index-locator-range</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-xref-preferred">index-xref-preferred</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-xref-related">index-xref-related</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-term-category">index-term-category</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#index-term-categories"
+							>index-term-categories</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#introduction">introduction</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-introduction">doc-introduction</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#keyword">keyword</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#keywords">keywords</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#label">label</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#landmarks">landmarks</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#directory">directory</a></td>
+						<td><code>ol</code>, <code>ul</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-objective">learning-objective</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-objectives">learning-objectives</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-outcome">learning-outcome</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-outcomes">learning-outcomes</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-resource">learning-resource</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-resources">learning-resources</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-standard">learning-standard</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#learning-standards">learning-standards</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#list">list</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#list">list</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#list-item">list-item</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#listitem">listitem</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#loa">loa</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#loi">loi</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#lot">lot</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#lov">lov</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#match-problem">match-problem</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#multiple-choice-problem"
+								>multiple-choice-problem</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#noteref">noteref</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-noteref">doc-noteref</a></td>
+						<td></td>
+						<td><code>a</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#notice">notice</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-notice">doc-notice</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#ordinal">ordinal</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#other-credits">other-credits</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#panel">panel</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#panel-group">panel-group</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#pagebreak">pagebreak</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-pagebreak">doc-pagebreak</a></td>
+						<td></td>
+						<td><code>hr</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#page-list">page-list</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-pagelist">doc-pagelist</a></td>
+						<td></td>
+						<td><code>nav</code>, <code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#part">part</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-part">doc-part</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#practice">practice</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#practices">practices</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#preamble">preamble</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#preface">preface</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-preface">doc-preface</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#prologue">prologue</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-prologue">doc-prologue</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#pullquote">pullquote</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-pullquote">doc-pullquote</a></td>
+						<td></td>
+						<td><code>aside</code>, <code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#question">question</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#qna">qna</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-qna">doc-qna</a></td>
+						<td></td>
+						<td><code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#backlink">backlink</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-backlink">doc-backlink</a></td>
+						<td></td>
+						<td><code>a</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#revision-history">revision-history</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#seriespage">seriespage</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#sound-area">sound-area</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#subchapter">subchapter</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#subtitle">subtitle</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-subtitle">doc-subtitle</a></td>
+						<td></td>
+						<td><code>h1</code>-<code>h6</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#table">table</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#table">table</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#table-row">table-row</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#row">row</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#table-cell">table-cell</a></td>
+						<td></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/wai-aria/#cell">cell</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#text-area">text-area</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#tip">tip</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-tip">doc-tip</a></td>
+						<td></td>
+						<td><code>aside</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#title">title</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#titlepage">titlepage</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#toc">toc</a></td>
+						<td></td>
+						<td><a href="https://www.w3.org/TR/dpub-aria/#doc-toc">doc-toc</a></td>
+						<td></td>
+						<td><code>nav</code>, <code>section</code></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#toc-brief">toc-brief</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#topic-sentence">topic-sentence</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#true-false-problem">true-false-problem</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><a href="https://www.w3.org/TR/epub-ssv/#volume">volume</a></td>
+						<td></td>
+						<td><em>No Role</em></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<aside id="role-general" role="doc-footnote">
+				<p><sup>*</sup> In addition to the specific elements listed in the table, the following elements accept
+					any role value.</p>
+				<ul class="col">
+					<li><code>a</code> (without an <code>href</code> attribute)</li>
+					<li><code>abbr</code></li>
+					<li><code>address</code></li>
+					<li><code>b</code></li>
+					<li><code>bdi</code></li>
+					<li><code>bdo</code></li>
+					<li><code>blockquote</code></li>
+					<li><code>canvas</code></li>
+					<li><code>cite</code></li>
+					<li><code>code</code></li>
+					<li><code>data</code></li>
+					<li><code>del</code></li>
+					<li><code>dfn</code></li>
+					<li><code>div</code></li>
+					<li><code>em</code></li>
+					<li><code>figure</code> (without a <code>figcaption</code>)</li>
+					<li><code>hgroup</code></li>
+					<li><code>i</code></li>
+					<li><code>ins</code></li>
+					<li><code>kbd</code></li>
+					<li><code>mark</code></li>
+					<li><code>output</code></li>
+					<li><code>p</code></li>
+					<li><code>pre</code></li>
+					<li><code>q</code></li>
+					<li><code>rp</code></li>
+					<li><code>rt</code></li>
+					<li><code>ruby</code></li>
+					<li><code>s</code></li>
+					<li><code>samp</code></li>
+					<li><code>small</code></li>
+					<li><code>span</code></li>
+					<li><code>strong</code></li>
+					<li><code>sub</code></li>
+					<li><code>sup</code></li>
+					<li><code>svg</code></li>
+					<li><code>table</code></li>
+					<li><code>tbody</code></li>
+					<li><code>tfoot</code></li>
+					<li><code>thead</code></li>
+					<li><code>th</code>, <code>td</code>, <code>tr</code> (if table is not exposed as
+						<code>table</code>, <code>grid</code>, or <code>treegrid</code>)</li>
+					<li><code>time</code></li>
+					<li><code>u</code></li>
+					<li><code>var</code></li>
+				</ul>
+			</aside>
+
+			<div class="note">
+				<p>Refer to the <a href="https://www.w3.org/TR/html-aria/">ARIA in HTML</a> [[html-aria]] document for
+					more information about the correct use of ARIA roles, states and properties. It provides the
+					authoritative list of roles that are allowed on an element, and the elements that accept any
+					role.</p>
+			</div>
+		</section>
+		<section id="sec-guidelines">
+			<h2>Guidelines</h2>
+
+			<section id="sec-overload">
+				<h3>Do not overload roles</h3>
+
+				<p>Only use <strong>one digital publishing role</strong> per <a
+						href="https://www.w3.org/TR/wai-aria/#host_general_role"><code>role</code> attribute</a>
+					[[wai-aria]].</p>
+
+				<aside class="example" title="A section with a single DPUB-ARIA role">
+					<pre>&lt;section role="doc-chapter"></pre>
+				</aside>
+
+				<p>If you include a second role, it must be a fallback from [[wai-aria]].</p>
+
+				<aside class="example" title="A section with a fallback ARIA role">
+					<pre>&lt;section role="doc-chapter region"></pre>
+				</aside>
+
+				<p class="note">The fallback must not be an <a href="https://www.w3.org/TR/wai-aria/#abstract_roles"
+						>Abstract roles</a> [[wai-aria]]. These roles are never allowed in the <code>role</code>
+					attribute.</p>
+
+				<p>Unlike the <a href="https://www.w3.org/TR/epub/#sec-epub-type-attribute"><code>epub:type</code>
+						attribute</a> [[epub-3]], the order of roles is important, and only the first recognized role is
+					applied to an element.</p>
+			</section>
+
+			<section id="sec-repetition">
+				<h3>Avoid unnecessary repetition</h3>
+
+				<p>Do not reapply a semantic just because your content has been chunked into separate files.</p>
+
+				<p>For example, ensure that the <a href="https://www.w3.org/TR/dpub-aria/#doc-part"
+							><code>doc-part</code> role</a> [[dpub-aria]] is only applied to the section that contains
+					the heading for the part. Do not reapply the part role for each chapter that belongs to the part, as
+					it will be announced to users of assistive technologies each time it occurs, causing confusion.</p>
+			</section>
+
+			<section id="sec-hd">
+				<h3>Supply labels</h3>
+
+				<p>If a landmark role (e.g., <a href="https://www.w3.org/TR/dpub-aria/#doc-chapter"
+							><code>doc-chapter</code></a>, <a href="https://www.w3.org/TR/dpub-aria/#doc-part"
+							><code>doc-part</code></a>, <a href="https://www.w3.org/TR/dpub-aria/#doc-index"
+							><code>doc-index</code></a> [[dpub-aria]]) does not include a label, assistive technologies
+					will only announce the generic name of the role in the landmarks.</p>
+
+				<p>To include a more descriptive label, use the <a
+						href="https://www.w3.org/TR/wai-aria/#aria-labelledby"><code>aria-labelledby</code>
+						attribute</a> [[wai-aria]] to associate the label with the role.</p>
+
+				<aside class="example" title="Using the aria-labelledby attribute to provide a label">
+					<pre>&lt;section role="doc-index" aria-labelledby="idx01">
+   &lt;h2 id="idx01">Name Index&lt;/h2>
+   …
+&lt;/section></pre>
+				</aside>
+
+				<p>If a label is not available in the text, you can supply one in an <a
+						href="https://www.w3.org/TR/wai-aria/#aria-label"><code>aria-label</code> attribute</a>
+					[[wai-aria]].</p>
+
+				<aside class="example" title="Using the aria-label attribute to provide a label">
+					<pre>&lt;aside role="doc-tip" aria-label="Helpful Hint">
+   …
+&lt;/aside></pre>
+				</aside>
+
+				<p>If a document contains more than one instance of the same landmark role, each instance needs to be
+					uniquely labelled to allow users to tell them apart.</p>
+
+				<aside class="example" title="Differentiating two indexes with unique labels">
+					<pre>&lt;section role="doc-index" aria-labelledby="idx01">
+   &lt;h2 id="idx01">Name Index&lt;/h2>
+   …
+&lt;/section>
+
+&lt;section role="doc-index" aria-labelledby="idx02">
+   &lt;h2 id="idx02">Topical Index&lt;/h2>
+   …
+&lt;/section></pre>
+				</aside>
+			</section>
+
+			<section id="sec-body">
+				<h3>Do not override the <code>body</code> element</h3>
+
+				<p>The <a href="https://www.w3.org/TR/epub/#sec-epub-type-attribute"><code>epub:type</code>
+						attribute</a> [[epub-3]] may be used to inflect sectioning semantics on the [[html]] <a
+						href="https://html.spec.whatwg.org/multipage/sections.html#the-body-element"><code>body</code>
+						element</a> (e.g., to indicate front matter, or to avoid using sectioning elements), but this
+					practice is both invalid and harmful with ARIA roles.</p>
+
+				<p>The <code>body</code> element has the implied role <a href="https://www.w3.org/TR/wai-aria/#document"
+							><code>document</code></a> [[wai-aria]], and <a
+						href="https://www.w3.org/TR/html-aria/#el-body">you cannot define any other role on it</a>
+					[[html-aria]]. Changing the role of the <code>body</code> element can affect the ability to read the
+					content for users of assistive technologies.</p>
+			</section>
+
+			<section id="sec-lists">
+				<h3>List roles are for lists</h3>
+
+				<p>Assigning a role to an element overrides its default nature, so use care when applying roles to lists
+					and list items.</p>
+
+				<p>Just as [[html]] <a
+						href="https://html.spec.whatwg.org/multipage/grouping-content.html#the-ol-element"
+							><code>ol</code></a> and <a
+						href="https://html.spec.whatwg.org/multipage/grouping-content.html#the-ul-element"
+							><code>ul</code></a> list elements must contain list items, elements assigned a list role
+					must only contain elements assigned a list item role.</p>
+
+				<aside class="example" title="Specifying list and listitem roles on elements">
+					<pre>&lt;div role="list">
+   &lt;p role="listitem">…&lt;/p>
+   …
+&lt;/div></pre>
+				</aside>
+
+				<p>Similarly, a list item must always be enclosed inside of a list.</p>
+
+				<div class="note">
+					<p>Due to a change in the [[wai-aria]] roles model, list item roles defined in modules no longer
+						satisfy the requirement that the <a href="https://www.w3.org/TR/wai-aria/#list"
+								><code>list</code> role</a> have list item children. As a result, use of the <a
+							href="https://www.w3.org/TR/dpub-aria/#doc-biblioentry"><code>doc-biblioentry</code></a> and
+							<a href="https://www.w3.org/TR/dpub-aria/#doc-endnote"><code>doc-endnote</code></a> roles
+						[[dpub-aria]] is now deprecated.</p>
+
+					<p>These roles are now implied on list items within sections that have a <a
+							href="https://www.w3.org/TR/dpub-aria/#doc-bibliography"><code>doc-bibliography</code></a>
+						or <a href="https://www.w3.org/TR/dpub-aria/#doc-endnotes"><code>doc-endnotes</code></a> role
+						[[dpub-aria]], respectively.</p>
+
+					<pre>&lt;section role="doc-bibliography">
+   &lt;h2>Select Bibliography&lt;/h2>
+   
+   &lt;ol>
+      &lt;li>&lt;-- Implied bibliography entry -->&lt;/li>
+      …
+   &lt;/ol>
+&lt;/section></pre>
+				</div>
+			</section>
+
+			<section id="sec-covers">
+				<h3>Cover role is for images</h3>
+
+				<p>Although the <a href="https://www.w3.org/TR/dpub-aria/#doc-cover"><code>doc-cover</code> role</a>
+					[[dpub-aria]] seems like it should be the same as the <a
+						href="https://www.w3.org/TR/epub-ssv/#cover"><code>cover</code> semantic</a> [[epub-ssv-11]], it
+					is actually related to the <a href="https://www.w3.org/TR/epub/#cover-image"
+							><code>cover-image</code> semantic</a> [[epub-3]] used to identify cover images in the EPUB
+					package document. The role is used to identify an image that represents the cover.</p>
+
+				<aside class="example" title="Applying the doc-cover role to an image">
+					<pre>&lt;img
+    role="doc-cover"
+    src="cover.jpg"
+    alt="…"/></pre>
+				</aside>
+
+				<p><strong>Do not</strong> use this role to identify a section of content containing the cover. Placing
+					the role on an [[html]] <a
+						href="https://html.spec.whatwg.org/multipage/sections.html#the-section-element"
+							><code>section</code> element</a>, for example, informs assistive technologies to treat the
+					element like they would an image. In practical terms, this means that none of its content will be
+					available.</p>
+
+				<p>If a section of cover content needs to be identified as a landmark, you can use the <a
+						href="https://www.w3.org/TR/wai-aria/#aria-label"><code>aria-label</code></a> or <a
+						href="https://www.w3.org/TR/wai-aria/#aria-labelledby"><code>aria-labelledby</code></a>
+					attributes [[wai-aria]] with a <code>section</code> element.</p>
+
+				<aside class="example" title="Adding a label to a section to create a landmark">
+					<pre>&lt;section aria-label="Cover: As I Lay Dying. William Faulkner">
+   …
+&lt;/section></pre>
+				</aside>
+
+				<p class="note">For [[html]] <a
+						href="https://html.spec.whatwg.org/multipage/grouping-content.html#the-div-element"
+							><code>div</code> elements</a>, the general <a href="https://www.w3.org/TR/wai-aria/#region"
+							><code>region</code> role</a> [[wai-aria]] is also needed. For more information about how to
+					use roles in content, refer to <a href="https://www.w3.org/TR/html-aria/">ARIA in HTML</a>
+					[[html-aria]].</p>
+			</section>
+		</section>
+	</body>
+</html>
