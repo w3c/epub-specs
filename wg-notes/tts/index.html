@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<title>EPUB 3 Text-to-Speech Enhancements 1.0</title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer=""></script>
+		<script src="../../common/js/fix-errata.js" class="remove"></script>
+		<script src="../../common/js/css-inline.js" class="remove"></script>
+		<script src="../../common/js/copyright.js" class="remove"></script>
+		<script class="remove">
+			//<![CDATA[
+			var respecConfig = {
+				group: "pm",
+				wgPublicList: "public-pm-wg",
+				specStatus: "ED",
+				shortName: "epub-tts-10",
+				errata: "https://w3c.github.io/epub-specs/epub33/errata.html",
+				edDraftURI: "https://w3c.github.io/epub-specs/epub33/tts/",
+				editors: [
+					{
+						name: "Matt Garrish",
+						company: "DAISY Consortium",
+						companyURL: "https://daisy.org",
+						w3cid: 51655
+					}
+				],
+				includePermalinks: true,
+				permalinkEdge: true,
+				permalinkHide: false,
+				diffTool: "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+				github: {
+					repoURL: "https://github.com/w3c/epub-specs",
+					branch: "main"
+				},
+				localBiblio: {
+					"epubcontentdocs-30": {
+						"authors":[
+						"Markus Gylling",
+						"William McCoy",
+						"Elika J. Etimad",
+						"Matt Garrish"],
+						"title": "EPUB Content Documents 3.0",
+						"href": "http://idpf.org/epub/30/spec/epub30-contentdocs-20111011.html",
+						"date": "11 October 2011",
+						"publisher": "IDPF"
+					},
+					"svg": {
+						"title": "SVG",
+						"href": "https://www.w3.org/TR/SVG/",
+						"publisher": "W3C"
+					}
+				},
+				xref: {
+					profile: "web-platform",
+					specs: ["epub-rs-33","epub-33"]
+				},
+				preProcess:[inlineCustomCSS],
+				postProcess: [fixErrataField]
+			};//]]>
+		</script>
+	</head>
+	<body>
+		<div data-include="../../common/copyright.html" data-oninclude="modifyCopyright" data-include-replace="true"></div>
+		<section id="abstract">
+			<p>This document describes authoring features and reading system support for improving the voicing of EPUB®
+				3 publications.</p>
+		</section>
+		<section id="sotd"></section>
+		<section id="intro">
+			<h2>Introduction</h2>
+
+			<section id="overview">
+				<h3>Overview</h3>
+
+				<p>The need for clear and accurate [=Text-to-Speech=] (TTS) rendering of publications is imperative for
+					their readability and comprehension. Unfortunately, the complexities of voicing natural languages
+					and the limitations of built-in vocabularies in TTS engines often leads to incorrect and illegible
+					voicing. Users either have to infer the correct meaning, when possible, or stop reading and have the
+					garbled words spelled out. Anyone who has tried to read educational or instructional material using
+					basic TTS playback will understand the frustration of this experience.</p>
+
+				<p>W3C has defined a variety of technologies to aid in improving the voice rendering of markup content:
+					the Synthetic Speech Markup Language [[ssml]], pronunciation lexicons [[pronunciation-lexicon]], and
+					the CSS Speech module.</p>
+
+				<p>SSML and pronunciation lexicons provide enhanced speech rendering. Lexicons are like dictionaries of
+					common terms a TTS engine can use, while SSML provides the ability to add individual voicing for
+					specific phrases. [=EPUB creators=] can use these technologies together or separately depending on
+					the complexity of the text. Despite these advantages, the technologies have not been adapted for
+					easy use within the XHTML and SVG formats that EPUB relies on. This document proposes an approach to
+					enable their authoring and rendering in EPUB content documents.</p>
+
+				<p>This document also covers the use of CSS Speech for improved aural rendering in EPUB. CSS Speech
+					covers a different domain than SSML and pronunciation lexicons. Instead of controlling the specific
+					voicing of words and phrases, these properties allow EPUB creators to aspects of the aural playback
+					itself &#8212; what text to render, at what volume, with what preferred voice, etc.</p>
+
+				<p>This document covers the use of these technologies for rendering by [=EPUB reading systems=].
+					Although it is anticipated that general assistive technologies such as screen readers could take
+					advantage of the technologies, use by them is out of scope.</p>
+			</section>
+
+			<section id="background" class="informative">
+				<h3>Background</h3>
+
+				<p>The EPUB Working Group of the International Digital Publishing Forum (IDPF) first defined a means of
+					integrating the Synthetic Speech Markup Language [[ssml]] and pronunciation lexicons
+					[[pronunciation-lexicon]] in EPUB 3.0 [[epubcontentdocs-30]] so that [=EPUB creators=] could improve
+					the rendering quality of [=text-to-speech=] (TTS) playback in [=reading systems=]. The ability to
+					include cascading style sheets [[css2]] also allowed EPUB creators to access the in-development
+					speech properties of the CSS Speech module [[css-speech-1]].</p>
+
+				<p>Although there has been some authoring uptake of these technologies, support in reading systems has
+					yet to materialize to a level where these technologies are considered stable. Consequently, these
+					technologies are now published as a W3C Working Group Note.</p>
+
+				<p>EPUB creators can continue to use these technologies in their publications, as the move to a Note
+					does not change their validity or affect backward compatibility. Developers of reading systems that
+					support TTS playback are also strongly encouraged to implement support. The Working Group will look
+					at standardizing any of the technologies that meet support requirements in future revisions of EPUB
+					3.</p>
+
+				<div class="note">
+					<p>The <a data-cite="spoken-html#">Specification for Spoken Presentation in HTML</a> [[spoken-html]]
+						is another initiative in W3C to bring SSML to HTML. It is still too early to determine what
+						effect, if any, it will have on this document. The Working Group will monitor the work and
+						future updates to this Note will reflect any impact it has on Text-to-Speech rendering in
+						EPUB.</p>
+				</div>
+			</section>
+
+			<section id="sec-terminology">
+				<h3>Terminology</h3>
+
+				<p>This specification uses <a data-cite="epub-33#sec-terminology">terminology defined in EPUB 3.3</a>
+					[[epub-33]].</p>
+
+				<p>It also defines the following term:</p>
+
+				<dl>
+					<dt><dfn>text-to-speech</dfn></dt>
+					<dd>
+						<p>The rendering of the textual content of an [=EPUB publication=] by a [=reading system=] as
+							artificial human speech using a synthesized voice.</p>
+					</dd>
+				</dl>
+
+				<div class="note">
+					<p>Only the first instance of a term in a section links to its definition.</p>
+				</div>
+			</section>
+
+			<section id="conformance"></section>
+		</section>
+		<section id="ssml">
+			<h2>SSML attributes</h2>
+
+			<section id="ssml-intro" class="informative">
+				<h3>Introduction</h3>
+
+				<p>The W3C Speech Synthesis Markup Language [[ssml]] is a language used for assisting [=Text-to-Speech=]
+					(TTS) engines in generating synthetic speech. Although SSML is designed as a standalone document
+					type, it also defines semantics suitable for use within other markup languages.</p>
+
+				<p>This specification recasts the [[ssml]] <a data-cite="speech-synthesis11#S3.1.10"
+							><code>phoneme</code> element</a> as two attributes — <code>ssml:ph</code> and
+						<code>ssml:alphabet</code> — and makes them available within [=EPUB content documents=].</p>
+
+				<p>The attributes allow EPUB creators to specify the proper phonetic pronunciation for uncommon terms
+					that a TTS engine is likely to mispronounce, as well as to disambiguate heteronyms.</p>
+			</section>
+
+			<section id="ssml-ph-attribute">
+				<h3>The <code>ssml:ph</code> attribute</h3>
+
+				<p>The <code>ssml:ph</code> attribute specifies a phonemic/phonetic pronunciation of the text
+					represented by its carrying element.</p>
+
+				<dl class="elemdef" id="attrdef-ssml-ph">
+					<dt>Attribute Name</dt>
+					<dd>
+						<p>
+							<code>ph</code>
+						</p>
+					</dd>
+					<dt>Namespace</dt>
+					<dd>
+						<p>
+							<code>https://www.w3.org/2001/10/synthesis</code>
+						</p>
+					</dd>
+					<dt>Usage</dt>
+					<dd>
+						<p>EPUB creators MAY specify on any element in EPUB content documents with which they can
+							logically associate a phonetic equivalent (i.e., that has descendant text content that a
+							Text-to-Speech engine would otherwise render).</p>
+						<p>EPUB creators MUST NOT specify the attribute on a descendant of an element that already
+							carries this attribute.</p>
+					</dd>
+					<dt>Value</dt>
+					<dd>
+						<p>A phonemic/phonetic expression, syntactically valid with respect to <a
+								href="#ssml-alphabet-attribute">the phonemic/phonetic alphabet used</a>.</p>
+					</dd>
+				</dl>
+
+				<p>The <code>ssml:ph</code> attribute inherits the authoring requirements of the [[ssml]]
+						<code>phoneme</code> element's <a data-cite="speech-synthesis11#S3.1.10"><code>ph</code></a>
+					attribute.</p>
+
+				<p id="ssml-ph-concat">When the <code>ssml:ph</code> attribute appears on an element that has text node
+					descendants, the corresponding document text to which the pronunciation applies is the string that
+					results from concatenating the descendant text nodes, in document order. The specified phonetic
+					pronunciation must therefore logically match the element's textual data in its entirety (i.e., not
+					just an isolated part of its content).</p>
+
+				<p id="ssml-ph-text">EPUB creators SHOULD NOT use the <code>ssml:ph</code> attribute on elements without
+					text content that a Text-to-Speech engine would normally render (e.g., on empty <code>div</code> or
+						<code>span</code> elements). The attribute is not intended to add additional voicing only for
+					TTS playback, and reading systems are expected to ignore the attribute if it does not replace text
+					they would normally render.</p>
+
+				<div class="note">
+					<p>The <code>ssml:ph</code> attribute does not replace attribute values that carry additional
+						textual information (e.g., [^img/alt^] [[html]] and <a
+							href="https://www.w3.org/TR/wai-aria/#aria-label"><code>aria-label</code></a> [[wai-aria]])
+						or link additional textual information (e.g., <a
+							href="https://www.w3.org/TR/wai-aria/#aria-describedby"><code>aria-describedby</code></a>
+						[[wai-aria]]).</p>
+				</div>
+
+				<p id="ssml-ph-empty">Similarly, EPUB creators SHOULD NOT add empty <code>ssml:ph</code> attributes to
+					try and suppress the rendering of text. Reading systems are expected to ignore empty attributes.
+					(See the <a href="https://www.w3.org/TR/wai-aria/#aria-hidden"><code>aria-hidden</code>
+						attribute</a> [[?wai-aria]] for specifying that content is only for visual rendering.)</p>
+
+				<aside class="example">
+					<p>The following example shows the pronunciation for EPUB added to HTML markup.</p>
+					<pre>&lt;html &#8230;
+      xmlns:ssml="http://www.w3.org/2001/10/synthesis"
+      ssml:alphabet="ipa">
+   &#8230;
+   &lt;body>
+      &lt;h1>&lt;span ssml:ph="ipʌb">EPUB&lt;/span> 3.3&lt;/h1>
+      &#8230;
+   &lt;/body>
+&lt;/html>
+</pre>
+				</aside>
+
+				<aside class="example">
+					<p>The following example shows the pronunciation for EPUB added to SVG markup.</p>
+					<pre>&lt;svg &#8230;
+     xmlns:ssml="http://www.w3.org/2001/10/synthesis"
+     ssml:alphabet="ipa">
+   &lt;title>&lt;tspan ssml:ph="ipʌb">EPUB&lt;/tspan> 3 &#8230; &lt;/title>
+   &#8230;
+&lt;/svg></pre>
+				</aside>
+			</section>
+
+			<section id="ssml-alphabet-attribute">
+				<h3>The <code>ssml:alphabet</code> attribute</h3>
+
+				<p>The <code>ssml:alphabet</code> attribute specifies which phonemic/phonetic pronunciation alphabet is
+					used in the value of the <a href="#attrdef-ssml-ph"><code>ssml:ph</code></a> attribute.</p>
+
+				<dl class="elemdef" id="attrdef-ssml-alphabet">
+					<dt>Attribute Name</dt>
+					<dd>
+						<p>
+							<code>alphabet</code>
+						</p>
+					</dd>
+					<dt>Namespace</dt>
+					<dd>
+						<p>
+							<code>https://www.w3.org/2001/10/synthesis</code>
+						</p>
+					</dd>
+					<dt>Usage</dt>
+					<dd>
+						<p>EPUB creators MAY specify on any element in an EPUB content document that can contain
+							descendant text content.</p>
+					</dd>
+					<dt>Value</dt>
+					<dd>
+						<p>The name of the pronunciation alphabet used to express the value of the <a
+								href="#attrdef-ssml-ph"><code>ssml:ph</code> attribute</a>.</p>
+					</dd>
+				</dl>
+
+				<p>The <code>ssml:alphabet</code> attribute inherits the authoring requirements of the [[ssml]]
+						<code>phoneme</code> element's <a data-cite="speech-synthesis11#S3.1.10"
+						><code>alphabet</code></a> attribute.</p>
+
+				<p id="ssml-alphabet-inherit">The value of the <code>ssml:alphabet</code> attribute is inherited in the
+					document tree. The pronunciation alphabet used for each <code>ssml:ph</code> attribute value is
+					determined by locating the first occurrence of the <code>ssml:alphabet</code> attribute starting
+					with the element on which the <code>ssml:ph</code> attribute appears, followed by the nearest
+					ancestor element.</p>
+
+				<p>EPUB creators SHOULD ensure that an alphabet is defined in scope for all phonemes expressed in <a
+						href="#ssml-ph-attribute"><code>ssml:ph</code> attributes</a>. Interoperability of playback
+					cannot be guaranteed in the absence of a declaration &#8212; reading systems may apply a default
+					alphabet, for example, or may not voice the phoneme.</p>
+
+				<aside class="example">
+					<p>The following example shows a global declaration for the x-JEITA alphabet on the root
+							<code>html</code> element. It is overridden in the body to switch to IPA.</p>
+					<pre>&lt;html &#8230; 
+      xmlns:ssml="http://www.w3.org/2001/10/synthesis"
+      ssml:alphabet="x-JEITA">
+   &#8230;
+   &lt;body>
+   	&#8230;
+   	   &lt;p>&lt;span ssml:alphabet="ipa" ssml:ph="ipʌb">EPUB&lt;/span> is an &#8230;&lt;/p>
+   	&#8230;
+   &lt;/body>
+&lt;/html></pre>
+				</aside>
+
+				<aside class="example">
+					<p>The following example shows a global declaration for the x-SAMPA alphabet on the root
+							<code>svg</code> element.</p>
+					<pre>&lt;svg &#8230;
+      xmlns:ssml="http://www.w3.org/2001/10/synthesis"
+      ssml:alphabet="x-sampa">
+   &lt;title>&lt;tspan ssml:ph="ipVb">EPUB&lt;/tspan> Adoption Chart&lt;/title>
+   &#8230;
+&lt;/svg></pre>
+				</aside>
+
+				<div class="note">
+					<p>Although the [[ssml]] specification refers to a registry of alphabets, one has not been
+						published. As the charter of the W3C Voice Browser Working Group has expired, the Working Group
+						does not anticipate the publication of such a registry. EPUB creators therefore should reference
+						reading system support documentation to determine what alphabet values they support. Some common
+						alphabets include x-JEITA (also x-JEITA-IT-4002 and x-JEITA-IT-4006) and x-sampa.</p>
+				</div>
+			</section>
+		</section>
+		<section id="pls">
+			<h2>Pronunciation lexicons</h2>
+
+			<section id="pls-intro" class="informative">
+				<h3>Introduction</h3>
+
+				<p>The W3C Pronunciation Lexicon Specification (PLS) [[pronunciation-lexicon]] defines syntax and
+					semantics for XML-based pronunciation lexicons to be used by Automatic Speech Recognition and
+					[=Text-to-Speech=] (TTS) engines.</p>
+
+				<p>Pronunciation lexicons allow EPUB creators to define a single global phonetic pronunciation that
+					reading systems can use for all instances of a term instead of having to tag every instance using
+					the SSML attributes. It is a much more efficient way of defining pronunciations for words with only
+					a single pronunciation, or where a particular pronunciation is predominant.</p>
+
+				<p>EPUB creators can use the [[html]] <a data-cite="html#the-link-element"><code>link</code> element</a>
+					and [[svg]] <a href="https://www.w3.org/TR/SVG/struct.html#HTMLMetadataElements"><code>link</code>
+						element</a> to associate one or more lexicons with their respective [=EPUB content document=]
+					type. When reading systems process the documents, they can identify the linked lexicons and use them
+					to initiate [=text-to-speech=] playback.</p>
+			</section>
+
+			<section id="pls-lexicon-conformance">
+				<h3>Lexicon conformance</h3>
+
+				<p>A pronunciation lexicon:</p>
+
+				<ul class="conformance-list">
+					<li>
+						<p id="confreq-pls-xml">MUST meet the conformance constraints for XML documents defined in XML
+							Conformance [[epub-33]].</p>
+					</li>
+					<li>
+						<p id="confreq-pls">MUST be valid to the grammar defined in [[pronunciation-lexicon]].</p>
+					</li>
+				</ul>
+
+				<div class="note">
+					<p>A non-normative schema for validating lexicons is available at <a
+							href="https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng"
+								><code>https://www.w3.org/TR/2008/REC-pronunciation-lexicon-20081014/pls.rng</code></a>
+						[[pronunciation-lexicon]].</p>
+				</div>
+
+				<aside class="example">
+					<p>The following example shows a pronunciation lexicon for Japanese.</p>
+					<pre>&lt;lexicon
+     version="1.0"
+     alphabet="ipa"
+     xml:lang="en"
+     xmlns="http://www.w3.org/2005/01/pronunciation-lexicon">
+   &lt;lexeme>
+      &lt;grapheme>EPUB&lt;/grapheme>
+      &lt;phoneme>ipʌb&lt;/phoneme>
+   &lt;/lexeme>
+   &#8230;
+&lt;/lexicon></pre>
+				</aside>
+			</section>
+
+			<section id="pls-publication-requirements">
+				<h3>Associating with EPUB content documents</h3>
+
+				<p id="confreq-cd-pls-xht">EPUB creators MAY associate zero or more pronunciation lexicons
+					[[pronunciation-lexicon]] with an [=EPUB content document=].</p>
+
+				<p id="confreq-cd-pls-assoc">To associate a pronunciation lexicon with an [=XHTML content document=],
+					EPUB creators MUST use the [[html]] <a data-cite="html#the-link-element"><code>link</code></a>
+					element. Similarly, to associate a pronunciation lexicon with an [=SVG content document=], EPUB
+					creators MUST use the [[svg]] <a href="https://www.w3.org/TR/SVG/struct.html#HTMLMetadataElements"
+							><code>link</code> element</a>.</p>
+
+				<p>For both types of EPUB content document, the <code>link</code> element MUST have its <code>rel</code>
+					attribute set to "<code>pronunciation</code>" and its <code>type</code> attribute set to the media
+					type "<code>application/pls+xml</code>".</p>
+
+				<p id="confreq-cd-pls-assoc-lang">EPUB creators SHOULD specify the <code>link</code> element
+						<code>hreflang</code> attribute on each <code>link</code>, and its value MUST match <a
+						data-cite="pronunciation-lexicon#S4.1">the language for which the pronunciation lexicon is
+						relevant</a> [[pronunciation-lexicon]] when specified.</p>
+
+				<aside class="example">
+					<p>The following example shows two pronunciation lexicons (one for Mandarin and one for Mongolian)
+						associated with an XHTML content document.</p>
+					<pre>
+&lt;html … &gt;    
+    &lt;head&gt;
+        …
+        &lt;link rel="pronunciation" type="application/pls+xml" hreflang="cmn" href="../speech/cmn.pls"/&gt;
+        &lt;link rel="pronunciation" type="application/pls+xml" hreflang="mn" href="../speech/mn.pls"/&gt;
+    &lt;/head&gt;        
+    …
+&lt;/html&gt;</pre>
+				</aside>
+			</section>
+		</section>
+		<section id="css-speech">
+			<h2>CSS speech</h2>
+
+			<p>The CSS Speech [[css-speech-1]] module defines properties that allow EPUB creators to declaratively
+				control the aural rendering of [=EPUB content documents=]. It includes properties for specifying the
+				preferred [=Text-to-Speech=] voice, the volume level, and pauses and cues to perform when encountering
+				elements.</p>
+
+			<p>As EPUB content documents support the use of cascading style sheets [[css2]], EPUB creators MAY use CSS
+				Speech [[css-speech-1]] properties in their style sheet definitions.</p>
+
+			<aside class="example">
+				<p>The following example shows the CSS declaration for an auditory cue to play before each new chapter
+					in a publication.</p>
+				<pre>section.chapter {
+   cue-before: url(audio/chapter_start.mp3) +6dB;
+}</pre>
+			</aside>
+		</section>
+		<section id="reading-system-support">
+			<h2>reading system support</h2>
+
+			<section id="reading-system-intro">
+				<h3>Introduction</h3>
+
+				<p>[=Reading systems=] may implement [=Text-to-Speech=] playback in different ways depending on the type
+					of engine they use &#8212; one might only feed the text content of the document to the engine, for
+					example, while another could support full markup. This document tries to provide flexibility in its
+					requirements to allow for these differences. The only requirement is that the correct rendering
+					behavior result.</p>
+
+				<p>Although this document frames the enhancements in the context of a reading system with built-in
+					Text-to-Speech rendering capabilities, it is anticipated that any application or assistive
+					technology that can access the markup of an EPUB publication will be able to use these features to
+					provide improved voice rendering. Ensuring the technologies works with these applications is outside
+					the scope of this work, however.</p>
+			</section>
+
+			<section id="reading-system-conformance">
+				<h3>Conformance</h3>
+
+				<p>[=Reading systems=] with [=Text-to-Speech=] (TTS) capabilities SHOULD support <a href="#ssml">SSML
+						attributes</a>, <a href="#pls">pronunciation lexicons</a> and <a href="#css-speech">CSS
+						Speech</a> as follows:</p>
+
+				<dl>
+					<dt>SSML</dt>
+					<dd>
+						<p>Reading systems that support SSML:</p>
+						<ul class="conformance-list">
+							<li>
+								<p id="confreq-ssml-ph">MUST process the <code>ssml:ph</code> attribute per the
+									requirements for the <a data-cite="speech-synthesis11#S3.1.10"><code>phoneme</code>
+										element's <code>ph</code> attribute</a> [[ssml]] with the additional
+									requirements that it:</p>
+								<ul>
+									<li>
+										<p id="confreq-ssml-ph-empty">MUST ignore <code>ssml:ph</code> attributes whose
+											value is an empty string or consists only of <a
+												data-cite="infra#ascii-whitespace">ASCII whitespace</a> [[infra]].</p>
+									</li>
+									<li>
+										<p id="confreq-ssml-ph-emptytext">MUST ignore <code>ssml:ph</code> attributes on
+											elements whose descendant text content is an empty string or consists only
+											of <a data-cite="infra#ascii-whitespace">ASCII whitespace</a> [[infra]].</p>
+									</li>
+									<li>
+										<p id="confreq-ssml-ph-nontext">MUST ignore <code>ssml:ph</code> attributes on
+											elements whose descendant text content represents a fallback.</p>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<p id="confreq-ssml-alphabet">MUST process the <code>ssml:alphabet</code> attribute per
+									the requirements for the <a data-cite="speech-synthesis11#S3.1.10"
+											><code>phoneme</code> element's <code>alphabet</code> attribute</a>
+									[[ssml]].</p>
+							</li>
+						</ul>
+					</dd>
+
+					<dt>Pronunciation Lexicons</dt>
+					<dd>
+						<p>Reading systems that support pronunciation lexicons:</p>
+						<ul class="conformance-list">
+							<li>
+								<p id="confreq-pls-rs-proc">MUST process all linked pronunciation lexicons in an EPUB
+									content document as defined in [[pronunciation-lexicon]].</p>
+							</li>
+							<li>
+								<p id="confreq-pls-rs-scope">MUST apply the supplied lexemes to all text nodes in the
+									EPUB content document whose language matches <a
+										data-cite="pronunciation-lexicon#S4.1">the language for which the pronunciation
+										lexicon is relevant</a> [[pronunciation-lexicon]]. [[bcp47]] defines the
+									algorithm for matching language tags.</p>
+							</li>
+						</ul>
+						<div class="note">
+							<p>It is not required that the reading system use a Text-to-Speech engine that supports
+								pronunciation lexicons so long as the lexemes are processed and applied correctly. A
+								reading system might, for example, transform the lexicon into an alternative dictionary
+								format its TTS engine supports.</p>
+						</div>
+					</dd>
+
+					<dt>SSML and Pronunciation Lexicons</dt>
+					<dd>
+						<p>Reading systems that support SSML and pronunciation lexicons:</p>
+						<ul>
+							<li>
+								<p>MUST let any pronunciation instructions provided via the <a href="#ssml-ph-attribute"
+											><code>ssml:ph</code></a> attribute take precedence in cases where a <a
+										data-cite="pronunciation-lexicon#S4.5"><code>grapheme</code> element</a>
+									[[pronunciation-lexicon]] matches a text node of an element that carries the
+										<code>ssml:ph</code> attribute.</p>
+							</li>
+						</ul>
+					</dd>
+
+					<dt>CSS Speech</dt>
+					<dd>
+						<p>This document adds no additional requirements for reading system support to those defined in
+							[[css-speech-1]].</p>
+					</dd>
+				</dl>
+			</section>
+		</section>
+		<section id="change-log" class="appendix informative">
+			<h2>Change log</h2>
+
+			<p>Note that this change log only identifies substantive changes since <a
+					href="https://www.w3.org/publishing/epub/epub-contentdocs.html">EPUB content documents 3.2</a>
+				&#8212; those that affect conformance or are similarly noteworthy.</p>
+
+			<p>For a list of all issues addressed during the revision, refer to the <a
+					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue+is%3Aclosed+label%3AEPUB33+label%3ASpec-TTS"
+					>Working Group's issue tracker</a>.</p>
+
+			<ul>
+				<li>25-June-2021: Clarified processing of <code>ssml:alphabet</code> attribute and added additional
+					requirements for the <code>ssml:ph</code> attribute to avoid its use for adding or removing text
+					vocalization. See <a href="https://github.com/w3c/epub-specs/issues/1706">issue 1706</a>.</li>
+				<li>25-June-2021: Clarified application of pronunciation lexicons. See <a
+						href="https://github.com/w3c/epub-specs/issues/1705">issue 1705</a>.</li>
+				<li>22-June-2021: Added that SSML and PLS can also be used with SVG content documents. See <a
+						href="https://github.com/w3c/epub-specs/issues/1710">issue 1710</a>.</li>
+			</ul>
+		</section>
+	</body>
+</html>
