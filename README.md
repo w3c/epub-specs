@@ -6,6 +6,20 @@
 
 As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) is now the maintainer of the EPUB 3 specifications.
 
+## EPUB 3.4
+
+The EPUB 3.4 revision started on February 11, 2025. It is chartered to run until February 5, 2027.
+
+Editor's Drafts of documents under active development:
+
+- [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub34/overview/)
+- [EPUB 3.4](https://w3c.github.io/epub-specs/epub34/authoring/) (On Recommendation track)
+- [EPUB Reading Systems 3.4](https://w3c.github.io/epub-specs/epub34/rs/) (On Recommendation track)
+- [EPUB Accessibility 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y/) (On Recommendation track)
+- [EPUB Accessibility Techniques 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y-tech/)
+
+For more information about the meeting schedule, how to join or participate, etc., please consult the [Publishing Maintenance Working Group's home page](https://www.w3.org/groups/wg/pm/), or contribute to this repository via issues and comments.
+
 ## Current version of EPUB: EPUB 3.3
 
 On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) published the following EPUB 3.3 Recommendations:
@@ -28,7 +42,8 @@ Issues for specifications not actively maintained have been [marked as abandoned
 The contents of each folder are as follows:
 
 - [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
-- [`epub33`](/epub33) -- The specifications being revised as part of the 3.3 revision.
+- [`epub33`](/epub33) -- The specifications revised as part of the 3.3 revision.
+- [`epub33`](/epub34) -- The specifications being revised as part of the 3.4 revision.
 
 ## Contributing to the Repository
 
@@ -55,4 +70,4 @@ W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
 
 ---
 
-For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), [Dave Cramer](dauwhe@gmail.com), or [Matt Garrish](matt.garrish@gmail.com).
+For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), or [Matt Garrish](matt.garrish@gmail.com).
