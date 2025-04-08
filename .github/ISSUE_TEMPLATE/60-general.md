@@ -1,6 +1,6 @@
 ---
 name: General issue template
-about: Issue on the EPUB 3.3 specifications or related Working Group Notes
+about: Issue on the EPUB 3 specifications or related Working Group Notes
 title: ''
 labels: ''
 assignees: ''

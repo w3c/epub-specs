@@ -1,13 +1,13 @@
 ---
 name: EPUB Type to ARIA Role Authoring
-about: Issue related to the “EPUB Type to ARIA Role Authoring Guide 1.1” Working Group Note
+about: Issue related to the “EPUB Type to ARIA Role Authoring Guide” Working Group Note
 title: ''
 labels: Spec-EPUBTypeToAria
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB Type to ARIA Role Authoring Guide 1.1”](https://www.w3.org/TR/epub-aria-authoring-11/) WG Note
+## Issue on the [“EPUB Type to ARIA Role Authoring Guide”](https://www.w3.org/TR/epub-aria-authoring/) WG Note
 
 If appropriate, include the relevant section.
 

@@ -1,13 +1,13 @@
 ---
 name: EPUB 3 Structural Semantics Vocabulary
-about: Issue related to the “EPUB 3 Structural Semantics Vocabulary 1.1” Working Group Note
+about: Issue related to the “EPUB 3 Structural Semantics Vocabulary” Working Group Note
 title: ''
 labels: Spec-SSV
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB 3 Structural Semantics Vocabulary 1.1”](https://www.w3.org/TR/epub-ssv-11/) WG Note
+## Issue on the [“EPUB 3 Structural Semantics Vocabulary”](https://www.w3.org/TR/epub-ssv/) WG Note
 
 If appropriate, include the relevant section.
 

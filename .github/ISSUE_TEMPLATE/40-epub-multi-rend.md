@@ -1,13 +1,13 @@
 ---
 name: EPUB 3 Multiple Rendition
-about: Issue related to the “EPUB 3 Multiple-Rendition Publications 1.1” Working Group Note
+about: Issue related to the “EPUB 3 Multiple-Rendition Publications” Working Group Note
 title: ''
 labels: Spec-MultipleRendition
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB 3 Multiple-Rendition Publications 1.1”](https://www.w3.org/TR/epub-multi-rend-11/) WG Note
+## Issue on the [“EPUB 3 Multiple-Rendition Publications”](https://www.w3.org/TR/epub-multi-rend/) WG Note
 
 If appropriate, include the relevant section.
 

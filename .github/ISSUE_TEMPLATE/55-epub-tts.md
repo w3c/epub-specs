@@ -1,13 +1,13 @@
 ---
 name: EPUB 3 Text-to-Speech
-about: Issue related to the “EPUB 3 Text-to-Speech Enhancements 1.0” Working Group Note
+about: Issue related to the “EPUB 3 Text-to-Speech Enhancements” Working Group Note
 title: ''
 labels: Spec-TTS
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB 3 Text-to-Speech Enhancements 1.0”](https://www.w3.org/TR/epub-tts-10/) WG Note
+## Issue on the [“EPUB 3 Text-to-Speech Enhancements”](https://www.w3.org/TR/epub-tts/) WG Note
 
 If appropriate, include the relevant section.
 
