@@ -1,13 +1,13 @@
 ---
-name: EPUB Reading Systems 3.3
-about: Issue related to the “EPUB Reading Systems 3.3” Recommendation
+name: EPUB Reading Systems
+about: Issue related to the “EPUB Reading Systems” Recommendation
 title: ''
 labels: Spec-ReadingSystems
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB Reading Systems 3.3”](https://www.w3.org/TR/epub-rs-33/) Recommendation
+## Issue on the [“EPUB Reading Systems”](https://www.w3.org/TR/epub-rs/) Recommendation
 
 If appropriate, include the relevant section.
 

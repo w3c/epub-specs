@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Issue on the [“EPUB 3 Overview”](https://www.w3.org/TR/epub-overview-33/) WG Note
+## Issue on the [“EPUB 3 Overview”](https://www.w3.org/TR/epub-overview/) WG Note
 
 If appropriate, include the relevant section.
 

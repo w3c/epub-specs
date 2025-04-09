@@ -1,13 +1,13 @@
 ---
-name: EPUB Accessibility Techniques 1.1
-about: Issue related to the “EPUB Accessibility Techniques 1.1” Working Group Note
+name: EPUB Accessibility Techniques
+about: Issue related to the “EPUB Accessibility Techniques” Working Group Note
 title: ''
 labels: Spec-A11yTechniques
 assignees: ''
 
 ---
 
-## Issue on the [“EPUB Accessibility Techniques 1.1”](https://www.w3.org/TR/epub-a11y-tech-11/) WG Note
+## Issue on the [“EPUB Accessibility Techniques”](https://www.w3.org/TR/epub-a11y-tech/) WG Note
 
 If appropriate, include the relevant section.
 

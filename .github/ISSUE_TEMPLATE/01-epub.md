@@ -1,13 +1,13 @@
 ---
 name: EPUB 3.3
-about: Issue related to the EPUB 3.3 Recommendation
+about: Issue related to the EPUB 3 Recommendation
 title: ''
 labels: Spec-EPUB3
 assignees: ''
 
 ---
 
-## Issue on the [EPUB 3.3](https://www.w3.org/TR/epub-33/) Recommendation
+## Issue on the [EPUB 3](https://www.w3.org/TR/epub/) Recommendation
 
 If appropriate, include the relevant section.
 
