@@ -1,19 +1,30 @@
----
 name: EPUB 3 Overview
-about: Issue related to the “EPUB 3 Overview” Working Group Note
-title: ''
+description: Issue related to the EPUB 3 Overview Working Group Note
 labels: Spec-Overview
-assignees: ''
-
----
-
-## Issue on the [“EPUB 3 Overview”](https://www.w3.org/TR/epub-overview/) WG Note
-
-If appropriate, include the relevant section.
-
-## Describe the problem 
-
-What is not working? What would you like to see improved? For bug reports, cite the relevant text from the specification.
-
-## Describe the fix or new feature you propose
-
+body: 
+  - type: markdown
+    attributes:
+     value: "## Issue on the [EPUB 3 Overview](https://www.w3.org/TR/epub-overview/) WG Note"
+  - type: markdown
+    attributes:
+     value: __Before opening an issue__, please check that it has not already been resolved in the latest [editor's draft](https://w3c.github.io/epub-specs/epub34/overview/)
+  - type: input
+    id: section
+    attributes:
+      label: Section
+      description: Please provide a link to the relevant section of the specification
+    validations:
+      required: false 
+  - type: textarea
+    id: problem
+    attributes:
+      label: Describe the problem
+      description: What is not working? What would you like to see improved? For bug reports, cite the relevant text from the specification.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Describe the fix or new feature you propose
+    validations:
+      required: false
