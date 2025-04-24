@@ -23,7 +23,7 @@
                 // previousPublishDate: "2024-10-27",
                 // previousMaturity: "REC",
                 // revisedRecEnd: "2025-03-10",
-				// errata: "https://w3c.github.io/epub-specs/epub34/errata.html",
+				//  errata: "https://w3c.github.io/epub-specs/epub34/errata.html",
                 copyrightStart: "1999",
                 editors:[
                 {
@@ -4519,11 +4519,14 @@
 					<p id="last-modified-date">The <code>metadata</code> section MUST contain exactly one <dfn
 							class="export" data-lt-no-plural=""><code>dcterms:modified</code></dfn> property [[dcterms]]
 						containing the last modification date. The [=value=] of this property MUST be an [[iso8601-1]]
-						complete representation of a date and time of day matching the extended format:
-							<code>YYYY-MM-DDThh:mm:ssZ</code></p>
+						complete representation of a date and time of day matching the extended format:</p>
 
-					<p>[=EPUB creators=] MUST express the last modification date in Coordinated Universal Time (UTC) and
-						MUST terminate it with the "<code>Z</code>" (Zulu) time zone indicator.</p>
+					<pre><code>YYYY-MM-DDThh:mm:ssZ</code></pre>
+
+					<div class="note">
+						<p>The required "Z" (Zulu) time indicator at the end of the pattern means the last modification
+							date is always expressed in Coordinated Universal Time (UTC).</p>
+					</div>
 
 					<aside class="example" title="Expressing a last modification date">
 						<pre>&lt;metadata …&gt;
@@ -6701,15 +6704,6 @@ No Entry</pre>
 						attribute-based rendering instructions. EPUB creators should avoid using these types of elements
 						where their absence may lead to usability issues.</p>
 				</div>
-
-				<p id="confreq-cd-nav-docprops-spine">As a conforming [=XHTML content document=], EPUB creators MAY
-					include the EPUB navigation document in the [=EPUB spine | spine=].</p>
-
-				<p id="confreq-nav-ol-style">In the context of this specification, the default display style of list
-					items within <code>nav</code> elements is equivalent to the <a
-						href="https://www.w3.org/TR/CSS2/generate.html#propdef-list-style"><code>list-style:</code>
-						<code>none</code> property</a> [[csssnapshot]]. EPUB creators MAY specify alternative list
-					styling using CSS for rendering of the document in the spine.</p>
 			</section>
 
 			<section id="sec-nav-def-types">
@@ -6933,25 +6927,34 @@ No Entry</pre>
 			<section id="sec-nav-doc-use-spine" class="informative">
 				<h3>Using in the spine</h3>
 
-				<p>Although it is possible to reuse the [=EPUB navigation document=] in the [=EPUB spine | spine=], it
-					is often the case that not all of the navigation structures, or branches within them, are needed.
-					[=EPUB creators=] will often want to hide the <a href="#sec-nav-pagelist">page list</a> and <a
-						href="#sec-nav-landmarks">landmarks</a> navigation elements or trim the branches of the table of
-					contents for books that have many levels of subsections.</p>
+				<p id="confreq-cd-nav-docprops-spine">As a conforming [=XHTML content document=], [=EPUB creators=] can
+					include the EPUB navigation document in the [=EPUB spine | spine=].</p>
 
-				<p>While the <a href="https://www.w3.org/TR/CSS2/visuren.html#propdef-display"><code>display</code>
-						property</a> [[csssnapshot]] controls the visual rendering of EPUB navigation documents in
-					[=reading systems=] with [=viewports=], reading systems without viewports may not support CSS. To
-					better ensure the proper rendering in these reading systems, EPUB creators should use the [[html]]
-					[^html-global/hidden^] attribute to indicate which (if any) portions of the navigation data are
-					excluded from rendering in the content flow.</p>
+				<p id="confreq-nav-ol-style">When adding the navigation document to the spine, EPUB creators have to
+					consider that any [=reading system=] processing of the document will not apply. In particular,
+					although [=EPUB reading systems=] are <a data-cite="epub-rs-34#confreq-nav-ol-style">required to
+						suppress list item numbering</a> [[epub-rs-34]] when presenting the EPUB navigation document
+					outside of the spine (such as in dedicated navigation user interfaces provided by reading systems),
+					this requirement does not apply to in-spine use. Consequently, if EPUB creators do not want HTML's
+					default list item numbering when presenting the navigation document in the spine, they have to
+					specify the alternative list styling using CSS.</p>
 
-				<p>The <code>hidden</code> attribute has no effect on how reading systems render the navigation data
-					outside of the content flow (such as in dedicated navigation user interfaces provided by reading
-					systems).</p>
+				<p>Similarly, it is often the case that not all of the navigation structures, or branches within them,
+					are needed when the EPUB navigation document is presented in the spine. EPUB creators will often
+					want to hide the <a href="#sec-nav-pagelist">page list</a> and <a href="#sec-nav-landmarks"
+						>landmarks</a> navigation elements, for example, or trim the branches of the table of contents
+					for books that have many levels of subsections.</p>
+
+				<p>In these cases, EPUB creators are advised use the [[html]] [^html-global/hidden^] attribute to
+					indicate which (if any) portions of the navigation data are excluded from rendering in the content
+					flow. The <a data-cite="epub-rs-34#confreq-nav-hidden">the attribute has no effect</a>
+					[[epub-rs-34]] on how reading systems render the navigation document outside of the spine.</p>
 
 				<div class="note">
-					<p>The <code>hidden</code> attribute can be used together with the <code>display</code> property to
+					<p>While the <a href="https://www.w3.org/TR/CSS2/visuren.html#propdef-display"><code>display</code>
+							property</a> [[csssnapshot]] controls the visual rendering of EPUB navigation documents in
+						[=reading systems=] with [=viewports=], reading systems without viewports may not support CSS.
+						The <code>hidden</code> attribute can be used together with the <code>display</code> property to
 						maximize interoperability across all reading systems.</p>
 				</div>
 
@@ -12002,13 +12005,20 @@ EPUB/images/cover.png</pre>
 				publications=].</p>
 
 			<p>For a list of all issues addressed, refer to the <a
-					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue%20is%3Aclosed%20label%3AEPUB34%20label%3ASpec-EPUB3%20"
+					href="https://github.com/w3c/epub-specs/issues?q=is%3Aissue%20is%3Aclosed%20label%3ASpec-EPUB3%20closed%3A%3E2025-02-11..2027-02-11%20-label%3AErrata"
 					>Working Group's issue tracker</a>.</p>
 
 			<details id="changes-epub-33" open="open">
 				<summary>Substantive changes since <a href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a></summary>
 				<ul>
 					<li>08-Apr-2025: Added early support for HTML syntax.</li>
+					<li>08-Apr-2025: Moved the paragraphs on authoring the navigation document in the spine from the
+						general restrictions to the existing section on this use and clarified that reading systems do
+						not suppress list styling in the spine. See <a
+							href="https://github.com/w3c/epub-specs/issues/2687">issue 2687</a>.</li>
+					<li>08-Apr-2025: Replaced the redundant requirements on the last modified date with a note about the
+						date and time always being in UTC. See <a href="https://github.com/w3c/epub-specs/issues/2662"
+							>issue 2662</a>.</li>
 					<li>19-Feb-2025: Clarified that resources referenced from <code>script</code> elements are exempt.
 						See <a href="https://github.com/w3c/epub-specs/issues/2649">issue 2649</a>.</li>
 					<li>19-Feb-2025: Clarified that script modules, such as WebAssembly, fall under the existing
