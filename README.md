@@ -43,7 +43,7 @@ The contents of each folder are as follows:
 
 - [`archive`](/archive) -- Specifications that are no longer in active development either because the revision has finished or work has been abandoned.
 - [`epub33`](/epub33) -- The specifications revised as part of the 3.3 revision.
-- [`epub33`](/epub34) -- The specifications being revised as part of the 3.4 revision.
+- [`epub34`](/epub34) -- The specifications being revised as part of the 3.4 revision.
 
 ## Contributing to the Repository
 
