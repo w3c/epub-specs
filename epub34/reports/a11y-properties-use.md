@@ -1,7 +1,7 @@
 ## Candidate Recommendation Exit Criteria
 
 The EPUB Working Group intends to exit the Candidate Recommendation stage and submit
-the [EPUB Accessibility 1.1.1](https://www.w3.org/TR/epub-a11y-111/) specification for
+the [EPUB Accessibility 1.2](https://www.w3.org/TR/epub-a11y-12/) specification for
 consideration as a W3C Proposed Recommendation after documenting implementation of each feature.
 
 For this specification to advance to Proposed Recommendation, it has to be
@@ -20,11 +20,11 @@ metadata for their EPUB publications (as appropriate for each title).
 ### Schema.org discovery metadata
 
 The following table provides a list of publishers who have stated that they are currently using
-the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-disc-package)
+the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-disc-package)
 in production or who are in the process of rolling out their implementations.
 
 Discovery properties are expressed in the
-[`meta` element's `property` attribute](https://www.w3.org/TR/epub-a11y-111/#attrdef-meta-property).
+[`meta` element's `property` attribute](https://www.w3.org/TR/epub-a11y-12/#attrdef-meta-property).
 
 <table>
     <thead>
@@ -35,7 +35,7 @@ Discovery properties are expressed in the
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://www.w3.org/TR/epub-a11y-111/#confreq-schema-accessibilityFeature">schema:accessibilityFeature</a></td>
+            <td><a href="https://www.w3.org/TR/epub-a11y-12/#confreq-schema-accessibilityFeature">schema:accessibilityFeature</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -79,7 +79,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://www.w3.org/TR/epub-a11y-111/#confreq-schema-accessibilityHazard">schema:accessibilityHazard</a></td>
+            <td><a href="https://www.w3.org/TR/epub-a11y-12/#confreq-schema-accessibilityHazard">schema:accessibilityHazard</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -123,7 +123,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="hhttps://www.w3.org/TR/epub-a11y-111/#confreq-schema-accessibilitySummary">schema:accessibilitySummary</a></td>
+            <td><a href="hhttps://www.w3.org/TR/epub-a11y-12/#confreq-schema-accessibilitySummary">schema:accessibilitySummary</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -166,7 +166,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://www.w3.org/TR/epub-a11y-111/#confreq-schema-accessMode">schema:accessMode</a></td>
+            <td><a href="https://www.w3.org/TR/epub-a11y-12/#confreq-schema-accessMode">schema:accessMode</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -210,7 +210,7 @@ Discovery properties are expressed in the
             </td>
         </tr>
         <tr>
-            <td><a href="https://www.w3.org/TR/epub-a11y-111/#confreq-schema-accessModeSufficient">schema:accessModeSufficient</a></td>
+            <td><a href="https://www.w3.org/TR/epub-a11y-12/#confreq-schema-accessModeSufficient">schema:accessModeSufficient</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -276,7 +276,7 @@ and in the
     </thead>
     <tbody>
         <tr>
-        	<td><a href="https://www.w3.org/TR/epub-a11y-111/#dcterms-conformsTo">dcterms:conformsTo</a></td>
+        	<td><a href="https://www.w3.org/TR/epub-a11y-12/#dcterms-conformsTo">dcterms:conformsTo</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -320,7 +320,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td><a href="https://www.w3.org/TR/epub-a11y-111/#a11y-certifiedBy">a11y:certifiedBy</a></td>
+        	<td><a href="https://www.w3.org/TR/epub-a11y-12/#a11y-certifiedBy">a11y:certifiedBy</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -363,7 +363,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td><a href="https://www.w3.org/TR/epub-a11y-111/#a11y-certifierCredential">a11y:certifierCredential</a></td>
+        	<td><a href="https://www.w3.org/TR/epub-a11y-12/#a11y-certifierCredential">a11y:certifierCredential</a></td>
             <td>
             	<ul>
             		<li>Acorn Press</li>
@@ -406,7 +406,7 @@ and in the
             </td>
         </tr>
         <tr>
-        	<td><a href="https://www.w3.org/TR/epub-a11y-111/#a11y-certifierReport">a11y:certifierReport</a></td>
+        	<td><a href="https://www.w3.org/TR/epub-a11y-12/#a11y-certifierReport">a11y:certifierReport</a></td>
             <td>
             	<ul>
                     <li>Fondazione LIA</li>
@@ -430,7 +430,7 @@ The tool additionally allows authors to generate discovery and certifier metadat
 ## Vendor Implementations
 
 The following is a list of vendors who have stated that they are currently including
-the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-disc-package) for the publishers they serve. For publishers who have received third-party certification, they also include the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-conf-reporting) on their behalf.
+the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-disc-package) for the publishers they serve. For publishers who have received third-party certification, they also include the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-conf-reporting) on their behalf.
 
 - Amnet
 - Apex
@@ -443,8 +443,8 @@ the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-1
 
 ## Bookstore Implementations
 
-The following is a list of Bookstore's who display the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-disc-package)
-and the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-conf-reporting) when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
+The following is a list of Bookstore's who display the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-disc-package)
+and the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-conf-reporting) when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
 
 - [RedShelf](https://redshelf.com)
 - [VitalSource](https://www.vitalsource.com)
@@ -452,6 +452,6 @@ and the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a
 
 ## Catalog Feed
 
-The following is a list of Vendors who provide the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-disc-package) and the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-111/#sec-conf-reporting) in their catalog feed to partners when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
+The following is a list of Vendors who provide the [schema.org discovery metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-disc-package) and the [conformance reporting metadata properties](https://www.w3.org/TR/epub-a11y-12/#sec-conf-reporting) in their catalog feed to partners when present, or who are in the process of rolling out their implementations for every EPUB in their collection.
 
 - [VitalSource](https://www.vitalsource.com)
