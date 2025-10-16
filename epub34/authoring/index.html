@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta charset="utf-8" />
 		<title>EPUB 3.4</title>
@@ -3116,44 +3116,69 @@
 				<section id="vocab-assoc-intro">
 					<h3>Introduction</h3>
 
-					<p>EPUB defines a method of referencing terms and properties defined in metadata and semantic
-						vocabularies using the <a href="#sec-property-datatype"><var>property</var> data type</a>. The
-							<code>property</code> and <code>rel</code> attributes use the data type, for example, to
-						define properties and relationships in the [=package document=].</p>
+					<p>The package document allows metadata expressions, and metadata extensibility, through the use of
+						[=compact URLs=]. A compact URL is very similar to a CURIE [[rdfa-core]] in how they represent
+						URLs [[url]] — both expressions consist of an optional prefix followed by a required
+						reference.</p>
 
-					<p>A <var>property</var> value is like a CURIE [[rdfa-core]] — it represents a URL [[url]] in
-						compact form. The expression consists of a prefix and a reference, where the prefix — whether
-						literal or implied — is a shorthand mapping of a URL that typically resolves to a term
-						vocabulary. When a [=reading system=] converts the prefix to its URL representation and concatenates
-						with the reference, the resulting URL normally resolves to a fragment within that vocabulary
-						that contains human- and/or machine-readable information about the term.</p>
+					<p>The prefix, whether literal or implied, is a shorthand mapping of a URL that typically resolves
+						to a vocabulary, such as Dublin Core [[dcterms]] or Schema.org [[schema-org]]. For example, the
+						prefix <code>dcterms</code> is used instead of having to add the full URL
+							<code>http://purl.org/dc/terms/</code> every time. Using prefixes makes authoring metadata
+						less error prone while still retaining the uniqueness of the vocabulary being used.</p>
 
-					<p>To reduce the complexity for authoring, each attribute that takes a <var>property</var> data type
-						also defines a <a href="#sec-default-vocab">default vocabulary</a>. Terms and properties
-						referenced from the default vocabularies do not include a prefix as the mapping reading systems
-						use to map to a URL is predefined.</p>
+					<p>The reference is the specific term or property being declared. It is separated from its prefix by
+						a colon. A prefix is not always required for a compact URL because of what are called [=default
+						vocabularies=]. Each attribute that accepts a compact URL also defines a default vocabulary of
+						terms or properties. The absence of a prefix means the compact URL represents a value from the
+						default vocabulary.</p>
 
-					<p>The power of the <var>property</var> data type lies in its easy extensibility. To incorporate new
-						terms and properties, it is only necessary to declare a <a href="#sec-prefix-attr">prefix</a>.
-						In another authoring convenience, this specification also <a
-							href="#sec-metadata-reserved-prefixes">reserves prefixes</a> for many commonly used
-						publishing vocabularies (i.e., their declaration is not required).</p>
+					<aside class="example" title="Types of compact URLs">
+						<p>In this example, the compact URL in the <code>property</code> attribute has both a prefix
+								(<code>dcterms</code>) and a reference (<code>modified</code>).</p>
 
-					<p>The following sections provide additional details on the <var>property</var> data type and
-						vocabulary association mechanism.</p>
+						<pre>&lt;meta property="dcterms:modified"&gt;2025-10-18T12:00:00Z&lt;/meta&gt;</pre>
+
+						<p>In this example, the compact URL in the <code>properties</code> attribute is taken from its
+							default vocabulary so only the reference (<code>cover-image</code>) is present:</p>
+
+						<pre>&lt;item href="images/cover.jpg" properties="cover-image" media-type="image/jpeg" /&gt;</pre>
+					</aside>
+
+					<p>When a [=reading system=] converts a compact URL to a full URL, the result normally resolves to a
+						fragment within that vocabulary that contains human- and/or machine-readable information about
+						the term, but this is not required. Prefixes are ultimately just unique identifiers, similar to
+						how XML namespaces [[xml-names]] work.</p>
 
 					<div class="note">
-						<p>Although vocabularies are primarily used within package document, the mechanims defined in
-							this section also apply to expressing structural semantics using the [^/epub:type^]
-							attribute.</p>
+						<p>Although compact URL prefixes look a lot like XML namespace prefixes, and both serve as
+							unique identifiers for their references, that is where their similarities end. Compact URL
+							prefixes are not declared using the <code>xmlns:</code> syntax. Refer to <a
+								href="#sec-prefix-attr"></a> for more information.</p>
 					</div>
+
+					<p>The power of the compact URL data type lies in its easy extensibility. To incorporate new terms
+						and properties, it is only necessary to declare a <a href="#sec-prefix-attr">prefix</a>. In
+						another authoring convenience, this specification also <a href="#sec-metadata-reserved-prefixes"
+							>reserves prefixes</a> for many commonly used publishing vocabularies (i.e., their
+						declaration is not required).</p>
+
+					<p>There are several attributes in the package document that accept compact URLs, with the [^meta^]
+						element's <a href="#attrdef-meta-property"><code>property</code> attribute</a>, the [^link^]
+						element's <a href="#attrdef-link-rel"><code>rel</code> attribute</a>, and the manifest [^item^]
+						element's <a href="#sec-item-resource-properties"><code>properties</code> attribute</a> being
+						the more commonly used ones. Compact URLs are also used beyond the package document in EPUB 3,
+						with the [^/epub:type^] attribute using them to express structural semantics in [=EPUB content
+						documents=].</p>
+
+					<p>The following sections provide additional details on creating and using compact URLs.</p>
 				</section>
 
-				<section id="sec-property-datatype">
-					<h4>The <var>property</var> data type</h4>
+				<section id="sec-compact-url-datatype">
+					<h4>The compact URL data type</h4>
 
-					<p>The <var>property</var> data type is a compact means of expressing a URL [[url]] and consists of
-						an OPTIONAL prefix separated from a reference by a colon.</p>
+					<p>The <dfn>compact URL</dfn> data type is a compact means of expressing a URL [[url]] and consists
+						of an OPTIONAL prefix separated from a reference by a colon.</p>
 
 					<table class="productionset">
 						<caption>(EBNF productions <a href="https://www.iso.org/standard/26153.html">ISO/IEC
@@ -3162,19 +3187,19 @@
 							<code>xsd:</code>.</caption>
 						<tbody>
 							<tr>
-								<td id="property.ebnf.property">
-									<a href="#property.ebnf.property">property</a>
+								<td id="compact-url.ebnf.compact-url">
+									<a href="#compact-url.ebnf.compact-url">compact URL</a>
 								</td>
 								<td>
 									<code>=</code>
 								</td>
-								<td>[ <a href="#property.ebnf.prefix">prefix</a> , ":" ] , <a
-										href="#property.ebnf.reference">reference</a>; </td>
+								<td>[ <a href="#compact-url.ebnf.prefix">prefix</a> , ":" ] , <a
+										href="#compact-url.ebnf.reference">reference</a>; </td>
 								<td>&#160;</td>
 							</tr>
 							<tr>
-								<td id="property.ebnf.prefix">
-									<a href="#property.ebnf.prefix">prefix</a>
+								<td id="compact-url.ebnf.prefix">
+									<a href="#compact-url.ebnf.prefix">prefix</a>
 								</td>
 								<td>
 									<code>=</code>
@@ -3183,8 +3208,8 @@
 								<td>&#160;</td>
 							</tr>
 							<tr>
-								<td id="property.ebnf.reference">
-									<a href="#property.ebnf.reference">reference</a>
+								<td id="compact-url.ebnf.reference">
+									<a href="#compact-url.ebnf.reference">reference</a>
 								</td>
 								<td>
 									<code>=</code>
@@ -3195,30 +3220,30 @@
 						</tbody>
 					</table>
 
-					<p>This specification derives the <var>property</var> data type from the CURIE data type defined in
-						[[rdfa-core]]. A <var>property</var> represents a subset of CURIEs.</p>
+					<p>This specification derives the compact URL data type from the CURIE data type defined in
+						[[rdfa-core]]. A compact URL represents a subset of CURIEs.</p>
 
-					<p>There are two key differences from CURIEs, however:</p>
+					<p id="compacturl-curie-diff">There are two key differences from CURIEs:</p>
 
 					<ul>
 						<li>
-							<p>an empty <var>reference</var> does not represent a valid <var>property</var> value even
-								though it is valid to the definition above (i.e., a <var>property</var> value that only
-								consists of a prefix and colon is invalid).</p>
+							<p>an empty <var>reference</var> does not represent a valid compact URL even though it is
+								valid to the definition above (i.e., a compact URL that only consists of a prefix and
+								colon is invalid).</p>
 						</li>
 						<li>
-							<p>an empty string does not represent a valid <var>property</var> even though it is valid to
-								the definition above.</p>
+							<p>an empty string does not represent a valid compact URL even though it is valid to the
+								definition above.</p>
 						</li>
 					</ul>
 
-					<aside class="example" title="Expanding a metadata property value">
-						<p>In this example, the <var>property</var> value is composed of the prefix <code>dcterms</code>
-							and the reference <code>modified</code>.</p>
+					<aside class="example" title="Expanding a compact URL">
+						<p>In this example, the compact URL in the <code>property</code> attribute is composed of the
+							prefix <code>dcterms</code> and the reference <code>modified</code>.</p>
 
 						<pre>&lt;meta property="dcterms:modified"&gt;2011-01-01T12:00:00Z&lt;/meta&gt;</pre>
 
-						<p>After <a data-cite="epub-rs-34#sec-property-values">processing</a> [[epub-rs-34]], this
+						<p>After <a data-cite="epub-rs-34#sec-compact-url-values">processing</a> [[epub-rs-34]], this
 							property would expand to the following URL:</p>
 
 						<pre class="nohighlight">http://purl.org/dc/terms/modified</pre>
@@ -3227,10 +3252,10 @@
 								prefix</a> that maps to the URL "<code>http://purl.org/dc/terms/</code>".</p>
 					</aside>
 
-					<p>When a prefix is omitted from a <var>property</var> value, the specified term is taken from the
-							<a href="#sec-default-vocab">default vocabulary</a> for that attribute.</p>
+					<p>When a prefix is omitted from a compact URL value, the specified term is taken from the [=default
+						vocabulary=] for that attribute.</p>
 
-					<aside class="example" title="Expanding a manifest property value">
+					<aside class="example" title="Expanding a manifest compact URL">
 						<p>In this example, the <a href="#mathml"><code>mathml</code> property</a> is specified on a
 							manifest [^item^] element:</p>
 
@@ -3247,17 +3272,15 @@
 				<section id="sec-default-vocab">
 					<h4>Default vocabularies</h4>
 
-					<p>A default vocabulary is one whose terms and properties MUST NOT have a <a href="#sec-prefix-attr"
-							>prefix</a> when a <a href="#sec-property-datatype"><var>property</var> value</a> is
-						expected.</p>
+					<p>A <dfn>default vocabulary</dfn> is one whose terms and properties MUST NOT have a <a
+							href="#sec-prefix-attr">prefix</a> when a [=compact URL=] is expected.</p>
 
 					<p>A prefix MUST NOT be assigned to the URLs associated with these vocabularies using the <a
 							href="#sec-prefix-attr"><code>prefix</code></a> attribute.</p>
 
 					<div class="note">
-						<p>Refer to the definition of each attribute that takes a <a href="#sec-property-datatype"
-									><var>property</var> data type</a> for more information about its default
-							vocabulary.</p>
+						<p>Refer to the definition of each attribute that takes a compact URL data type for more
+							information about its default vocabulary.</p>
 					</div>
 				</section>
 
@@ -3265,8 +3288,7 @@
 					data-tests="https://w3c.github.io/epub-structural-tests/#06-content-document_content-document-xhtml.feature_L671,https://w3c.github.io/epub-structural-tests/#06-content-document_content-document-xhtml.feature_L694,https://w3c.github.io/epub-structural-tests/#D-vocabularies_vocabulary-association.feature_L17,https://w3c.github.io/epub-structural-tests/#D-vocabularies_vocabulary-association.feature_L22,https://w3c.github.io/epub-structural-tests/#D-vocabularies_vocabulary-association.feature_L28,https://w3c.github.io/epub-structural-tests/#D-vocabularies_vocabulary-association.feature_L34">
 					<h4>The <code>prefix</code> attribute</h4>
 
-					<p>The <code>prefix</code> attribute defines prefix mappings for use in <a
-							href="#sec-property-datatype"><var>property</var> values</a>.</p>
+					<p>The <code>prefix</code> attribute defines prefix mappings for use in [=compact URLs=].</p>
 
 					<p>The value of the <code>prefix</code> attribute is a whitespace-separated list of one or more
 						prefix-to-URL mappings of the form:</p>
@@ -3383,7 +3405,7 @@
 						declared on the [[html]] root [^html^] element.</p>
 
 					<p>To avoid conflicts, the <code>prefix</code> attribute MUST NOT be used to declare a prefix that
-						maps to a <a href="#sec-default-vocab">default vocabulary</a>.</p>
+						maps to a [=default vocabulary=].</p>
 
 					<p>The prefix '_' MUST NOT be declared as this specification reserves this prefix for future
 						compatibility with RDFa [[rdfa-core]] processing.</p>
@@ -3403,9 +3425,8 @@
 							checkers=]. It is advised to declare all prefixes to avoid any issues.</p>
 					</div>
 
-					<p>Reserved prefixes MAY be used in attributes that expect a <a href="#sec-property-datatype"
-								><var>property</var> value</a> without declaring them in a <a href="#sec-prefix-attr"
-								><code>prefix</code> attribute</a>.</p>
+					<p>Reserved prefixes MAY be used in attributes that expect a [=compact URL=] without declaring them
+						in a <a href="#sec-prefix-attr"><code>prefix</code> attribute</a>.</p>
 
 
 					<p>Reserved prefixes SHOULD NOT be overridden in the <a href="#sec-prefix-attr"><code>prefix</code>
@@ -3613,10 +3634,9 @@
 				<section id="attrdef-properties">
 					<h4>The <code>properties</code> attribute</h4>
 
-					<p>A space-separated list of <a href="#sec-property-datatype">property</a> values.</p>
+					<p>A space-separated list of [=compact URLs=].</p>
 
-					<p>Refer to each element's definition for the <a href="#sec-default-vocab">reserved vocabulary</a>
-						for the attribute.</p>
+					<p>Refer to each element's definition for the [=default vocabulary=] for the attribute.</p>
 
 					<aside class="example" title="Identifying the EPUB navigation document in the manifest">
 						<pre>&lt;package …&gt;
@@ -4675,10 +4695,9 @@
 					</dl>
 
 					<p id="attrdef-meta-property">Each <code>meta</code> element defines a metadata expression. The
-							<code>property</code> attribute takes a <a href="#sec-property-datatype"><var>property</var>
-							data type value</a> that defines the statement made in the expression, and the text content
-						of the element represents the assertion. (Refer to <a href="#sec-vocab-assoc"></a> for more
-						information.)</p>
+							<code>property</code> attribute takes a [=compact URL=] that defines the statement made in
+						the expression, and the text content of the element represents the assertion. (Refer to <a
+							href="#sec-vocab-assoc"></a> for more information.)</p>
 
 					<p id="meta-expr-types">This specification defines two types of metadata expressions that can be
 						defined using the <code>meta</code> element:</p>
@@ -4701,9 +4720,8 @@
 					<p class="note">All the [[dcterms]] elements represent primary expressions, and permit refinement by
 						meta element subexpressions.</p>
 
-					<p>The <a href="#app-meta-property-vocab">Meta Properties Vocabulary</a> is the <a
-							href="#sec-default-vocab">default vocabulary</a> for use with the <code>property</code>
-						attribute.</p>
+					<p>The <a href="#app-meta-property-vocab">Meta Properties Vocabulary</a> is the [=default
+						vocabulary=] for use with the <code>property</code> attribute.</p>
 
 					<p>Terms from other vocabularies MAY be added as defined in <a href="#sec-vocab-assoc"></a>.</p>
 
@@ -4729,11 +4747,10 @@
 					</aside>
 
 					<p id="attrdef-scheme">The <code>scheme</code> attribute identifies the system or scheme the
-						element's [=value=] was obtained from. The value of the attribute MUST be a <a
-							href="#sec-property-datatype"><var>property</var> data type value</a> that resolves to the
-						resource that defines the scheme. The <code>scheme</code> attribute does not have a <a
-							href="#sec-default-vocab">default vocabulary</a> (i.e., all values require a <a
-							href="#property.ebnf.prefix">prefix</a>).</p>
+						element's [=value=] was obtained from. The value of the attribute MUST be a [=compact URL=] that
+						resolves to the resource that defines the scheme. The <code>scheme</code> attribute does not
+						have a [=default vocabulary=] (i.e., all values require a <a href="#compact-url.ebnf.prefix"
+							>prefix</a>).</p>
 
 					<aside class="example" title="Using values from a scheme">
 						<p>In this example, the <code>scheme</code> attribute indicates that the [=value=] of the tag is
@@ -4957,9 +4974,9 @@ XHTML:
 						linked resource. The value MUST be a <a data-cite="bcp47#section-2.2.9">well-formed language
 							tag</a> [[bcp47]].</p>
 
-					<p id="attrdef-link-rel">The REQUIRED <code>rel</code> attribute takes a space-separated list of <a
-							href="#sec-property-datatype">property</a> values that establish the relationship the linked
-						resource has with the EPUB publication.</p>
+					<p id="attrdef-link-rel">The REQUIRED <code>rel</code> attribute takes a space-separated list of
+						[=compact URLs=] that establish the relationship the linked resource has with the EPUB
+						publication.</p>
 
 					<aside class="example" title="Linking to a MARC XML record">
 						<pre>&lt;metadata …&gt;
@@ -4992,8 +5009,8 @@ XHTML:
 &lt;/metadata&gt;</pre>
 					</aside>
 
-					<p>The <a href="#app-link-vocab">Metadata Link Vocabulary</a> is the <a href="#sec-default-vocab"
-							>default vocabulary</a> for the <code>rel</code> and <code>properties</code> attributes.</p>
+					<p>The <a href="#app-link-vocab">Metadata Link Vocabulary</a> is the [=default vocabulary=] for the
+							<code>rel</code> and <code>properties</code> attributes.</p>
 
 					<p>Relationships and properties from other vocabularies MAY be added as defined in <a
 							href="#sec-vocab-assoc"></a>.</p>
@@ -5250,8 +5267,8 @@ XHTML:
 							contains embedded scripting, MathML, or SVG.</p>
 
 						<p id="attrdef-item-properties">The <a href="#app-item-properties-vocab">Manifest Properties
-								Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a> for the
-								<code>properties</code> attribute.</p>
+								Vocabulary</a> is the [=default vocabulary=] for the <code>properties</code>
+							attribute.</p>
 
 						<p>The following properties MUST be set whenever a resource referenced by an <code>item</code>
 							element matches their respective definitions:</p>
@@ -5807,8 +5824,7 @@ No Entry</pre>
 							href="#sec-nav">EPUB navigation document</a>).</p>
 
 					<p id="attrdef-itemref-properties">The <a href="#app-itemref-properties-vocab">Spine Properties
-							Vocabulary</a> is the <a href="#sec-default-vocab">default vocabulary</a> for the
-							<code>properties</code> attribute.</p>
+							Vocabulary</a> is the [=default vocabulary=] for the <code>properties</code> attribute.</p>
 
 					<p>Terms from other vocabularies MAY be added as defined in <a href="#sec-vocab-assoc"></a>.</p>
 
@@ -6498,35 +6514,31 @@ No Entry</pre>
 
 				<section id="sec-epub-type-attribute">
 					<h3>The <code>type</code> attribute</h3>
-					
+
 					<section id="sec-structural-semantics">
 						<h4>Structural semantics</h4>
-						
+
 						<p>Structural semantics add additional meaning about the specific structural purpose an element
 							plays. The [^/epub:type^] attribute is used to express domain-specific semantics in [=EPUB
 							content documents=], with the structural information it carries complementing the underlying
-							vocabulary.</p>
-						
+							vocabulary. It is also usable in [=media overlay documents=] to reflect the semantic
+							structure of the content being played back.</p>
+
 						<p>The applied semantics refine the meaning of their containing elements without changing their
 							nature for assistive technologies, as happens when using the similar [^/role^]
 							attribute&#160;[[html]]. The attribute does not enhance the accessibility of the content, in
 							other words; it only provides hints about the purpose.</p>
-						
+
 						<p>Semantic metadata enriches content for use in publishing workflows and for author-defined
 							purposes. It also allows [=reading systems=] to learn more about the structure and content
 							of a document (e.g., to enable <a href="#sec-behaviors-skip-escape">skippability and
 								escapability</a> in media overlays).</p>
-						
+
 						<p>This specification defines a method for adding structural semantics using <em>the attribute
 								axis</em>: instead of adding new elements, the <code>epub:type</code> attribute can be
 							appended to existing elements to add the desired semantics.</p>
-						
-						<div class="note">
-							<p>The <code>type</code> attribute is also usable in [=media overlay documents=] to reflect
-								the semantic structure of the content being played back.</p>
-						</div>
 					</section>
-					
+
 					<section id="type-attr-syntax">
 						<h4>Syntax</h4>
 						<dl>
@@ -6541,30 +6553,29 @@ No Entry</pre>
 											</dfn>
 										</p>
 									</dd>
-									
+
 									<dt>Namespace:</dt>
 									<dd>
 										<p>
 											<code>http://www.idpf.org/2007/ops</code>
 										</p>
 									</dd>
-									
+
 									<dt>Usage:</dt>
 									<dd>
 										<p>Refer to the requirements for <a href="#sec-xhtml-structural-semantics"
 												>XHTML</a>, <a href="#confreq-svg-structural-semantics">SVG</a>, and <a
-													href="#sec-overlays-def">media overlays</a>.</p>
+												href="#sec-overlays-def">media overlays</a>.</p>
 									</dd>
-									
+
 									<dt>Value:</dt>
 									<dd>
-										<p>A <a data-cite="xml#NT-S">whitespace-separated</a> [[xml]] list of <a
-												href="#sec-property-datatype">property</a> values, with restrictions as
-											defined in <a href="#sec-vocab-assoc"></a>.</p>
+										<p>A <a data-cite="xml#NT-S">whitespace-separated</a> [[xml]] list of [=compact
+											URLs=], with restrictions as defined in <a href="#sec-vocab-assoc"></a>.</p>
 									</dd>
 								</dl>
 							</dd>
-							
+
 							<dt>HTML serialization</dt>
 							<dd>
 								<dl class="elemdef" id="attrdef-epub-type-html">
@@ -6576,13 +6587,13 @@ No Entry</pre>
 											</dfn>
 										</p>
 									</dd>
-									
+
 									<dt>Usage:</dt>
 									<dd>
 										<p>Refer to the requirements for <a href="#sec-xhtml-structural-semantics"
 												>HTML</a>.</p>
 									</dd>
-									
+
 									<dt>Value:</dt>
 									<dd>
 										<p>A [=ASCII whitespace|whitespace-separated=] [[infra]] list of values that
@@ -6592,66 +6603,65 @@ No Entry</pre>
 								</dl>
 							</dd>
 						</dl>
-						
+
 						<div class="ednote">
 							<p>Support for an HTML serialization of the <code>epub:type</code> attribute depends on the
 								addition of support for the <a href="#sec-xhtml">HTML syntax</a> in the EPUB 3.4
 								revision. It is <b><i>at risk</i></b>, depending on authors' and implementers'
 								feedback.</p>
-							
+
 							<p>The proposed <code>epub-type</code> will provide similar functionality for HTML content
 								documents but with some restrictions (namely, no extensibility through the
-								<code>epub:prefix</code> attribute). The attribute should be read as a replacement
+									<code>epub:prefix</code> attribute). The attribute should be read as a replacement
 								for <code>epub:type</code> where this specification and the Reading Systems
 								specification [[epub-rs-34]] refer to that attribute for XHTML content documents. These
 								references will be updated once it is clearer that support will definitely be added in
 								this revision.</p>
-							
+
 							<p>The <code>epub:type</code> attribute will remain the sole means of including semantics in
 								XML grammars in EPUB (i.e., XHTML content documents, SVG content documents, and media
 								overlay documents).</p>
-							
+
 							<p>To provide feedback on this change, please open issues in the <a
 									href="https://github.com/w3c/epub-specs/issues">GitHub tracker for the EPUB
 									specifications</a>.</p>
 						</div>
-						
-						
+
+
 						<div class="caution">
 							<p>Although the <code>epub:type</code> attribute is similar in nature to the [^/role^]
 								attribute&#160;[[html]], the attributes serve different purposes. The values of the
-								<code>epub:type</code> attribute do not enhance access through assistive
+									<code>epub:type</code> attribute do not enhance access through assistive
 								technologies like screen readers as they do not map to the accessibility <abbr
 									title="Application Programming Interfaces">APIs</abbr> used by these technologies.
 								This means that adding <code>epub:type</code> values to semantically neutral elements
 								like [[html]] [^div^] and [^span^] does not make them any more accessible to assistive
 								technologies. Only ARIA roles influence how assistive technologies understand such
 								elements.</p>
-							
+
 							<p>The <code>epub:type</code> attribute is consequently only intended for publishing
 								semantics and [=reading system=] enhancements. Reading systems can use
-								<code>epub:type</code> values to provide accessibility enhancements like built-in
+									<code>epub:type</code> values to provide accessibility enhancements like built-in
 								read aloud or media overlays functionality where interaction with assistive technologies
 								is not essential.</p>
-							
+
 							<p>Refer to <a href="https://www.w3.org/TR/dpub-aria/">Digital Publishing WAI-ARIA
 									Module</a>&#160;[[?dpub-aria]] for more information about accessible publishing
 								roles.</p>
 						</div>
-						
+
 						<p>The <code>epub:type</code> attribute inflects semantics on the element on which it appears.
 							Its value is one or more whitespace-separated terms stemming from external vocabularies
 							associated with the document instance.</p>
-						
-						<p>The <a href="#sec-default-vocab">default vocabulary</a> for the <code>epub:type</code>
-							attribute is the EPUB&#160;3 Structural Semantics Vocabulary&#160;[[?epub-ssv-11]]. The
-							prefix URL for referencing its properties is
-							<code>http://idpf.org/epub/vocab/structure/#</code>.</p>
-						
+
+						<p>The [=default vocabulary=] for the <code>epub:type</code> attribute is the EPUB&#160;3
+							Structural Semantics Vocabulary&#160;[[?epub-ssv-11]]. The prefix URL for referencing its
+							properties is <code>http://idpf.org/epub/vocab/structure/#</code>.</p>
+
 						<p>Unprefixed terms that are not part of this vocabulary MAY be used but the preferred method
 							for adding custom semantics is to use <a href="#sec-prefix-attr">prefixes</a> for them.
 							Refer to <a href="#sec-vocab-assoc"></a> for more information.</p>
-						
+
 						<aside class="example" id="ex.epubtype.note" title="Identifying a preamble">
 							<pre>&lt;html
     …
@@ -6666,7 +6676,7 @@ No Entry</pre>
    &lt;/body&gt;
 &lt;/html&gt;</pre>
 						</aside>
-						
+
 						<aside class="example" id="ex.epubtype.gloss" title="Identifying a glossary">
 							<pre>&lt;html
     …
@@ -6681,7 +6691,7 @@ No Entry</pre>
    &lt;/body&gt;
 &lt;/html&gt;</pre>
 						</aside>
-						
+
 						<aside class="example" id="ex.epubtype.pg" title="Adding page break semantics">
 							<pre>&lt;html
     …
@@ -8453,9 +8463,8 @@ No Entry</pre>
 									<dd>
 										<p>An expression of the structural semantics of the corresponding element in the
 											[=EPUB content document=].</p>
-										<p>The value is a whitespace-separated list of <a href="#sec-property-datatype"
-												>property</a> types. Refer to <a href="#sec-docs-structural-semantic"
-											></a> for more information.</p>
+										<p>The value is a whitespace-separated list of [=compact URLs=]. Refer to <a
+												href="#sec-docs-structural-semantic"></a> for more information.</p>
 									</dd>
 
 									<dt>
@@ -8531,9 +8540,8 @@ No Entry</pre>
 									<dd>
 										<p>An expression of the structural semantics of the corresponding element in the
 											[=EPUB content document=].</p>
-										<p>The value is a whitespace-separated list of <a href="#sec-property-datatype"
-												>property</a> types. Refer to <a href="#sec-docs-structural-semantic"
-											></a> for more information.</p>
+										<p>The value is a whitespace-separated list of [=compact URLs=]. Refer to <a
+												href="#sec-docs-structural-semantic"></a> for more information.</p>
 									</dd>
 
 									<dt>
@@ -8610,9 +8618,8 @@ No Entry</pre>
 									<dd>
 										<p>An expression of the structural semantics of the corresponding element in the
 											[=EPUB content document=].</p>
-										<p>The value is a whitespace-separated list of <a href="#sec-property-datatype"
-												>property</a> types. Refer to <a href="#sec-docs-structural-semantic"
-											></a> for more information.</p>
+										<p>The value is a whitespace-separated list of [=compact URLs=]. Refer to <a
+												href="#sec-docs-structural-semantic"></a> for more information.</p>
 									</dd>
 
 									<dt>
