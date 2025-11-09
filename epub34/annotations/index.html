@@ -3,48 +3,984 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="color-scheme" content="light dark" />
-		<title>EPUB Annotations 3.4</title>
-		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
-		<script src="../../common/js/css-inline.js" class="remove"></script>
-		<script class="remove">
-			var respecConfig = {
-				group: "pm",
-				wgPublicList: "public-pm-wg",
-				specStatus: "ED",
-				shortName: "epub-ann",
-				noRecTrack: false,
-				edDraftURI: "https://w3c.github.io/epub-specs/epub34/annotations/",
-                copyrightStart: "2025",
-				editors: [
-					{
-						name: "Laurent Le Meur",
-						company: "EDRLab",
-						companyURL: "https://www.edrlab.org",
-						"w3cid": 91888
-					}
-				],
-				includePermalinks: true,
-				permalinkEdge: true,
-				permalinkHide: false,
-				github: {
-					repoURL: "https://github.com/w3c/epub-specs",
-					branch: "main"
-				},
-				preProcess:[inlineCustomCSS],
-				xref: {
-					profile: "web-platform",
-					specs: ["epub-34"]
-				},
-
-			};
+		<title> EPUB Annotations 3.4 </title>
+		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove">
 		</script>
+		<script src="../../common/js/css-inline.js" class="remove">
+		</script>
+		<script class="remove">
+            var respecConfig = {
+                group: "pm",
+                wgPublicList: "public-pm-wg",
+                specStatus: "ED",
+                shortName: "epub-ann",
+                noRecTrack: false,
+                edDraftURI: "https://w3c.github.io/epub-specs/epub34/annotations/",
+                copyrightStart: "2025",
+                editors:[ {
+                    name: "Laurent Le Meur",
+                    company: "EDRLab",
+                    companyURL: "https://www.edrlab.org",
+                    "w3cid": 91888
+                }],
+                includePermalinks: true,
+                permalinkEdge: true,
+                permalinkHide: false,
+                github: {
+                    repoURL: "https://github.com/w3c/epub-specs",
+                    branch: "main"
+                },
+                preProcess:[inlineCustomCSS],
+                xref: {
+                    profile: "web-platform",
+                    specs:[ "epub-34"]
+                },
+            };</script>
 	</head>
 	<body>
 		<section id="abstract">
-			<p>Lorem ipsum…</p>
+			<p> This document defines a profile of the <a
+					href="https://www.w3.org/TR/annotation-model/"> W3C Web Annotation Data Model
+				</a> by specifying a subset of the properties allowed in this model, and adding
+				properties deemed useful to satisfy the <a href="./../wg-notes/annotations-ucr/">
+					Use Cases and Requirements for EPUB Annotations</a>.
+			</p>
 		</section>
 		<section id="sotd"></section>
-		<section id="sec-intro">
+		<section>
+			<h2 id="1-annotation"> Annotation </h2>
+			<h3 id="1-1-annotation-object"> Annotation Object </h3>
+			<p> This document retains the following annotation properties from the W3C Annotation
+				Data Model: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code>@context</code>
+						</td>
+						<td>The context that determines the meaning of the JSON as an Annotation.
+							It MUST be <a href="http://www.w3.org/ns/anno.jsonld">
+								http://www.w3.org/ns/anno.jsonld”</a>.</td>
+						<td>string</td>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<td>
+							<code> id </code>
+						</td>
+						<td>The identity of the annotation. A uuid formatted as a URN is recommended.</td>
+						<td>URI</td>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<td>
+							<code> type </code>
+						</td>
+						<td>The RDF structure type. It MUST be "Annotation".</td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> motivation </code>
+						</td>
+						<td>The motivation for the annotation's creation. Only used for tagging
+							bookmarks.</td>
+						<td>&quot;bookmarking&quot;</td>
+						<td>No</td>
+					</tr>
+					<tr>
+						<td>
+							<code> created </code>
+						</td>
+						<td>The time when the annotation was created.</td>
+						<td> ISO 8601 datetime </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> modified </code>
+						</td>
+						<td>The time the annotation was modified after creation.</td>
+						<td> ISO 8601 datetime </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> creator </code>
+						</td>
+						<td>The creator of the annotation. This may be either a human or an
+							organization.</td>
+						<td> Creator </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> target </code>
+						</td>
+						<td>The target content of the annotation.</td>
+						<td> Target </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> body </code>
+						</td>
+						<td>The annotation body.</td>
+						<td> Body </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<p>An annotation without Body structure can correspond to a "highlight" or a
+				"bookmark". A bookmark is specified by the inclusion of a <code>
+				motivation</code> property with <code>bookmarking</code> as a value.</p>
+			
+			<p> Sample 1: Core structure of a Readium annotation </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "http://www.w3.org/ns/anno.jsonld",
+					  "id": "urn:uuid:123-123-123-123",
+					  "type": "Annotation",
+					  "created": "2023-10-14T15:13:28Z",
+					  "modified": "2024-01-29T09:00:00Z",
+					  "target": {
+					   },
+					  "body": {
+					  }
+					}
+				</code>
+			</pre>
+			
+			<h3 id="1-2-creator"> Creator </h3>
+			<p> The creator of an annotation is a person or an organisation. </p>
+			<p> This document defines the following creator properties: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> id </code>
+						</td>
+						<td> The identity of the creator. </td>
+						<td> URI </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> type </code>
+						</td>
+						<td> The RDF structure type. It MUST be "Person" or
+							"Organization". </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> name </code>
+						</td>
+						<td> The name of the creator. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h3 id="1-3-target"> Target </h3>
+			<p>The target of an annotation associates the annotation with a specific segment of a
+				resource in the current publication.</p>
+			<p> This document defines three target sub-properties: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> source </code>
+						</td>
+						<td> The identity of the target resource. </td>
+						<td> URI </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> selector </code>
+						</td>
+						<td> The segment of the target resource that is annotated. </td>
+						<td> An array of Selector objects </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> meta </code>
+						</td>
+						<td> Indications that help locate the selector in the resource. </td>
+						<td> Meta </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<p> A Target with no Selector indicates that the annotation is targeting the entire
+				target resource. </p>
+			
+			<h4 id="1-3-1-source"> Source </h4>
+			<p> The target resource MUST be identified by the URL of an existing resource in the
+				publication. </p>
+			<p> If the annotation is attached to an EPUB, the source value must also be present as
+				one of the item/@href values of the <a
+					href="https://www.w3.org/TR/epub-33/#sec-manifest-elem"> manifest element </a>.</p>
+			<p> If the annotation is attached to a Web Publication, the source value must also be
+				present as one of the readingOrder/@href or resource/@href values on the <a
+					href="https://github.com/readium/webpub-manifest?tab=readme-ov-file#21-sub-collections"
+					> Web Publication Manifest </a>.</p>
+			<p> Sample 2: the source of the annotation is the relative URL identifying an HTML
+				document in an EPUB. </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "http://www.w3.org/ns/anno.jsonld",
+					  "type": "Annotation",
+					  "target": {
+					    "source": "OEBPS/text/chapter1.html",
+					    "selector": [
+					    ],
+					    "meta": {
+					    }
+					  }
+					}
+				</code>
+			</pre>
+			
+			<h4 id="1-3-2-selector"> Selector </h4>
+			<p> An annotation refers to a segment of a resource, which is identified by one or more
+				Selectors. The nature of the Selectors and methods to describe segments depend on
+				the resource type. Providing more than one Selector allows an annotation software to
+				choose the most accurate selector from those it can handle and helps accommodate
+				evolutions on the annotated resource. </p>
+			<p> Annotation selectors are specified in <a
+					href="https://www.w3.org/TR/2017/REC-annotation-model-20170223/#selectors"> W3C
+					Annotation Data Model, section Selectors </a>. This specification filters
+				selectors deemed useful for annotating publications and details the use of these
+				selectors. </p>
+			<p> Note: New selectors will undoubtedly be defined in the coming months after
+				discussion with members of the W3C Publishing Maintenance Working Group.</p>
+			
+			<!--
+			<h5 id="1-3-2-1-text-quote-selector"> Text Quote Selector </h5>
+			<p> This Selector describes a range of text by copying it and including some of the
+				text immediately before (a prefix) and after (a suffix) it to distinguish between
+				multiple copies of the same sequence of characters. </p>
+			<p> Whitespaces present in the source document are preserved in the “prefix”, “exact”,
+				and “suffix” segments and are represented as per the JSON Grammar (e.g. <code> \n
+				</code> , <code> \t </code> etc.). </p>
+			<p> Note: There is no restriction on the preceding and following text that can be
+				included in the selector, but this amount should be left as low as possible. </p>
+			<p> Important: This selector contains complete annotated text segments and, therefore,
+				must not be used when the publication is protected by a DRM, which limits the number
+				of characters that may be copied.</p>
+
+			<p> Sample 3: A text segment represented as a TextQuoteSelector. </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "selector": [
+					    {
+					    "type": "TextQuoteSelector",
+					    "prefix": "trouver quelqu’un    \n  \t\t    comme vous. ",
+					    "exact": "Combien de fois \n\n    ne m’avait-il",
+					    "suffix": " pas \n\n      reproché de travailler ma"
+					    }
+					  ]
+					}
+				</code>
+			</pre>
+			<h5 id="1-3-2-2-cssselector-textpositionselector"> CssSelector +
+				TextPositionSelector </h5>
+			<p>References in the W3C Annotation Data Model: <a
+					href="https://www.w3.org/TR/annotation-model/#css-selector"> CSS Selector </a> ,
+					<a href="https://www.w3.org/TR/annotation-model/#text-position-selector"> Text
+					Position Selector </a> , <a
+					href="https://www.w3.org/TR/annotation-model/#refinement-of-selection">
+					Refinement of Selection </a>
+			</p>
+			<p>A TextPositionSelector describes a range of text by recording the start and end
+				positions of the selection in the stream. Position 0 would be immediately before the
+				first character, position 1 would be immediately before the second character, and so
+				on. The start character is thus included in the list, but the end character is not.
+				The W3C Annotation Data Model specifies that the selection of the text MUST be in
+				terms of <strong> unicode code points </strong> (the &quot;character number&quot;),
+				not in terms of code units (that number expressed using a selected data type).
+				Selections SHOULD NOT start or end in the middle of a grapheme cluster. The
+				selection MUST be based on the logical order of the text, rather than the visual
+				order, especially for bidirectional text.</p>
+			<p>In an HTML resource, rebuilding a DOM range from a purely textual range using tree
+				walking is cumbersome and is not an optimal solution. Such a selector can only be
+				efficient if it is used a refinement of a CSS Selector that targets the closest
+				common ancestor of the element nodes containing the start and end characters, and if
+				the segment of text is small enough. The use of the closest common ancestor element
+				also makes the selector more robust against evolutions of the HTML resource. </p>
+
+			<p>Sample 4: A CSS Selector refined by a Text Position Selector:</p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "selector": [
+					    {
+					      "type": "CssSelector",
+					      "value": "#intro > p:nth-child(2)",
+					      "refinedBy": {
+					        "type": "TextPositionSelector",	 
+					        "start": 4,
+					        "end": 19
+					      }
+					    }
+					  ]
+					}
+
+				</code>
+			</pre>
+			<p>This selects "q" from "quick" as start position and
+				"x" from "fox" as end position in the following HTML snippet: </p>
+			<pre>
+				<code class="lang-html">
+					<div id="intro">
+					  <p>Some text.</p>
+					  <p>The quick <em>brown</em> fox jumps over the lazy dog.</p>
+					  <p>The lazy <em>white</em> dog sleeps with the crazy fox.</p>
+					</div>
+				</code>
+			</pre>
+			
+			<h5 id="1-3-2-3-progressionselector"> ProgressionSelector </h5>
+			<p>A ProgressionSelector contains a decimal value representing the annotation's
+				position as a percentage of the total size of the resource.</p>
+			<p>While such positioning is imprecise and does not correctly identify a fragment, it
+				is helpful to order annotations in a list and help position the annotation near the
+				corresponding fragment if other selectors fail.</p>
+				
+			<p>Sample 5: This ProgressionSelector indicates that the annotation is positioned just
+				after the middle of the resource:</p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "selector": [
+					    {
+					    "type": "ProgressionSelector",	 
+					    "value": 0.534234255
+					    }
+					  ]
+					}
+				</code>
+			</pre>
+			-->
+			
+			<!--
+			<h4 id="1-3-3-meta"> Meta </h4>
+			<p>Meta information MAY be added to an annotation as “breadcrumbs”, to ease the display
+				of contextual information relative to the global position of the annotation in the
+				publication.</p>
+			<p>The meta property contains:</p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> headings </code>
+						</td>
+						<td> Ancestor headings of the annotation. </td>
+						<td> Array of Heading objects </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> page </code>
+						</td>
+						<td> Page of the publication containing the annotation. It may be either a
+							synthetic page or a print equivalent. It is essentially a visual
+							indicator. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<h5 id="1-3-3-1-headings"> Headings </h5>
+			<p> The Headings object contains: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> level </code>
+						</td>
+						<td> Heading level. </td>
+						<td> number </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> txt </code>
+						</td>
+						<td> Heading title. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<p> Sample 6: Meta information contains ancestor headings and a page number: </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "http://www.w3.org/ns/anno.jsonld",
+					  "type": "Annotation",
+					  "target": {
+					    "source": "OEBPS/text/chapter11.html",
+					    "selector": [
+					    ],
+					    "meta": {
+					      "headings": [
+					        {
+					        "level": 1,
+					        "txt": "Section 11"
+					        },
+					        {
+					        "level": 2,
+					        "txt": "Sub Section 1"
+					        }
+					      ],
+					      "page": "XI"       
+					    }
+					  }
+					}
+				</code>
+			</pre>
+			-->
+			
+			<h3 id="1-4-body"> Body </h3>
+			<p>The body of an annotation contains plain text, style, and an optional keyword.</p>
+			<p>The body property contains:</p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> type </code>
+						</td>
+						<td> The body type. It MUST be “TextualBody”. </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> value </code>
+						</td>
+						<td> The textual content of the annotation. </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> format </code>
+						</td>
+						<td> The media-type of the annotation value; "text/plain" by
+							default; "text/markdown" is recommended. </td>
+						<td> rfc6838, rfc7763 </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> color </code>
+						</td>
+						<td> The colour of the annotation; yellow by default. </td>
+						<td> "pink" | "orange" | "yellow" | "green" | "blue" | "purple" </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> highlight </code>
+						</td>
+						<td> The style of the annotation; solid background by default. </td>
+						<td> "solid" | "underline" | "strikethrough" | "outline" </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> language </code>
+						</td>
+						<td> The language of the annotation. </td>
+						<td> BCP47 </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> textDirection </code>
+						</td>
+						<td> The direction of the text; left-to-right by default. </td>
+						<td> "ltr" | "rtl" </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> keyword </code>
+						</td>
+						<td> Free text categorising the annotation. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<p> Note: Read “Best practices for Reading Systems” about using a keyword in an
+				annotation. </p>
+			
+			<p> Sample 7: An annotation Body. </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "http://www.w3.org/ns/anno.jsonld",
+					  "type": "Annotation",
+					  "body": {
+					    "type": "TextualBody",
+					    "value": "j'adore !",
+					    "keyword": "teacher",   
+					    "color": "blue",
+					    "language": "fr",
+					    "textDirection": "ltr"
+					  }
+					}
+				</code>
+			</pre>
+		</section>
+		
+		<section>
+			<h2 id="2-annotation-set"> Annotation Set </h2>
+			<p>An Annotation does not contain information about its associated publication. If a
+				set of annotations is shared as a detached file, it is mandatory to export with them
+				information that will help find the associated publication even if the publication
+				is not adequately identified.</p>
+			<p>Note: the AnnotationCollection defined by the W3C does not provide an adequate
+				structure for sharing annotations either as a detached file or as a file embedded in
+				a Zip package. The AnnotationCollection is intrinsically paginated and provides a
+				way to retrieve annotations via a REST API.</p>
+			
+			<p> The AnnotationSet object contains: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> @context </code>
+						</td>
+						<td> The context that determines the meaning of the JSON as an annotation
+							set. It MUST be “ <a href="http://www.w3.org/ns/anno.jsonld”">
+								http://www.w3.org/ns/anno.jsonld” </a> . </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> id </code>
+						</td>
+						<td> The identity of the annotation set. A uuid formatted as a URN is
+							recommended. </td>
+						<td> URI </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> type </code>
+						</td>
+						<td> The RDF structure type. It MUST be "AnnotationSet". </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> generator </code>
+						</td>
+						<td> The agent responsible for the generation of the object serialisation. </td>
+						<td> Generator </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> about </code>
+						</td>
+						<td> Information relative to the publication. </td>
+						<td> About object </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> generated </code>
+						</td>
+						<td> The time when the set was generated. </td>
+						<td> ISO 8601 datetime </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> title </code>
+						</td>
+						<td> A title helping on the identification of the set. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> items </code>
+						</td>
+						<td> The annotations of the set. </td>
+						<td> Array of Annotation objects </td>
+						<td> Yes </td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h3 id="2-1-generator"> Generator </h3>
+			<p>The Generator object contains information relative to the software from which the
+				serialized annotation has been produced.</p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> id </code>
+						</td>
+						<td> The identity of the generator software. The recommended value is the
+							GitHub URL of the application source code. </td>
+						<td> URI </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> type </code>
+						</td>
+						<td> The RDF structure type. It MUST be "Software". </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> name </code>
+						</td>
+						<td> The name of the generator software. </td>
+						<td> string </td>
+						<td> Yes </td>
+					</tr>
+					<tr>
+						<td>
+							<code> homepage </code>
+						</td>
+						<td> The home page presenting the generator software. </td>
+						<td> URL </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="2-2-about"> About </h3>
+			<p> The About object contains information relative to the publication. Such metadata in
+				intended to help associate an annotation set with a publication: </p>
+			<table>
+				<thead>
+					<tr>
+						<th> Name </th>
+						<th> Description </th>
+						<th> Format </th>
+						<th> Required? </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<code> dc:identifier </code>
+						</td>
+						<td> Publication identifiers. An ISBN is preferred. </td>
+						<td> Array of strings </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> dc:title </code>
+						</td>
+						<td> The title of the publication. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> dc:format </code>
+						</td>
+						<td> The media type of the publication. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> dc:publisher </code>
+						</td>
+						<td> The name of the publisher. </td>
+						<td> string </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> dc:creator </code>
+						</td>
+						<td> The author(s) of the publication. </td>
+						<td> array of strings </td>
+						<td> No </td>
+					</tr>
+					<tr>
+						<td>
+							<code> dc:date </code>
+						</td>
+						<td> The release year. </td>
+						<td> calendar year using four digits </td>
+						<td> No </td>
+					</tr>
+				</tbody>
+			</table>
+			<p> Note: all properties defined above are from the Dublin Core vocabulary, referenced
+				in the Web Annotation Data Model. </p>
+			
+			<p> Sample 8: An AnnotationSet containing one annotation. </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "http://www.w3.org/ns/anno.jsonld",
+					  "id": "urn:uuid:123-123-123-123",
+					  "type": "AnnotationSet",
+					  "generator": "https://github.com/edrlab/thorium-reader/releases/tag/v3.1.0",
+					  "generated": "2023-09-01T10:00:00Z",
+					  "title": "Annotations Mme Prof, La Peste, cours 1ere B",
+					  "about": {
+					     "dc:identifier": [
+					        "urn:isbn:1234567890"
+					     ],
+					     "dc:format": "application/epub+zip",
+					     "dc:title": "Alice in Wonderland",
+					     "dc:publisher": "Example Publisher",
+					     "dc:creator": ["Anne O'Tater"],
+					     "dc:date": "1865"
+					  },
+					  "items": [
+					    {
+					      "@context": "http://www.w3.org/ns/anno.jsonld",
+					      "id": "urn:uuid:234-234-234-234",
+					      "type": "Annotation",
+					      "target": {
+					      },
+					      "body": {
+					      }
+					    }
+					  ]
+					}
+				</code>
+			</pre>
+			
+			<h3 id="2-3-media-type-of-an-annotation-set"> Media type of an Annotation Set </h3>
+			<p> This specification introduces a dedicated media type value to identify an
+				AnnotationSet: <code> application/rd-annotations+json </code> . </p>
+			<p> HTTP responses associated with annotation files must indicate this media type in
+				their header. </p>
+			<p> Note: I propose using a “rd-” prefix (for ReaDium). It would allow for easier
+				registration at <a
+					href="https://www.iana.org/assignments/media-types/media-types.xhtml"> IANA </a>
+				. Should we extend this to other media types, including “application/webpub+json”? </p>
+			
+			<h3 id="2-4-file-extension-of-an-annotation-set"> File extension of an Annotation
+				Set </h3>
+			<p> This specification introduces a dedicated file extension for serialized
+				AnnotationSets: <code> .ann </code>.</p>
+		</section>
+		
+		<section>
+			<h1 id="3-embedding-annotations-in-publications"> Embedding annotations in
+				publications </h1>
+			
+			<h2 id="3-1-in-epub"> In EPUB </h2>
+			<p> The OPTIONAL <code> annotations.ann </code> file in the META-INF directory holds an
+				AnnotationSet. </p>
+			<h2 id="3-2-in-readium-web-publications"> 3.2. In Readium Web Publications </h2>
+			<p> The JSON file holding an AnnotationSet MUST be represented as a link object in the
+					<code> links </code> collection, with an <code> annotations </code> relation. </p>
+			<p> Sample 9: A Readium Web Publication Manifest containing a link to an annotation
+				set. </p>
+			<pre>
+				<code class="lang-json">
+					{
+					  "@context": "https://readium.org/webpub-manifest/context.jsonld",
+					  "metadata": {
+					  },
+					  "links": [
+					    { 
+					      "rel": "self", 
+					      "href": "http://example.com/manifest.json", 
+					      "type": "application/webpub+json"
+					    },
+					    {
+					      "rel": "annotations", 
+					      "href": "https://example.com/annotations.ann", 
+					      "type": "application/rd-annotations+json"
+					    }
+					  ]
+					}
+				</code>
+			</pre>
+			<p> When a Web Publication is packaged using the Readium Packaging Format, it is up to
+				the generator to embed the annotation file in the package or keep it remote. </p>
+			
+			<h1 id="4-best-practices-for-reading-systems"> Best Practices for Reading Systems </h1>
+			<p>
+				<em> This section is non-normative. </em>
+			</p>
+			<h2 id="4-1-displaying-filtered-annotations"> Displaying filtered annotations </h2>
+			<p> Reading systems should enable filtering by colour, highlight mode, keyword and
+				creator. For instance, a user can display &quot;blue&quot; annotations only or
+				“teacher” annotations only. Filtering on multiple criteria is a plus. </p>
+			<h2 id="4-2-using-multiple-selectors"> 4.2. Using multiple selectors </h2>
+			<p> It is recommended that Reading Systems export CssSelector + TextPositionSelector +
+				ProgressionSelector, as they can be used for sorting annotations when no other
+				sortable selector is present. </p>
+			<p> When displaying an annotation, a Reading System is free to use the most precise
+				Selector available. It will select an alternative Selector as a fallback in case the
+				preferred one does not return a correct position in the publication: this can happen
+				if the publication has been modified after the annotation has been created. </p>
+			
+			<h2 id="4-3-exporting-annotations-as-a-detached-file"> Exporting annotations as a
+				detached file </h2>
+			<p> When a user decides to export an annotation set from a reading system, he SHOULD be
+				proposed to filter the annotations by keywords (multiple choice). “Annotations with
+				no keyword” and “All annotations” SHOULD be proposed as options. The advantage of
+				this practice is that, for instance, a user can export personal annotations (usually
+				with no keyword) and leave “teacher” annotations unexported. </p>
+			<p> He MAY enter a title for the annotation set (empty by default). Such a title SHOULD
+				become the exported filename. </p>
+			<p> He MUST be able to choose the directory in which the annotation set will be stored. </p>
+			<p> The file extension MUST be <code> .ann </code> . </p>
+			<p> The application may propose alternative formats at export time: an HTML or markdown
+				format may be handy as a list of annotations with human-friendly references to the
+				location of each annotation. </p>
+			
+			<h2 id="4-4-exporting-annotations-in-a-publication"> Exporting annotations in a
+				publication </h2>
+			<p> When a user decides to export a publication from the Reading System, he SHOULD be
+				proposed to embed the annotations associated with the publication. </p>
+			<p> If the user decides to embed annotations in a publication, he SHOULD be proposed to
+				filter the annotations by keywords (multiple choice). </p>
+			<h2 id="4-5-importing-annotations"> 4.5. Importing annotations </h2>
+			<p> To simplify the association of annotations with a publication, a Reading System MUST
+				offer a way to select a publication before selecting an annotation set. The drag and
+				drop of an annotation set into a Reading System MAY also be proposed, but
+				identifying the proper publication from the metadata in the annotation set is more
+				complicated. </p>
+			<p> When importing an annotation set, a Reading System SHOULD display a message with the
+				title of the annotation set and the number of annotations in the set. The Reading
+				System MUST offer the user the choice to abort the import. </p>
+			<p> Each annotation is uniquely identified. If during the import of an annotation set,
+				one or more annotations are re-imported, the Reading System MUST offer to the user
+				the choice to override existing annotations or abort the import of the annotation
+				set. </p>
+			<h2 id="4-6-dealing-with-colours"> 4.6. Dealing with colours </h2>
+			<p> This document specifies a closed set of six colours chosen because of their
+				extensive support in well-known reading systems. However, most existing reading apps
+				offer a smaller set to their users. </p>
+			<p> If an application imports annotations with a colour it does not support, it should
+				display them with a neutral colour. The recommended neutral colour is grey. </p>
+			<p> Some applications may support colours not in the set defined by this specification
+				(e.g. brown). In this case, a 1-to-1 substitution at export time is required (e.g.
+				brown to orange). </p>
+			<p> Note: we didn&#39;t spot applications with more than six annotation colours. </p>
+		</section>
+		
+		<section>
+			<h1 id="5-json-schemas"> JSON Schemas </h1>
+		</section>
+		
+		<section>
+			<h1 id="6-references"> References </h1>
+			<p> Open Annotation in EPUB, 2015: <a href="https://idpf.org/epub/oa/">
+					https://idpf.org/epub/oa/ </a>
+			</p>
+			<p> Open Annotation in EPUB, CFI pros and cons, 2014: <a
+					href="https://docs.google.com/document/d/1d0IRsb2h9LM-ZWPwjS4dZ4Fffg4u9qA3Dkw0P9_3o5Y/edit"
+					>
+					https://docs.google.com/document/d/1d0IRsb2h9LM-ZWPwjS4dZ4Fffg4u9qA3Dkw0P9_3o5Y/edit
+				</a>
+			</p>
+			<p> EPUB CFI cannot reference content in non-spine items, 2023: <a
+					href="https://github.com/w3c/epub-specs/issues/226">
+					https://github.com/w3c/epub-specs/issues/226 </a>
+			</p>
+			<p> W3C Web Annotation Data Model, 2017: <a
+					href="https://www.w3.org/TR/annotation-model/">
+					https://www.w3.org/TR/annotation-model/ </a>
+			</p>
+			<p> EPUB CFI, 2017: <a href="https://idpf.org/epub/linking/cfi/">
+					https://idpf.org/epub/linking/cfi/ </a>
+			</p>
+			<p> EPUB 3.3, 2023: <a href="https://www.w3.org/TR/epub-33/">
+					https://www.w3.org/TR/epub-33/ </a>
+			</p>
+			<p> Readium Web Publication Manifest: <a href="https://readium.org/webpub-manifest/">
+					https://readium.org/webpub-manifest/ </a>
+			</p>
 		</section>
 	</body>
 </html>
