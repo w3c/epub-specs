@@ -47,7 +47,31 @@
 			</p>
 		</section>
 		<section id="sotd"></section>
-		<section>
+		<section id="1-profile-of-the-w3c-annotation-data-model">
+			<h1> Subset of the W3C Annotation Data Model </h1>
+			<p> This section defines the profile of the W3C Annotation Data Model used for EPUB
+				annotations. </p>
+			<p> In the W3C Annotation Data Model, the core structure is the Annotation object,
+				which contains properties defining the annotation's target and body. </p>
+			<p> W3C Annotations have 0 or more Bodies, whereas this document only defines a single Body
+				per annotation. Such Body can be remote or embedded, whereas this document defines embedded Bodies only 
+				for textual comments (the inclusion mechanism is to be defined for audiovisual comments). </p> 
+			<p> W3C Annotations have 1 or more Targets, whereas this document only defines a single Target
+				per annotation. The Target of an EPUB Annotation is the content being annotated, which is  
+				a specific segment in a document within the EPUB package, defined by its relative Source URL and a Selector. </p>
+			<p> W3C Annotations can have multiple motivations, whereas this document only defines a single motivation
+				per annotation. </p>
+			<p> W3C Annotations can have multiple creators, whereas this document only defines a single creator
+				per annotation. </p>
+			<p> W3C Annotations can have additional properties not defined in this document, like a specific generator application
+				and generated date per Annotation, whereas this document only defines these properties at the Annotation Set level. 
+				W3C Annotations also handle more property values and types than defined in this document. </p>
+			<p> W3C Annotations define an AnnotationCollection structure to handle paginated requests, whereas this document
+				defines an AnnotationSet structure to group multiple annotations for sharing purposes.
+				Implementers MUST support AnnotationSet and MAY support both structures for maximum compatibility. </p>
+			<p> Note: This document does not define how annotations are created, stored, or
+				synchronized in a reading system. </p>
+		</section>
 			<h2 id="1-annotation"> Annotation </h2>
 			<h3 id="1-1-annotation-object"> Annotation Object </h3>
 			<p> This document retains the following annotation properties from the W3C Annotation
@@ -92,9 +116,8 @@
 						<td>
 							<code> motivation </code>
 						</td>
-						<td>The motivation for the annotation's creation. Only used for tagging
-							bookmarks.</td>
-						<td>&quot;bookmarking&quot;</td>
+						<td>The motivation for the annotation's creation.</td>
+						<td>"bookmarking" | "commenting" | "highlighting"</td>
 						<td>No</td>
 					</tr>
 					<tr>
@@ -140,9 +163,12 @@
 					</tr>
 				</tbody>
 			</table>
-			<p>An annotation without Body structure can correspond to a "highlight" or a
-				"bookmark". A bookmark is specified by the inclusion of a <code>
-				motivation</code> property with <code>bookmarking</code> as a value.</p>
+
+			<p>Note: The type of annotation should be considered when determining the value of the <code>motivation</code> property. 
+				An annotation with a Body structure corresponds to a "comment". 
+				An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of characters, a space in an image 
+				or a time period, and a "bookmark" if it does not.</p>
+			<p>Question: should we add a "replying" motivation for annotations that are replies to other annotations?</p>
 			
 			<p> Sample 1: Core structure of a Readium annotation </p>
 			<pre>
@@ -834,74 +860,42 @@
 				</code>
 			</pre>
 			
-			<h3 id="2-3-media-type-of-an-annotation-set"> Media type of an Annotation Set </h3>
-			<p> This specification introduces a dedicated media type value to identify an
-				AnnotationSet: <code> application/rd-annotations+json </code> . </p>
-			<p> HTTP responses associated with annotation files must indicate this media type in
-				their header. </p>
-			<p> Note: I propose using a “rd-” prefix (for ReaDium). It would allow for easier
-				registration at <a
-					href="https://www.iana.org/assignments/media-types/media-types.xhtml"> IANA </a>
-				. Should we extend this to other media types, including “application/webpub+json”? </p>
-			
-			<h3 id="2-4-file-extension-of-an-annotation-set"> File extension of an Annotation
-				Set </h3>
+			<h3 id="2-3-serialization"> Serialization </h3>
+			<p> The examples throughout the document are serialized as [JSON-LD] using the Context given in Appendix A 
+				of the Annotation Vocabulary [annotation-vocab], which is the preferred serialization format. 
+				The media type of this format is "application/ld+json;profile="http://www.w3.org/ns/anno.jsonld".</p>
 			<p> This specification introduces a dedicated file extension for serialized
-				AnnotationSets: <code> .ann </code>.</p>
+				AnnotationSets: <code> .annotation </code>.</p>
 		</section>
 		
 		<section>
 			<h1 id="3-embedding-annotations-in-publications"> Embedding annotations in
-				publications </h1>
+				EPUB </h1>
 			
-			<h2 id="3-1-in-epub"> In EPUB </h2>
-			<p> The OPTIONAL <code> annotations.ann </code> file in the META-INF directory holds an
+			<p> The OPTIONAL <code> annotations.annotation </code> file in the META-INF directory holds an
 				AnnotationSet. </p>
-			<h2 id="3-2-in-readium-web-publications"> 3.2. In Readium Web Publications </h2>
-			<p> The JSON file holding an AnnotationSet MUST be represented as a link object in the
-					<code> links </code> collection, with an <code> annotations </code> relation. </p>
-			<p> Sample 9: A Readium Web Publication Manifest containing a link to an annotation
-				set. </p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "@context": "https://readium.org/webpub-manifest/context.jsonld",
-					  "metadata": {
-					  },
-					  "links": [
-					    { 
-					      "rel": "self", 
-					      "href": "http://example.com/manifest.json", 
-					      "type": "application/webpub+json"
-					    },
-					    {
-					      "rel": "annotations", 
-					      "href": "https://example.com/annotations.ann", 
-					      "type": "application/rd-annotations+json"
-					    }
-					  ]
-					}
-				</code>
-			</pre>
-			<p> When a Web Publication is packaged using the Readium Packaging Format, it is up to
-				the generator to embed the annotation file in the package or keep it remote. </p>
 			
 			<h1 id="4-best-practices-for-reading-systems"> Best Practices for Reading Systems </h1>
 			<p>
 				<em> This section is non-normative. </em>
 			</p>
 			<h2 id="4-1-displaying-filtered-annotations"> Displaying filtered annotations </h2>
-			<p> Reading systems should enable filtering by colour, highlight mode, keyword and
+			<p> Reading systems should enable filtering by motivation, colour, highlight mode, keyword and
 				creator. For instance, a user can display &quot;blue&quot; annotations only or
 				“teacher” annotations only. Filtering on multiple criteria is a plus. </p>
-			<h2 id="4-2-using-multiple-selectors"> 4.2. Using multiple selectors </h2>
-			<p> It is recommended that Reading Systems export CssSelector + TextPositionSelector +
-				ProgressionSelector, as they can be used for sorting annotations when no other
-				sortable selector is present. </p>
+
+			<h2 id="4-2-using-multiple-selectors"> Using multiple selectors </h2>
+			<p> It is recommended that Reading Systems export multiple selectors, including at least
+				one precise selector (e.g. CssSelector + TextPositionSelector)
+				and one selector resistant to content modifications (e.g. ProgressionSelector). </p>
 			<p> When displaying an annotation, a Reading System is free to use the most precise
 				Selector available. It will select an alternative Selector as a fallback in case the
 				preferred one does not return a correct position in the publication: this can happen
 				if the publication has been modified after the annotation has been created. </p>
+			<p> Not all selectors are equally easy to implement. Reading Systems MAY choose to
+				support only a subset of the selectors defined in this specification. </p>
+			<p> The W3C Publishing Maintenance Working Group is expected to define one or more selectors 
+				reading systems are required to implement, as a <i>lingua franca</i>. </p> 
 			
 			<h2 id="4-3-exporting-annotations-as-a-detached-file"> Exporting annotations as a
 				detached file </h2>
@@ -910,13 +904,12 @@
 				no keyword” and “All annotations” SHOULD be proposed as options. The advantage of
 				this practice is that, for instance, a user can export personal annotations (usually
 				with no keyword) and leave “teacher” annotations unexported. </p>
-			<p> He MAY enter a title for the annotation set (empty by default). Such a title SHOULD
+			<p> They MAY enter a title for the annotation set (empty by default). Such a title SHOULD
 				become the exported filename. </p>
-			<p> He MUST be able to choose the directory in which the annotation set will be stored. </p>
-			<p> The file extension MUST be <code> .ann </code> . </p>
-			<p> The application may propose alternative formats at export time: an HTML or markdown
-				format may be handy as a list of annotations with human-friendly references to the
-				location of each annotation. </p>
+			<p> They MUST be able to choose the directory in which the annotation set will be stored. </p>
+			<p> The file extension MUST be <code> .annotation </code> . </p>
+			<p> The application may propose alternative formats at export time: an HTML or markdown format 
+				with human-friendly references to the location of each annotation may be handy. </p>
 			
 			<h2 id="4-4-exporting-annotations-in-a-publication"> Exporting annotations in a
 				publication </h2>
@@ -924,7 +917,8 @@
 				proposed to embed the annotations associated with the publication. </p>
 			<p> If the user decides to embed annotations in a publication, he SHOULD be proposed to
 				filter the annotations by keywords (multiple choice). </p>
-			<h2 id="4-5-importing-annotations"> 4.5. Importing annotations </h2>
+
+			<h2 id="4-5-importing-annotations"> Importing annotations </h2>
 			<p> To simplify the association of annotations with a publication, a Reading System MUST
 				offer a way to select a publication before selecting an annotation set. The drag and
 				drop of an annotation set into a Reading System MAY also be proposed, but
@@ -937,7 +931,8 @@
 				one or more annotations are re-imported, the Reading System MUST offer to the user
 				the choice to override existing annotations or abort the import of the annotation
 				set. </p>
-			<h2 id="4-6-dealing-with-colours"> 4.6. Dealing with colours </h2>
+
+			<h2 id="4-6-dealing-with-colours"> Dealing with colours </h2>
 			<p> This document specifies a closed set of six colours chosen because of their
 				extensive support in well-known reading systems. However, most existing reading apps
 				offer a smaller set to their users. </p>
@@ -946,7 +941,7 @@
 			<p> Some applications may support colours not in the set defined by this specification
 				(e.g. brown). In this case, a 1-to-1 substitution at export time is required (e.g.
 				brown to orange). </p>
-			<p> Note: we didn&#39;t spot applications with more than six annotation colours. </p>
+			<p> Note: we didn't spot applications with more than six annotation colours. </p>
 		</section>
 		
 		<section>
