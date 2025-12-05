@@ -175,7 +175,7 @@
 
 				<p>EPUB publications by default are intended to reflow to fit the available screen space. It is also
 					possible to create publications that have pixel-precise fixed layouts using images and/or CSS
-					positioning. The metadata to control layouts are defined in <a href="#sec-rendering"></a>.</p>
+					positioning. The metadata to control layouts are defined in <a href="#sec-layout"></a>.</p>
 
 				<p>[=Media overlay documents=] complement EPUB content documents. They provide declarative markup for
 					synchronizing the text in EPUB content documents with prerecorded audio. The result is the ability
@@ -3730,7 +3730,7 @@
 						</li>
 						<li>
 							<p>to provide access to all rendering metadata needed to control the layout and display of
-								the content (e.g., <a href="#sec-fxl-package">fixed-layout properties</a>).</p>
+								the content (e.g., <a href="#app-rendering-vocab">package rendering properties</a>).</p>
 						</li>
 					</ol>
 
@@ -5828,7 +5828,7 @@ No Entry</pre>
 				</section>
 			</section>
 		</section>
-		<section id="sec-rendering">
+		<section id="sec-layout">
 			<h2>Layout rendering</h2>
 
 			<section id="sec-general-rendering-intro" class="informative">
@@ -5930,16 +5930,16 @@ No Entry</pre>
 				<section id="sec-pre-paginated">
 					<h4>Pre-paginated layouts</h4>
 
-					<p>In a pre-paginated layout, each [=fixed-layout document=] referenced a the [=EPUB spine | spine=]
-						[^itemref^] represents one page of content. Reading systems are expected to scale the document
-						to fit the viewport or synthetic spread.</p>
-
 					<div class="note">
 						<p>Pre-paginated layouts were commonly referred to as fixed layouts prior to the introduction of
 								<a href="#sec-roll">roll layouts</a>. As both layouts make use of [=fixed-layout
 							documents=], the term "fixed layout" is now used exclusively for describing EPUB content
 							documents with fixed dimensions, not for the layout type they appear in.</p>
 					</div>
+
+					<p>In a pre-paginated layout, each [=fixed-layout document=] referenced by a [=EPUB spine | spine=]
+						[^itemref^] represents one page of content. Reading systems are expected to scale the document
+						to fit the viewport or synthetic spread.</p>
 
 					<p>To declare that an EPUB publication uses a pre-paginated layout, the <a href="#layout"
 								><code>rendition:layout</code> property</a> MUST be declared in a <code>meta</code>
@@ -5984,8 +5984,9 @@ No Entry</pre>
 					</div>
 
 					<p id="fxl-layout-duplication" data-tests="#lay-fxl-layout-duplication">When the property is set to
-							<code>pre-paginated</code> for a spine item, its content dimensions MUST be set as defined
-						in <a href="#sec-content-dimensions"></a>.</p>
+							<code>pre-paginated</code> for a spine item, the [^itemref^] element MUST reference a <a
+							href="#sec-fxl-docs">fixed layout document</a> or there MUST be one in the [=manifest
+						fallback chain=].</p>
 
 					<p>The following properties from the <a href="#app-rendering-vocab">Package rendering vocabulary</a>
 						can be applied to pre-paginated spine items to further control their rendering:</p>
@@ -5997,7 +5998,7 @@ No Entry</pre>
 						<li>the <a href="#spread"><code>rendition:spread</code> property</a> and its <a
 								href="#spread-overrides">spine overrides</a> are used to indicate a preference for how
 							reading systems ...</li>
-						<li>the <a href="#page-spread"><code>rendition:page-spread-*</code> spine override
+						<li>the <a href="#spread-placement"><code>rendition:page-spread-*</code> spine override
 								properties</a> are used to indicate a preference for how to place spine items in a
 							synthetic spread (on the right or left side of a two-page spread, or centered without a
 							spread).</li>
@@ -6140,27 +6141,23 @@ No Entry</pre>
 					particular viewport, this automatic population behavior MAY be overridden by specifying one of the
 					following properties on its spine <code>itemref</code> element:</p>
 
-				<dl>
-					<dt id="page-spread-center">
-						<code>rendition:page-spread-center</code>
-					</dt>
-					<dd>The <code>rendition:page-spread-center</code> property is an alias of the <a href="#spread-none"
-								><code>spread-none</code> property</a> for centering a spine item.</dd>
-
-					<dt id="fxl-page-spread-left">
-						<code>rendition:page-spread-left</code>
-					</dt>
-					<dd>The <code>rendition:page-spread-left</code> property is an alias of the <code><a
-								href="#page-spread-left">page-spread-left</a></code> property for placing a spine item
-						in the left-hand slot of a two-page spread.</dd>
-
-					<dt id="fxl-page-spread-right">
-						<code>rendition:page-spread-right</code>
-					</dt>
-					<dd>The <code>rendition:page-spread-right</code> property is an alias of the <code><a
-								href="#page-spread-right">page-spread-right</a></code> property for placing a spine item
-						in the right-hand slot of a two-page spread.</dd>
-				</dl>
+				<ul>
+					<li id="page-spread-center">
+						<a href="#page-spread-center">
+							<code>rendition:page-spread-center</code>
+						</a>
+					</li>
+					<li id="fxl-page-spread-left">
+						<a href="#page-spread-left">
+							<code>rendition:page-spread-left</code>
+						</a>
+					</li>
+					<li id="fxl-page-spread-right">
+						<a href="#page-spread-right">
+							<code>rendition:page-spread-right</code>
+						</a>
+					</li>
+				</ul>
 
 				<p>The <code>rendition:page-spread-center</code>, <code>rendition:page-spread-left</code>, and
 						<code>rendition:page-spread-right</code> properties apply to both pre-paginated and reflowable
@@ -6196,43 +6193,43 @@ No Entry</pre>
 						other (reflowable) parts has been left undefined, since the global value of
 							<code>rendition:spread</code> initializes to <code>auto</code> by default.</p>
 
-					<pre>&lt;package …&gt;
-…
-&lt;spine page-progression-direction="ltr"&gt;
-…
-&lt;itemref
-idref="center-plate-left"
-properties="rendition:spread-both rendition:page-spread-left"/&gt;
-&lt;itemref
-idref="center-plate-right"
-properties="rendition:spread-both rendition:page-spread-right"/&gt;
-…
-&lt;/spine&gt;
-&lt;/package&gt;</pre>
+					<pre>&lt;package …>
+   …
+   &lt;spine page-progression-direction="ltr">
+      …
+      &lt;itemref
+          idref="center-plate-left"
+          properties="rendition:spread-both rendition:page-spread-left"/>
+      &lt;itemref
+          idref="center-plate-right"
+          properties="rendition:spread-both rendition:page-spread-right"/>
+      …
+   &lt;/spine>
+&lt;/package></pre>
 				</aside>
 
 				<aside class="example" id="fxl-ex6" title="Creating a centered layout">
-					<pre>&lt;package …&gt;
-&lt;metadata …&gt;
-…
-&lt;meta
-property="rendition:layout"&gt;
-pre-paginated
-&lt;/meta&gt;
-&lt;meta
-property="rendition:spread"&gt;
-auto
-&lt;/meta&gt;
-&lt;/metadata&gt;
-&lt;spine&gt;
-…
-&lt;itemref
-idref="center-plate"
-properties="rendition:page-spread-center"/&gt;
-…
-&lt;/spine&gt;
-…
-&lt;/package&gt;</pre>
+					<pre>&lt;package …>
+   &lt;metadata …>
+      …
+      &lt;meta
+          property="rendition:layout">
+         pre-paginated
+      &lt;/meta>
+      &lt;meta
+          property="rendition:spread">
+         auto
+      &lt;/meta>
+   &lt;/metadata>
+   &lt;spine>
+      …
+      &lt;itemref
+          idref="center-plate"
+          properties="rendition:page-spread-center"/>
+      …
+   &lt;/spine>
+   …
+&lt;/package></pre>
 				</aside>
 			</section>
 		</section>
@@ -6625,9 +6622,11 @@ properties="rendition:page-spread-center"/&gt;
 					or losing all meaning. [=Fixed-layout documents=] give greater control over presentation when a
 					reflowable EPUB is not suitable for the content.</p>
 
-				<p>Fixed layouts are defined using a <a href="#sec-fxl-package">set of package document properties</a>
-					to control the presentation in [=reading systems=] while the <a href="#sec-content-dimensions"
-						>layout dimensions</a> are obtained from each respective [=EPUB content document=].</p>
+				<p>The <a href="#sec-content-dimensions">layout dimensions</a> of a fixed layout document are obtained
+					from each respective [=EPUB content document=]. How the documents are presented in a reading systems
+					depends on the <a href="#sec-layout">layout</a> used &#8212; they can be presented in a
+					pre-paginated fashion (one per viewport or synthetic spread) or can be presented as a roll. It is
+					also possible to override a reflowable layout to inject pre-paginated fixed layout documents.</p>
 
 				<div class="note" id="note-mechanisms">
 					<p>EPUB 3 supports multiple formats for representing fixed-layout content. When fixed-layout content
