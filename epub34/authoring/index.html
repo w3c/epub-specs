@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>EPUB 3.4</title>
-		<meta name="color-scheme" content="light dark" />
+		<!--<meta name="color-scheme" content="light dark" />-->
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
 		<script src="./biblio.js" class="remove"></script>
 		<script src="../../common/js/fix-errata.js" class="remove"></script>
@@ -161,6 +161,10 @@
 					through the content. Refer to <a href="#sec-package-doc"></a> for the requirements for the package
 					document.</p>
 
+				<p>EPUB publications by default are intended to reflow to fit the available screen space. It is also
+					possible to create publications that have pixel-precise fixed layouts using images and/or CSS
+					positioning. The metadata to control layouts are defined in <a href="#sec-layout"></a>.</p>
+
 				<p>The actual content of an EPUB publication — what users are presented with when they begin reading —
 					is built on the Open Web Platform and comes in two flavors: XHTML and SVG. Called [=EPUB content
 					documents=], these documents typically reference many additional resources necessary for their
@@ -175,11 +179,6 @@
 					content document=] which also allows for its use in the content (i.e., avoiding one table of
 					contents for machine processing and another for user consumption). Refer to <a href="#sec-nav"></a>
 					for more information about this document.</p>
-
-				<p>EPUB publications by default are intended to reflow to fit the available screen space. It is also
-					possible to create publications that have pixel-precise fixed layouts using images and/or CSS
-					positioning. The metadata to control layouts are defined in <a href="#sec-rendering-control"
-					></a>.</p>
 
 				<p>[=Media overlay documents=] complement EPUB content documents. They provide declarative markup for
 					synchronizing the text in EPUB content documents with prerecorded audio. The result is the ability
@@ -453,8 +452,8 @@
 					</dt>
 					<dd>
 						<p>An [=EPUB content document=] with fixed dimensions directly referenced from the [=EPUB spine
-							| spine=]. Fixed-layout documents are designated <code>pre-paginated</code> in the [=package
-							document=], as defined in <a href="#sec-fixed-layouts"></a>.</p>
+							| spine=]. Fixed-layout documents are displayed in either [=pre-paginated=] or [=roll=]
+							layouts.</p>
 					</dd>
 
 					<dt>
@@ -3924,7 +3923,7 @@
 						</li>
 						<li>
 							<p>to provide access to all rendering metadata needed to control the layout and display of
-								the content (e.g., <a href="#sec-fxl-package">fixed-layout properties</a>).</p>
+								the content (e.g., <a href="#app-rendering-vocab">package rendering properties</a>).</p>
 						</li>
 					</ol>
 
@@ -5829,6 +5828,410 @@ No Entry</pre>
 				</section>
 			</section>
 		</section>
+		<section id="sec-layout">
+			<h2>Layout</h2>
+
+			<section id="sec-general-rendering-intro" class="informative">
+				<h3>Introduction</h3>
+
+				<p>EPUB 3 offers three different layout options for [=EPUB content documents=]:</p>
+
+				<ul>
+					<li>
+						<a href="#sec-reflowable">reflowable</a>
+					</li>
+					<li>
+						<a href="#sec-reflowable">pre-paginated</a>
+					</li>
+					<li>
+						<a href="#sec-reflowable">roll</a>
+					</li>
+				</ul>
+
+				<p>Not all rendering information can be expressed through the underlying technologies that EPUB is built
+					upon. For example, although HTML with CSS provides powerful layout capabilities, those capabilities
+					are limited to the scope of the document being rendered.</p>
+
+				<p>This section defines properties that allow the expression of package-level rendering intentions
+					(i.e., functionality that can only be implemented by the [=EPUB reading system=]). If a reading
+					system supports the desired rendering, these properties enable the user to be presented the content
+					as it was optimally designed.</p>
+			</section>
+
+			<section id="sec-layout-types">
+				<h3>Layout types</h3>
+
+				<section id="sec-reflowable">
+					<h4>Reflowable layouts</h4>
+
+					<p>A reflowable layout is one where the contents of [=EPUB content documents=] are reflowed to fit
+						the available space in the [=reading system=] viewport. A reading system can then dynamically
+						paginate the content or provide it in a scrolled manner.</p>
+
+					<p>Reflowable layouts are the default for EPUB 3 and were historically the only way its predecessor
+						formats were laid out. Because they are the default, it is not required to declare any metadata
+						to state that an [=EPUB publication=] is intended to be reflowed. If an explicit declaration is
+						preferred, however, the <a href="#layout"><code>rendition:layout</code> property</a> MAY be set
+						in a <code>meta</code> element that specifies the value <dfn id="def-layout-reflowable"
+								><code>reflowable</code></dfn>.</p>
+
+					<aside class="example" title="Declaring an EPUB publication is reflowable">
+						<pre>&lt;package &#8230;>
+   &lt;metadata>
+      &lt;meta property="rendition:layout">reflowable&lt;/meta>
+      &#8230;
+   &lt;/metadata>
+   &#8230;
+&lt;/package></pre>
+					</aside>
+
+					<p>In addition to setting an entire EPUB publication as reflowable, it is possible to override a <a
+							href="#sec-pre-paginated">pre-paginated layout</a> to specify that some spine items are
+						reflowable. To do so, the <a href="#layout-reflowable"><code>rendition:layout-reflowable</code>
+							spine override</a> MUST be set in the <code>properties</code> attribute on each spine
+							<code>itemref</code> that is reflowable.</p>
+
+					<aside class="example" title="Reflowable document in a pre-paginated layout">
+						<pre>&lt;package &#8230;>
+   &lt;metadata>
+      &lt;meta property="rendition:layout">pre-paginated&lt;/meta>
+      &#8230;
+   &lt;/metadata>
+   &lt;manifest>
+      &lt;item id="reflow1" href="preface.html" media-type="application/xhtml+xml"/>
+   &lt;/manifest>
+   &lt;spine>
+   	&lt;itemref idref="reflow1" properties="rendition:layout-reflowable"/>
+   &lt;/spine>
+&lt;/package></pre>
+					</aside>
+
+					<div class="note">
+						<p><a href="#sec-roll">Roll layouts</a> do not support <a href="#layout-overrides">layout spine
+								overrides</a> so reflowable layouts cannot be similarly mixed with rolls.</p>
+					</div>
+
+					<p>The following properties from the <a href="#app-rendering-vocab">Package rendering vocabulary</a>
+						can be applied to reflowable spine items to further control their rendering:</p>
+
+					<ul>
+						<li>the <a href="#align-x-center"><code>rendition:align-x-center</code> spine override</a> is
+							used to indicate a preference for having the specified spine item's content be
+							center-aligned by reading systems.</li>
+					</ul>
+
+					<p>All other properties in the Package rendering vocabulary are ignored for reflowable spine
+						items.</p>
+
+					<p id="html-body-page-break-before">Note that when two reflowable EPUB content documents occur
+						sequentially in the spine, the default rendering for their [[!html]] <a
+							data-cite="html#the-body-element"><code>body</code></a> elements is consistent with the <a
+							href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
+								><code>page-break-before</code> property</a> [[!csssnapshot]] having been set to
+							<code>always</code>. This behavior MAY be overridden through an appropriate style sheet
+						declaration if the reading system supports such overrides.</p>
+				</section>
+
+				<section id="sec-pre-paginated">
+					<h4>Pre-paginated layouts</h4>
+
+					<div class="note">
+						<p>Pre-paginated layouts were commonly referred to as fixed layouts prior to the introduction of
+								<a href="#sec-roll">roll layouts</a>. As both layouts make use of [=fixed-layout
+							documents=], the term "fixed layout" is now used exclusively for describing EPUB content
+							documents with fixed dimensions, not for the layout type they appear in.</p>
+					</div>
+
+					<p>In a pre-paginated layout, each [=fixed-layout document=] referenced by a [=EPUB spine | spine=]
+						[^itemref^] represents one page of content. Reading systems are expected to scale the document
+						to fit the viewport or synthetic spread.</p>
+
+					<p>To declare that an EPUB publication uses a pre-paginated layout, the <a href="#layout"
+								><code>rendition:layout</code> property</a> MUST be declared in a <code>meta</code>
+						element that specifies the value <dfn id="def-layout-pre-paginated">pre-paginated</dfn>.</p>
+
+					<aside class="example" title="Declaring an EPUB publication is reflowable">
+						<pre>&lt;package &#8230;>
+   &lt;metadata>
+      &lt;meta property="rendition:layout">pre-paginated&lt;/meta>
+      &#8230;
+   &lt;/metadata>
+   &#8230;
+&lt;/package></pre>
+					</aside>
+
+
+					<p>In addition to setting an entire EPUB publication as pre-paginated, it is possible to override a
+							<a href="#sec-reflowable">reflowable layout</a> to specify that some spine items are
+						pre-paginated. To do so, the <a href="#layout-pre-paginated"
+								><code>rendition:layout-pre-paginated</code> spine override</a> MUST be set in the <a
+							href="#attrdef-properties"><code>properties</code> attribute</a> on each spine
+							<code>itemref</code> that is pre-paginated.</p>
+
+					<aside class="example" title="Pre-paginated document in a reflowable layout">
+						<pre>&lt;package &#8230;>
+   &lt;metadata>
+      &lt;meta property="rendition:layout">reflowable&lt;/meta>
+      &#8230;
+   &lt;/metadata>
+   &lt;manifest>
+      &lt;item id="fxl1" href="page1.html" media-type="application/xhtml+xml"/>
+   &lt;/manifest>
+   &lt;spine>
+   	&lt;itemref idref="fxl1" properties="rendition:layout-pre-paginated"/>
+   &lt;/spine>
+&lt;/package></pre>
+					</aside>
+
+					<div class="note">
+						<p><a href="#sec-roll">Roll layouts</a> do not support spine overrides so pre-paginated layouts
+							cannot be similarly mixed with rolls.</p>
+					</div>
+
+					<p id="fxl-layout-duplication" data-tests="#lay-fxl-layout-duplication">When the property is set to
+							<code>pre-paginated</code> for a spine item, the [^itemref^] element MUST reference a <a
+							href="#sec-fxl-docs">fixed layout document</a> or there MUST be one in the [=manifest
+						fallback chain=].</p>
+
+					<p>The following properties from the <a href="#app-rendering-vocab">Package rendering vocabulary</a>
+						can be applied to pre-paginated spine items to further control their rendering:</p>
+
+					<ul>
+						<li>the <a href="#spread-placement"><code>rendition:page-spread-*</code> spine override
+								properties</a> are used to indicate a preference for how to place spine items in a
+							synthetic spread (on the right or left side of a two-page spread, or centered without a
+							spread).</li>
+					</ul>
+
+					<p>All other properties in the Package rendering vocabulary are ignored for pre-paginated spine
+						items.</p>
+
+					<div class="note" id="uaag-fxl">
+						<p>Reading systems typically restrict or deny the application of user or user agent style sheets
+							to pre-paginated documents because dynamic style changes are likely to have unintended
+							consequence on the intrinsic properties of such documents. When choosing to use
+							pre-paginated content, it is advised to consider the negative impact on usability and
+							accessibility that these restrictions have. Refer to <a data-cite="UAAG20#gl-text-config"
+								>Guideline 1.4 - Provide text configuration</a> [[uaag20]] for related information.</p>
+					</div>
+
+					<aside class="example" id="fxl-ex1" title="Fixed Layout Document with media queries">
+						<p>In this example, the document's layout is set to <code>pre-paginated</code> (i.e., it is
+							defined to be a [=fixed-layout document=]). Furthermore, media queries [[mediaqueries-3]]
+							are used to apply different style sheets for three different device categories. Note that
+							the media queries only affect the style sheet applied to the document; the size of the
+							content area set in the <code>viewport meta</code> tag is static.</p>
+
+						<p>Package document:</p>
+
+						<pre>&lt;package …&gt;
+   &lt;metadata …&gt;
+      …
+      &lt;meta
+          property="rendition:layout"&gt;
+         pre-paginated
+      &lt;/meta&gt;
+      …
+   &lt;/metadata&gt;
+   …
+&lt;/package&gt;</pre>
+
+						<p>XHTML</p>
+
+						<pre>&lt;html …&gt;
+   &lt;head&gt;
+      &lt;meta
+          name="viewport"
+          content="width=1200,
+          height=900"/&gt;
+
+      &lt;link
+          rel="stylesheet"
+          href="eink-style.css"
+          media="(max-monochrome: 3)"/&gt;
+
+      &lt;link
+          rel="stylesheet"
+          href="skinnytablet-style.css"
+          media="((color) and (max-height:600px) and (orientation:landscape),
+                  (color) and (max-width:600px) and (orientation:portrait))"/&gt;
+
+      &lt;link
+          rel="stylesheet"
+          href="fattablet-style.css"
+          media="((color) and (min-height:601px) and (orientation:landscape),
+                  (color) and (min-width:601px) and (orientation:portrait))"/&gt;
+   &lt;/head&gt;
+   …
+&lt;/html&gt;</pre>
+					</aside>
+				</section>
+
+				<section id="sec-roll">
+					<h4>Roll layouts</h4>
+
+					<p id="property-layout-global">When the <a href="#layout"><code>rendition:layout</code> property</a>
+						is declared in a <code>meta</code> element with the value <dfn id="def-layout-roll">roll</dfn>,
+						it indicates that the content is a roll (i.e., reading systems fit the width of each [=EPUB
+						spine | spine=] [^itemref^] to the viewport and display them in a continuous roll with no
+						visible gap). The roll layout style applies globally (i.e., for all spine items) and cannot be
+						overridden.</p>
+
+					<p>When a <code>roll</code> layout is declared, each spine item MUST reference a [=fixed-layout
+						document=]. The dimensions of each document MUST be set as defined in <a
+							href="#sec-fxl-content-dimensions"></a>.</p>
+
+					<p>No other properties or spine overrides from the <a href="#app-rendering-vocab">Package rendering
+							vocabulary</a> can be used to control the rendering of roll layouts.</p>
+
+					<div class="note" id="uaag-roll">
+						<p>Reading systems typically restrict or deny the application of user or user agent style sheets
+							to roll documents because dynamic style changes are likely to have unintended consequence on
+							the intrinsic properties of such documents. When choosing to use a roll, it is advised to
+							consider the negative impact on usability and accessibility that these restrictions have.
+							Refer to <a data-cite="UAAG20#gl-text-config">Guideline 1.4 - Provide text configuration</a>
+							[[uaag20]] for related information.</p>
+					</div>
+
+					<aside class="example" id="roll-ex1" title="Roll layout">
+						<p>In this example, the EPUB publication's layout is set to <code>roll</code>.</p>
+
+						<p>Package document:</p>
+
+						<pre>&lt;package …&gt;
+   &lt;metadata …&gt;
+      …
+      &lt;meta property="rendition:layout"&gt;
+         roll
+      &lt;/meta&gt;
+      …
+   &lt;/metadata&gt;
+   …
+&lt;/package&gt;</pre>
+
+						<figure id="layout-roll-figure">
+							<figcaption> Rendering of three fixed-layout documents in a roll<br />
+								<span class="attribution">(Comics courtesy of <a href="https://xkcd.com/927/">xkcd</a>,
+									licensed under <a href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
+										2.5</a>.)</span>
+							</figcaption>
+							<img src="images/example_rendering_roll.svg" width="300" aria-details="layout-roll-diagram"
+								alt="Progression in a roll layout with a continuously scrolled reading experience." />
+						</figure>
+
+						<details id="layout-roll-diagram" class="desc">
+							<summary>Image description</summary>
+							<p>Three rectangles representing three resource in an EPUB document. Each resource is an
+								image tile where the tile fills the width of the schematic view of a tablet.</p>
+						</details>
+					</aside>
+				</section>
+			</section>
+
+			<section id="page-spread" data-epubcheck="true"
+				data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L166,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L171">
+				<h3>Synthetic spreads</h3>
+
+				<p>When a [=reading system=] renders a [=synthetic spread=], the default behavior is to populate the
+					spread by rendering the next [=EPUB content document=] in the next available unpopulated
+					[=viewport=], where the next available viewport is determined by the given <a
+						href="#attrdef-spine-page-progression-direction">page progression direction</a> or by local
+					declarations within [=EPUB content documents=]. To force reading systems to place a document in a
+					particular viewport, this automatic population behavior MAY be overridden by specifying one of the
+					following properties on its spine <code>itemref</code> element:</p>
+
+				<ul>
+					<li id="page-spread-center">
+						<a href="#page-spread-center">
+							<code>rendition:page-spread-center</code>
+						</a>
+					</li>
+					<li id="fxl-page-spread-left">
+						<a href="#page-spread-left">
+							<code>rendition:page-spread-left</code>
+						</a>
+					</li>
+					<li id="fxl-page-spread-right">
+						<a href="#page-spread-right">
+							<code>rendition:page-spread-right</code>
+						</a>
+					</li>
+				</ul>
+
+				<p>The <code>rendition:page-spread-center</code>, <code>rendition:page-spread-left</code>, and
+						<code>rendition:page-spread-right</code> properties apply to both pre-paginated and reflowable
+					content. They only apply when the reading system is creating synthetic spreads.</p>
+
+				<p>Although it is common practice to specify the use of a spread in certain device orientations, the
+					content itself does not represent a true spread &#8212; two consecutive pages that have to be
+					rendered side-by-side for readability, such as a two-page map. To indicate that two consecutive
+					pages represent a true spread, the <code>rendition:page-spread-left</code> and
+						<code>rendition:page-spread-right</code> properties SHOULD be set on the [=EPUB spine | spine=]
+					items for the two adjacent EPUB content documents, and the properties omitted on spine items where
+					one-up or two-up presentation is equally acceptable.</p>
+
+				<p>A spine item MUST NOT declare more than one <code>rendition:page-spread-*</code> property, and/or
+					their unprefixed equivalents (e.g., it is valid to specify both "<code>rendition:page-spread-left
+						page-spread-left</code>" in case reading systems only support one of properties).</p>
+
+				<div class="note" id="note-page-spread-aliases">
+					<p>The <code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
+						properties were created to allow the use of a single vocabulary for all fixed-layout properties.
+						Either property set can be used, but older reading systems might only recognize the unprefixed
+						versions.</p>
+
+					<p>The <code>rendition:page-spread-center</code> was created to make it easier to understand the
+						process of switching between two-page spreads and single centered pages. Either
+							<code>rendition:page-spread-center</code> or <code>spread-none</code> can be used to disable
+						spread behavior in reading systems.</p>
+				</div>
+
+				<aside class="example" id="fxl-ex5" title="Placing individual spine items in a spread">
+					<p>In this example, the intent is for the reading system to create a two-page fixed-layout center
+						plate using synthetic spreads in any device orientation. Note that the spread behavior for the
+						other (reflowable) parts has been left undefined, since the global value of
+							<code>rendition:spread</code> initializes to <code>auto</code> by default.</p>
+
+					<pre>&lt;package …>
+   …
+   &lt;spine page-progression-direction="ltr">
+      …
+      &lt;itemref
+          idref="center-plate-left"
+          properties="rendition:spread-both rendition:page-spread-left"/>
+      &lt;itemref
+          idref="center-plate-right"
+          properties="rendition:spread-both rendition:page-spread-right"/>
+      …
+   &lt;/spine>
+&lt;/package></pre>
+				</aside>
+
+				<aside class="example" id="fxl-ex6" title="Creating a centered layout">
+					<pre>&lt;package …>
+   &lt;metadata …>
+      …
+      &lt;meta
+          property="rendition:layout">
+         pre-paginated
+      &lt;/meta>
+      &lt;meta
+          property="rendition:spread">
+         auto
+      &lt;/meta>
+   &lt;/metadata>
+   &lt;spine>
+      …
+      &lt;itemref
+          idref="center-plate"
+          properties="rendition:page-spread-center"/>
+      …
+   &lt;/spine>
+   …
+&lt;/package></pre>
+				</aside>
+			</section>
+		</section>
 		<section id="sec-contentdocs">
 			<h2>EPUB content documents</h2>
 
@@ -5847,12 +6250,11 @@ No Entry</pre>
 						fallbacks in the [^spine^].</p>
 
 					<div class="note">
-						<p>EPUB 3 does not support the <a data-cite="html#syntax">HTML syntax</a> of [[html]]
-							as a core media type. Although both serializations allow the same elements to be expressed,
-							not all JavaScript libraries and APIs are designed to handle the XML syntax, in particular
-							the shadow DOM. This means, for example, that although the [^template^] element [[html]] can
-							be authored in the XML syntax it may not be usable in the same way as in the HTML
-							syntax.</p>
+						<p>EPUB 3 does not support the <a data-cite="html#syntax">HTML syntax</a> of [[html]] as a core
+							media type. Although both serializations allow the same elements to be expressed, not all
+							JavaScript libraries and APIs are designed to handle the XML syntax, in particular the
+							shadow DOM. This means, for example, that although the [^template^] element [[html]] can be
+							authored in the XML syntax it may not be usable in the same way as in the HTML syntax.</p>
 
 						<p>The Publishing Maintenance Working Group is aware that the HTML Standard no longer recommends
 							the use of the XML syntax. XML, however, is integral to many publishing workflows and
@@ -6199,6 +6601,133 @@ No Entry</pre>
 							</div>
 						</li>
 					</ul>
+				</section>
+			</section>
+
+			<section id="sec-fxl-docs">
+				<h3>Fixed-layout documents</h3>
+
+				<p>[=EPUB publications=], unlike print books or PDF files, are designed to change. The content flows, or
+					reflows, to fit the screen and to fit the needs of the user. As noted in <a
+						data-cite="epub-overview-34#sec-rendering">Rendering and CSS</a> "content presentation adapts to
+					the user, rather than the user having to adapt to a particular presentation of content."
+					[[epub-overview-34]]</p>
+
+				<p>But this principle does not work for all types of documents. Sometimes content and design are so
+					intertwined it is not possible to separate them. Any change in appearance risks changing the meaning
+					or losing all meaning. [=Fixed-layout documents=] give greater control over presentation when a
+					reflowable EPUB is not suitable for the content.</p>
+
+				<p>The <a href="#sec-fxl-content-dimensions">layout dimensions</a> of a fixed-layout document are
+					obtained from each respective [=EPUB content document=]. How the documents are presented in a
+					reading systems depends on the <a href="#sec-layout">layout</a> used &#8212; they can be presented
+					in a pre-paginated fashion (one per viewport or synthetic spread) or can be presented as a roll. It
+					is also possible to override a reflowable layout to inject pre-paginated fixed-layout documents.</p>
+
+				<p>Image formats beyond SVG are also sometimes used in the spine to represent fixed layouts,
+					particularly with <a href="#sec-roll">roll layouts</a> and to a lesser extent <a
+						href="#sec-pre-paginated">pre-paginated layouts</a>. Although these are not considered EPUB
+					content documents, and their use requires a fallback to one, they are considered fixed-layout
+					documents for the purpose of explaining the layouts they are used in.</p>
+
+				<div class="note" id="note-mechanisms">
+					<p>EPUB 3 supports multiple formats for representing fixed-layout content. When fixed-layout content
+						is necessary, the choice of format will depend on many factors including desired degree of
+						precision, file size, accessibility, etc. This document does not attempt to dictate the choice
+						of format.</p>
+
+					<p>The use of images in the spine, in particular, is known to be problematic both for distribution
+						and accessibility. Not all vendors accept EPUB publications with images in the spine, even when
+						fallbacks are provided, and reading systems do not always offer users the option to reach
+						fallbacks. Their use is only advised in specialized ecosystems, such as for comics and manga,
+						that support roll layouts.</p>
+				</div>
+
+				<section id="sec-fxl-content-dimensions" data-epubcheck="true"
+					data-tests="https://w3c.github.io/epub-structural-tests/#06-content-document_content-document-xhtml.feature_L457,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L212,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L217,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L222,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L227,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L233,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L239,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L245,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L251,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L257,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L263,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L269,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L275,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L283,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L297,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L303,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L309">
+					<h4>Fixed-layout document dimensions</h4>
+
+					<p>This section defines rules for the expression and interpretation of dimensional properties of
+						[=fixed-layout documents=].</p>
+
+					<p id="confreg-fxl-icb">Fixed-layout documents specify their <a
+							href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial containing
+							block</a> [[css2]] in the manner applicable to their format:</p>
+
+					<dl class="conformance-list" id="sec-fxl-html-svg-dimensions">
+						<dt id="sec-fxl-icb-html" data-tests="#lay-fxl-xhtml-icb,#lay-fxl-xhtml-icb_multi">Expressing in
+							XHTML</dt>
+						<dd>
+							<p>For XHTML [=fixed-layout documents=], the <a
+									href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
+									containing block</a> [[css2]] is obtained from the REQUIRED <code>height</code> and
+									<code>width</code> definitions in a <a href="#app-viewport-meta"><code>viewport
+										meta</code> tag</a>, where:</p>
+							<ul>
+								<li>the <code>height</code>
+									<a href="#viewport.ebnf.property">property</a> MUST have as its <a
+										href="#viewport.ebnf.value">value</a> a positive <a
+										data-cite="css2/syndata.html#numbers">number</a> [[css2]] or the keyword
+										<code>device-height</code>; and </li>
+								<li>the <code>width</code> property MUST have as its value a positive <a
+										data-cite="css2/syndata.html#numbers">number</a> [[css2]] or the keyword
+										<code>device-width</code>. </li>
+							</ul>
+							<p>The <code>device-width</code> and <code>device-height</code> values refer to 100% of the
+								width and height, respectively, of the reading system's [=viewport=].</p>
+							<p>The <code>height</code> and <code>width</code> definitions MUST be specified in the first
+									<code>viewport meta</code> tag in document order in the [[html]] <a
+									data-cite="html#the-head-element"><code>head</code></a> element. Reading systems
+								will ignore subsequent <code>viewport meta</code> tags.</p>
+							<p>EPUB creators MUST NOT specify more than one <code>height</code> or <code>width</code>
+								definition within a <code>viewport meta</code> tag.</p>
+							<aside class="example"
+								title="Specifying the initial containing block in a viewport meta tag">
+								<pre>&lt;html …&gt;
+   &lt;head&gt;
+      …
+      &lt;meta
+          name="viewport"
+          content="width=1200, height=600"/&gt;
+      …
+   &lt;/head&gt;
+   …
+&lt;/html&gt;</pre>
+							</aside>
+						</dd>
+
+						<dt id="sec-fxl-icb-svg" data-tests="#fxl-svg-icb_multi">Expressing in SVG</dt>
+						<dd>
+							<p>For SVG [=fixed-layout documents=], the initial containing block&#160;[[css2]] dimensions
+								MUST be expressed using the <a
+									href="https://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute"><code>viewBox</code>
+									attribute</a> [[svg]].</p>
+							<aside class="example"
+								title="Specifying the initial containing block in the viewBox attribute">
+								<p>In this example, the <code>viewBox</code> attribute sets the ICB to an aspect ratio
+									of 844 pixels wide by 1200 pixels high.</p>
+
+								<pre>&lt;svg xmlns="http://www.w3.org/2000/svg"
+	     version="1.1"
+	     viewBox="0 0 844 1200"&gt;
+	   …
+	&lt;/svg&gt;</pre>
+							</aside>
+						</dd>
+
+						<dt id="sec-fxl-icb-other">Expressing in other image formats</dt>
+						<dd>
+							<p>For non-SVG image formats referenced from the spine, the <a
+									href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
+									containing block</a> [[css2]] is obtained from the image's width and height
+								metadata. For information about how this metadata is stored, refer to the image format's
+								documentation.</p>
+						</dd>
+					</dl>
+
+					<p class="note"> The initial containing block definition affects only the document where it is
+						defined. The dimensions of the containing blocks in the other content documents within the same
+						publication may be different. </p>
 				</section>
 			</section>
 
@@ -7170,973 +7699,6 @@ No Entry</pre>
    &lt;/ol&gt;
 &lt;/nav&gt;</pre>
 				</aside>
-			</section>
-		</section>
-		<section id="sec-rendering-control">
-			<h2>Layout rendering control</h2>
-
-			<section id="sec-general-rendering-intro" class="informative">
-				<h3>Introduction</h3>
-
-				<p>Not all rendering information can be expressed through the underlying technologies that EPUB is built
-					upon. For example, although HTML with CSS provides powerful layout capabilities, those capabilities
-					are limited to the scope of the document being rendered.</p>
-
-				<p>This section defines properties that allow the expression of package-level rendering intentions
-					(i.e., functionality that can only be implemented by the [=EPUB reading system=]). If a reading
-					system supports the desired rendering, these properties enable the user to be presented the content
-					as it was optimally designed.</p>
-			</section>
-
-			<section id="sec-fixed-layouts">
-				<h3>Fixed layouts</h3>
-
-				<section id="fxl-intro" class="informative">
-					<h4>Introduction</h4>
-
-					<p>[=EPUB publications=], unlike print books or PDF files, are designed to change. The content
-						flows, or reflows, to fit the screen and to fit the needs of the user. As noted in <a
-							data-cite="epub-overview-34#sec-rendering">Rendering and CSS</a> "content presentation
-						adapts to the user, rather than the user having to adapt to a particular presentation of
-						content." [[epub-overview-34]]</p>
-
-					<p>But this principle does not work for all types of documents. Sometimes content and design are so
-						intertwined it is not possible to separate them. Any change in appearance risks changing the
-						meaning or losing all meaning. [=Fixed-layout documents=] give greater control over presentation
-						when a reflowable EPUB is not suitable for the content.</p>
-
-					<p>Fixed layouts are defined using a <a href="#sec-fxl-package">set of package document
-							properties</a> to control the presentation in [=reading systems=] while the <a
-							href="#sec-fxl-package">layout dimensions</a> are obtained from each respective [=EPUB
-						content document=].</p>
-
-					<div class="note" id="note-mechanisms">
-						<p>EPUB 3 affords multiple mechanisms for representing fixed-layout content. When fixed-layout
-							content is necessary, the choice of mechanism will depend on many factors including desired
-							degree of precision, file size, accessibility, etc. This section does not attempt to dictate
-							the choice of mechanism.</p>
-					</div>
-				</section>
-
-				<section id="sec-fxl-package">
-					<h4>Fixed-layout package settings</h4>
-
-					<section id="layout" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L22,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L27,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L36,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L43,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L50">
-						<h5>Layout</h5>
-
-						<p>The <code>rendition:layout</code> property specifies whether the content is reflowable or
-							pre-paginated.</p>
-
-						<p id="property-layout-global">When the <a href="#layout"><code>rendition:layout</code>
-								property</a> is specified on a <code>meta</code> element, it indicates that the
-							paginated or reflowable layout style applies globally (i.e., for all spine items).</p>
-
-						<p>The <code>rendition:layout</code> property MUST specify one of the following properties:</p>
-
-						<dl class="variablelist">
-							<dt id="def-layout-reflowable">reflowable</dt>
-							<dd>
-								<p>The content is not pre-paginated (i.e., [=reading systems=] apply dynamic pagination
-									when rendering). Default value.</p>
-							</dd>
-
-							<dt id="def-layout-pre-paginated">pre-paginated</dt>
-							<dd>
-								<p>The content is pre-paginated (i.e., reading systems produce exactly one page per
-									[=EPUB spine | spine=] [^itemref^] when rendering).</p>
-							</dd>
-						</dl>
-
-						<div class="note" id="uaag">
-							<p>Reading systems typically restrict or deny the application of user or user agent style
-								sheets to pre-paginated documents because dynamic style changes are likely to have
-								unintended consequence on the intrinsic properties of such documents. When choosing to
-								use pre-paginated instead of reflowable content, it is advised to consider the negative
-								impact on usability and accessibility that these restrictions have. Refer to <a
-									data-cite="UAAG20#gl-text-config">Guideline 1.4 - Provide text configuration</a>
-								[[uaag20]] for related information.</p>
-						</div>
-
-						<p id="fxl-layout-duplication" data-tests="#lay-fxl-layout-duplication">When the property is set
-							to <code>pre-paginated</code> for a spine item, its content dimensions MUST be set as
-							defined in <a href="#sec-fxl-content-dimensions"></a>.</p>
-
-						<p>The <code>rendition:layout</code> property MUST NOT be declared more than once. In addition,
-							the property MUST NOT be declared using the <a href="#attrdef-refines"><code>refines</code>
-								attribute</a>. Refer to <a href="#layout-overrides"></a> for setting the property for
-							individual [=EPUB content documents=].</p>
-
-						<aside class="example" id="fxl-ex1" title="Fixed Layout Document with media queries">
-							<p>In this example, the document's layout is set to <code>pre-paginated</code> (i.e., it is
-								defined to be a [=fixed-layout document=]). Furthermore, media queries
-								[[mediaqueries-3]] are used to apply different style sheets for three different device
-								categories. Note that the media queries only affect the style sheet applied to the
-								document; the size of the content area set in the <code>viewport meta</code> tag is
-								static.</p>
-
-							<p>Package document:</p>
-
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-      …
-   &lt;/metadata&gt;
-   …
-&lt;/package&gt;</pre>
-
-							<p>XHTML</p>
-
-							<pre>&lt;html …&gt;
-   &lt;head&gt;
-      &lt;meta
-          name="viewport"
-          content="width=1200,
-          height=900"/&gt;
-
-      &lt;link
-          rel="stylesheet"
-          href="eink-style.css"
-          media="(max-monochrome: 3)"/&gt;
-
-      &lt;link
-          rel="stylesheet"
-          href="skinnytablet-style.css"
-          media="((color) and (max-height:600px) and (orientation:landscape),
-                  (color) and (max-width:600px) and (orientation:portrait))"/&gt;
-
-      &lt;link
-          rel="stylesheet"
-          href="fattablet-style.css"
-          media="((color) and (min-height:601px) and (orientation:landscape),
-                  (color) and (min-width:601px) and (orientation:portrait))"/&gt;
-   &lt;/head&gt;
-   …
-&lt;/html&gt;</pre>
-						</aside>
-
-						<section id="layout-overrides" data-epubcheck="true"
-							data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L59,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L64">
-							<h6>Layout overrides</h6>
-
-							<p id="property-layout-local">The following properties MAY be declared on [=EPUB spine |
-								spine=] [^itemref^] elements to override the <a href="#property-layout-global">global
-									value</a>:</p>
-
-							<dl>
-								<dt id="layout-pre-paginated">rendition:layout-pre-paginated</dt>
-								<dd>Specifies that the given spine item is pre-paginated.</dd>
-
-								<dt id="layout-reflowable">rendition:layout-reflowable</dt>
-								<dd>Specifies that the given spine item is reflowable.</dd>
-							</dl>
-
-							<p>A spine item MUST NOT declare more than one of these overrides.</p>
-						</section>
-					</section>
-
-					<section id="orientation" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L74,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L79,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L86,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L93">
-						<h5>Orientation</h5>
-
-						<p>The <code>rendition:orientation</code> property specifies which orientation the [=EPUB
-							publication=] is intended to be rendered in. </p>
-
-						<p id="property-orientation-global">When the <a href="#orientation"
-									><code>rendition:orientation</code> property</a> is specified on a [^meta^] element,
-							it indicates that the intended orientation applies globally (i.e., for all [=EPUB spine |
-							spine=] items).</p>
-
-						<p>One of the following values MUST be used with the <code>rendition:orientation</code>
-							property:</p>
-
-						<dl class="variablelist">
-							<dt>landscape</dt>
-							<dd>
-								<p>Render the content in landscape orientation.</p>
-							</dd>
-
-							<dt>portrait</dt>
-							<dd>
-								<p>Render the content in portrait orientation.</p>
-							</dd>
-
-							<dt>auto</dt>
-							<dd>
-								<p>The content is not orientation constrained. Default value.</p>
-							</dd>
-						</dl>
-
-						<p id="fxl-orientation-duplication">The <code>rendition:orientation</code> property MUST NOT be
-							declared more than once. In addition, it MUST NOT be declared using the <a
-								href="#attrdef-refines"><code>refines</code> attribute</a>. Refer to <a
-								href="#orientation-overrides"></a> for setting the property for individual [=EPUB
-							content documents=].</p>
-
-						<aside class="example" id="fxl-ex2" title="Specifying global landscape orientation">
-							<p>In this example, items in the spine are to be rendered in landscape mode.</p>
-
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-
-      &lt;meta
-          property="rendition:orientation"&gt;
-         landscape
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-   …
-&lt;/package&gt;</pre>
-						</aside>
-
-						<section id="orientation-overrides" data-epubcheck="true"
-							data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L102,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L107">
-							<h6>Orientation overrides</h6>
-
-							<p id="property-orientation-local">The following properties MAY be specified on [=EPUB spine
-								| spine=] [^itemref^] elements to override the <a href="#property-orientation-global"
-									>global value</a>:</p>
-
-							<dl>
-								<dt id="orientation-auto">rendition:orientation-auto</dt>
-								<dd>The [=reading system=] determines the orientation to render the spine item in.</dd>
-
-								<dt id="orientation-landscape">rendition:orientation-landscape</dt>
-								<dd>Render the given spine item in landscape orientation.</dd>
-
-								<dt id="orientation-portrait">rendition:orientation-portrait</dt>
-								<dd>Render the given spine item in portrait orientation.</dd>
-							</dl>
-
-							<p>A spine item MUST NOT declare more than one of these overrides.</p>
-						</section>
-					</section>
-
-					<section id="spread" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L117,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L122,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L129,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L136,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L143,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L178">
-						<h5>Synthetic spreads</h5>
-
-						<p>The <code>rendition:spread</code> property specifies the intended [=reading system=]
-							synthetic spread behavior.</p>
-
-						<p id="property-spread-global">When the <code>rendition:spread</code> property is specified on a
-								<code>meta</code> element, it indicates that the intended [=synthetic spread=] behavior
-							applies globally (i.e., for all spine items).</p>
-
-						<p>One of the following values MUST be used with the <code>rendition:spread</code> property:</p>
-
-						<dl class="variablelist">
-							<dt>none</dt>
-							<dd>
-								<p>Do not incorporate spine items in a synthetic spread. Render the items in a single
-									[=viewport=] positioned at the center of the screen.</p>
-							</dd>
-
-							<dt>landscape</dt>
-							<dd>
-								<p>Render a synthetic spread for spine items only when the device is in landscape
-									orientation.</p>
-							</dd>
-
-							<dt>both</dt>
-							<dd>
-								<p>Render a synthetic spread regardless of device orientation.</p>
-							</dd>
-
-							<dt>auto</dt>
-							<dd>
-								<p>No synthetic spread behavior preference is defined. Default value.</p>
-							</dd>
-						</dl>
-
-						<p>The <code>rendition:spread</code> property MUST NOT be declared more than once. In addition,
-							it MUST NOT be declared using the <a href="#attrdef-refines"><code>refines</code>
-								attribute</a>. Refer to <a href="#spread-overrides"></a> for setting the property for
-							individual [=EPUB content documents=].</p>
-
-						<div class="note">
-							<p>When synthetic spreads are used in the context of [=XHTML content document | XHTML=] and
-								[=SVG content documents=], the dimensions given via the <a href="#sec-fxl-icb-html"
-										><code>viewport meta</code> element</a> and <a href="#sec-fxl-icb-svg"
-										><code>viewBox</code> attribute</a> represents the size of one page in the
-								spread, respectively.</p>
-						</div>
-
-						<div class="note">
-							<p>Refer to the [^spine^] element for information about declaration of global flow
-								directionality using the <code>page-progression-direction</code> attribute and that of
-								local page-progression-direction within content documents.</p>
-						</div>
-
-						<aside class="example" id="spread-none-example"
-							title="A fixed-layout EPUB publication without synthetic spread">
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-
-      &lt;meta
-          property="rendition:spread"&gt;
-         none
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-   …
-&lt;/package&gt;</pre>
-
-							<figure id="spread-none-figure">
-								<figcaption> Rendering of three fixed-layout documents without synthetic spread.
-										<br /><span class="attribution">(Comics courtesy of <a
-											href="https://xkcd.com/927/">xkcd</a>, licensed under <a
-											href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
-										2.5</a>.)</span>
-								</figcaption>
-								<img src="images/example_spread_none.svg" width="600" aria-details="spread-none-diagram"
-									alt="Progression of FXL pages both in portrait and in landscape modes, showing one page at a time everywhere"
-								 />
-							</figure>
-
-							<details id="spread-none-diagram" class="desc">
-								<summary>Image description</summary>
-								<p>Two rows of schematic views of tablets (three in each row). The tablets in the top
-									row are in portrait mode, and in landscape mode in the bottom one. The schematic
-									views of the tablets within a row are linked with left-to-right arrows.</p>
-								<p>In the tablets of each row the consecutive panels of a comics are displayed; the
-									panels are centered in their respective tablets.</p>
-							</details>
-						</aside>
-
-
-						<aside class="example" id="spread-landscape-example"
-							title="Specifying the usage of synthetic spreads in landscape orientation only">
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-
-      &lt;meta
-          property="rendition:spread"&gt;
-         landscape
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-   …
-&lt;/package&gt;</pre>
-
-
-							<figure id="spread-landscape-figure">
-								<figcaption> Rendering of three fixed-layout documents, with synthetic spread in
-									landscape orientation only. <br /><span class="attribution">(Comics courtesy of <a
-											href="https://xkcd.com/927/">xkcd</a>, licensed under <a
-											href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
-										2.5</a>.)</span>
-								</figcaption>
-								<img src="images/example_spread_landscape.svg" width="600"
-									aria-details="spread-landscape-diagram"
-									alt="Progression of FXL pages both in portrait and in landscape modes, showing one page at a time in portrait and using synthetic spread in landscape."
-								 />
-							</figure>
-
-							<details id="spread-landscape-diagram" class="desc">
-								<summary>Image description</summary>
-								<p>Two rows of schematic views of tablets (three in top row, and two in the bottom). The
-									tablets in the top row are in portrait mode, and in landscape mode in the bottom
-									one. The schematic views of the tablets within a row are linked with left-to-right
-									arrows.</p>
-								<p>In both rows three panels of a comics are displayed. In the top row the panels are
-									centered in their respective tablets. In the bottom row, the first tablet contains
-									the first and second panels of the comics side by side; the second tablet contains
-									the second and third panels of the comics side-by-side.</p>
-							</details>
-						</aside>
-
-
-						<aside class="example" id="spread-both-example"
-							title="Specifying to use synthetic spreads both in portrait and in landscape orientations">
-							<p>See also <a href="#spread-both-figure"></a>.</p>
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-
-      &lt;meta
-          property="rendition:spread"&gt;
-         both
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-   …
-&lt;/package&gt;</pre>
-
-							<figure id="spread-both-figure">
-								<figcaption> Rendering of three fixed-layout documents, with synthetic spread in both
-									portrait and landscape orientations. <br /><span class="attribution">(Comics
-										courtesy of <a href="https://xkcd.com/927/">xkcd</a>, licensed under <a
-											href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
-										2.5</a>.)</span>
-								</figcaption>
-								<img src="images/example_spread_both.svg" width="600" aria-details="spread-both-diagram"
-									alt="Progression of FXL pages both in portrait and in landscape modes, using synthetic spread in both cases."
-								 />
-							</figure>
-
-							<details id="spread-both-diagram" class="desc">
-								<summary>Image description</summary>
-								<p>Two rows of schematic views of tablets (two in each row). The tablets in the top row
-									are in portrait mode, and in landscape mode in the bottom one. The schematic views
-									of the tablets within a row are linked with left-to-right arrows.</p>
-								<p>In both rows three panels of a comics are displayed. The first tablet in a row
-									contains the first and second panels of the comics side by side; the second tablet
-									contains the second and third panels of the comics side-by-side.</p>
-							</details>
-						</aside>
-
-
-						<aside class="example" id="spread-both-with-intro-example"
-							title="Overriding the global spread behavior">
-							<p>In this example, the global reflowable setting is overridden in the spine for the
-								introductory page. The intention is for reading systems to render it as a reflowable
-								document.</p>
-
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-      &lt;meta
-          property="rendition:spread"&gt;
-         both
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-
-   &lt;spine&gt;
-      &lt;itemref
-          idref="introduction"
-          properties="rendition:layout-reflowable"/&gt;
-      …
-   &lt;/spine&gt;
-   …
-&lt;/package&gt;</pre>
-
-							<figure id="spread-both-with-intro-figure">
-								<figcaption>Rendering of an introduction document in reflowable layout, followed by
-									three fixed-layout documents with synthetic spread in portrait orientation.
-										<br /><span class="attribution">(Comics courtesy of <a
-											href="https://xkcd.com/927/">xkcd</a>, licensed under <a
-											href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
-										2.5</a>.)</span>
-								</figcaption>
-								<img src="images/example_spread_both_with_reflowable_intro.svg" width="600"
-									aria-details="spread-both-with-intro-diagram"
-									alt="Progression of FXL pages both in portrait using synthetic spread in both cases, preceded by an introduction with reflowable content."
-								 />
-							</figure>
-
-							<details id="spread-both-with-intro-diagram" class="desc">
-								<summary>Image description</summary>
-								<p>A row of schematic views of three tablets in portrait mode, and linked with
-									left-to-right arrows.</p>
-								<p>The first tablet views includes a single, column-like strip (i.e., a rectangle
-									without a bottom edge following beyond the bottom of the tablet) with a text flowing
-									down the strip, and starting with the word "Introduction". This is followed by two
-									schematic tablets with three panels of comics displayed. The first tablet in the row
-									contains the first and second panels of the comics side by side; the second tablet
-									contains the second and third panels of the comics side-by-side.</p>
-							</details>
-						</aside>
-
-						<section id="spread-overrides" data-epubcheck="true"
-							data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L151,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L156">
-							<h6>Synthetic spread overrides</h6>
-
-							<p id="property-spread-local">The following properties MAY be specified on [=EPUB spine |
-								spine=] [^itemref^] elements to override the <a href="#property-spread-global">global
-									value</a>:</p>
-
-							<dl>
-								<dt id="spread-auto">rendition:spread-auto</dt>
-								<dd>The [=reading system=] determines when to render a synthetic spread for the spine
-									item. </dd>
-
-								<dt id="spread-both">rendition:spread-both</dt>
-								<dd>Render a synthetic spread for the spine item in both portrait and landscape
-									orientations. </dd>
-
-								<dt id="spread-landscape">rendition:spread-landscape</dt>
-								<dd>Render a synthetic spread for the spine item only when in landscape
-									orientation.</dd>
-
-								<dt id="spread-none">rendition:spread-none</dt>
-								<dd>Do not render a synthetic spread for the spine item.</dd>
-							</dl>
-
-							<p>A spine item MUST NOT declare more than one of these overrides.</p>
-						</section>
-					</section>
-
-					<section id="page-spread" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L166,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L171">
-						<h5>Spread placement</h5>
-
-						<p>When a [=reading system=] renders a [=synthetic spread=], the default behavior is to populate
-							the spread by rendering the next [=EPUB content document=] in the next available unpopulated
-							[=viewport=], where the next available viewport is determined by the given <a
-								href="#attrdef-spine-page-progression-direction">page progression direction</a> or by
-							local declarations within [=EPUB content documents=]. To force reading systems to place a
-							document in a particular viewport, this automatic population behavior MAY be overridden by
-							specifying one of the following properties on its spine <code>itemref</code> element:</p>
-
-						<dl>
-							<dt id="page-spread-center">
-								<code>rendition:page-spread-center</code>
-							</dt>
-							<dd>The <code>rendition:page-spread-center</code> property is an alias of the <a
-									href="#spread-none"><code>spread-none</code> property</a> for centering a spine
-								item.</dd>
-
-							<dt id="fxl-page-spread-left">
-								<code>rendition:page-spread-left</code>
-							</dt>
-							<dd>The <code>rendition:page-spread-left</code> property is an alias of the <code><a
-										href="#page-spread-left">page-spread-left</a></code> property for placing a
-								spine item in the left-hand slot of a two-page spread.</dd>
-
-							<dt id="fxl-page-spread-right">
-								<code>rendition:page-spread-right</code>
-							</dt>
-							<dd>The <code>rendition:page-spread-right</code> property is an alias of the <code><a
-										href="#page-spread-right">page-spread-right</a></code> property for placing a
-								spine item in the right-hand slot of a two-page spread.</dd>
-						</dl>
-
-						<p>The <code>rendition:page-spread-center</code>, <code>rendition:page-spread-left</code>, and
-								<code>rendition:page-spread-right</code> properties apply to both pre-paginated and
-							reflowable content. They only apply when the reading system is creating synthetic
-							spreads.</p>
-
-						<p>Although it is common practice to specify the use of a spread in certain device orientations,
-							the content itself does not represent a true spread &#8212; two consecutive pages that have
-							to be rendered side-by-side for readability, such as a two-page map. To indicate that two
-							consecutive pages represent a true spread, the <code>rendition:page-spread-left</code> and
-								<code>rendition:page-spread-right</code> properties SHOULD be set on the [=EPUB spine |
-							spine=] items for the two adjacent EPUB content documents, and the properties omitted on
-							spine items where one-up or two-up presentation is equally acceptable.</p>
-
-						<p>A spine item MUST NOT declare more than one <code>rendition:page-spread-*</code> property,
-							and/or their unprefixed equivalents (e.g., it is valid to specify both
-								"<code>rendition:page-spread-left page-spread-left</code>" in case reading systems only
-							support one of properties).</p>
-
-						<div class="note" id="note-page-spread-aliases">
-							<p>The <code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
-								properties were created to allow the use of a single vocabulary for all fixed-layout
-								properties. Either property set can be used, but older reading systems might only
-								recognize the unprefixed versions.</p>
-
-							<p>The <code>rendition:page-spread-center</code> was created to make it easier to understand
-								the process of switching between two-page spreads and single centered pages. Either
-									<code>rendition:page-spread-center</code> or <code>spread-none</code> can be used to
-								disable spread behavior in reading systems.</p>
-						</div>
-
-						<aside class="example" id="spread-page-spread-right-example"
-							title="Starting the first document on the right">
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-          reflowable
-      &lt;/meta&gt;
-
-      &lt;meta
-          property="rendition:spread"&gt;
-          landscape
-      &lt;/meta&gt;
-      …
-   &lt;/metadata&gt;
-   &lt;spine page-progression-direction="ltr"&gt;
-      …
-      &lt;itemref
-          idref="first-panel"
-          properties="rendition:page-spread-right"/&gt;
-      …
-   &lt;/spine&gt;
-&lt;/package&gt;</pre>
-
-							<figure id="spread-page-spread-right-figure">
-								<figcaption>Rendering of three fixed-layout documents, with synthetic spread in
-									landscape orientation starting on the right. <br /><span class="attribution">(Comics
-										courtesy of <a href="https://xkcd.com/927/">xkcd</a>, licensed under <a
-											href="https://creativecommons.org/licenses/by-nc/2.5/">cc by-nc
-										2.5</a>.)</span>
-								</figcaption>
-								<img src="images/example_spread_page_spread_right.svg" width="600"
-									aria-details="spread-page-spread-right-diagram"
-									alt="Progression of FXL pages in landscape modes, showing synthetic spread in both cases but with the first page appearing on the right side of the first page."
-								 />
-							</figure>
-
-							<details id="spread-page-spread-right-diagram" class="desc">
-								<summary>Image description</summary>
-								<p>A row of schematic views of two tablets in landscape mode, and linked with a
-									left-to-right arrow.</p>
-								<p>Three panels of a comics are displayed in the tablets. The first tablet in the row
-									contains the first panels of the comics on the right hand of the tablet, with the
-									left side empty; the second tablet contains the second and third panels of the
-									comics side-by-side.</p>
-							</details>
-						</aside>
-
-						<aside class="example" id="fxl-ex5" title="Placing individual spine items in a spread">
-							<p>In this example, the intent is for the reading system to create a two-page fixed-layout
-								center plate using synthetic spreads in any device orientation. Note that the spread
-								behavior for the other (reflowable) parts has been left undefined, since the global
-								value of <code>rendition:spread</code> initializes to <code>auto</code> by default.</p>
-
-							<pre>&lt;package …&gt;
-   …
-   &lt;spine page-progression-direction="ltr"&gt;
-      …
-      &lt;itemref
-          idref="center-plate-left"
-          properties="rendition:spread-both rendition:page-spread-left"/&gt;
-      &lt;itemref
-          idref="center-plate-right"
-          properties="rendition:spread-both rendition:page-spread-right"/&gt;
-      …
-   &lt;/spine&gt;
-&lt;/package&gt;</pre>
-						</aside>
-
-						<aside class="example" id="fxl-ex6" title="Creating a centered layout">
-							<pre>&lt;package …&gt;
-   &lt;metadata …&gt;
-      …
-      &lt;meta
-          property="rendition:layout"&gt;
-         pre-paginated
-      &lt;/meta&gt;
-      &lt;meta
-          property="rendition:spread"&gt;
-         auto
-      &lt;/meta&gt;
-   &lt;/metadata&gt;
-   &lt;spine&gt;
-      …
-      &lt;itemref
-          idref="center-plate"
-          properties="rendition:page-spread-center"/&gt;
-      …
-   &lt;/spine&gt;
-   …
-&lt;/package&gt;</pre>
-						</aside>
-					</section>
-
-					<section id="sec-fxl-content-dimensions" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#06-content-document_content-document-xhtml.feature_L457,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L212,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L217,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L222,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L227,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L233,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L239,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L245,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L251,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L257,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L263,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L269,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L275,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L283,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L297,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L303,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L309">
-						<h4>Content document dimensions</h4>
-
-						<p>This section defines rules for the expression and interpretation of dimensional properties of
-							[=fixed-layout documents=].</p>
-
-						<p id="confreg-fxl-icb">Fixed-layout documents specify their <a
-								href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-								containing block</a> [[css2]] in the manner applicable to their format:</p>
-
-						<dl class="conformance-list" id="sec-fxl-html-svg-dimensions">
-							<dt id="sec-fxl-icb-html" data-tests="#lay-fxl-xhtml-icb,#lay-fxl-xhtml-icb_multi"
-								>Expressing in XHTML</dt>
-							<dd>
-								<p>For XHTML [=fixed-layout documents=], the <a
-										href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-										containing block</a> [[css2]] is obtained from the REQUIRED <code>height</code>
-									and <code>width</code> definitions in a <a href="#app-viewport-meta"><code>viewport
-											meta</code> tag</a>, where:</p>
-								<ul>
-									<li>the <code>height</code>
-										<a href="#viewport.ebnf.property">property</a> MUST have as its <a
-											href="#viewport.ebnf.value">value</a> a positive <a
-											data-cite="css2/syndata.html#numbers">number</a> [[css2]] or the keyword
-											<code>device-height</code>; and</li>
-									<li>the <code>width</code> property MUST have as its value a positive <a
-											data-cite="css2/syndata.html#numbers">number</a> [[css2]] or the keyword
-											<code>device-width</code>.</li>
-								</ul>
-								<p>The <code>device-width</code> and <code>device-height</code> values refer to the 100%
-									of the width and height, respectively, of the reading system's [=viewport=].</p>
-								<p>The <code>height</code> and <code>width</code> definitions MUST be specified in the
-									first <code>viewport meta</code> tag in document order in the [[html]] <a
-										data-cite="html#the-head-element"><code>head</code></a> element. Reading systems
-									will ignore subsequent <code>viewport meta</code> tags.</p>
-								<p>A <code>viewport meta</code> tag MUST NOT specify more than one <code>height</code>
-									or <code>width</code> definition.</p>
-								<aside class="example"
-									title="Specifying the initial containing block in a viewport meta tag">
-									<pre>&lt;html …&gt;
-   &lt;head&gt;
-      …
-      &lt;meta
-          name="viewport"
-          content="width=1200, height=600"/&gt;
-      …
-   &lt;/head&gt;
-   …
-&lt;/html&gt;</pre>
-								</aside>
-							</dd>
-
-							<dt id="sec-fxl-icb-svg" data-tests="#fxl-svg-icb_multi">Expressing in SVG</dt>
-							<dd>
-								<p>For SVG [=fixed-layout documents=], the initial containing block&#160;[[css2]]
-									dimensions MUST be expressed using the <a
-										href="https://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute"
-											><code>viewBox</code> attribute</a> [[svg]].</p>
-								<aside class="example"
-									title="Specifying the initial containing block in the viewBox attribute">
-									<p>In this example, the <code>viewBox</code> attribute sets the ICB to an aspect
-										ratio of 844 pixels wide by 1200 pixels high.</p>
-
-									<pre>&lt;svg xmlns="http://www.w3.org/2000/svg"
-     version="1.1"
-     viewBox="0 0 844 1200"&gt;
-   …
-&lt;/svg&gt;</pre>
-								</aside>
-							</dd>
-						</dl>
-
-						<p class="note"> The initial containing block definition affects only the document where it is
-							defined. The dimensions of the containing blocks in the other content documents within the
-							same publication can be different. </p>
-					</section>
-				</section>
-			</section>
-
-			<section id="sec-reflowable-layouts">
-				<h3>Reflowable layouts</h3>
-
-				<p>Although control over the rendering of [=EPUB content documents=] to create <a
-						href="#sec-fixed-layouts">fixed layouts</a> is an obvious need not handled by other
-					technologies, there are also considerations for reflowable content that are unique to [=EPUB
-					publications=] (e.g., how to handle the flow of content in the [=viewport=]). This section defines
-					properties that provide control over presentation aspects of reflowable content.</p>
-
-				<section id="flow" data-epubcheck="true"
-					data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L320,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L325,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L332,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L339">
-					<h4>The <code>rendition:flow</code> property</h4>
-
-					<p>The <code>rendition:flow</code> property specifies the preference for how [=reading systems=]
-						handle content overflow. </p>
-
-					<p id="property-flow-global">When the <a href="#flow"><code>rendition:flow</code> property</a> is
-						specified on a <code>meta</code> element, it indicates the preference for overflow content
-						handling (i.e., for all [=EPUB spine | spine=] items). Either dynamic pagination or scrolling
-						MAY be specified. For scrolled content, it is also possible to specify whether consecutive
-						[=EPUB content documents=] are to be rendered as a continuous scrolling view or whether each is
-						to be rendered separately (i.e., with a dynamic page break between each).</p>
-
-					<p>One of the following values MUST be used with the <code>rendition:flow</code> property:</p>
-
-					<dl class="variablelist">
-						<dt id="paginated">paginated</dt>
-						<dd id="paginated-dd" data-tests="#lay-pkg-flow-paginated">
-							<p>Dynamically paginate all overflow content.</p>
-						</dd>
-
-						<dt id="scrolled-continuous">scrolled-continuous</dt>
-						<dd id="scrolled-continuous-dd" data-tests="#lay-pkg-flow-scrolled-continuous">
-							<p>Render all EPUB content documents such that overflow content is scrollable, and the
-								[=EPUB publication=] is presented as one continuous scroll from spine item to spine item
-								(except where <a href="#flow-overrides">locally overridden</a>).</p>
-							<p>Resources SHOULD NOT have different block flow directions as it makes continuous scrolled
-								rendition in EPUB reading systems problematic.</p>
-						</dd>
-
-						<dt id="scrolled-doc">scrolled-doc</dt>
-						<dd id="scrolled-doc-dd" data-tests="#lay-pkg-flow-scrolled-doc">
-							<p>Render all EPUB content documents such that overflow content is scrollable, and each
-								spine item is presented as a separate scrollable document.</p>
-						</dd>
-
-						<dt id="auto">auto</dt>
-						<dd>
-							<p>Render overflow content using the reading system default method or a user preference,
-								whichever is applicable. Default value.</p>
-						</dd>
-					</dl>
-
-					<p id="html-body-page-break-before">Note that when two reflowable EPUB content documents occur
-						sequentially in the spine, the default rendering for their [[!html]] <a
-							data-cite="html#the-body-element"><code>body</code></a> elements is consistent with the <a
-							href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
-								><code>page-break-before</code> property</a> [[!csssnapshot]] having been set to
-							<code>always</code>. In addition to using the <code>rendition:flow</code> property, this
-						behavior MAY be overridden through an appropriate style sheet declaration if the reading system
-						supports such overrides.</p>
-
-					<p>The <code>rendition:flow</code> property MUST NOT be declared more than once. In addition, it
-						MUST NOT be declared using the <a href="#attrdef-refines"><code>refines</code> attribute</a>.
-						Refer to <a href="#flow-overrides"></a> for setting the property for individual EPUB content
-						documents.</p>
-
-					<figure id="fig-flow-paginated-single">
-						<figcaption>Rendering of an EPUB publication with a single spine item, and with the
-								<code>rendition:flow</code> set to <code>paginated</code>.</figcaption>
-						<img src="images/example_rendering_paginated_single_spine.svg" width="600"
-							aria-details="flow-paginated-single-diagram"
-							alt="The continuous progression of paginated content produced for a single document." />
-					</figure>
-
-					<details id="flow-paginated-single-diagram" class="desc">
-						<summary>Image description</summary>
-						<p>Three column-like rectangles linked left-to-middle and middle-to-right with respective
-							arrows, with a text flowing from one rectangle to the next one. The text is sectioned with
-							headers figuring 'Chapter 1', '2', and '3'. The leftmost rectangle is enclosed in a
-							schematic view of a tablet.</p>
-					</details>
-
-					<figure id="fig-flow-paginated-multiple">
-						<figcaption>Rendering of an EPUB publication with multiple spine items, and with the
-								<code>rendition:flow</code> set to <code>paginated</code>.</figcaption>
-						<img src="images/example_rendering_paginated_multiple_spine.svg" width="600"
-							aria-details="flow-paginated-multiple-diagram"
-							alt="The continuous progression of paginated content produced for each document with transitions to
-					new pages between documents." />
-					</figure>
-
-					<details id="flow-paginated-multiple-diagram" class="desc">
-						<summary>Image description</summary>
-						<p>Three column-like rectangles linked left-to-middle and middle-to-right with respective
-							arrows, with a text flowing from one rectangle to the next one. The text is sectioned with
-							headers figuring 'Chapter 1', '2'. The section with 'Chapter 2' starts at the top of the
-							rightmost rectangle, leaving an empty space at the bottom of the middle rectangle. The
-							leftmost rectangle is enclosed in a schematic view of a tablet.</p>
-					</details>
-
-					<figure id="fig-flow-scrolled-continuous">
-						<figcaption>Rendering of an EPUB publication with a single spine item, and with the
-								<code>rendition:flow</code> set to <code>scrolled-continuous</code>.</figcaption>
-						<img src="images/example_rendering_scrolled_continuous.svg" width="220"
-							aria-details="flow-scrolled-continuous-diagram"
-							alt="The progression of a continuous scroll of content extends vertically off the user's screen,
-					with new documents added to the bottom as encountered." />
-					</figure>
-
-					<details id="flow-scrolled-continuous-diagram" class="desc">
-						<summary>Image description</summary>
-						<p>A single, column-like strip (i.e., a rectangle without a bottom edge) with a text flowing
-							down the strip. The text is sectioned with headers figuring 'Chapter 1', '2'. The top part
-							of the strip is enclosed in a schematic view of a tablet.</p>
-					</details>
-
-					<figure id="fig-flow-scrolled-doc">
-						<figcaption>Rendering of an EPUB publication with multiple spine items, and with the
-								<code>rendition:flow</code> set to <code>scrolled-doc</code>.</figcaption>
-						<img src="images/example_rendering_scrolled_doc.svg" width="600"
-							aria-details="flow-scrolled-doc-diagram"
-							alt="The progression of scrollable documents depicting how only the content within each document
-					is scrollable." />
-					</figure>
-
-					<details id="flow-scrolled-doc-diagram" class="desc">
-						<summary>Image description</summary>
-						<p>Three column-like strips (i.e., a rectangles without bottom edges) linked left-to-middle and
-							middle-to-right with respective arrows, each containing a text flowing down the strip. The
-							text is sectioned with headers figuring 'Chapter 1', '2' and '3'. Each strip starts with a
-							chapter header and flows down the strip. The top part of the leftmost strip is enclosed in a
-							schematic view of a tablet.</p>
-					</details>
-
-					<section id="flow-overrides" data-epubcheck="true"
-						data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L348,https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L353">
-						<h5>Spine overrides</h5>
-
-						<p id="layout-property-flow-local">The following properties MAY be specified on [=EPUB spine |
-							spine=] [^itemref^] elements to override the <a href="#property-flow-global">global
-								value</a>:</p>
-
-						<dl>
-							<dt id="flow-auto">rendition:flow-auto</dt>
-							<dd>No preference for overflow content handling.</dd>
-
-							<dt id="flow-paginated">rendition:flow-paginated</dt>
-							<dd>Dynamically paginate content overflow.</dd>
-
-							<dt id="flow-scrolled-continuous">rendition:flow-scrolled-continuous</dt>
-							<dd>Provide a scrolled view for overflow content. Consecutive spine items with this property
-								are to be rendered as a continuous scroll.</dd>
-
-							<dt id="flow-scrolled-doc">rendition:flow-scrolled-doc</dt>
-							<dd>Provide a scrolled view for overflow content. Each spine item with this property is to
-								be rendered as a separate scrollable document.</dd>
-						</dl>
-
-						<p>A spine item MUST NOT declare more than one of these overrides.</p>
-
-						<aside class="example" id="property-flow-ex1"
-							title="Overriding a global paginated flow declaration">
-							<p>In this example, the intent is to have a paginated [=EPUB publication=] with a scrollable
-								table of contents.</p>
-							<pre>&lt;package …&gt;
-&lt;metadata …&gt;
-	…
-	&lt;meta
-		property="rendition:flow"&gt;
-		paginated
-	&lt;/meta&gt;
-	…
-&lt;/metadata&gt;
-
-…
-
-&lt;spine&gt;
-	&lt;itemref
-		idref="toc"
-		properties="rendition:flow-scrolled-doc"/&gt;
-	&lt;itemref
-		idref="c01"/&gt;
-&lt;/spine&gt;
-&lt;/package&gt;</pre>
-						</aside>
-					</section>
-				</section>
-
-				<section id="align-x-center">
-					<h4>The <code>rendition:align-x-center</code> property</h4>
-
-					<p>The <code>rendition:align-x-center</code> property specifies to center the given [=EPUB spine |
-						spine=] horizontally in the [=viewport=] or spread.</p>
-
-					<p>The property MUST NOT be set globally for all [=EPUB content documents=] (i.e., in a [^meta^]
-						element without a <a href="#attrdef-refines"><code>refines</code> attribute</a>). It is only
-						available as a spine override for individual EPUB content documents via the [^itemref^]
-						element's <code>properties</code> attribute.</p>
-
-					<div class="note">
-						<p>This property was developed primarily to handle "Naka-Tobira (中扉)" (sectional title pages),
-							in the absence of reliable centering control within the content rendering. As support for
-							paged media evolves in CSS, this property is expected to be deprecated. The use of CSS
-							solutions is encouraged when effective.</p>
-					</div>
-				</section>
 			</section>
 		</section>
 		<section id="sec-media-overlays">
@@ -10910,6 +10472,29 @@ EPUB/images/cover.png</pre>
 						</div>
 					</dd>
 
+					<dt>Package rendering vocabulary</dt>
+					<dd>
+						<ul>
+							<li>
+								<p><a data-cite="epub-33#orientation"><code>rendition:orientation</code> property</a>
+									and its <a data-cite="epub-33#orientation-overrides">spine overrides</a>
+									[[epub-33]]</p>
+							</li>
+							<li>
+								<p><a href="https://idpf.org/epub/301/spec/epub-publications.html#fxl-property-spread"
+											><code>rendition:spread</code> property with the value
+										<code>portrait</code></a> [[epubpublications-301]] &#8212; use the value
+										"<code>both</code>" instead.</p>
+							</li>
+							<li>
+								<p id="spread-portrait"><a
+										href="https://idpf.org/epub/301/spec/epub-publications-20140626.html#spread-portrait"
+											><code>spread-portrait</code> property</a> [[epubpublications-301]] &#8212;
+									use the property "<code>rendition:spread-both</code>" instead.</p>
+							</li>
+						</ul>
+					</dd>
+
 					<dt id="css-prefixes">Prefixed CSS properties</dt>
 					<dd>
 						<ul>
@@ -11011,31 +10596,6 @@ EPUB/images/cover.png</pre>
 						</ul>
 					</dd>
 
-					<dt>Fixed layouts</dt>
-					<dd>
-						<ul>
-							<li>
-								<p><a href="https://idpf.org/epub/301/spec/epub-publications.html#fxl-property-spread"
-											><code>rendition:spread</code> property with the value
-										<code>portrait</code></a> [[epubpublications-301]] &#8212; use the value
-										"<code>both</code>" instead.</p>
-							</li>
-							<li>
-								<p id="spread-portrait"><a
-										href="https://idpf.org/epub/301/spec/epub-publications-20140626.html#spread-portrait"
-											><code>spread-portrait</code> property</a> [[epubpublications-301]] &#8212;
-									use the property "<code>rendition:spread-both</code>" instead.</p>
-							</li>
-							<li>
-								<p id="viewport" data-epubcheck="true"
-									data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L187"
-										><a
-										href="https://idpf.org/epub/301/spec/epub-publications-20140626.html#fxl-property-viewport"
-											><code>rendition:viewport</code> property</a> [[epubpublications-301]]</p>
-							</li>
-						</ul>
-					</dd>
-
 					<dt>Vocabulary association mechanisms</dt>
 					<dd>
 						<ul>
@@ -11101,6 +10661,19 @@ EPUB/images/cover.png</pre>
 								<p id="sec-xmp-record"><a
 										href="https://idpf.org/epub/30/spec/epub30-publications-20111011.html#xmp-record"
 											><code>xmp-record</code> property</a> [[!epubpublications-30]]</p>
+							</li>
+						</ul>
+					</dd>
+
+					<dt>Package rendering vocabulary</dt>
+					<dd>
+						<ul>
+							<li>
+								<p id="viewport" data-epubcheck="true"
+									data-tests="https://w3c.github.io/epub-structural-tests/#08-layout_layout.feature_L187"
+										><a
+										href="https://idpf.org/epub/301/spec/epub-publications-20140626.html#fxl-property-viewport"
+											><code>rendition:viewport</code> property</a> [[epubpublications-301]]</p>
 							</li>
 						</ul>
 					</dd>
@@ -11465,6 +11038,10 @@ EPUB/images/cover.png</pre>
 			<details id="changes-epub-33" open="open">
 				<summary>Substantive changes since <a href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a></summary>
 				<ul>
+					<li>8-Dec-2025: Deprecated the <code>rendition:orientation</code> property, as well as its override
+						equivalents. See <a href="https://github.com/w3c/epub-specs/issues/2751">issue 2751</a>, and the
+						related <a href="https://w3c.github.io/pm-wg/minutes/2025-11-10-f2f.html#3397">Working Group
+							resolution</a>.</li>
 					<li>11-Nov-2025: Removed support for the HTML syntax.</li>
 					<li>10-Oct-2025: Added caution that SHA-1 is being phased out so other methods of protecting fonts
 						than the font obfuscation are advised. See <a

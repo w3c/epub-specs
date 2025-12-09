@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>EPUB Reading Systems 3.4</title>
-		<meta name="color-scheme" content="light dark" />
+		<!--<meta name="color-scheme" content="light dark" />-->
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
 		<script src="../../common/js/fix-errata.js" class="remove"></script>
 		<script src="../../common/js/css-inline.js" class="remove"></script>
@@ -1020,6 +1020,250 @@
 						version of EPUB</a> [[epub-34]].</p>
 			</section>
 		</section>
+		<section id="sec-rendering-control">
+			<h2>Layout processing</h2>
+
+			<section id="sec-layout-types">
+				<h3>Layout types</h3>
+
+				<section id="sec-reflowable-layouts">
+					<h4>Reflowable layouts</h4>
+
+					<p class="support">Reading systems MUST support reflowable layouts.</p>
+
+					<p id="layout-default" data-cite="epub-34" data-tests="#lay-fxl-layout-default"> The default value
+							<code>reflowable</code> MUST be assumed by EPUB reading systems as the global value if no
+						[^meta^] element carrying the <a data-cite="epub-34#layout"><code>rendition:layout</code>
+							property</a> occurs in the <a data-cite="epub-34#elemdef-opf-metadata">package document
+							metadata</a> [[epub-34]].</p>
+
+					<p>Reading systems MAY apply dynamic pagination when rendering.</p>
+					
+
+					<section id="sec-reflowable-layout-properties">
+						<h3>Reflowable layout control</h3>
+						
+						<section id="flow">
+							<h4>The <code>rendition:flow</code> property</h4>
+							
+							<p>If a reading system supports the specified rendering, it SHOULD use that method to handle
+								overflow content, but MAY provide the option for users to override the requested rendering.</p>
+							
+							<p>The default global value is <code>auto</code> if no <code>meta</code> element carrying this
+								property occurs in the <a data-cite="epub-34#elemdef-opf-metadata"><code>metadata</code>
+									section</a> [[epub-34]]. Reading systems MAY support only this default value.</p>
+							
+							<p>The <code>rendition:flow</code> property values have the following processing requirements:</p>
+							
+							<dl class="variablelist">
+								<dt id="paginated">paginated</dt>
+								<dd id="paginated-dd" data-tests="#lay-pkg-flow-paginated">
+									<p>The reading system SHOULD dynamically paginate all overflow content.</p>
+								</dd>
+								
+								<dt id="scrolled-continuous">scrolled-continuous</dt>
+								<dd id="scrolled-continuous-dd" data-tests="#lay-pkg-flow-scrolled-continuous">
+									<p>The reading system SHOULD render all [=EPUB content documents=] such that overflow
+										content is scrollable, and SHOULD present the [=EPUB publication=] as one continuous
+										scroll from spine item to spine item (except where <a data-cite="epub-34#flow-overrides"
+											>locally overridden</a> [[epub-34]]).</p>
+								</dd>
+								
+								<dt id="scrolled-doc">scrolled-doc</dt>
+								<dd id="scrolled-doc-dd" data-tests="#lay-pkg-flow-scrolled-doc">
+									<p>The reading system SHOULD render all EPUB content documents such that users can scroll
+										overflow content, and SHOULD present each spine item as a separate scrollable
+										document.</p>
+								</dd>
+								
+								<dt id="auto">auto</dt>
+								<dd>
+									<p>The reading system MAY render overflow content using its default method or a user
+										preference, whichever is applicable.</p>
+								</dd>
+							</dl>
+							
+							<p>For the <code>rendition:flow-scrolled-continuous</code> property, the scroll direction MUST be
+								defined relative to the block flow direction of the root element of the [=XHTML content
+								document=] referenced by the [^itemref^] element [[epub-34]]. The scroll direction MUST be
+								vertical if the block flow direction is downward (top-to-bottom). It MUST be horizontal if the
+								block flow direction of the root element is rightward (left-to-right) or leftward
+								(right-to-left).</p>
+							
+							<p>Reading systems MUST ignore the <code>rendition:flow</code> property and its overrides when
+								processing <a data-cite="epub-34#def-layout-pre-paginated">pre-paginated spine items</a>
+								[[epub-34]].</p>
+							
+							<p class="note">Reading system developers could decide to disregard this restriction and accept the
+								<code>scrolled-continuous</code> value of <code>rendition:flow</code> as a switch to display
+								each pre-paginated spine item on a long, vertical strip (making it is easier to read on a
+								smartphone or computer). This type of presentation is often referred to as <a
+									href="https://medium.com/mrcomics/what-is-webtoon-4926929b20d8">"webtoons"</a>. Some
+								publishers already use this possibility. After some further experimentation and incubation, a
+								future version of this specification could introduce this approach as a standard feature for
+								fixed-layout documents. See also the (deferred) github <a
+									href="https://github.com/w3c/epub-specs/issues/2412">issue 2412</a>. </p>
+						</section>
+						
+						<section id="align-x-center">
+							<h4>The <code>rendition:align-x-center</code> property</h4>
+							
+							<p>When the <a href="#align-x-center"><code>rendition:align-x-center</code> property</a> is set on a
+								spine item, reading systems SHOULD render the content centered horizontally within the
+								[=viewport=] or spread, as applicable. This property does not affect the rendering of the spine
+								item, only the placement of the resulting content box.</p>
+							
+							<p id="reflow-align-x-center" data-tests="#lay-reflow-align-x-center">For reflowable content,
+								reading systems that support this property MUST center each virtual page.</p>
+							
+							<p>This specification does not define a default rendering behavior when reading systems do not
+								support this property or it is not set in an [=EPUB publication=]. Reading systems MAY render
+								spine items by their own design.</p>
+						</section>
+					</section>
+				</section>
+
+				<section id="sec-pre-paginated-layouts" data-tests="#lay-fxl-layout-pre-paginated">
+					<h4>Pre-paginated layouts</h4>
+
+					<p class="support">[=Reading systems=] MUST support pre-paginated layouts.</p>
+					
+					<p id="def-layout-pre-paginated" data-tests="#lay-fxl-layout-pre-paginated">Reading systems MUST
+						produce exactly one page per spine [^itemref^] [[epub-34]] when rendering.</p>
+					
+					<p id="layout-pre-paginated" data-tests="#lay-fxl-layout-pre-paginated-spreads">When the
+							<code>rendition:layout</code> property is set to <code>pre-paginated</code>, reading systems
+						MUST NOT include space between the adjacent content slots when rendering [=synthetic
+						spreads=].</p>
+
+					<p>When rendering [=fixed-layout documents=], the default intent is that the [=content display
+						area=] SHOULD occupy as much of the available [=viewport=] area as possible. Reading systems
+						SHOULD NOT inject additional content such as border, margins, headers, or footers into the
+						viewport.</p>
+
+					<div class="note">
+						<p>This specification does not define how the <a
+								href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
+								containing block</a> [[css2]] is placed within the reading system <a>content display
+								area</a>.</p>
+					</div>
+
+					<div class="note">
+						<p>The exposure of reading system control widgets to the user is implementation-specific and not
+							included in the above behavioral expectations.</p>
+					</div>
+				</section>
+
+				<section id="sec-roll-layouts">
+					<h4>Roll layouts</h4>
+
+					<div class="ednote">
+						<p>Roll layout requirements for reading systems are still to be finalized.</p>
+					</div>
+					
+					<p class="support">[=Reading systems=] SHOULD support the rendering of roll layouts.</p>
+					
+					<p>For <a data-cite="epub-34#layout-roll">roll layouts</a> [[epub-34]], reading systems MUST fit the
+						width of each [=EPUB spine | spine=] [^itemref^] to the viewport and display them in a
+						continuous roll with no visible gap.</p>
+
+					<p>Reading systems MUST ignore any <a data-cite="epub-34#layout-overrides">layout overrides</a>
+						[[epub-34]] when an EPUB publication specifies to use a roll layout.</p>
+				</section>
+			</section>
+
+			<section id="sec-synthetic-spreads">
+				<h3>Synthetic spreads</h3>
+
+				<section id="spread">
+					<h5>The <code>rendition:spread</code> property</h5>
+
+					<p id="fxl-spread-default" data-tests="#lay-fxl-spread-default" data-cite="epub-34">Reading Systems
+						MUSt assume the default value <code>auto</code> as the global value if no [^meta^] element
+						carrying the <a data-cite="epub-34#spread"><code>rendition:spread</code></a> property occurs in
+						the <a data-cite="epub-34#elemdef-opf-metadata">package document metadata</a> [[epub-34]].</p>
+
+					<p>The <code>rendition:spread</code> property values have the following processing requirements:</p>
+
+					<dl class="variablelist">
+						<dt id="def-spread-none" data-tests="#lay-fxl-spread-none">none</dt>
+						<dd>
+							<p>Reading systems MUST NOT incorporate spine items in a [=synthetic spread=]. Reading
+								systems SHOULD create a single [=viewport=] positioned at the center of the screen.</p>
+						</dd>
+						<dt id="def-spread-landscape" data-tests="#lay-fxl-spread-landscape">landscape</dt>
+						<dd>
+							<p>Reading systems SHOULD render a synthetic spread for spine items only when the device is
+								in landscape orientation.</p>
+						</dd>
+						<dt id="def-spread-both" data-tests="#lay-fxl-spread-both">both</dt>
+						<dd>
+							<p>Reading systems SHOULD render a synthetic spread regardless of device orientation.</p>
+						</dd>
+						<dt id="def-spread-auto" data-tests="#lay-fxl-spread-auto">auto</dt>
+						<dd>
+							<p>Reading systems MAY use synthetic spreads in specific or all device orientations as part
+								of a [=content display area=] utilization optimization process.</p>
+						</dd>
+					</dl>
+				</section>
+
+				<section id="page-spread">
+					<h4>The <code>rendition:page-spread-*</code> properties</h4>
+
+					<p>
+						<span id="page-spread-left" data-tests="#lay-fxl-page-spread-left">The <a
+								data-cite="epub-34#fxl-page-spread-left"><code>rendition:page-spread-left</code>
+								property</a> [[epub-34]] indicates that the given spine item SHOULD be rendered in the
+							left-hand slot of a spread.</span>
+						<span id="page-spread-right" data-tests="#lay-fxl-page-spread-right">The <a
+								data-cite="epub-34#fxl-page-spread-right"><code>rendition:page-spread-right</code>
+								property</a> [[epub-34]] indicates that the given spine item SHOULD be rendered in the
+							right-hand slot of a spread.</span>
+					</p>
+
+					<p>The <code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
+						properties apply to both pre-paginated and reflowable content, and they only apply when the
+						reading system is creating [=synthetic spreads=].</p>
+
+					<p id="page-break-precedence" data-tests="#lay-rendition-flow-pre-pag">The
+							<code>rendition:page-spread-*</code> properties MUST take precedence over whatever value of
+						the <a href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
+								><code>page-break-before</code> property</a> [[csssnapshot]] has been set for an [=XHTML
+						content document=].</p>
+
+					<p id="page-layout-both" data-tests="#lay-page-layout-both">When a <a href="#def-layout-reflowable"
+							>reflowable</a> spine item follows a <a href="#def-layout-pre-paginated">pre-paginated</a>
+						one, the reflowable one SHOULD start on the next page &#8212; as defined by the <a
+							data-cite="epub-34#attrdef-spine-page-progression-direction"
+								><code>page-progression-direction</code> attribute</a> [[epub-34]] &#8212; when it lacks
+						a <code>rendition:page-spread-*</code> property value.</p>
+
+					<p id="page-spread-flow" data-tests="#lay-page-layout-both-spread">Reading systems MUST honor
+							<code>rendition:page-spread-*</code> properties on both reflowable and pre-paginated spine
+						items (e.g., by inserting a blank page).</p>
+
+					<p id="page-spread-both-pre-pag" data-tests="#lay-page-layout-both-spread">When a pre-paginated
+						spine item follows a reflowable one, the pre-paginated one SHOULD start on the next page (as
+						defined by the <code>page-progression-direction</code> attribute) when it lacks a
+							<code>rendition:page-spread-*</code> property value.</p>
+
+					<p id="fxl-page-spread-combined" data-tests="#lay-fxl-page-spread-combined">When a reading system
+						encounters two spine items that represent a true spread (i.e., two adjacent spine items with the
+							<code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
+						properties), it SHOULD create the spread with no space between the adjacent pages.</p>
+				</section>
+			</section>
+
+			<section id="sec-custom-properties">
+				<h3>Custom properties</h3>
+
+				<p>[=Reading systems=] MAY support custom properties provided they do not introduce expressions that
+					conflict behaviorally with the properties defined in the <a data-cite="epub-34#app-rendering-vocab"
+						>Package rendering vocabulary</a> [[epub-34]].</p>
+			</section>
+		</section>
+
 		<section id="sec-contentdocs">
 			<h2>EPUB content document processing</h2>
 
@@ -1176,6 +1420,99 @@
 						</p>
 					</li>
 				</ul>
+			</section>
+
+			<section id="sec-fxl">
+				<h3>Fixed-layout documents</h3>
+
+				<p id="confreq-rs-epub3-fxl" data-tests="#lay-fxl-spread-none" class="support">[=Reading systems=] MUST
+					support the rendering of XHTML and SVG <a data-cite="epub-34#sec-fixed-layouts">fixed-layout
+						documents</a> in <a data-cite="epub-34#layout-pre-paginated">pre-paginated</a> and, when
+					supported, <a data-cite="epub-34#layout-roll">roll</a> layouts [[epub-34]]. Support for other
+					fixed-layout image formats in the spine is OPTIONAL.</p>
+
+				<section id="sec-fxl-dimensions">
+					<h4>Initial containing block dimensions</h4>
+
+					<dl>
+						<dt>XHTML</dt>
+						<dd>
+							<p>
+								<span id="confreq-fxl-rs-xhtml-icb-def">Reading systems MUST create the initial
+									containing block (ICB) using the width and height expressions declared in the
+										<code>viewport meta</code> tag for [=XHTML content documents=], as defined in <a
+										data-cite="epub-34#sec-fxl-icb-html">Expressing in HTML</a> [[epub-34]].</span>
+								<span id="confreq-fxl-rs-xhtml-icb"
+									data-tests="#lay-fxl-xhtml-icb,#lay-fxl-xhtml-icb_multi">They MUST clip content
+									positioned outside of the ICB.</span>
+							</p>
+							<p id="confreq-fxl-rs-xhtml-icb-units" data-tests="#lay-fxl-xhtml-icb_units">If the width or
+								height values in the <code>viewport meta</code> tag contain a non-numeric character but
+								start with a number (e.g., the value includes a unit of length declaration such as
+								"500px"), the number prefix SHOULD be used as the pixel value, otherwise the value MUST
+								be treated as invalid.</p>
+							<p id="confreq-fxl-rs-xhtml-icb_invalid_meta" data-tests="#lay-fxl-xhtml-icb_invalid_meta">
+								Reading systems SHOULD attempt to extract <code>width</code> and <code>height</code>
+								values from a <code>viewport meta</code> tag even if its syntax is invalid. </p>
+							<p id="confreq-fxl-rs-xhtml-icb_repeated-in-meta"
+								data-tests="#lay-fxl-xhtml-icb_repeated-in-meta"> Reading systems MUST use the first
+								declaration of a <code>width</code> and <code>height</code> property in a <code>viewport
+									meta</code> tag (i.e., ignore repeated declarations). </p>
+							<p> If the <code>viewport meta</code> does not contain a width or a height value, or if
+								these values are invalid, reading systems MAY supply the values. For example, a reading
+								system might:</p>
+							<ul>
+								<li>consider these as having the values <code>device-width</code> and
+										<code>device-height</code>, respectively; or</li>
+								<li>look for the previous content document in the [=spine=], if applicable, and use the
+									ICB value defined there; or</li>
+								<li>consider the content document as erroneous XHTML content altogether.</li>
+							</ul>
+							<p id="confreq-fxl-rs-xhtml-multiple-icb-def"
+								data-tests="#lay-fxl-xhtml-icb_multi_declarations">If an XHTML content document contains
+								more than one <code>viewport meta</code> tags, reading systems MUST use the first in
+								document order to obtain the height and width dimensions. Subsequent declarations MUST
+								be ignored.</p>
+							<p id="confreq-fxl-rs-xhtml-icb-ratio">When the ICB aspect ratio does not match the aspect
+								ratio of the reading system [=content display area=], reading systems MAY position the
+								ICB inside the area to accommodate the user interface; in other words, added
+								letter-boxing space MAY appear on either side (or both) of the content.</p>
+						</dd>
+
+						<dt>SVG</dt>
+						<dd>
+							<p id="confreq-fxl-rs-svg" data-tests="#lay-fxl-svg-icb_multi">Reading systems MUST create
+								the initial containing block (ICB) using the dimensions as defined in <a
+									data-cite="epub-34#sec-fxl-icb-svg">Expressing the ICB in SVG</a> [[epub-34]] to
+								render [=SVG content documents=]. </p>
+							<p id="confreq-fxl-rs-svg-icb-ratio" class="note"> When the ICB aspect ratio does not match
+								the aspect ratio of the reading system [=content display area=], it is advised to follow
+								the rules for the <a href="https://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute"
+										><code>viewBox</code></a> and the <a
+									href="https://www.w3.org/TR/SVG/coords.html#PreserveAspectRatioAttribute"
+										><code>preserveAspectRatio</code></a> attributes, as defined in [[SVG]]. </p>
+						</dd>
+
+						<dt>Other image formats</dt>
+						<dd>
+							<p>If a reading system supports other image formats in the spine, it will have to create the
+								initial containing block using the dimensions as defined in the width and height
+								metadata for the images. Refer to the documentation for each supported image format for
+								more information on how to obtain this metadata.</p>
+						</dd>
+					</dl>
+				</section>
+
+				<section id="sec-viewport-meta">
+					<h3>The <code>viewport meta</code> tag</h3>
+
+					<p id="viewport-meta-prop" data-tests="#lay-viewport-meta-prop">Except when obtaining the initial
+						containing block dimensions for [=fixed-layout documents=], reading systems MUST ignore
+						rendering instructions in <a data-cite="epub-34#app-viewport-meta"><code>viewport meta</code>
+							declarations</a>.</p>
+
+					<p>This restriction applies to both fixed-layout and reflowable documents.</p>
+				</section>
 			</section>
 
 			<section id="sec-css">
@@ -1482,362 +1819,6 @@
 			<p id="confreq-nav-spine" data-tests="#nav-spine_in-spine,#nav-spine_not-in-spine">Reading systems MUST
 				honor the above requirements irrespective of whether the EPUB navigation document is also included in
 				the [=EPUB spine | spine=].</p>
-		</section>
-		<section id="sec-rendering-control">
-			<h2>Layout rendering control processing</h2>
-
-			<section id="sec-fixed-layouts">
-				<h3>Fixed-layout documents</h3>
-
-				<p id="confreq-rs-epub3-fxl" data-tests="#lay-fxl-spread-none" class="support">[=Reading systems=] MUST
-					support the rendering of <a data-cite="epub-34#sec-fixed-layouts">fixed-layout documents</a>
-					[[epub-34]].</p>
-
-				<section id="sec-fxl-props">
-					<h4>Fixed-layout properties</h4>
-
-					<section id="layout">
-						<h5>The <code>rendition:layout</code> property</h5>
-
-						<p id="layout-default" data-cite="epub-34" data-tests="#lay-fxl-layout-default"> The default
-							value <code>reflowable</code> MUST be assumed by EPUB reading systems as the global value if
-							no [^meta^] element carrying the <a data-cite="epub-34#layout"><code>rendition:layout</code>
-								property</a> occurs in the <a data-cite="epub-34#elemdef-opf-metadata">package document
-								metadata</a> [[epub-34]].</p>
-
-						<p id="layout-pre-paginated" data-tests="#lay-fxl-layout-pre-paginated-spreads">When the
-								<code>rendition:layout</code> property is set to <code>pre-paginated</code>, reading
-							systems MUST NOT include space between the adjacent content slots when rendering [=synthetic
-							spreads=].</p>
-
-						<p>The <code>rendition:layout</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt id="def-layout-reflowable">reflowable</dt>
-							<dd>
-								<p>Reading systems MAY apply dynamic pagination when rendering.</p>
-							</dd>
-							<dt id="def-layout-pre-paginated" data-tests="#lay-fxl-layout-pre-paginated"
-								>pre-paginated</dt>
-							<dd>
-								<p>Reading systems MUST produce exactly one page per spine [^itemref^] [[epub-34]] when
-									rendering.</p>
-							</dd>
-						</dl>
-					</section>
-
-					<section id="orientation">
-						<h5>The <code>rendition:orientation</code> property</h5>
-
-						<p id="fxl-orientation-default" data-tests="#lay-fxl-orientation-default" data-cite="epub-34"
-							>The default value <code>auto</code> MUST be assumed by EPUB reading systems as the global
-							value if no [^meta^] element carrying the <a data-cite="epub-34#orientation"
-									><code>rendition:orientation</code> property</a> occurs in the <a
-								data-cite="epub-34#elemdef-opf-metadata">package document metadata</a> [[epub-34]].</p>
-
-						<p>The <code>rendition:orientation</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt id="def-orientation-auto">auto</dt>
-							<dd>
-								<p>The reading system determines the orientation in which to render [=EPUB content
-									documents=].</p>
-							</dd>
-
-							<dt id="def-orientation-landscape" data-tests="#lay-fxl-orientation-landscape"
-								>landscape</dt>
-							<dd>
-								<p>Reading systems that support multiple orientations SHOULD render EPUB content
-									documents in landscape orientation.</p>
-							</dd>
-
-							<dt id="def-orientation-portrait">portrait</dt>
-							<dd>
-								<p>Reading systems that support multiple orientations SHOULD render EPUB content
-									documents in portrait orientation.</p>
-							</dd>
-						</dl>
-
-						<p>The means by which they convey the intent is implementation specific.</p>
-					</section>
-
-					<section id="spread">
-						<h5>The <code>rendition:spread</code> property</h5>
-
-						<p id="fxl-spread-default" data-tests="#lay-fxl-spread-default" data-cite="epub-34">Reading
-							Systems MUSt assume the default value <code>auto</code> as the global value if no [^meta^]
-							element carrying the <a data-cite="epub-34#spread"><code>rendition:spread</code></a>
-							property occurs in the <a data-cite="epub-34#elemdef-opf-metadata">package document
-								metadata</a> [[epub-34]].</p>
-
-						<p>The <code>rendition:spread</code> property values have the following processing
-							requirements:</p>
-
-						<dl class="variablelist">
-							<dt id="def-spread-none" data-tests="#lay-fxl-spread-none">none</dt>
-							<dd>
-								<p>Reading systems MUST NOT incorporate spine items in a [=synthetic spread=]. Reading
-									systems SHOULD create a single [=viewport=] positioned at the center of the
-									screen.</p>
-							</dd>
-							<dt id="def-spread-landscape" data-tests="#lay-fxl-spread-landscape">landscape</dt>
-							<dd>
-								<p>Reading systems SHOULD render a synthetic spread for spine items only when the device
-									is in landscape orientation.</p>
-							</dd>
-							<dt id="def-spread-both" data-tests="#lay-fxl-spread-both">both</dt>
-							<dd>
-								<p>Reading systems SHOULD render a synthetic spread regardless of device
-									orientation.</p>
-							</dd>
-							<dt id="def-spread-auto" data-tests="#lay-fxl-spread-auto">auto</dt>
-							<dd>
-								<p>Reading systems MAY use synthetic spreads in specific or all device orientations as
-									part of a [=content display area=] utilization optimization process.</p>
-							</dd>
-						</dl>
-					</section>
-
-					<section id="page-spread">
-						<h4>The <code>rendition:page-spread-*</code> properties</h4>
-
-						<p>
-							<span id="page-spread-left" data-tests="#lay-fxl-page-spread-left">The <a
-									data-cite="epub-34#fxl-page-spread-left"><code>rendition:page-spread-left</code>
-									property</a> [[epub-34]] indicates that the given spine item SHOULD be rendered in
-								the left-hand slot of a spread.</span>
-							<span id="page-spread-right" data-tests="#lay-fxl-page-spread-right">The <a
-									data-cite="epub-34#fxl-page-spread-right"><code>rendition:page-spread-right</code>
-									property</a> [[epub-34]] indicates that the given spine item SHOULD be rendered in
-								the right-hand slot of a spread.</span>
-						</p>
-
-						<p>The <code>rendition:page-spread-left</code> and <code>rendition:page-spread-right</code>
-							properties apply to both pre-paginated and reflowable content, and they only apply when the
-							reading system is creating [=synthetic spreads=].</p>
-
-						<p id="page-break-precedence" data-tests="#lay-rendition-flow-pre-pag">The
-								<code>rendition:page-spread-*</code> properties MUST take precedence over whatever value
-							of the <a href="https://www.w3.org/TR/CSS2/page.html#propdef-page-break-before"
-									><code>page-break-before</code> property</a> [[csssnapshot]] has been set for an
-							[=XHTML content document=].</p>
-
-						<p id="page-layout-both" data-tests="#lay-page-layout-both">When a <a
-								href="#def-layout-reflowable">reflowable</a> spine item follows a <a
-								href="#def-layout-pre-paginated">pre-paginated</a> one, the reflowable one SHOULD start
-							on the next page &#8212; as defined by the <a
-								data-cite="epub-34#attrdef-spine-page-progression-direction"
-									><code>page-progression-direction</code> attribute</a> [[epub-34]] &#8212; when it
-							lacks a <code>rendition:page-spread-*</code> property value.</p>
-
-						<p id="page-spread-flow" data-tests="#lay-page-layout-both-spread">Reading systems MUST honor
-								<code>rendition:page-spread-*</code> properties on both reflowable and pre-paginated
-							spine items (e.g., by inserting a blank page).</p>
-
-						<p id="page-spread-both-pre-pag" data-tests="#lay-page-layout-both-spread">When a pre-paginated
-							spine item follows a reflowable one, the pre-paginated one SHOULD start on the next page (as
-							defined by the <code>page-progression-direction</code> attribute) when it lacks a
-								<code>rendition:page-spread-*</code> property value.</p>
-
-						<p id="fxl-page-spread-combined" data-tests="#lay-fxl-page-spread-combined">When a reading
-							system encounters two spine items that represent a true spread (i.e., two adjacent spine
-							items with the <code>rendition:page-spread-left</code> and
-								<code>rendition:page-spread-right</code> properties), it SHOULD create the spread with
-							no space between the adjacent pages.</p>
-					</section>
-				</section>
-
-				<section id="sec-fxl-dimensions">
-					<h4>Initial containing block dimensions</h4>
-
-					<dl>
-						<dt>XHTML</dt>
-						<dd>
-							<p>
-								<span id="confreq-fxl-rs-xhtml-icb-def">Reading systems MUST create the initial
-									containing block (ICB) using the width and height expressions declared in the
-										<code>viewport meta</code> tag for [=XHTML content documents=], as defined in <a
-										data-cite="epub-34#sec-fxl-icb-html">Expressing in HTML</a> [[epub-34]].</span>
-								<span id="confreq-fxl-rs-xhtml-icb"
-									data-tests="#lay-fxl-xhtml-icb,#lay-fxl-xhtml-icb_multi">They MUST clip content
-									positioned outside of the ICB.</span>
-							</p>
-							<p id="confreq-fxl-rs-xhtml-icb-units" data-tests="#lay-fxl-xhtml-icb_units">If the width or
-								height values in the <code>viewport meta</code> tag contain a non-numeric character but
-								start with a number (e.g., the value includes a unit of length declaration such as
-								"500px"), the number prefix SHOULD be used as the pixel value, otherwise the value MUST
-								be treated as invalid.</p>
-							<p id="confreq-fxl-rs-xhtml-icb_invalid_meta" data-tests="#lay-fxl-xhtml-icb_invalid_meta">
-								Reading systems SHOULD attempt to extract <code>width</code> and <code>height</code>
-								values from a <code>viewport meta</code> tag even if its syntax is invalid. </p>
-							<p id="confreq-fxl-rs-xhtml-icb_repeated-in-meta"
-								data-tests="#lay-fxl-xhtml-icb_repeated-in-meta"> Reading systems MUST use the first
-								declaration of a <code>width</code> and <code>height</code> property in a <code>viewport
-									meta</code> tag (i.e., ignore repeated declarations). </p>
-							<p> If the <code>viewport meta</code> does not contain a width or a height value, or if
-								these values are invalid, reading systems MAY supply the values. For example, a reading
-								system might:</p>
-							<ul>
-								<li>consider these as having the values <code>device-width</code> and
-										<code>device-height</code>, respectively; or</li>
-								<li>look for the previous content document in the [=spine=], if applicable, and use the
-									ICB value defined there; or</li>
-								<li>consider the content document as erroneous XHTML content altogether.</li>
-							</ul>
-							<p id="confreq-fxl-rs-xhtml-multiple-icb-def"
-								data-tests="#lay-fxl-xhtml-icb_multi_declarations">If an XHTML content document contains
-								more than one <code>viewport meta</code> tags, reading systems MUST use the first in
-								document order to obtain the height and width dimensions. Subsequent declarations MUST
-								be ignored.</p>
-							<p id="confreq-fxl-rs-xhtml-icb-ratio">When the ICB aspect ratio does not match the aspect
-								ratio of the reading system [=content display area=], reading systems MAY position the
-								ICB inside the area to accommodate the user interface; in other words, added
-								letter-boxing space MAY appear on either side (or both) of the content.</p>
-						</dd>
-
-						<dt>SVG</dt>
-						<dd>
-							<p id="confreq-fxl-rs-svg" data-tests="#lay-fxl-svg-icb_multi">Reading systems MUST create
-								the initial containing block (ICB) using the dimensions as defined in <a
-									data-cite="epub-34#sec-fxl-icb-svg">Expressing the ICB in SVG</a> [[epub-34]] to
-								render [=SVG content documents=]. </p>
-							<p id="confreq-fxl-rs-svg-icb-ratio" class="note"> When the ICB aspect ratio does not match
-								the aspect ratio of the reading system [=content display area=], it is advised to follow
-								the rules for the <a href="https://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute"
-										><code>viewBox</code></a> and the <a
-									href="https://www.w3.org/TR/SVG/coords.html#PreserveAspectRatioAttribute"
-										><code>preserveAspectRatio</code></a> attributes, as defined in [[SVG]]. </p>
-						</dd>
-					</dl>
-				</section>
-
-				<section id="sec-fxl-viewport">
-					<h4>Viewport rendering</h4>
-
-					<p>When rendering [=fixed-layout documents=], the default intent is that the [=content display
-						area=] SHOULD occupy as much of the available [=viewport=] area as possible. Reading systems
-						SHOULD NOT inject additional content such as border, margins, headers, or footers into the
-						viewport.</p>
-
-					<div class="note">
-						<p>This specification does not define how the <a
-								href="https://www.w3.org/TR/CSS2/visudet.html#containing-block-details">initial
-								containing block</a> [[css2]] is placed within the reading system <a>content display
-								area</a>.</p>
-					</div>
-
-					<div class="note">
-						<p>The exposure of reading system control widgets to the user is implementation-specific and not
-							included in the above behavioral expectations.</p>
-					</div>
-				</section>
-			</section>
-
-			<section id="sec-reflowable-layouts">
-				<h3>Reflowable layouts</h3>
-
-				<p id="confreq-rs-epub3-presentational-meta" class="support">[=Reading systems=] SHOULD process the <a
-						data-cite="epub-34#sec-reflowable-layouts">reflowable layout properties</a> [[epub-34]].</p>
-
-				<section id="flow">
-					<h4>The <code>rendition:flow</code> property</h4>
-
-					<p>If a reading system supports the specified rendering, it SHOULD use that method to handle
-						overflow content, but MAY provide the option for users to override the requested rendering.</p>
-
-					<p>The default global value is <code>auto</code> if no <code>meta</code> element carrying this
-						property occurs in the <a data-cite="epub-34#elemdef-opf-metadata"><code>metadata</code>
-							section</a> [[epub-34]]. Reading systems MAY support only this default value.</p>
-
-					<p>The <code>rendition:flow</code> property values have the following processing requirements:</p>
-
-					<dl class="variablelist">
-						<dt id="paginated">paginated</dt>
-						<dd id="paginated-dd" data-tests="#lay-pkg-flow-paginated">
-							<p>The reading system SHOULD dynamically paginate all overflow content.</p>
-						</dd>
-
-						<dt id="scrolled-continuous">scrolled-continuous</dt>
-						<dd id="scrolled-continuous-dd" data-tests="#lay-pkg-flow-scrolled-continuous">
-							<p>The reading system SHOULD render all [=EPUB content documents=] such that overflow
-								content is scrollable, and SHOULD present the [=EPUB publication=] as one continuous
-								scroll from spine item to spine item (except where <a data-cite="epub-34#flow-overrides"
-									>locally overridden</a> [[epub-34]]).</p>
-						</dd>
-
-						<dt id="scrolled-doc">scrolled-doc</dt>
-						<dd id="scrolled-doc-dd" data-tests="#lay-pkg-flow-scrolled-doc">
-							<p>The reading system SHOULD render all EPUB content documents such that users can scroll
-								overflow content, and SHOULD present each spine item as a separate scrollable
-								document.</p>
-						</dd>
-
-						<dt id="auto">auto</dt>
-						<dd>
-							<p>The reading system MAY render overflow content using its default method or a user
-								preference, whichever is applicable.</p>
-						</dd>
-					</dl>
-
-					<p>For the <code>rendition:flow-scrolled-continuous</code> property, the scroll direction MUST be
-						defined relative to the block flow direction of the root element of the [=XHTML content
-						document=] referenced by the [^itemref^] element [[epub-34]]. The scroll direction MUST be
-						vertical if the block flow direction is downward (top-to-bottom). It MUST be horizontal if the
-						block flow direction of the root element is rightward (left-to-right) or leftward
-						(right-to-left).</p>
-
-					<p>Reading systems MUST ignore the <code>rendition:flow</code> property and its overrides when
-						processing <a data-cite="epub-34#def-layout-pre-paginated">pre-paginated spine items</a>
-						[[epub-34]].</p>
-
-					<p class="note">Reading system developers could decide to disregard this restriction and accept the
-							<code>scrolled-continuous</code> value of <code>rendition:flow</code> as a switch to display
-						each pre-paginated spine item on a long, vertical strip (making it is easier to read on a
-						smartphone or computer). This type of presentation is often referred to as <a
-							href="https://medium.com/mrcomics/what-is-webtoon-4926929b20d8">"webtoons"</a>. Some
-						publishers already use this possibility. After some further experimentation and incubation, a
-						future version of this specification could introduce this approach as a standard feature for
-						fixed-layout documents. See also the (deferred) github <a
-							href="https://github.com/w3c/epub-specs/issues/2412">issue 2412</a>. </p>
-				</section>
-
-				<section id="align-x-center">
-					<h4>The <code>rendition:align-x-center</code> property</h4>
-
-					<p>When the <a href="#align-x-center"><code>rendition:align-x-center</code> property</a> is set on a
-						spine item, reading systems SHOULD render the content centered horizontally within the
-						[=viewport=] or spread, as applicable. This property does not affect the rendering of the spine
-						item, only the placement of the resulting content box.</p>
-
-					<p id="reflow-align-x-center" data-tests="#lay-reflow-align-x-center">For reflowable content,
-						reading systems that support this property MUST center each virtual page.</p>
-
-					<p>This specification does not define a default rendering behavior when reading systems do not
-						support this property or it is not set in an [=EPUB publication=]. Reading systems MAY render
-						spine items by their own design.</p>
-				</section>
-			</section>
-
-			<section id="sec-viewport-meta">
-				<h3>The <code>viewport meta</code> tag</h3>
-
-				<p id="viewport-meta-prop" data-tests="#lay-viewport-meta-prop">Except when obtaining the initial
-					containing block dimensions for [=fixed-layout documents=], reading systems MUST ignore rendering
-					instructions in <a data-cite="epub-34#app-viewport-meta"><code>viewport meta</code>
-					declarations</a>.</p>
-
-				<p>This restriction applies to both fixed-layout and reflowable documents.</p>
-			</section>
-
-			<section id="sec-custom-properties">
-				<h3>Custom properties</h3>
-
-				<p>[=Reading systems=] MAY support custom properties provided they do not introduce expressions that
-					conflict behaviorally with the properties defined in the <a data-cite="epub-34#app-rendering-vocab"
-						>Package rendering vocabulary</a> [[epub-34]].</p>
-			</section>
 		</section>
 		<section id="sec-media-overlays">
 			<h2>Media overlays processing</h2>
