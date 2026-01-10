@@ -1,0 +1,236 @@
+# TODO: All the back links to the specification must be finalized.
+
+json_ld:
+    alias:
+        "language"  : "@language"
+        "direction" : "@direction"
+        "id"        : "@id"
+        "type"      : "@type"
+        "value"     : "@value"
+    import: "http://www.w3.org/ns/anno.jsonld"
+
+vocab:
+    - id: ea
+      value: http://www.w3.org/ns/ea#
+      context: https://www.w3.org/ns/epub-anno.jsonld
+
+prefix:
+    - id: oa
+      value: http://www.w3.org/ns/oa#
+
+    - id: as
+      value: http://www.w3.org/ns/activitystreams#
+
+    - id: foaf
+      value: http://xmlns.com/foaf/0.1/
+
+ontology:
+    - property: dc:title
+      value: EPUB Annotations Vocabulary
+
+    - property: dc:description
+      value: RDFS [[rdf-schema]] vocabulary formalizing the terms defined in the [[[epub-ann]]] specification. The vocabulary is a "profile" of the W3C [[[annotation-vocab]]]
+
+    - property: rdfs:seeAlso
+      value: https://www.w3.org/TR/epub-ann-vocab/
+
+class:
+    - id: About
+      label: Information about the EPUB publication
+      comment: (Externally defined) Dublin Core terms are used with this class, retaining the prefixes (to be in line with the EPUB Package Document)
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-about-object
+
+    - id: Annotation
+      label: EPUB Annotation Object
+      upper_value: oa:Annotation
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-annotation-object
+      comment: The Annotation object of EPUB Annotation; the list of acceptable properties are restricted compared to the Web Annotation version.
+
+    - id: AnnotationSet
+      label: Set of annotations
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-annotationset
+
+    - id: Body
+      label: Body of an EPUB Annotation
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-body-object
+      upper_value: oa:TextualBody
+      comment: In EPUB, annotations are restricted to textual content.
+
+    - id: Creator
+      label: Creator of an EPUB Annotation
+      upper_value: [foaf:Person, foaf:Organization, as:Application]
+      upper_union: true
+      comment: The context file contains aliases for the possible creator values, JSON-LD serializations should use the terms <code>Person</code>, <code>Organization</code>, or <code>Software</code>.
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-creator-object
+
+    - id: Meta
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-target-object
+      comment: this class is currently undefined...
+
+    - id: Generator
+      label: Information about the tools generating the annotations
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-generator-object
+
+    - id: Selector
+      label: A restrictive subset of selectors, usable in EPUB
+      upper_value: [oa:FragmentSelector, oa:CssSelector, oa:TextQuoteSelector]
+      upper_union: true
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-target-object
+      comment: The final list of selectors for EPUB is still to be defined, this is only a placeholder for now.
+
+    - id: Target
+      label: Target of an EPUB Annotation
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-target-object
+
+
+property:
+    - id: about
+      label: Information on the EPUB publication
+      domain: AnnotationSet
+      range: About
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-about
+
+    - id: hasBody
+      label: The body of an annotation
+      upper_value: oa:hasBody
+      domain: Annotation
+      range: Body
+      known_as: body
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-body
+      comment: The context file "shadows" the <code>body</code> term in the Web Annotation context file, restricting its range.
+
+    - id: color
+      domain: Body
+      one_of: [pink, orange, yellow, green, blue, purple ]
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: creator
+      label: The creator of an annotation
+      upper_value: dcterms:creator
+      range: Creator
+      comment: The usage of the Dublin Core's <code>dcterm</code> value is restricted to certain type of values...
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-creator
+
+    - id: generator
+      domain: AnnotationSet
+      range: Generator
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-generator
+      comment: The context file "shadows" the <code>generator</code> term in the Web Annotation context file, restricting its range; see formal definition for the restrictions.
+
+    - id: highlight
+      domain: Body
+      one_of: [solid, underline, strikethrough, outline]
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-highlight
+
+    - id: foaf:homepage
+      range: URL
+      comment: In the generated JSON-LD context file this term appears as "<code>homepage</code>".
+
+    - id: items
+      label: The reference to the set of annotations
+      domain: AnnotationSet
+      range: Annotation
+      container: set
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-items
+
+    - id: meta
+      domain: Target
+      range: Meta
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-meta
+
+    - id: motivatedBy
+      label: The motivation for an annotation
+      upper_value: oa:motivatedBy
+      known_as: motivation
+      domain: Annotation
+      range: Motivation
+      one_of: [oa:bookmarking, oa:commenting, oa:highlighting]
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-motivation
+      comment: The context file "shadows" the <code>body</code> term in the Web Annotation context file, restricting its range.
+
+    - id: name
+      domain: [Creator, Generator]
+      range: xsd:string
+      upper_value: foaf:name
+      defined_by: https://www.w3.org/TR/epub-ann-vocab/dfn-name
+      comment: This property restricts the usage of <code>foaf:name</code> to be used on creators.
+
+    - id: hasSelector
+      upper_value: oa:hasSelector
+      label: Assign selector(s) to a target
+      range: Selector
+      known_as: selector
+      comment: The range of this subproperty represents a subset of the Selectors, as defined by the Open Annotation specification.
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-selector
+
+    - id: hasSource
+      upper_value: oa:hasSource
+      domain: Target
+      range: URL
+      known_as: source
+      comment: The context file "shadows" the <code>source</code> term in the Web Annotation context file, restricting its domain and controlling its alias name.
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-source
+
+    - id: tags
+      domain: Body
+      range: xsd:string
+      container: set
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-tags
+
+    - id: hasTarget
+      label: The target of an annotation
+      upper_value: oa:hasTarget
+      domain: Annotation
+      range: Target
+      known_as: target
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-target
+      comment: The context file "shadows" the <code>target</code> term in the Web Annotation context file, restricting its range.
+
+    - id: hasTitle
+      label: Title of the Annotation Set
+      domain: AnnotationSet
+      range: xsd:string
+      known_as: title
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-title
+
+individual:
+    - id: pink
+      label: Pink selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: orange
+      label: Orange selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: yellow
+      label: Yellow selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: green
+      label: Green selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: blue
+      label: Blue selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: purple
+      label: Purple selection color
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-color
+
+    - id: solid
+      label: Solid selection highlight
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-highlight
+
+    - id: underline
+      label: Underline selection highlight
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-highlight
+
+    - id: strikethrough
+      label: Strikethrough selection highlight
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-highlight
+
+    - id: outline
+      label: Outline selection highlight
+      defined_by: https://www.w3.org/TR/epub-ann/#dfn-highlight
+
