@@ -49,4 +49,4 @@ My current preference is to publish this as a note. The current setup of the fil
 ## Generating the files
 
 If yml2vocab is installed locally: `yml2vocab -c -v index`. If not, `deno run -A jsr:@iherman/yml2vocab/cli -c -v index`
-(when running after a change in the `yml2vocab` run `deno run -A --reload…` once to refresh the local cache). Alternatively, `deno x` can be used instead of `deno run -A` for the remote case.
+(when running after a change in the `yml2vocab` run `deno run -A --reload…` once to refresh the local cache). Alternatively, `deno x jsr:@iherman/yml2vocab/cli -c -v index` can be used instead of `deno run -A` for the remote case.
