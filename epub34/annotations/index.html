@@ -312,13 +312,14 @@
 			<p> A Target with no Selector indicates that the annotation applies to the entire
 				target resource. </p>
             <section>
+
 			<h4 id="1-3-1-source"> Source </h4>
 			<p> The target resource MUST be identified by the URL of an existing resource in the
 				EPUB package. It MUST be one of the `item/@href` values of the [^manifest^] element as
                 defined in [[epub-34]].</p>
 
-            <aside class="example" title=" the source of the annotation is the relative URL identifying an HTML document in an EPUB">
-			<pre>
+      <aside class="example" title=" the source of the annotation is the relative URL identifying an HTML document in an EPUB">
+				<pre>
                 {
                     "@context": [
                         "http://www.w3.org/ns/anno.jsonld",
@@ -335,54 +336,65 @@
                         }
                     }
                 }
-			</pre>
-            </aside>
+				</pre>
+      </aside>
             </section>
+
             <section>
 			<h4 id="1-3-2-selector"> Selector </h4>
 			<p> An annotation refers to a segment of a resource, which is identified by one or more
-                <a data-cite="annotation-model#selectors">Selectors</a>. The nature of the Selectors and methods to describe segments depend on
+        <a data-cite="annotation-model#selectors">Selectors</a>. 
+				The nature of the Selectors and methods to describe segments depend on
 				the resource type. Providing more than one Selector allows an annotation software to
 				choose the most accurate selector from those it can handle and helps accommodate
 				evolutions on the annotated resource. </p>
-			<p> Annotation selectors are specified in <a data-cite="annotation-model#selectors">Web
-					Annotation Data Model</a>. This specification retains
-				selectors deemed useful for annotating publications and details on how to use these
-				selectors. </p>
+			<p> Several annotation selectors are specified in <a data-cite="annotation-model#selectors">Web
+					Annotation Data Model</a>. 
+				This specification retains selectors deemed useful for annotating EPUB publications,
+				 and details on how to use these selectors. It also defines new selectors as needed.</p>
 			<p class="note">New selectors will undoubtedly be defined in the coming months after
 				discussion with members of the W3C Publishing Maintenance Working Group.</p>
 
-			<!--
-			<h5 id="1-3-2-1-text-quote-selector"> Text Quote Selector </h5>
-			<p> This Selector describes a range of text by copying it and including some of the
-				text immediately before (a prefix) and after (a suffix) it to distinguish between
-				multiple copies of the same sequence of characters. </p>
-			<p> Whitespaces present in the source document are preserved in the “prefix”, “exact”,
-				and “suffix” segments and are represented as per the JSON Grammar (e.g. <code> \n
-				</code> , <code> \t </code> etc.). </p>
-			<p> Note: There is no restriction on the preceding and following text that can be
-				included in the selector, but this amount should be left as low as possible. </p>
-			<p> Important: This selector contains complete annotated text segments and, therefore,
-				must not be used when the publication is protected by a DRM, which limits the number
-				of characters that may be copied.</p>
-
-			<p> Sample 3: A text segment represented as a TextQuoteSelector. </p>
+			<h5 id="1-3-2-1-text-fragment-selector"> Text Fragment Selector </h5>
+			<p> A Text Fragment Selector, as defined in the 
+				W3C WICG URL Fragment Text Directives Draft Community Group Report,
+				 contains a shortened version of the annotated text segment,
+				 and optional indication of the preceding and following fragments.</p>
+			<p> In this specification, a Text Fragment Selector is represented with a simplified format: </p>
 			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					    "type": "TextQuoteSelector",
-					    "prefix": "trouver quelqu’un    \n  \t\t    comme vous. ",
-					    "exact": "Combien de fois \n\n    ne m’avait-il",
-					    "suffix": " pas \n\n      reproché de travailler ma"
-					    }
-					  ]
-					}
-				</code>
+				[prefix-,]start[,end][,-suffix]
 			</pre>
-			<h5 id="1-3-2-2-cssselector-textpositionselector"> CssSelector +
-				TextPositionSelector </h5>
+
+      <aside class="example" title=" a text segment represented as a TextFragmentSelector">
+				<pre>
+					<code class="lang-json">
+						{
+							"selector": [
+								{
+								"type": "TextFragmentSelector",
+								"value": "an example,text fragment"								}
+							]
+						}
+					</code>
+				</pre>
+			</aside>
+
+			<p class="note"> Because text fragments are not used as fragment URLs,  
+				there is no need for percent-encoding in our context. </p>
+			<p class="note"> This selector contains annotated text segments and, therefore,
+				must be used with great care when the number of characters that can be copied 
+				from the publication is constrained by the publisher.</p>
+			<p class="note"> This selector is a modernized version of the 
+				<a data-cite="annotation-model#text-quote-selector"><code>Text Quote Selector</code></a> 
+				originally defined by the W3C Web Annotation Data Model.</p>
+			<p class="issue">The integration of this selector in reading systems is very challenging: 
+			 the absence of a standard API in web browsers makes mapping a text fragment to a DOM Range difficult.
+			 Rebuilding a DOM range from a textual range using tree walking is cumbersome and suboptimal.
+			 This selector, while appealing, will not be retained unless a public API is rapidly defined and 
+			 implemented in major web browsers.</p>
+
+			<h5 id="1-3-2-2-cssselector-textpositionselector"> Css Selector refined by
+				Text Position Selector </h5>
 			<p>References in the Web Annotation Data Model: <a
 					href="https://www.w3.org/TR/annotation-model/#css-selector"> CSS Selector </a> ,
 					<a href="https://www.w3.org/TR/annotation-model/#text-position-selector"> Text
@@ -390,42 +402,38 @@
 					href="https://www.w3.org/TR/annotation-model/#refinement-of-selection">
 					Refinement of Selection </a>
 			</p>
-			<p>A TextPositionSelector describes a range of text by recording the start and end
-				positions of the selection in the stream. Position 0 would be immediately before the
-				first character, position 1 would be immediately before the second character, and so
-				on. The start character is thus included in the list, but the end character is not.
-				The Web Annotation Data Model specifies that the selection of the text MUST be in
-				terms of <strong> unicode code points </strong> (the &quot;character number&quot;),
-				not in terms of code units (that number expressed using a selected data type).
-				Selections SHOULD NOT start or end in the middle of a grapheme cluster. The
-				selection MUST be based on the logical order of the text, rather than the visual
-				order, especially for bidirectional text.</p>
-			<p>In an HTML resource, rebuilding a DOM range from a purely textual range using tree
-				walking is cumbersome and is not an optimal solution. Such a selector can only be
-				efficient if it is used a refinement of a CSS Selector that targets the closest
-				common ancestor of the element nodes containing the start and end characters, and if
-				the segment of text is small enough. The use of the closest common ancestor element
-				also makes the selector more robust against evolutions of the HTML resource. </p>
+			<p><a data-cite="annotation-model#css-selector"><code>CSS Selectors</code></a> 
+				allow for a wide variety of well supported ways to describe the path to 
+				an element in a web page, and thus cover many of the basic use cases for Web Annotation.
+				However, they are not sufficient to accurately describe a text range within an element,
+				especially when the element contains other nested elements. 
+				<a data-cite="annotation-model#text-position-selector"><code>Text Position Selectors</code></a>
+			  describe a range of text by recording the start and end positions of the selection in the stream. 
+				A CSS Selector refined by a Text Position Selector offer a complete solution for
+				selecting a text range within an EPUB resource. 
+				The CSS Selector targets the closest common ancestor of the element nodes containing 
+				the start and end characters; this makes the selector more robust against evolutions of the EPUB resource.</p>
 
-			<p>Sample 4: A CSS Selector refined by a Text Position Selector:</p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					      "type": "CssSelector",
-					      "value": "#intro > p:nth-child(2)",
-					      "refinedBy": {
-					        "type": "TextPositionSelector",
-					        "start": 4,
-					        "end": 19
-					      }
-					    }
-					  ]
-					}
+      <aside class="example" title=" a CSS Selector refined by a Text Position Selector">
+				<pre>
+					<code class="lang-json">
+						{
+							"selector": [
+								{
+									"type": "CssSelector",
+									"value": "#intro > p:nth-child(2)",
+									"refinedBy": {
+										"type": "TextPositionSelector",
+										"start": 4,
+										"end": 19
+									}
+								}
+							]
+						}
+					</code>
+				</pre>
+			</aside>
 
-				</code>
-			</pre>
 			<p>This selects "q" from "quick" as start position and
 				"x" from "fox" as end position in the following HTML snippet: </p>
 			<pre>
@@ -438,6 +446,16 @@
 				</code>
 			</pre>
 
+			<p class="note">Position 0 is immediately before the
+				first character, position 1 is immediately before the second character, and so
+				on. The start character is thus included in the list, but the end character is not.
+				The Web Annotation Data Model specifies that the selection of the text MUST be in
+				terms of <strong> unicode code points </strong> (the &quot;character number&quot;),
+				not in terms of code units (numbers that encode code points).
+				Selections SHOULD NOT start or end in the middle of a grapheme cluster. 
+				The selection MUST be based on the logical order of the text, rather than the visual
+				order, especially for bidirectional text.</p>
+
 			<h5 id="1-3-2-3-progressionselector"> ProgressionSelector </h5>
 			<p>A ProgressionSelector contains a decimal value representing the annotation's
 				position as a percentage of the total size of the resource.</p>
@@ -445,22 +463,21 @@
 				is helpful to order annotations in a list and help position the annotation near the
 				corresponding fragment if other selectors fail.</p>
 
-			<p>Sample 5: This ProgressionSelector indicates that the annotation is positioned just
-				after the middle of the resource:</p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					    "type": "ProgressionSelector",
-					    "value": 0.534234255
-					    }
-					  ]
-					}
-				</code>
-			</pre>
-			-->
-
+      <aside class="example" title=" a ProgressionSelector indicates that the annotation is positioned just
+				after the middle of the resource">
+				<pre>
+					<code class="lang-json">
+						{
+							"selector": [
+								{
+								"type": "ProgressionSelector",
+								"value": 0.534234255
+								}
+							]
+						}
+					</code>
+				</pre>
+			</aside>
 			<!--
 			<h4 id="1-3-3-meta"> Meta </h4>
 			<p>Meta information MAY be added to an annotation as “breadcrumbs”, to ease the display
@@ -1087,6 +1104,9 @@
 			</p>
 			<p> EPUB 3.3, 2023: <a href="https://www.w3.org/TR/epub-33/">
 					https://www.w3.org/TR/epub-33/ </a>
+			</p>
+			<p> URL Fragment Text Directives, 2023: <a href="https://wicg.github.io/scroll-to-text-fragment/">
+					https://wicg.github.io/scroll-to-text-fragment/ </a>
 			</p>
 		</section>
         <section id="index"></section>
