@@ -328,9 +328,48 @@
 
 				<p id="confreq-rs-foreign"
 					data-tests="#pub-foreign_image,#pub-foreign_xml-spine,#pub-foreign_xml-suffix-spine,#pub-foreign_bad-fallback,#pub-foreign_json-spine"
-					>Reading systems MAY support an arbitrary set of [=foreign resource=] types, and if a foreign
-					resource is not supported, MUST process fallbacks as defined in <a href="#sec-pkg-doc-manifest"
-					></a>.</p>
+					>Reading systems MAY support an arbitrary set of [=foreign resource=] types.</p>
+			</section>
+
+			<section id="sec-epub-rs-resource-fallbacks">
+				<h4>Resource fallbacks</h4>
+
+				<p>For [=foreign resources=], if a reading system does not support a resource's MIME media type
+					[[rfc2046]]:</p>
+
+				<ul>
+					<li>it MUST give precedence to any fallbacks provided via <a
+							data-cite="epub-34#sec-intrinsic-fallbacks">intrinsic fallback methods</a> [[epub-34]] of
+						the element the resource is referenced from;</li>
+					<li>otherwise, it SHOULD traverse the resource's <a data-cite="epub-34#sec-manifest-fallbacks"
+							>manifest fallback chain</a> [[epub-34]], when one is specified, until it identifies a
+						supported publication resource to use in place of the unsupported resource.</li>
+				</ul>
+
+				<p>When manifest fallbacks are provided for [=core media type resources=], a reading system MAY traverse
+					the fallback chain to determine if a more optimal format is available for rendering.</p>
+
+				<p>For [=foreign content documents=], if a reading system does not support the resource's MIME media
+					type, it MUST traverse the resource's <a data-cite="epub-34#sec-manifest-fallbacks">manifest
+						fallback chain</a> [[epub-34]] until it identifies a supported publication resource to use in
+					place of the unsupported resource.</p>
+
+				<p>When <a data-cite="epub-34#sec-manifest-fallbacks">manifest fallbacks</a> [[epub-34]] are provided
+					for [=epub content documents=], reading systems MAY choose from the available options to find the
+					optimal version to render in a given context (e.g., by inspecting the properties attribute for
+					each).</p>
+
+				<p id="confreq-rs-pkg-manifest-fallback-order">If the reading system supports multiple publication
+					resources in the fallback chain, it MAY select the resource to use based on the resource's <a
+						data-cite="epub-34#attrdef-item-properties"><code>properties</code> attribute</a> [[epub-34]]
+					values, otherwise it SHOULD honor the <a data-cite="epub-34#preferred-fallback-chain">preferred
+						fallback order</a> [[epub-34]].</p>
+
+				<p id="confreq-rs-pkg-manifest-fallback-fail">If a reading system does not support any resource in the
+					fallback chain, it MUST alert the user that it could not display the content. </p>
+
+				<p id="confreq-rs-pkg-manifest-fallback-cycle">A reading system MUST terminate the fallback chain at the
+					first reference to a manifest item it has already encountered.</p>
 			</section>
 
 			<section id="sec-epub-rs-conf-remote-res">
@@ -905,31 +944,6 @@
 					SHOULD NOT use [=linked resources=] in the rendering of an [=EPUB publication=] due to the inherent
 					limitations and risks involved (e.g., lack of information about the resource and how to process it,
 					security risks from remotely-hosted sources, lack of fallbacks, etc.).</p>
-
-				<p>
-					<span id="confreq-rs-pkg-manifest-fallback"
-						data-tests="#lay-roll-images-mixed,#lay-roll-images-in-spine,#pp-roll-images-mixed,#pp-roll-images-in-spine"
-						>A reading system that does not support the MIME media type [[rfc2046]] of a given [=publication
-						resource=] MUST traverse the <a data-cite="epub-34#sec-manifest-fallbacks">manifest fallback
-							chain</a> [[epub-34]] until it identifies a supported publication resource to use in place
-						of the unsupported resource. </span>
-					<span id="confreq-rs-pkg-manifest-fallback-order">If the reading system supports multiple
-						publication resources in the fallback chain, it MAY select the resource to use based on the
-						resource's <a data-cite="epub-34#attrdef-item-properties"><code>properties</code> attribute</a>
-						[[epub-34]] values, otherwise it SHOULD honor the <a
-							data-cite="epub-34#preferred-fallback-chain">preferred fallback order</a>
-						[[epub-34]].</span>
-					<span id="confreq-rs-pkg-manifest-fallback-fail">If a reading system does not support any resource
-						in the fallback chain, it MUST alert the user that it could not display the content. </span>
-				</p>
-
-				<p>When <a data-cite="epub-34#sec-manifest-fallbacks">manifest fallbacks</a> [[epub-34]] are provided
-					for [=top-level content documents=], reading systems MAY choose from the available options to find
-					the optimal version to render in a given context (e.g., by inspecting the properties attribute for
-					each).</p>
-
-				<p id="confreq-rs-pkg-manifest-fallback-cycle">A reading system MUST terminate the fallback chain at the
-					first reference to a manifest item it has already encountered.</p>
 			</section>
 
 			<section id="sec-pkg-doc-spine">
@@ -945,9 +959,10 @@
 					<li>rendering successive primary items in the order given in the <code>spine</code>.</li>
 				</ul>
 
-				<p>If a reading system does not support the resource type referenced from an <code>itemref</code>
-					element, it MUST traverse the resource's manifest fallback chain to locate one it can use, as
-					defined in <a href="#sec-pkg-doc-manifest"></a>.</p>
+				<div class="note">
+					<p>Refer to <a href="#sec-epub-rs-resource-fallbacks"></a> for more information on handling manifest
+						fallbacks.</p>
+				</div>
 
 				<p id="confreq-rendition-rs-spine-nonlinear">When a user traverses the default reading order defined in
 					the <code>spine</code> element, a reading system MAY automatically skip <a
