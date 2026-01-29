@@ -308,7 +308,7 @@
 				<h4>Core Media types</h4>
 
 				<p id="confreq-rs-epub3-images"
-					data-tests="#pub-cmt-avif,#pub-cmt-gif,#pub-cmt-jpg,#pub-cmt-png,#pub-cmt-svg,#pub-cmt-webp">If a
+					data-tests="#pub-cmt-avif,#pub-cmt-gif,#pub-cmt-jpg,#pub-cmt-jxl,#pub-cmt-png,#pub-cmt-svg,#pub-cmt-webp">If a
 					reading system has a [=viewport=], it MUST support the <a data-cite="epub-34#cmt-grp-image">image
 						core media type resources</a> [[epub-34]].</p>
 
@@ -1152,7 +1152,7 @@
 						</section>
 					</section>
 
-					<section id="sec-roll-layouts">
+					<section id="sec-roll-layouts" data-tests="#lay-roll-embedded-images,#lay-roll-images-in-spine,#lay-roll-images-mixed">
 						<h5>Roll layouts</h5>
 
 						<p class="support">[=Reading systems=] SHOULD support the rendering of roll layouts.</p>
@@ -1744,132 +1744,195 @@
 				honor the above requirements irrespective of whether the EPUB navigation document is also included in
 				the [=EPUB spine | spine=].</p>
 		</section>
-		<section id="sec-media-overlays">
-			<h2>Media overlays processing</h2>
+		<section id="sec-aural-rendering">
+			<h2>Aural rendering</h2>
 
-			<p id="confreq-rs-epub3-mo" class="support" data-tests="#mol-css">[=Reading systems=] with the capability to
-				render prerecorded audio SHOULD support <a data-cite="epub-34#sec-media-overlays">media overlays</a>
-				[[epub-34]].</p>
+			<section id="sec-tts">
+				<h3>Text-to-speech</h3>
 
-			<div id="confreq-rs-epub3-mo-ignore" data-tests="#mol-ignore">
-				<p>If a reading system does not support media overlays, it MUST ignore both:</p>
+				<p class="support">Reading system support for text-to-speech playback is OPTIONAL.</p>
+
+				<p>If a reading system has audio playback capabilities, it is strongly encouraged to provide
+					text-to-speech playback functionality to improve the accessibility.</p>
+
+				<p>When including text-to-speech playback, reading systems SHOULD support the following features to
+					provide a playback experience similar to that defined for <a href="#sec-media-overlays">media
+						overlays</a>:</p>
+
 				<ul>
-					<li>the <a data-cite="epub-34#attrdef-item-media-overlay"><code>media-overlay</code> attribute</a>
-						on [=EPUB manifest | manifest=] [^item^] elements [[epub-34]]; and</li>
-					<li><code>item</code> elements where the <code>media-type</code> attribute value equals
-							<code>application/smil+xml</code>.</li>
+					<li>sequential reading of the elements in the [[html]] <code>body</code> element of an [=EPUB
+						content document=];</li>
+					<li>uninterrupted playback across [=spine=] items;</li>
+					<li>uninterrupted reading when a user traverses a hyperlink to another location within the [=EPUB
+						publication=];</li>
+					<li>skippability and escapability based on the markup and semantics available in the EPUB content
+						document;</li>
+					<li>highlighting of the word(s) being read;</li>
+					<li>control over the playback rate.</li>
 				</ul>
-			</div>
 
-			<section id="sec-behaviors-loading">
-				<h4>Loading the media overlay</h4>
-
-				<p id="confreq-rs-loading-mol" data-tests="#mol-support_xhtml,#mol-support_xhtml-fxl">When a reading
-					system loads a [=package document=], it MUST refer to the [=EPUB manifest | manifest=] [^item^]
-					elements' [[epub-34]] <code>media-overlay</code> attributes to discover the corresponding media
-					overlays for [=EPUB content documents=].</p>
-
-				<p id="confreq-rs-xhtml-svg">
-					<span id="mol-xhtml-support" data-tests="#mol-support_xhtml,#mol-support_xhtml-fxl">Reading systems
-						MUST support playback for [=XHTML content documents=], and</span>
-					<span id="mol-svg-support">MAY support [=SVG content documents=].</span>
-				</p>
-
-				<p>
-					<span id="mol-support-xhtml-load" data-tests="#mol-support_xhtml-load,#mol-support_xhtml-load-fxl">
-						Playback MUST start at the media overlay element which corresponds to the desired EPUB content
-						document starting point. Note that the start of an EPUB content document could correspond to an
-						element at the start or in the middle of a media overlay. </span>
-					<span id="mol-support-xhtml-load-next"
-						data-tests="#mol-support_xhtml-load-next,#mol-support_xhtml-load-next-fxl"> When the media
-						overlay document finishes playing, the reading system SHOULD load the next EPUB content document
-						(as specified in the package document [=EPUB spine | spine=]) and also load its corresponding
-						media overlay document, provided that one is given. </span>
-				</p>
+				<div class="note">
+					<p>Possible authoring technologies for enhancing the quality of text-to-speech playback are detailed
+						in [[epub-tts-10]], but these technologies are currently not broadly supported (or supported at
+						all). If these or replacement technologies find support in the future, they will be included in
+						this specification.</p>
+				</div>
 			</section>
 
-			<section id="sec-behaviors-playback">
-				<h4>Basic playback</h4>
+			<section id="sec-media-overlays">
+				<h3>Media overlays processing</h3>
 
-				<section id="sec-rsconf-timing-synch">
-					<h3>Timing and synchronization</h3>
+				<p id="confreq-rs-epub3-mo" class="support" data-tests="#mol-css">[=Reading systems=] with the
+					capability to render prerecorded audio SHOULD support <a data-cite="epub-34#sec-media-overlays"
+						>media overlays</a> [[epub-34]].</p>
 
-					<p id="mol-timing-sync" data-cite="epub-34"
-						data-tests="#mol-timing-synchronization,#mol-timing-synchronization_fxl,#mol-timing-synchronization_svg,#mol-timing-synchronization_svg-fxl,#mol-timing-synchronization_multiple_audio,#mol-timing-synchronization_multiple_audio-fxl"
-						>Reading systems MUST render immediate children of the [^body^] element [[epub-34]] in a
-						sequence. A [^seq^] element's [[epub-34]] children MUST be rendered in sequence, and playback
-						completes when the last child finishes playing. Reading system MUST render a [^par^] element's
-						[[epub-34]] children in parallel (with each starting at the same time), and playback completes
-						when all the children finish playing. Reading system playback of the media overlay document
-						completes when the <code>body</code> element's last child finishes playing.</p>
-				</section>
-
-				<section id="sec-rsconf-rendering-audio">
-					<h5>Rendering audio</h5>
-
-					<p id="mol-audio" data-cite="epub-34" data-tests="#mol-audio">When presented with a media overlay
-						[^audio^] element [[EPUB-34]], reading systems MUST play the audio resource referenced by the
-							<code>src</code> attribute, starting at the clip offset time given by the <a
-							data-cite="epub-34#attrdef-smil-clipBegin"><code>clipBegin</code></a> attribute and ending
-						at the clip offset time given by the <a data-cite="epub-34#attrdef-smil-clipEnd"
-								><code>clipEnd</code></a> attribute [[epub-34]].</p>
-
-					<p>In addition:</p>
-
+				<div id="confreq-rs-epub3-mo-ignore" data-tests="#mol-ignore">
+					<p>If a reading system does not support media overlays, it MUST ignore both:</p>
 					<ul>
-						<li id="mol-audio-no-clipbegin" data-tests="#mol-audio-no-clipbegin">
-							<p>If a <code>clipBegin</code> attribute is not set, reading systems MUST assume the value
-									"<code>0</code>".</p>
-						</li>
-						<li id="mol-audio-no-clipend" data-tests="#mol-audio-no-clipend">
-							<p>If a <code>clipEnd</code> attribute is not set, reading systems MUST assume the value to
-								be the full duration of the physical media.</p>
-						</li>
-						<li id="mol-audio-exceeding-clipend" data-tests="#mol-audio-exceeding-clipend">
-							<p>If the value of <code>clipEnd</code> exceeds the full duration of the physical media,
-								reading systems MUST assume its value to be the full duration of the physical media.</p>
-						</li>
+						<li>the <a data-cite="epub-34#attrdef-item-media-overlay"><code>media-overlay</code>
+								attribute</a> on [=EPUB manifest | manifest=] [^item^] elements [[epub-34]]; and</li>
+						<li><code>item</code> elements where the <code>media-type</code> attribute value equals
+								<code>application/smil+xml</code>.</li>
 					</ul>
+				</div>
 
-					<p>User-controllable audio playback options SHOULD include timescale modification, in which the user
-						can alter the playback rate without distorting the pitch. The suggested range is half-speed to
-						double-speed.</p>
+				<section id="sec-behaviors-loading">
+					<h4>Loading the media overlay</h4>
+
+					<p id="confreq-rs-loading-mol" data-tests="#mol-support_xhtml,#mol-support_xhtml-fxl">When a reading
+						system loads a [=package document=], it MUST refer to the [=EPUB manifest | manifest=] [^item^]
+						elements' [[epub-34]] <code>media-overlay</code> attributes to discover the corresponding media
+						overlays for [=EPUB content documents=].</p>
+
+					<p id="confreq-rs-xhtml-svg">
+						<span id="mol-xhtml-support" data-tests="#mol-support_xhtml,#mol-support_xhtml-fxl">Reading
+							systems MUST support playback for [=XHTML content documents=], and</span>
+						<span id="mol-svg-support">MAY support [=SVG content documents=].</span>
+					</p>
+
+					<p>
+						<span id="mol-support-xhtml-load"
+							data-tests="#mol-support_xhtml-load,#mol-support_xhtml-load-fxl"> Playback MUST start at the
+							media overlay element which corresponds to the desired EPUB content document starting point.
+							Note that the start of an EPUB content document could correspond to an element at the start
+							or in the middle of a media overlay. </span>
+						<span id="mol-support-xhtml-load-next"
+							data-tests="#mol-support_xhtml-load-next,#mol-support_xhtml-load-next-fxl"> When the media
+							overlay document finishes playing, the reading system SHOULD load the next EPUB content
+							document (as specified in the package document [=EPUB spine | spine=]) and also load its
+							corresponding media overlay document, provided that one is given. </span>
+					</p>
 				</section>
 
-				<section id="sec-rsconf-rendering-text">
-					<h5>Rendering EPUB content document elements</h5>
+				<section id="sec-behaviors-playback">
+					<h4>Basic playback</h4>
 
-					<p>When presented with a media overlay [^text^] element [[epub-34]] whose <code>src</code> attribute
-						contains a <a>URL-fragment string</a> referencing a specific part of an EPUB content document,
-						reading systems SHOULD ensure the referenced portion is visible in the [=viewport=]. In addition
-						to [[html]] element ID references and <a
-							href="https://www.w3.org/TR/SVG/linking.html#SVGFragmentIdentifiers">SVG Fragment
-							Identifiers</a> [[svg]], reading systems MAY support other fragment identifier schemes.</p>
+					<section id="sec-rsconf-timing-synch">
+						<h5>Timing and synchronization</h5>
 
-					<p id="mol-rendering-with-styling"
-						data-tests="#mol-css,#mol-timing-synchronization_fxl,#mol-timing-synchronization_svg,#mol-timing-synchronization_svg-fxl"
-						>During media overlays playback, reading systems with a viewport SHOULD add the class names
-						given by the metadata properties <a data-cite="epub-34#active-class"
-							><code>active-class</code></a> and <a data-cite="epub-34#playback-active-class"
-								><code>playback-active-class</code></a> [[epub-34]] to the appropriate elements, when
-						specified, in the [=EPUB content document=]. Conversely, the class names SHOULD be removed when
-						the playback state changes, as described in <a data-cite="epub-34#sec-docs-assoc-style"
-							>Associating style information</a> [[epub-34]].</p>
+						<p id="mol-timing-sync" data-cite="epub-34"
+							data-tests="#mol-timing-synchronization,#mol-timing-synchronization_fxl,#mol-timing-synchronization_svg,#mol-timing-synchronization_svg-fxl,#mol-timing-synchronization_multiple_audio,#mol-timing-synchronization_multiple_audio-fxl"
+							>Reading systems MUST render immediate children of the [^body^] element [[epub-34]] in a
+							sequence. A [^seq^] element's [[epub-34]] children MUST be rendered in sequence, and
+							playback completes when the last child finishes playing. Reading system MUST render a
+							[^par^] element's [[epub-34]] children in parallel (with each starting at the same time),
+							and playback completes when all the children finish playing. Reading system playback of the
+							media overlay document completes when the <code>body</code> element's last child finishes
+							playing.</p>
+					</section>
 
-					<p>The <code>active-class</code> and <code>playback-active-class</code> metadata properties are
-						OPTIONAL, and if omitted, reading system behavior is implementation-specific.</p>
+					<section id="sec-rsconf-rendering-audio">
+						<h5>Rendering audio</h5>
 
-					<p>Reading system behavior when a <a data-cite="epub-34#sec-media-overlays-fragids">fragment
-							identifier</a> [[epub-34]] does not reference an element is also
-						implementation-specific.</p>
+						<p id="mol-audio" data-cite="epub-34" data-tests="#mol-audio">When presented with a media
+							overlay [^audio^] element [[EPUB-34]], reading systems MUST play the audio resource
+							referenced by the <code>src</code> attribute, starting at the clip offset time given by the
+								<a data-cite="epub-34#attrdef-smil-clipBegin"><code>clipBegin</code></a> attribute and
+							ending at the clip offset time given by the <a data-cite="epub-34#attrdef-smil-clipEnd"
+									><code>clipEnd</code></a> attribute [[epub-34]].</p>
+
+						<p>In addition:</p>
+
+						<ul>
+							<li id="mol-audio-no-clipbegin" data-tests="#mol-audio-no-clipbegin">
+								<p>If a <code>clipBegin</code> attribute is not set, reading systems MUST assume the
+									value "<code>0</code>".</p>
+							</li>
+							<li id="mol-audio-no-clipend" data-tests="#mol-audio-no-clipend">
+								<p>If a <code>clipEnd</code> attribute is not set, reading systems MUST assume the value
+									to be the full duration of the physical media.</p>
+							</li>
+							<li id="mol-audio-exceeding-clipend" data-tests="#mol-audio-exceeding-clipend">
+								<p>If the value of <code>clipEnd</code> exceeds the full duration of the physical media,
+									reading systems MUST assume its value to be the full duration of the physical
+									media.</p>
+							</li>
+						</ul>
+
+						<p>User-controllable audio playback options SHOULD include timescale modification, in which the
+							user can alter the playback rate without distorting the pitch. The suggested range is
+							half-speed to double-speed.</p>
+					</section>
+
+					<section id="sec-mo-tts">
+						<h5>Rendering text-to-speech</h5>
+
+						<p id="mol-tts" data-cite="epub-34" data-tests="#mol-tts_multi,#mol-tts_single">When a media
+							overlay [^text^] element with no [^audio^] [[epub-34]] sibling element references text
+							within the target [=EPUB content document=], reading systems capable of text-to-speech (TTS)
+							playback SHOULD render the referenced text using TTS.</p>
+
+						<p>Reading systems SHOULD use the speech-related information provided in the target EPUB content
+							document to play the audio stream as part of the media overlay rendering.</p>
+
+						<div class="note">
+							<p>See <a data-cite="epub-tts-10#">EPUB 3 Text-to-Speech Support</a> [[epub-tts-10]] for
+								more information about supporting TTS technologies in [=EPUB publications=].</p>
+						</div>
+
+						<p>The media overlay <code>text</code> element's lifespan corresponds to the rendering time of
+							the associated speech synthesis. The implicit duration of the <code>text</code> element (and
+							by inference, of the parent <code>par</code> element) is therefore determined by the
+							execution of the Text-to-Speech engine, and cannot be known at authoring time (factors like
+							speech rate, pauses and other prosody parameters influence the audio output). This also
+							means that reading systems need to treat the <a data-cite="epub-34#duration"
+									><code>duration</code></a> property values set in the package document as
+							approximative when making use of them.</p>
+					</section>
+
+					<section id="sec-rsconf-rendering-text">
+						<h5>Rendering EPUB content document elements</h5>
+
+						<p>When presented with a media overlay [^text^] element [[epub-34]] whose <code>src</code>
+							attribute contains a <a>URL-fragment string</a> referencing a specific part of an EPUB
+							content document, reading systems SHOULD ensure the referenced portion is visible in the
+							[=viewport=]. In addition to [[html]] element ID references and <a
+								href="https://www.w3.org/TR/SVG/linking.html#SVGFragmentIdentifiers">SVG Fragment
+								Identifiers</a> [[svg]], reading systems MAY support other fragment identifier
+							schemes.</p>
+
+						<p id="mol-rendering-with-styling"
+							data-tests="#mol-css,#mol-timing-synchronization_fxl,#mol-timing-synchronization_svg,#mol-timing-synchronization_svg-fxl"
+							>During media overlays playback, reading systems with a viewport SHOULD add the class names
+							given by the metadata properties <a data-cite="epub-34#active-class"
+									><code>active-class</code></a> and <a data-cite="epub-34#playback-active-class"
+									><code>playback-active-class</code></a> [[epub-34]] to the appropriate elements,
+							when specified, in the [=EPUB content document=]. Conversely, the class names SHOULD be
+							removed when the playback state changes, as described in <a
+								data-cite="epub-34#sec-docs-assoc-style">Associating style information</a>
+							[[epub-34]].</p>
+
+						<p>The <code>active-class</code> and <code>playback-active-class</code> metadata properties are
+							OPTIONAL, and if omitted, reading system behavior is implementation-specific.</p>
+
+						<p>Reading system behavior when a <a data-cite="epub-34#sec-media-overlays-fragids">fragment
+								identifier</a> [[epub-34]] does not reference an element is also
+							implementation-specific.</p>
+					</section>
 				</section>
-			</section>
-
-			<section id="sec-behaviors-interaction">
-				<h4>Interacting with the EPUB content document</h4>
 
 				<section id="sec-rsconf-navigation">
-					<h5>Navigation</h5>
+					<h4>Navigating within EPUB content documents</h4>
 
 					<p id="mol-navigation" data-tests="#mol-navigation">Because the media overlay is closely linked to
 						the [=EPUB content document=], it is very easy for reading systems to locate a position in the
@@ -1900,58 +1963,36 @@
 					</div>
 				</section>
 
-				<section id="sec-text-to-speech">
-					<h5>Text-to-speech</h5>
+				<section id="sec-behaviors-skip-escape">
+					<h4>Skippability and escapability</h4>
 
-					<p id="mol-tts" data-cite="epub-34" data-tests="#mol-tts_multi,#mol-tts_single">When a media overlay
-						[^text^] element with no [^audio^] [[epub-34]] sibling element references text within the target
-						[=EPUB content document=], reading systems capable of text-to-speech (TTS) playback SHOULD
-						render the referenced text using TTS.</p>
+					<section id="sec-skippability">
+						<h5>Skippability</h5>
 
-					<p>Reading systems SHOULD use the speech-related information provided in the target EPUB content
-						document to play the audio stream as part of the media overlay rendering.</p>
+						<p id="mol-skipping-support">Reading systems SHOULD use the semantic information provided by
+							media overlay elements' [^/epub:type^] attribute to offer users the option of skipping
+							content.</p>
 
-					<div class="note">
-						<p>See <a data-cite="epub-tts-10#">EPUB 3 Text-to-Speech Support</a> [[epub-tts-10]] for more
-							information about supporting TTS technologies in [=EPUB publications=].</p>
-					</div>
+						<p id="mol-skipping-structure">When skipping of content is enabled, reading systems MUST
+							suppress playback of any <code>par</code> and <code>seq</code> elements whose
+								<code>epub:type</code> attribute contains a semantic that matches a skippable
+							structure.</p>
+					</section>
 
-					<p>The media overlay <code>text</code> element's lifespan corresponds to the rendering time of the
-						associated speech synthesis. The implicit duration of the <code>text</code> element (and by
-						inference, of the parent <code>par</code> element) is therefore determined by the execution of
-						the Text-to-Speech engine, and cannot be known at authoring time (factors like speech rate,
-						pauses and other prosody parameters influence the audio output). This also means that reading
-						systems need to treat the <a data-cite="epub-34#duration"><code>duration</code></a> property
-						values set in the package document as approximative when making use of them.</p>
-				</section>
-			</section>
+					<section id="sec-escapability">
+						<h5>Escapability</h5>
 
-			<section id="sec-behaviors-skip-escape">
-				<h4>Skippability and escapability</h4>
-
-				<section id="sec-skippability">
-					<h5>Skippability</h5>
-
-					<p id="mol-skipping-support">Reading systems SHOULD use the semantic information provided by media
-						overlay elements' [^/epub:type^] attribute to offer users the option of skipping content.</p>
-
-					<p id="mol-skipping-structure">When skipping of content is enabled, reading systems MUST suppress
-						playback of any <code>par</code> and <code>seq</code> elements whose <code>epub:type</code>
-						attribute contains a semantic that matches a skippable structure.</p>
-				</section>
-
-				<section id="sec-escapability">
-					<h5>Escapability</h5>
-
-					<p>
-						<span id="mol-escaping-support">While playing media overlays, reading systems SHOULD offer users
-							the option to leave ("escape") <a data-cite="epub-34#sec-escapability">escapable
-								structures</a> [[epub-34]], which are determined by the presence of an [^/epub:type^]
-							attribute [[epub-34]] with a value from the escapable structures list.</span>
-						<span id="mol-escaping-structure">If a user opts to escape from an escapable structure, then the
-							reading system MUST continue playback with the next sequential element after the
-							structure.</span>
-					</p>
+						<p>
+							<span id="mol-escaping-support">While playing media overlays, reading systems SHOULD offer
+								users the option to leave ("escape") <a data-cite="epub-34#sec-escapability">escapable
+									structures</a> [[epub-34]], which are determined by the presence of an
+								[^/epub:type^] attribute [[epub-34]] with a value from the escapable structures
+								list.</span>
+							<span id="mol-escaping-structure">If a user opts to escape from an escapable structure, then
+								the reading system MUST continue playback with the next sequential element after the
+								structure.</span>
+						</p>
+					</section>
 				</section>
 			</section>
 		</section>
