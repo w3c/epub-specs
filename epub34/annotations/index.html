@@ -6,7 +6,8 @@
 		<title> EPUB Annotations 3.4 </title>
 		<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove">
 		</script>
-		<script src="../../common/js/css-inline.js" class="remove">
+		<script src="../../common/js/css-inline.js" class="remove"></script>
+        <script src="../../common/js/add-caution-hd.js" class="remove"></script>
 		</script>
 		<script class="remove">
             var respecConfig = {
@@ -17,10 +18,10 @@
                 noRecTrack: false,
                 edDraftURI: "https://w3c.github.io/epub-specs/epub34/annotations/",
                 copyrightStart: "2026",
-                editors:[ {
+                editors: [{
                     name: "Laurent Le Meur",
                     company: "EDRLab",
-                    companyURL: "https://www.edrlab.org",
+                    companyURI: "https://www.edrlab.org",
                     "w3cid": 91888
                 },{
                     name: "Ivan Herman",
@@ -28,7 +29,7 @@
                     company: "W3C",
                     w3cid: 7382,
                     orcid: "0000-0003-0782-2704",
-                    companyURL: "https://www.w3.org",
+                    companyURI: "https://www.w3.org",
                 }],
                 includePermalinks: true,
                 permalinkEdge: true,
@@ -38,7 +39,7 @@
                     branch: "main"
                 },
                 preProcess:[inlineCustomCSS],
-                testSuiteURI: "https://w3c.github.io/epub-tests/index.html",
+                testSuiteURL: "https://w3c.github.io/epub-tests/index.html",
                 xref: {
                     profile: "web-platform",
                     specs:[ "epub-34"]
@@ -49,11 +50,20 @@
                         "authors": [
                             "Laurent Le Meur"
                         ],
-                            "title": "EPUB Annotations Use Cases and Requirements",
-                                "href": "https://w3c.github.io/epub-specs/wg-notes/annotations-ucr/",
-                                    "date": "26 November 2025",
-                                        "publisher": "W3C"
+                        "title": "EPUB Annotations Use Cases and Requirements",
+                        "href": "https://w3c.github.io/epub-specs/wg-notes/annotations-ucr/",
+                        "date": "26 November 2025",
+                        "publisher": "W3C"
                     },
+                    "scroll-to-text-fragment" : {
+                        "authors": [
+                            "Nick Burris",
+                            "David Bokan"
+                        ],
+                        "title" : "URL Fragment Text Directives",
+                        "publisher" : "W3C",
+                        "href" : "https://wicg.github.io/scroll-to-text-fragment/"
+                    }
                 }
             };</script>
 	</head>
@@ -131,7 +141,7 @@
 							<code> id </code>
 						</td>
 						<td>The identity of the annotation. A uuid formatted as a URN is RECOMMENDED.</td>
-						<td>URI</td>
+						<td>URL</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
@@ -250,7 +260,7 @@
 							<code> id </code>
 						</td>
 						<td> The identity of the creator. </td>
-						<td> URI </td>
+						<td> URL </td>
 						<td> Yes </td>
 					</tr>
 					<tr>
@@ -293,7 +303,7 @@
 							<code> <dfn>source</dfn> </code>
 						</td>
 						<td> The identity of the target EPUB resource. </td>
-						<td> URI </td>
+						<td> URL </td>
 						<td> Yes </td>
 					</tr>
 					<tr>
@@ -317,13 +327,14 @@
 			<p> A Target with no Selector indicates that the annotation applies to the entire
 				target resource. </p>
             <section>
+
 			<h4 id="1-3-1-source"> Source </h4>
 			<p> The target resource MUST be identified by the URL of an existing resource in the
 				EPUB package. It MUST be one of the `item/@href` values of the [^manifest^] element as
                 defined in [[epub-34]].</p>
 
-            <aside class="example" title=" the source of the annotation is the relative URL identifying an HTML document in an EPUB">
-			<pre>
+                <aside class="example" title=" the source of the annotation is the relative URL identifying an HTML document in an EPUB">
+				<pre>
                 {
                     "@context": "https://www.w3.org/ns/epub-anno.jsonld",
                     "type": "Annotation",
@@ -337,131 +348,429 @@
                         }
                     }
                 }
-			</pre>
-            </aside>
+				</pre>
+                </aside>
             </section>
+
             <section>
-			<h4 id="1-3-2-selector"> Selector </h4>
-			<p> An annotation refers to a segment of a resource, which is identified by one or more
-                <a data-cite="annotation-model#selectors">Selectors</a>. The nature of the Selectors and methods to describe segments depend on
-				the resource type. Providing more than one Selector allows an annotation software to
-				choose the most accurate selector from those it can handle and helps accommodate
-				evolutions on the annotated resource. </p>
-			<p> Annotation selectors are specified in <a data-cite="annotation-model#selectors">Web
-					Annotation Data Model</a>. This specification retains
-				selectors deemed useful for annotating publications and details on how to use these
-				selectors. </p>
-			<p class="note">New selectors will undoubtedly be defined in the coming months after
-				discussion with members of the W3C Publishing Maintenance Working Group.</p>
+			<h4 id="1-3-2-selector">Selector</h4>
 
-			<!--
-			<h5 id="1-3-2-1-text-quote-selector"> Text Quote Selector </h5>
-			<p> This Selector describes a range of text by copying it and including some of the
-				text immediately before (a prefix) and after (a suffix) it to distinguish between
-				multiple copies of the same sequence of characters. </p>
-			<p> Whitespaces present in the source document are preserved in the “prefix”, “exact”,
-				and “suffix” segments and are represented as per the JSON Grammar (e.g. <code> \n
-				</code> , <code> \t </code> etc.). </p>
-			<p> Note: There is no restriction on the preceding and following text that can be
-				included in the selector, but this amount should be left as low as possible. </p>
-			<p> Important: This selector contains complete annotated text segments and, therefore,
-				must not be used when the publication is protected by a DRM, which limits the number
-				of characters that may be copied.</p>
+			<p>
+                An annotation refers to a segment of a resource, which is identified by one or more
+                <a data-cite="annotation-model#selectors">Selectors</a>.
+				The nature of the Selectors and methods to describe segments depend on
+				the resource type. Providing more than one Selectors allows an annotation software to
+				choose the most accurate selector from those it can handle and helps to accommodate
+				evolutions on the annotated resource.
+            </p>
+			<p>
+                Several annotation selectors are specified in the
+                <a data-cite="annotation-model#selectors">Web Annotation Data Model</a>.
+				This specification retains selectors (with possible restrictions) deemed useful for
+                annotating EPUB publications, and details on how to use these selectors.
+                <!-- It also defines new selectors as needed. -->
+            </p>
+			<!-- <p class="note">
+                New selectors will undoubtedly be defined in the coming months after
+				discussion with members of the W3C Publishing Maintenance Working Group.
+            </p> -->
 
-			<p> Sample 3: A text segment represented as a TextQuoteSelector. </p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					    "type": "TextQuoteSelector",
-					    "prefix": "trouver quelqu’un    \n  \t\t    comme vous. ",
-					    "exact": "Combien de fois \n\n    ne m’avait-il",
-					    "suffix": " pas \n\n      reproché de travailler ma"
-					    }
-					  ]
-					}
-				</code>
-			</pre>
-			<h5 id="1-3-2-2-cssselector-textpositionselector"> CssSelector +
-				TextPositionSelector </h5>
-			<p>References in the Web Annotation Data Model: <a
-					href="https://www.w3.org/TR/annotation-model/#css-selector"> CSS Selector </a> ,
-					<a href="https://www.w3.org/TR/annotation-model/#text-position-selector"> Text
-					Position Selector </a> , <a
-					href="https://www.w3.org/TR/annotation-model/#refinement-of-selection">
-					Refinement of Selection </a>
-			</p>
-			<p>A TextPositionSelector describes a range of text by recording the start and end
-				positions of the selection in the stream. Position 0 would be immediately before the
-				first character, position 1 would be immediately before the second character, and so
-				on. The start character is thus included in the list, but the end character is not.
-				The Web Annotation Data Model specifies that the selection of the text MUST be in
-				terms of <strong> unicode code points </strong> (the &quot;character number&quot;),
-				not in terms of code units (that number expressed using a selected data type).
-				Selections SHOULD NOT start or end in the middle of a grapheme cluster. The
-				selection MUST be based on the logical order of the text, rather than the visual
-				order, especially for bidirectional text.</p>
-			<p>In an HTML resource, rebuilding a DOM range from a purely textual range using tree
-				walking is cumbersome and is not an optimal solution. Such a selector can only be
-				efficient if it is used a refinement of a CSS Selector that targets the closest
-				common ancestor of the element nodes containing the start and end characters, and if
-				the segment of text is small enough. The use of the closest common ancestor element
-				also makes the selector more robust against evolutions of the HTML resource. </p>
+            <section>
+                <h5>Fragment Selector</h5>
+                <p>
+                    The <dfn>Fragment Selector object</dfn> uses the fragment part of an URL defined by the
+                    representation's media type. This object is identical in structure to the
+                    <a data-cite="annotation-model#fragment-selector">Fragment Selector</a> defined by [[[annotation-model]]],
+                    except that it restricts the media types it uses.
+                </p>
 
-			<p>Sample 4: A CSS Selector refined by a Text Position Selector:</p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					      "type": "CssSelector",
-					      "value": "#intro > p:nth-child(2)",
-					      "refinedBy": {
-					        "type": "TextPositionSelector",
-					        "start": 4,
-					        "end": 19
-					      }
-					    }
-					  ]
-					}
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Format </th>
+                            <th> Required? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code> type </code>
+                            </td>
+                            <td>The RDF structure type. It MUST be "FragmentSelector".</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>value</code> </code>
+                            </td>
+                            <td>The contents of the fragment component of an URL that describes the selection.
+                            The selector MUST have exactly 1 <code>value</code> property.</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <dfn>conformsTo</dfn> </code>
+                            </td>
+                            <td>
+                                Provides the reference to the specification that defines the syntax of the URL fragment in the
+                                <code>value</code> property. The selector SHOULD have exactly 1 conformsTo link to
+                                the specification that defines the syntax of the fragment and MUST NOT have more than 1.
+                            </td>
+                            <td>
+                                One of the URL strings listed in the table below.
+                            </td>
+                            <td> No </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-				</code>
-			</pre>
+                <p>
+                    The following URLs are the specifications that define the semantics of fragments, and hence may be used with the
+                    [^conformsTo^] property. Other URLs MUST NOT be used.
+                </p>
+
+                <table id="#tbl-core-media-types">
+                    <thead>
+                        <th>Name</th>
+                        <th>Fragment Specification</th>
+                        <th>Description</th>
+                    </thead>
+                    <tbody>
+                        <tr id="HTML_fragment_format">
+                            <td>HTML</td>
+                            <td>http://tools.ietf.org/rfc/rfc3236</td>
+                            <td>[[rfc3236]]. Example: <code>namedSection</code></td>
+                        </tr>
+                        <tr id="media_fragment_format">
+                            <td>Media</td>
+                            <td>http://www.w3.org/TR/media-frags/</td>
+                            <td>[[media-frags]]. Example: <code>xywh=50,50,640,480</code> or <code>t=10,20</code></td>
+                        </tr>
+                        <tr id="SVG_fragment_format">
+                            <td>SVG</td>
+                            <td>http://www.w3.org/TR/SVG/</td>
+                            <td>[[svg11]]. Example: <code>svgView(viewBox(50,50,640,480))</code></td>
+                        </tr>
+                        <tr id="text_fragment_format">
+                            <td>Text fragment</td>
+                            <td>https://wicg.github.io/scroll-to-text-fragment/</td>
+                            <td>[[scroll-to-text-fragment]]. Example: <code>:~:text=an%20example,text%20fragment</code></td>
+                        </tr>
+                     </tbody>
+                </table>
+
+                <p>The integration of text fragments into the specification is AT RISK.</p>
+
+                <div class="caution">
+                    <p>
+                        This selector, used with text fragments, must be used with great care when the number
+                        of characters that can be copied from the publication is constrained by the publisher.
+                    </p>
+                </div>
+
+                <div class="issue">
+                    <p>
+                        The reason the integration of text fragments into the specification is at risk is two-fold.
+                    </p>
+
+                    <ol>
+                        <li>
+                            The specification is currently a Draft Community Group Report. While there is an activity to include it into
+                            the HTML Standard [[html]], this is still ongoing. In may not be finalized by the time this specification goes
+                            to Recommendation.
+                            See also <a href="https://github.com/whatwg/html/pull/11895">whatwg#11895</a>.
+                        </li>
+                        <li>
+                            The integration of text fragments selector in reading systems is very challenging:
+                            the absence of a standard API in web browsers makes mapping a text fragment to a DOM Range difficult.
+                            Rebuilding a DOM range from a textual range using tree walking is suboptimal,
+                            and the existing polyfills are not well-maintained. This fragment specification cannot be
+                            retained unless a public API is defined and implemented in major web browsers.
+                            See also <a href="https://github.com/whatwg/html/issues/8282">whatwg#8282</a>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="informative">
+                <h5>CSS Selector</h5>
+                <p>
+                    One of the most common ways to select elements in the HTML Document Object Model is to use CSS Selectors
+                    [[CSS3-selectors]]. This specification reuses the <a data-cite="annotation-model#css-selector"><code>CssSelector</code></a>, as defined in the [[[annotation-model]]] specification, but lists it here for an easier readability.
+                </p>
+
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Format </th>
+                            <th> Required? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code> type </code>
+                            </td>
+                            <td>The RDF structure type. It must be "CssSelector".</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>value</code> </code>
+                            </td>
+                            <td>The CSS selection path to the target.
+                                The selector must have exactly 1 <code>value</code> property.</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="informative">
+                <h5>Text Quote Selector</h5>
+                <p>
+                    This Selector describes a range of text by copying it, and including some of the text immediately before (a prefix) and
+                    after (a suffix) it to distinguish between multiple copies of the same sequence of characters.
+                    This specification reuses the <a data-cite="annotation-model#text-quote-selector"><code>TextQuoteSelector</code></a>,
+                    as defined in the [[[annotation-model]]] specification, but lists it here for an easier readability.
+                </p>
+                <p>
+                    The selection of the text must be in terms of unicode code points (the "character number").
+                </p>
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Format </th>
+                            <th> Required? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code> type </code>
+                            </td>
+                            <td>The RDF structure type. It must be "TextQuoteSelector".</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>exact</code> </code>
+                            </td>
+                            <td>
+                                A copy of the text which is being selected, after normalization.
+                                Each <code>TextQuoteSelector</code> must have exactly 1 <code>exact</code> property.
+                            </td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>prefix</code> </code>
+                            </td>
+                            <td>
+                                A snippet of text that occurs immediately before the text which is being selected.
+                                Each <code>TextQuoteSelector</code> should have exactly 1 <code>prefix</code> property, and must not have more than 1.
+                            </td>
+                            <td> string </td>
+                            <td> No </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>suffix</code> </code>
+                            </td>
+                            <td>
+                                A snippet of text that occurs immediately after the text which is being selected.
+                                Each <code>TextQuoteSelector</code> SHOULD have exactly 1 <code>suffix</code> property, and MUST NOT have more
+                                than 1.
+                            </td>
+                            <td> string </td>
+                            <td> No </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="note">
+                    This selector is equivalent to the usage of a [^Fragment Selector object^] conforming to <a href="#text_fragment_format">Text Fragments</a>. The advantage of using this selector
+                    is that there is no need for the percent-encoding of the exact, prefix, and suffix texts.
+                </p>
+                <p class="issue">
+                    See the caveats on using text fragments in the section on <a href="#fragment-selector">Fragment Selectors</a>.
+                </p>
+            </section>
+
+            <section class="informative">
+                <h5>Text Position Selector</h5>
+                <p>
+                    This Selector describes a range of text by recording the start and end positions of the selection in the stream.
+                    Position 0 would be immediately before the first character, position 1 would be immediately before the second character,
+                    and so on. The start character is thus included in the list, but the end character is not.
+                    This specification reuses the <a data-cite="annotation-model#text-position-selector"><code>TextPositionSelector</code></a>,
+                    as defined in the [[[annotation-model]]] specification, but lists it here for an easier readability.
+                </p>
+                <p>
+                    For HTML content, the stream of characters correspond to the output
+                    of the <a href="https://html.spec.whatwg.org/multipage/dom.html#the-innertext-idl-attribute"><code>innerText</code>
+                    attribute</a> on the <code>body</code> element. The selection of the text must be in terms of unicode code points (the "character number").
+                    Selections should not start or end in the middle of a grapheme cluster.
+                    The selection must be based on the logical order of the text, rather than the visual
+                    order, especially for bidirectional text.
+                </p>
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Format </th>
+                            <th> Required? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code> type </code>
+                            </td>
+                            <td>The RDF structure type. It must be "TextPositionSelector".</td>
+                            <td> string </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>start</code> </code>
+                            </td>
+                            <td>
+                                The starting position of the segment of text. The first character in the full text is character position 0, and the
+                                character is included within the segment.
+                                Each <code>TextPositionSelector</code> must have exactly 1 <code>start</code> property, and the value must be a non-negative integer.
+                            </td>
+                            <td> non-negative integer </td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <code>end</code> </code>
+                            </td>
+                            <td>
+                                The end position of the segment of text. The character is not included within the segment.
+                                Each <code>TextPositionSelector</code> must have exactly 1 <code>end</code> property, and the value must be a
+                                non-negative integer.
+                            </td>
+                            <td> non-negative integer </td>
+                            <td> Yes </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h5>Refinement of Selection</h5>
+                <p>
+                    It may be easier, more reliable, or more accurate to specify the segment of interest of a resource as a selection of a
+                    selection, rather than as a selection of the complete resource. This is accomplished by having selectors chained together,
+                    where each refines the results of the previous one.
+                </p>
+                <p>
+                    The [[[annotation-model]]] specification defines the <a data-cite="annotation-model#refinement-of-selection"><code>refinedBy</code></a> property. This specification restricts the possible values of the property to include only those selectors that are specified by, or listed in this specification.
+                </p>
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Format </th>
+                            <th> Required? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <dfn>refinedBy</dfn>
+                            </td>
+                            <td>
+                                The relationship between a broader selector and the more specific selector that SHOULD be applied to the results of the
+                                first. A Selector MAY be refined by 1 or more other Selectors. If more than 1 is given, then they are considered to be
+                                alternatives that will result in the same selection.
+                            </td>
+                            <td> "FragmentSelector" | <br/>
+                                "CssSelector" | <br/>
+                                "TextQuoteSelector" | <br/>
+                                "TextPositionSelector"<br/>
+                            </td>
+                            <td> No </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <aside class="example" title=" a CSS Selector refined by a Text Position Selector">
+                    <pre>
+                        <code class="lang-json">
+                            {
+                                "selector": [
+                                    {
+                                        "type": "CssSelector",
+                                        "value": "#intro > p:nth-child(2)",
+                                        "refinedBy": {
+                                            "type": "TextPositionSelector",
+                                            "start": 4,
+                                            "end": 19
+                                        }
+                                    }
+                                ]
+                            }
+                        </code>
+                    </pre>
+                </aside>
 			<p>This selects "q" from "quick" as start position and
 				"x" from "fox" as end position in the following HTML snippet: </p>
-			<pre>
-				<code class="lang-html">
-					<div id="intro">
-					  <p>Some text.</p>
-					  <p>The quick <em>brown</em> fox jumps over the lazy dog.</p>
-					  <p>The lazy <em>white</em> dog sleeps with the crazy fox.</p>
-					</div>
-				</code>
-			</pre>
+<pre>
+&lt;div id="intro">
+    &lt;p>Some text.&lt;/p>
+    &lt;p>The quick &lt;em>brown&lt;/em> fox jumps over the lazy dog.&lt;/p>
+    &lt;p>The lazy &lt;em>white&lt;/em> dog sleeps with the crazy fox.&lt;/p>
+&lt;/div>
+</pre>
 
-			<h5 id="1-3-2-3-progressionselector"> ProgressionSelector </h5>
+            </section>
+
+
+			<!-- <h5 id="1-3-2-3-progressionselector"> ProgressionSelector </h5>
 			<p>A ProgressionSelector contains a decimal value representing the annotation's
 				position as a percentage of the total size of the resource.</p>
 			<p>While such positioning is imprecise and does not correctly identify a fragment, it
 				is helpful to order annotations in a list and help position the annotation near the
 				corresponding fragment if other selectors fail.</p>
 
-			<p>Sample 5: This ProgressionSelector indicates that the annotation is positioned just
-				after the middle of the resource:</p>
-			<pre>
-				<code class="lang-json">
-					{
-					  "selector": [
-					    {
-					    "type": "ProgressionSelector",
-					    "value": 0.534234255
-					    }
-					  ]
-					}
-				</code>
-			</pre>
-			-->
+      <aside class="example" title=" a ProgressionSelector indicates that the annotation is positioned just
+				after the middle of the resource">
+				<pre>
+					<code class="lang-json">
+						{
+							"selector": [
+								{
+								"type": "ProgressionSelector",
+								"value": 0.534234255
+								}
+							]
+						}
+					</code>
+				</pre>
+			</aside>
+
+			<p class="note"> This selector dos not exist in the [[annotation-model]]. </p>
+			<p class="issue"> Should we also define a global progression selector, relative to the whole publication?
+				 This would help synchronize annotations with publications distributed in a format
+				 different from reflowable EPUB, such as PDF. It would make sense to define it as Meta information (still to be defined)</p>  -->
 
 			<!--
 			<h4 id="1-3-3-meta"> Meta </h4>
@@ -562,6 +871,7 @@
 			-->
             </section>
             </section>
+
             <section>
 
 			<h3 id="1-4-body"> Body </h3>
@@ -698,7 +1008,7 @@
 						</td>
 						<td> The identity of the annotation set. A uuid formatted as a URN is
 							RECOMMENDED. </td>
-						<td> URI </td>
+						<td> URL </td>
 						<td> Yes </td>
 					</tr>
 					<tr>
@@ -772,7 +1082,7 @@
 						</td>
 						<td> The identity of the generator software. The recommended value is the
 							GitHub URL of the application source code. </td>
-						<td> URI </td>
+						<td> URL </td>
 						<td> Yes </td>
 					</tr>
 					<tr>
@@ -1039,9 +1349,18 @@
 
 		<section>
 			<h1 id="5-json-schema"> JSON Schema </h1>
+
+            <p>T.B.D.</p>
 		</section>
 
-		<section class="appendix">
+        <section>
+            <h1>Security and Privacy Considerations</h1>
+
+            <p>T.B.D.</p>
+        </section>
+
+
+		<!-- <section class="appendix">
 			<h1 id="6-references">Further readings </h1>
 			<p> Open Annotation in EPUB, 2015: <a href="https://idpf.org/epub/oa/">
 					https://idpf.org/epub/oa/ </a>
@@ -1066,7 +1385,10 @@
 			<p> EPUB 3.3, 2023: <a href="https://www.w3.org/TR/epub-33/">
 					https://www.w3.org/TR/epub-33/ </a>
 			</p>
-		</section>
+			<p> URL Fragment Text Directives, 2023: <a href="https://wicg.github.io/scroll-to-text-fragment/">
+					https://wicg.github.io/scroll-to-text-fragment/ </a>
+			</p>
+		</section> -->
         <section id="index"></section>
 	</body>
 </html>
