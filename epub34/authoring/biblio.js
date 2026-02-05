@@ -84,6 +84,11 @@ var biblio = {
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip",
 		"date": "2006-06-01"
 	},
+	"media-frags": {
+		"title": "Media Fragments URI 1.0 (basic)",
+		"href": "https://www.w3.org/TR/media-frags/",
+		"date": "2012-09-25"
+	},
 	"nvdl": {
 		"title": "ISO/IEC 19757-4: NVDL (Namespace-based Validation Dispatching Language)",
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c038615_ISO_IEC_19757-4_2006(E).zip",
