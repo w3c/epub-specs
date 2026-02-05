@@ -2,6 +2,9 @@
 @prefix oa: <http://www.w3.org/ns/oa#> .
 @prefix as: <http://www.w3.org/ns/activitystreams#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rfc: <https:/tools.ietf.org/rfc/> .
+@prefix tr: <https://www.w3.org/TR/> .
+@prefix wcig: <https://wicg.github.io/> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -15,7 +18,7 @@ ea: a owl:Ontology ;
     dc:title """EPUB Annotations Vocabulary"""@en ;
     dc:description """RDFS [[rdf-schema]] vocabulary formalizing the terms defined in the [[[epub-ann]]] specification. The vocabulary is a "profile" of the W3C [[[annotation-vocab]]]"""^^rdf:HTML ;
     rdfs:seeAlso <https://www.w3.org/TR/epub-ann-vocab/> ;
-    dc:date "2026-01-15"^^xsd:date ;
+    dc:date "2026-02-05"^^xsd:date ;
 .
 
 # Property definitions
@@ -24,6 +27,16 @@ ea:about a rdf:Property, owl:ObjectProperty ;
     rdfs:range ea:About ;
     rdfs:label "Information on the EPUB publication" ;
     rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#dfn-about>, <http://www.w3.org/ns/ea#> ;
+    vs:term_status "stable" ;
+.
+
+ea:conformsTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:subPropertyOf dcterms:conformsTo ;
+    rdfs:domain ea:Selector ;
+    rdfs:range ea:AcceptableFragmentStandards ;
+    rdfs:label "Conforms to" ;
+    rdfs:comment """<div>The range of acceptable media is restricted for EPUB</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#dfn-conformsto>, <http://www.w3.org/ns/ea#> ;
     vs:term_status "stable" ;
 .
 
@@ -189,6 +202,21 @@ ea:Creator a rdfs:Class ;
     vs:term_status "stable" ;
 .
 
+ea:FragmentSelector a rdfs:Class ;
+    rdfs:label "Restricted version of the oa:FragmentSelector, that restricts the list of usable media types" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#dfn-fragment-selector-object>, <http://www.w3.org/ns/ea#> ;
+    vs:term_status "stable" ;
+.
+
+ea:AcceptableFragmentStandards a rdfs:Class, owl:Class ;
+    rdfs:subClassOf dcterms:Standard ;
+    owl:oneOf (rfc:rfc3236 tr:media-frags/ tr:SVG/ wcig:scroll-to-text-fragment/) ;
+    rdfs:label "Acceptable fragment standards" ;
+    rdfs:comment """<div>Defines the acceptable values as fragment types in Fragment Selectors</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#dfn-fragment-selector>, <http://www.w3.org/ns/ea#> ;
+    vs:term_status "stable" ;
+.
+
 ea:Meta a rdfs:Class ;
     rdfs:label "Meta" ;
     rdfs:comment """<div>this class is currently undefined...</div>"""^^rdf:HTML ;
@@ -203,10 +231,9 @@ ea:Generator a rdfs:Class ;
 .
 
 ea:Selector a rdfs:Class ;
-    rdfs:subClassOf [ a owl:Class; owl:unionOf (oa:FragmentSelector oa:CssSelector oa:TextQuoteSelector) ] ;
-    rdfs:label "A restrictive subset of selectors, usable in EPUB" ;
-    rdfs:comment """<div>The final list of selectors for EPUB is still to be defined, this is only a placeholder for now.</div>"""^^rdf:HTML ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#dfn-target-object>, <http://www.w3.org/ns/ea#> ;
+    rdfs:subClassOf [ a owl:Class; owl:unionOf (ea:FragmentSelector oa:CssSelector oa:TextQuoteSelector oa:TextPositionSelector) ] ;
+    rdfs:label "A restrictive subset of selectors that are usable in EPUB" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/epub-ann/#1-3-2-selector>, <http://www.w3.org/ns/ea#> ;
     vs:term_status "stable" ;
 .
 
@@ -283,10 +310,12 @@ ea:outline a rdfs:Resource ;
 <https://www.w3.org/ns/epub-anno.jsonld> a jsonld:Context ;
     schema:mentions
         ea:About,
+        ea:AcceptableFragmentStandards,
         ea:Annotation,
         ea:AnnotationSet,
         ea:Body,
         ea:Creator,
+        ea:FragmentSelector,
         ea:Generator,
         ea:Meta,
         ea:Selector,
@@ -294,6 +323,7 @@ ea:outline a rdfs:Resource ;
         ea:about,
         ea:blue,
         ea:color,
+        ea:conformsTo,
         ea:creator,
         ea:generator,
         ea:green,
