@@ -885,17 +885,12 @@
 					<p>The opposite of core media type resources are foreign resources. These are resources that reading
 						systems are not guaranteed to support the rendering of. As a result, similar to how using
 						foreign content documents in the spine requires fallbacks to ensure their rendering, using
-						foreign resources in content documents also requires fallbacks. These fallbacks are provided in
-						one of two ways: using the capabilities of the host format or via manifest fallbacks.</p>
+						foreign resources in content documents also requires fallbacks. These fallbacks are provided
+						using the capabilities of the host format. Many HTML elements, for example, have intrinsic
+						fallback capabilities. One example is the [^picture^] element&#160;[[html]], which allows
+						multiple alternative image formats to be specified.</p>
 
-					<p>The preferred method is to use the fallback capabilities of the host format. Many HTML elements,
-						for example, have intrinsic fallback capabilities. One example is the [^picture^]
-						element&#160;[[html]], which allows multiple alternative image formats to be specified.</p>
-
-					<p>If an intrinsic fallback method is not available, it is also possible to use manifest fallbacks,
-						but this method, as <a href="#caution-fallbacks">cautioned against</a> in the previous section,
-						is discouraged. For more information about foreign resources, refer to <a
-							href="#sec-foreign-resources"></a>.</p>
+					<p>For more information about foreign resources, refer to <a href="#sec-foreign-resources"></a>.</p>
 
 					<p>Falling between core media type resources and foreign resources are exempt resources. These are
 						most closely associated with foreign resources, as there is no guarantee that reading systems
@@ -1212,26 +1207,21 @@
 					which is not guaranteed [=reading system=] support when used in an [=EPUB content document=] or
 					[=foreign content document=].</p>
 
-				<p id="confreq-cmt">Fallbacks MUST be provided for foreign resources, where fallbacks take one of the
-					following forms:</p>
-
-				<ul>
-					<li>
-						<p>intrinsic fallback mechanisms provided by the host format (e.g., [[?html]] elements often
-							provide the ability to reference more than one media type or to display an alternate
-							embedded message when a media type cannot be rendered); or</p>
-					</li>
-					<li>
-						<p><a href="#sec-manifest-fallbacks">manifest fallback chains</a> defined on [^item^] elements
-							in the [=package document=].</p>
-					</li>
-				</ul>
+				<p id="confreq-cmt">Fallbacks MUST be provided for foreign resources. Fallbacks are typically provided
+					using the intrinsic fallback mechanisms of the host format (e.g., [[?html]] elements often provide
+					the ability to reference more than one media type or to display an alternate embedded message when a
+					media type cannot be rendered).</p>
 
 				<div class="note">
 					<p>Refer to the [[html]] and [[svg]] specifications for the intrinsic fallback capabilities their
 						elements provide.</p>
 					<p><a href="#sec-intrinsic-fallbacks"></a> also provides additional information about how fallbacks
 						are interpreted for specific elements.</p>
+				</div>
+
+				<div class="note">
+					<p>Although the [=outdated=] <a href="#content-fallbacks">content fallbacks</a> feature can be used
+						to provide fallbacks for foreign resources, its use is strongly discouraged.</p>
 				</div>
 			</section>
 
@@ -1351,8 +1341,9 @@
 					<h5>Manifest fallbacks</h5>
 
 					<p>Manifest fallbacks are a feature of the [=package document=] that create a <dfn class="export"
-							>manifest fallback chain</dfn> for a [=publication resource=], allowing [=reading systems=]
-						to select an alternative format they can render.</p>
+							>manifest fallback chain</dfn> of alternative resources that a [=reading system=] can use in
+						place of a [=top-level content document=], allowing it to select a format it can render if the
+						default resource is not supported in the [=EPUB spine|spine=].</p>
 
 					<p>Fallback chains are created using the <a href="#attrdef-item-fallback"><code>fallback</code>
 							attribute</a> on [=EPUB Manifest | manifest=] [^item^] elements. This attribute references
@@ -1362,54 +1353,28 @@
 								<code>item</code>'s <code>fallback</code> attribute, represents both the full and
 							preferred fallback chain for that <code>item</code>.</span></p>
 
-					<p>There are two cases for manifest fallbacks:</p>
+					<p id="spine-fallbacks"
+						data-tests="#lay-roll-images-mixed,#lay-roll-images-in-spine,#pp-roll-images-mixed,#pp-roll-images-in-spine"
+						>A [=foreign content document=] MUST specify a fallback chain that MUST include at least one
+						[=EPUB content document=] to ensure that reading systems can always render the [=EPUB spine |
+						spine=] item.</p>
 
-					<dl>
-						<dt id="spine-fallbacks"
-							data-tests="#lay-roll-images-mixed,#lay-roll-images-in-spine,#pp-roll-images-mixed,#pp-roll-images-in-spine"
-							>Spine fallbacks</dt>
-						<dd>
-							<p>A [=foreign content document=] MUST specify a fallback chain that MUST include at least
-								one [=EPUB content document=] to ensure that reading systems can always render the
-								[=EPUB spine | spine=] item.</p>
-							<p>EPUB content documents MAY specify a fallback. For example, to provide a <a
-									href="#confreq-cd-scripted-flbk">fallback for scripted content</a>.</p>
-							<p>When a fallback chain includes more than one EPUB content document, the <a
-									href="#attrdef-properties"><code>properties</code> attribute</a> can be used to
-								differentiate the purpose of each.</p>
-						</dd>
+					<p>EPUB content documents MAY specify a fallback. For example, to provide a <a
+							href="#confreq-cd-scripted-flbk">fallback for scripted content</a>.</p>
 
-						<dt id="content-fallbacks">Content fallbacks</dt>
-						<dd>
-							<div class="note">
-								<p>The original reason for defining a content fallback mechanism was to handle foreign
-									resource images in the [[html]] [^img^] element. As HTML now has intrinsic fallback
-									mechanisms for images, such as the [^img/srcset^] attribute and [^source^] element,
-									the use of content fallbacks is strongly discouraged.</p>
-							</div>
-							<p>When elements that reference [=foreign resources=] do not have intrinsic fallback
-								capabilities, a content fallback MUST be provided. In this case, the fallback chain MUST
-								contain at least one [=core media type resource=].</p>
-							<p>Manifest fallbacks MAY also be provided for core media type resources. For example, to
-								allow reading systems to select from more than one image format.</p>
-						</dd>
-					</dl>
+					<p>When a fallback chain includes more than one EPUB content document, the <a
+							href="#attrdef-properties"><code>properties</code> attribute</a> can be used to
+						differentiate the purpose of each.</p>
 
-					<p>Regardless of the type of manifest fallback specified, fallback chains MUST NOT contain
-						self-references or circular references to <code>item</code> elements in the chain.</p>
-
-					<div class="note">
-						<p>As it is not possible to use manifest fallbacks for resources represented in <a
-								href="#sec-data-urls">data URLs</a>, foreign resources can only be represented as data
-							URLs where an intrinsic fallback mechanism is available.</p>
-					</div>
+					<p>Manifest fallback chains MUST NOT contain self-references or circular references to
+							<code>item</code> elements in the chain.</p>
 				</section>
 
 				<section id="sec-intrinsic-fallbacks">
 					<h4>Intrinsic fallbacks</h4>
 
-					<p>The following sections provide additional clarifications about the intrinsic fallback
-						requirements of specific elements.</p>
+					<p>The following sections provide clarifications about the intrinsic fallback requirements of
+						specific elements in [[html]].</p>
 
 					<section id="sec-fallbacks-audio" data-epubcheck="true"
 						data-tests="https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L256,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L262,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L272">
@@ -1437,25 +1402,23 @@
 						data-tests="https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L280,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L285,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L290,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L296,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L302,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L308,https://w3c.github.io/epub-structural-tests/#03-resources_resources.feature_L313">
 						<h5>HTML <code>img</code> fallbacks</h5>
 
-						<p id="confreq-resources-cd-fallback-img">Due to the variety of sources that can be referenced
-							from the [[html]] [^img^] element, the following fallback conditions apply to its use:</p>
-						<ul>
-							<li>
-								<p>If it is the child of a [^picture^] element:</p>
-								<ul>
-									<li>it MUST reference core media type resources from its <code>src</code> and
-											<code>srcset</code> attributes when those attributes are set; and</li>
-									<li>each sibling [^source^] element MUST reference a [=core media type resource=]
-										from its <code>[^source/src^]</code> and <code>[^source/srcset^]</code>
-										attributes unless it specifies the MIME media type [[rfc2046]] of a [=foreign
-										resource=] in its <code>[^source/type^]</code> attribute.</li>
-								</ul>
-							</li>
+						<p id="confreq-resources-cd-fallback-img">To provide alternative format fallbacks, the [[html]]
+							[^img^] element can be used as the child of a [^picture^] element provided the following are
+							true:</p>
 
-							<li>Otherwise, it MAY reference foreign resources in its <code>[^img/src^]</code> and
-									<code>[^img/srcset^]</code> attributes provided there is also a <a
-									href="#sec-manifest-fallbacks">manifest fallback</a> to a core media type.</li>
+						<ul>
+							<li>the <code>img</code> element MUST only reference core media type resources from its
+									<code>src</code> and <code>srcset</code> attributes when those attributes are set;
+								and</li>
+							<li>each [^source^] element MUST only reference [=core media type resources=] from its
+									<code>[^source/src^]</code> and <code>[^source/srcset^]</code> attributes unless it
+								specifies the MIME media type [[rfc2046]] of a [=foreign resource=] in its
+									<code>[^source/type^]</code> attribute.</li>
 						</ul>
+
+						<p>When an <code>img</code> is not the child of <code>picture</code>, its <code>src</code> and
+								<code>srcset</code> attributes MUST NOT be used to provide fallbacks for foreign
+							resources.</p>
 					</section>
 
 					<section>
@@ -1463,9 +1426,7 @@
 
 						<p>Although data blocks have a separate MIME media type [[rfc2046]] from their containing
 							[=XHTML content document=], it is not possible to provide intrinsic fallbacks as no such
-							mechanisms are specified for the [[html]] [^script^] element. It is also not possible to
-							provide manifest fallbacks because data blocks cannot be defined as standalone files in the
-							EPUB container but are always embedded as inline <code>script</code> elements.</p>
+							mechanisms are specified for the [[html]] [^script^] element.</p>
 
 						<p>But, as the <code>script</code> element does not represent user content — <a
 								data-cite="html#data-block">data blocks</a> are not rendered unless manipulated by
@@ -10622,6 +10583,14 @@ EPUB/images/cover.png</pre>
 					conform to their referenced definitions.</p>
 
 				<dl>
+					<dt>Publication resources</dt>
+					<dd>
+						<ul>
+							<li id="content-fallbacks">
+								<a data-cite="epub-33#content-fallbacks">Content fallbacks</a> [[epub-33]]</li>
+						</ul>
+					</dd>
+
 					<dt>Open Container Format (OCF)</dt>
 					<dd>
 						<ul>
@@ -11251,6 +11220,8 @@ EPUB/images/cover.png</pre>
 			<details id="changes-epub-33" open="open">
 				<summary>Substantive changes since <a href="https://www.w3.org/TR/epub-33/">EPUB 3.3</a></summary>
 				<ul>
+					<li>29-Jan-2026: Moved manifest fallbacks for content to the outdated features. See <a
+							href="https://github.com/w3c/epub-specs/issues/2900">issue 2900</a></li>
 					<li>23-January-2026: Added JPEG XL as a core media type for images. See <a
 							href="https://github.com/w3c/epub-specs/issues/2896">issue 2896</a>.</li>
 					<li>18-Dec-2025: Renamed "obsolete but conforming features" to "outdated features". As discussed in
