@@ -14,7 +14,8 @@
             var respecConfig = {
                 group: "pm",
                 wgPublicList: "public-pm-wg",
-                specStatus: "FPWD",
+                specStatus: "ED",
+                // publishDate: "2026-02-24",
                 shortName: "epub-anno",
                 noRecTrack: false,
                 edDraftURI: "https://w3c.github.io/epub-specs/epub34/annotations/",
@@ -73,8 +74,8 @@
     <body>
         <section id="abstract">
             <p> This document defines a profile of the [[[annotation-model]]] [[annotation-model]]
-                by specifying a subset of the properties allowed in this model, and adding
-                properties deemed useful to satisfy the [[[epub-anno-ucr]]] [[epub-anno-ucr]].
+                by specifying a subset of the terms, and adding terms deemed useful to satisfy
+                the entries in the [[[epub-anno-ucr]]] [[epub-anno-ucr]] document.
             </p>
         </section>
         <section id="sotd"></section>
@@ -83,7 +84,7 @@
         </section>
 
         <section class="informative">
-            <h1>A subset of the Web Annotation Data Model</h1>
+            <h1>Introduction</h1>
 
             <p> This section defines a profile of the [[[annotation-model]]] [[annotation-model]], as used for EPUB
                 Annotations.</p>
@@ -101,7 +102,7 @@
                     per annotation. Furthermore, in the [[annotation-model]], such Body can be remote or embedded,
                     whereas only embedded Bodies are used in EPUB Annotation and only for textual comments .
 
-                    <p class="issue">The inclusion mechanism is to be defined for audiovisual comments</p>
+                    <p class="issue" data-number="2925">See the issue on github for more details.</p>
                 </li>
 
                 <li> Web Annotations have 1 or more Targets, while only a single <a href="#target">Target</a> is
@@ -129,11 +130,22 @@
                 </li>
             </ul>
             <p class="note">This document does not define how annotations are created, stored, or synchronized in a reading system. </p>
+
+            <section>
+                <h2>Relationship to URL</h2>
+                <p>To be consistent with [[[epub-34]]], this specification refers to the [[url]] standard for terminology
+                    and processing related to URLs expressed in [=EPUB publications=] and in <a href="#dfn-annotation-object">Annotations Objects</a>.
+                    The additional constraints expressed in <a data-cite="epub-34#sec-overview-relations-url"></a> also apply.
+                    Note that this is a difference with the [[[annotation-model]]] which uses the term IRI [[rfc3987]]. This difference does
+                    not alter the structure of the Data Model used by this specification.
+                </p>
+            </section>
+
         </section>
         <section>
-            <h2>Annotation</h2>
+            <h1>Annotation</h1>
             <section>
-                <h3>Annotation Object</h3>
+                <h2>Annotation Object</h2>
                 <p> The <dfn>Annotation object</dfn> retains the following annotation properties from the
                     <a data-cite="annotation-model#annotations">Web Annotation object</a> [[annotation-model]]:
                 </p>
@@ -229,9 +241,6 @@
                     or a time period, and a "bookmark" if it does not.
                 </p>
 
-                <p class="issue">Question: should we add a "replying" motivation for annotations that are replies to
-                    other annotations?</p>
-
                 <p class="ednote">We should specify whether a property may appear at most once (body, target) because
                     that is also part of
                     the profile definition. This can be a separate column ("cardinality") or be added to the
@@ -239,6 +248,8 @@
                     for all the tables in the document.
                 </p>
 
+                <p class="issue" data-number="2926"></p>
+                <p class="issue" data-number="2884">See the issue on github for more details.</p>
 
                 <aside class="example" title="Core structure of an EPUB annotation">
                     <pre>
@@ -260,7 +271,7 @@
 
             </section>
             <section>
-                <h3>Creator</h3>
+                <h2>Creator</h2>
                 <p> The <dfn>Creator object</dfn> of an annotation is a person, an organization or a software agent.
                 </p>
                 <p> This document defines the following creator properties: </p>
@@ -303,7 +314,7 @@
             </section>
 
             <section>
-                <h3>Target</h3>
+                <h2>Target</h2>
                 <p>The <dfn>Target object</dfn> of an annotation associates the annotation with a specific segment of a
                     resource in the current publication.</p>
                 <p> This document defines three target sub-properties: </p>
@@ -345,9 +356,9 @@
                 </table>
                 <p> A Target with no Selector indicates that the annotation applies to the entire
                     target resource. </p>
-                <section>
 
-                    <h4>Source</h4>
+                <section>
+                    <h3>Source</h3>
                     <p> The target resource MUST be identified by the URL of an existing resource in the
                         EPUB package. It MUST be one of the `item/@href` values of the [^manifest^] element as
                         defined in [[epub-34]].</p>
@@ -373,7 +384,7 @@
                 </section>
 
                 <section>
-                    <h4>Selector</h4>
+                    <h1>Selector</h1>
 
                     <p>
                         An annotation refers to a segment of a resource, which is identified by one or more
@@ -392,7 +403,7 @@
                     </p>
 
                     <section>
-                        <h5>Fragment Selector</h5>
+                        <h4>Fragment Selector</h4>
                         <p>
                             The <dfn>Fragment Selector object</dfn> uses the fragment part of an URL defined by the
                             representation's media type. This object is identical in structure to the
@@ -524,7 +535,7 @@
                     </section>
 
                     <section class="informative">
-                        <h5>CSS Selector</h5>
+                        <h4>CSS Selector</h4>
                         <p>
                             One of the most common ways to select elements in the HTML Document Object Model is to use
                             CSS Selectors [[CSS3-selectors]]. This specification reuses the <a
@@ -552,7 +563,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <code> <code>value</code> </code>
+                                        <code> value </code>
                                     </td>
                                     <td>The CSS selection path to the target.
                                         The selector must have exactly 1 <code>value</code> property.</td>
@@ -563,92 +574,8 @@
                         </table>
                     </section>
 
-                    <!-- <section class="informative">
-                        <h5>Text Quote Selector</h5>
-                        <p>
-                            This Selector describes a range of text by copying it, and including some of the text
-                            immediately before (a prefix) and after (a suffix) it to distinguish between multiple
-                            copies of the same sequence of characters.
-                            This specification reuses the <a
-                                data-cite="annotation-model#text-quote-selector"><code>TextQuoteSelector</code></a>,
-                            as defined in the [[[annotation-model]]] specification, but lists it here for an easier
-                            readability.
-                        </p>
-                        <p>
-                            The selection of the text must be in terms of unicode code points (the "character number").
-                        </p>
-                        <table class="zebra">
-                            <thead>
-                                <tr>
-                                    <th> Name </th>
-                                    <th> Description </th>
-                                    <th> Format </th>
-                                    <th> Required? </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <code> type </code>
-                                    </td>
-                                    <td>The RDF structure type. It must be "TextQuoteSelector".</td>
-                                    <td> string </td>
-                                    <td> Yes </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <code> <code>exact</code> </code>
-                                    </td>
-                                    <td>
-                                        A copy of the text which is being selected, after normalization.
-                                        Each <code>TextQuoteSelector</code> must have exactly 1 <code>exact</code>
-                                        property.
-                                    </td>
-                                    <td> string </td>
-                                    <td> Yes </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <code> <code>prefix</code> </code>
-                                    </td>
-                                    <td>
-                                        A snippet of text that occurs immediately before the text which is being
-                                        selected.
-                                        Each <code>TextQuoteSelector</code> should have exactly 1 <code>prefix</code>
-                                        property, and must not have more than 1.
-                                    </td>
-                                    <td> string </td>
-                                    <td> No </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <code> <code>suffix</code> </code>
-                                    </td>
-                                    <td>
-                                        A snippet of text that occurs immediately after the text which is being
-                                        selected.
-                                        Each <code>TextQuoteSelector</code> SHOULD have exactly 1 <code>suffix</code>
-                                        property, and MUST NOT have more than 1.
-                                    </td>
-                                    <td> string </td>
-                                    <td> No </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p class="note">
-                            This selector is equivalent to the usage of a [^Fragment Selector object^] conforming to <a
-                                href="#text_fragment_format">Text Fragments</a>. The advantage of using this selector
-                            is that there is no need for the percent-encoding of the exact, prefix, and suffix texts.
-                        </p>
-                        <p class="issue">
-                            See the caveats on using text fragments in the section on <a
-                                href="#fragment-selector">Fragment Selectors</a>.
-                        </p>
-                    </section> -->
-
                     <section class="informative">
-                        <h5>Text Position Selector</h5>
+                        <h4>Text Position Selector</h4>
                         <p>
                             This Selector describes a range of text by recording the start and end positions of the
                             selection in the stream.
@@ -661,11 +588,6 @@
                             readability.
                         </p>
 
-                        <p>
-                            The text must be selected and normalized in the same way as for the <a
-                                href="annotation-model#text-quote-selector">Text Quote Selector</a> before counting the
-                            number of characters to determine the start and end positions.
-                        </p>
                         <table class="zebra">
                             <thead>
                                 <tr>
@@ -686,7 +608,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <code> <code>start</code> </code>
+                                        <code> start</code>
                                     </td>
                                     <td>
                                         The starting position of the segment of text. The first character in the full
@@ -699,7 +621,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <code> <code>end</code> </code>
+                                        <code> end </code>
                                     </td>
                                     <td>
                                         The end position of the segment of text. The character is not included within
@@ -712,10 +634,17 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <p>
+                            The text must be selected and normalized in the same way as for the <a
+                                data-cite="annotation-model#text-quote-selector">Text Quote Selector</a> before counting the
+                            number of characters to determine the start and end positions.
+                        </p>
+
+                        <p class="issue" data-number="2927">See the issue on github for more details.</p>
                     </section>
 
                     <section>
-                        <h5>Refinement of Selection</h5>
+                        <h4>Refinement of Selection</h4>
                         <p>
                             It may be easier, more reliable, or more accurate to specify the segment of interest of a
                             resource as a selection of a selection, rather than as a selection of the complete resource.
@@ -751,7 +680,6 @@
                                     </td>
                                     <td> "FragmentSelector" | <br />
                                         "CssSelector" | <br />
-                                        "TextQuoteSelector" | <br />
                                         "TextPositionSelector"<br />
                                     </td>
                                     <td> No </td>
@@ -788,141 +716,21 @@
     &lt;p>The lazy &lt;em>white&lt;/em> dog sleeps with the crazy fox.&lt;/p>
 &lt;/div>
 </pre>
-
                     </section>
 
 
-                    <!-- <h5 id="1-3-2-3-progressionselector"> ProgressionSelector </h5>
-			<p>A ProgressionSelector contains a decimal value representing the annotation's
-				position as a percentage of the total size of the resource.</p>
-			<p>While such positioning is imprecise and does not correctly identify a fragment, it
-				is helpful to order annotations in a list and help position the annotation near the
-				corresponding fragment if other selectors fail.</p>
+               </section>
+                <section>
+                    <h4>Meta</h4>
 
-      <aside class="example" title=" a ProgressionSelector indicates that the annotation is positioned just
-				after the middle of the resource">
-				<pre>
-					<code class="lang-json">
-						{
-							"selector": [
-								{
-								"type": "ProgressionSelector",
-								"value": 0.534234255
-								}
-							]
-						}
-					</code>
-				</pre>
-			</aside>
+                    <p>The <dfn>Meta object</dfn>… T.B.D.</p>
+                    <p class="issue" data-number="2852"></p>
 
-			<p class="note"> This selector dos not exist in the [[annotation-model]]. </p>
-			<p class="issue"> Should we also define a global progression selector, relative to the whole publication?
-				 This would help synchronize annotations with publications distributed in a format
-				 different from reflowable EPUB, such as PDF. It would make sense to define it as Meta information (still to be defined)</p>  -->
-
-                    <!--
-			<h4 id="1-3-3-meta"> Meta </h4>
-			<p>Meta information MAY be added to an annotation as “breadcrumbs”, to ease the display
-				of contextual information relative to the global position of the annotation in the
-				publication.</p>
-			<p>The meta property contains:</p>
-			<table>
-				<thead>
-					<tr>
-						<th> Name </th>
-						<th> Description </th>
-						<th> Format </th>
-						<th> Required? </th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<code> headings </code>
-						</td>
-						<td> Ancestor headings of the annotation. </td>
-						<td> Array of Heading objects </td>
-						<td> No </td>
-					</tr>
-					<tr>
-						<td>
-							<code> page </code>
-						</td>
-						<td> Page of the publication containing the annotation. It may be either a
-							synthetic page or a print equivalent. It is essentially a visual
-							indicator. </td>
-						<td> string </td>
-						<td> No </td>
-					</tr>
-				</tbody>
-			</table>
-			<h5 id="1-3-3-1-headings"> Headings </h5>
-			<p> The Headings object contains: </p>
-			<table>
-				<thead>
-					<tr>
-						<th> Name </th>
-						<th> Description </th>
-						<th> Format </th>
-						<th> Required? </th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<code> level </code>
-						</td>
-						<td> Heading level. </td>
-						<td> number </td>
-						<td> No </td>
-					</tr>
-					<tr>
-						<td>
-							<code> txt </code>
-						</td>
-						<td> Heading title. </td>
-						<td> string </td>
-						<td> No </td>
-					</tr>
-				</tbody>
-			</table>
-			<p> Sample 6: Meta information contains ancestor headings and a page number: </p>
-			<pre>
-				<code class="lang-json">
-					{
-                      "@context": [
-                        "http://www.w3.org/ns/anno.jsonld",
-                        "https://wwww.w3.org/ns/epub/anno.jsonld"
-                      ],
-					  "type": "Annotation",
-					  "target": {
-					    "source": "OEBPS/text/chapter11.html",
-					    "selector": [
-					    ],
-					    "meta": {
-					      "headings": [
-					        {
-					        "level": 1,
-					        "txt": "Section 11"
-					        },
-					        {
-					        "level": 2,
-					        "txt": "Sub Section 1"
-					        }
-					      ],
-					      "page": "XI"
-					    }
-					  }
-					}
-				</code>
-			</pre>
-			-->
                 </section>
             </section>
 
             <section>
-
-                <h3>Body</h3>
+                <h2>Body</h2>
                 <p>The <dfn>Body object</dfn> of an annotation contains plain text, style, and optional tags.</p>
                 <p>This document specifies the following sub-properties:</p>
                 <table class="zebra">
@@ -1003,8 +811,8 @@
                     </tbody>
                 </table>
 
-                <p class="note">Read “Best practices for Reading Systems” about using tags in an
-                    annotation. </p>
+                <p class="note">Read “Best practices for Reading Systems” about using tags in an annotation. </p>
+                <p class="issue" data-number="2854">See the issue on github for more details.</p>
 
                 <aside class="example" title="An annotation Body">
                     <pre>
@@ -1026,7 +834,7 @@
         </section>
 
         <section>
-            <h2>Annotation Set</h2>
+            <h1>Annotation Set</h1>
             <p>An Annotation Set is an unordered collection of annotations.</p>
 
             <p>An Annotation does not contain information about its associated publication. If a
@@ -1113,7 +921,7 @@
             </table>
 
             <section>
-                <h3>Generator</h3>
+                <h2>Generator</h2>
                 <p>The <dfn>Generator object</dfn> contains information relative to the software from which the
                     serialized annotation has been produced.</p>
                 <table class="zebra">
@@ -1163,7 +971,7 @@
                 </table>
             </section>
             <section>
-                <h3>About</h3>
+                <h2>About</h2>
                 <p> The <dfn>About object</dfn> contains information relative to the publication. Such metadata is
                     intended to help associate an annotation set with a publication: </p>
                 <table class="zebra">
@@ -1265,7 +1073,7 @@
         </section>
         <section>
 
-            <h3>Serialization</h3>
+            <h1>Serialization</h1>
             <p>
                 Following the [[[annotation-model]]] [[annotation-model]] specification, EPUB Annotations are
                 expressed as a "shape" of JSON-LD [[json-ld11]] (a variant of JSON [[ecma-404]] for linked data).
@@ -1315,14 +1123,14 @@
                 [=AnnotationSet=]. </p>
 
             <section class="informative">
-                <h1>Best Practices for Reading Systems</h1>
+                <h2>Best Practices for Reading Systems</h2>
 
                 <p class="ednote">This section being informative, the MUST, SHOULD, etc, keyword are not appropriate
                     here. At the minimum, they should be turned into lower case.
                 </p>
 
                 <section>
-                    <h2> Displaying filtered annotations </h2>
+                    <h3> Displaying filtered annotations </h3>
                     <p> Reading systems should enable filtering by motivation, color, highlight mode, tag and
                         creator. For instance, a user can display &quot;blue&quot; annotations only or
                         “teacher” annotations only. Filtering on multiple criteria is a plus. </p>
@@ -1330,7 +1138,7 @@
                 </section>
 
                 <section>
-                    <h2> Using multiple selectors </h2>
+                    <h3> Using multiple selectors </h3>
                     <p> It is recommended that Reading Systems export multiple selectors, including at least
                         one precise selector (e.g. CssSelector + TextPositionSelector),
                         and one selector resistant to content modifications (e.g., based on text fragments).
@@ -1347,7 +1155,7 @@
                 </section>
 
                 <section>
-                    <h2>Exporting annotations as a detached file</h2>
+                    <h3>Exporting annotations as a detached file</h3>
                     <p> When a user decides to export an annotation set from a reading system, they SHOULD be
                         proposed to filter the annotations by tags (multiple choice). “Annotations with
                         no tag” and “All annotations” SHOULD be proposed as options. The advantage of
@@ -1362,7 +1170,7 @@
 
                 </section>
                 <section>
-                    <h2>Exporting annotations in a publication </h2>
+                    <h3>Exporting annotations in a publication </h3>
                     <p> When a user decides to export a publication from the Reading System, they SHOULD be
                         prompted to embed the annotations associated with the publication. </p>
                     <p> If the user decides to embed annotations in a publication, they SHOULD be prompted to
@@ -1370,7 +1178,7 @@
 
                 </section>
                 <section>
-                    <h2>Importing annotations</h2>
+                    <h3>Importing annotations</h3>
                     <p> To simplify associating annotations with a publication, a Reading System MUST
                         offer a way to select a publication before selecting an annotation set. The drag and
                         drop of an annotation set into a Reading System MAY also be proposed, but
@@ -1386,7 +1194,7 @@
 
                 </section>
                 <section>
-                    <h2>Dealing with colors</h2>
+                    <h3>Dealing with colors</h3>
                     <p> This document specifies a closed set of six colors chosen because of their
                         extensive support in well-known reading systems. However, most existing reading apps
                         offer a smaller set to their users. </p>
@@ -1417,7 +1225,8 @@
 
             <p>T.B.D.</p>
         </section>
-        <section id="index"></section>
+        <section class="appendix" id="index"></section>
+        <section class="appendix" id="issue-summary"></section>
     </body>
 
 </html>
