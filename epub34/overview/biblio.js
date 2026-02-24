@@ -233,15 +233,5 @@ var biblio = {
 		"title": "SVG",
 		"href": "https://www.w3.org/TR/SVG/",
 		"publisher": "W3C"
-	},
-    "epub-anno-10": {
-        "authors": [
-            "Laurent Le Meur",
-            "Ivan Herman"
-        ],
-        "title": "EPUB Annotations 1.0",
-        "href": "https://www.w3.org/TR/epub-anno-10",
-        "date": "24 February 2026",
-        "publisher": "W3C"
-    }
+	}
 }
