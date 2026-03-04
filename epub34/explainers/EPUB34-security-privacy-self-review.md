@@ -111,7 +111,7 @@ Only indirectly:
 - Fixed-layout books respond to screen orientation (portrait/landscape)
 - No new sensor APIs beyond what browsers already provide
 
-Sensor risks are the same as HTML/CSS/JS in a constrained WebView, not an EPUB‑specific extension. 
+Most Reading Systems today are built on WebView technologies, meaning they inherit the security and privacy features of those platforms. Sensor risks are therefore the same as HTML/CSS/JS in a constrained WebView—not an EPUB-specific extension. 
 
 ### 10. Do features in this specification enable new script execution/loading mechanisms?
 
