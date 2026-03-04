@@ -100,7 +100,7 @@ The Reading Systems spec recommends giving each publication a unique origin, whi
 
 No. EPUB doesn't define any system information APIs. Scripts in books can only access what the reading app allows through standard web APIs.
 
-Many reading systems disable scripting entirely or provide only a constrained subset, further limiting such exposure. 
+Many Reading Systems disable scripting entirely or provide only a constrained subset, further limiting such exposure. 
 
 ### 08. Does this specification allow an origin to send data to the underlying platform?
 
