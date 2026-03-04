@@ -187,7 +187,7 @@ EPUB defers to the app and platform:
 
 No, EPUB 3.4 does not define new kinds of error: 
 
-- EPUB 3.4 uses standard W3C/RFC conformance keywords ("MUST", "MUST NOT", etc.) to identify authoring violations that reading systems treat as errors (e.g., invalid ZIP containers, missing manifest attributes). 
+- EPUB 3.4 uses standard W3C/RFC conformance keywords ("MUST", "MUST NOT", etc.) to identify authoring violations that Reading Systems treat as errors (e.g., invalid ZIP containers, missing manifest attributes). 
 - Reading Systems must handle some cases explicitly, like processing malformed packages or fallbacks, but without prescribed error-raising syntax or UI. 
 - Validation relies on external tools like EPUBCheck; runtime errors surface via reading system logs or dev tools, not format-defined events. 
 
