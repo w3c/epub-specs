@@ -20,6 +20,16 @@ EPUB 3.4 is a file format for digital books. It packages HTML, CSS, images, and 
 - [EPUB 3.4 Reading Systems](https://w3c.github.io/epub-specs/epub34/rs/) - How apps should handle EPUB files
 - [EPUB Accessibility 1.2](https://w3c.github.io/epub-specs/epub34/a11y/) - Accessibility requirements
 
+### Scope of EPUB Reading Systems
+
+EPUB Reading Systems (RS) defines only the minimum requirements for reading apps to handle EPUB content according to the EPUB authoring specification. It does not specify features like bookmarking, note-taking, cloud sync, or other reader features that individual apps choose to implement.
+
+This matters for security and privacy because it clarifies what EPUB's specifications require versus what Reading Systems decide to build. EPUB defines how content must be handled; readers and platforms decide what features to add.
+
+### Web Standards Inheritance
+
+EPUB's security and privacy model depends fundamentally on W3C web standards. EPUB publications are built on HTML5, CSS, JavaScript, and the DOM—all with their own established security and privacy frameworks. Because EPUB is built on these mature, widely-reviewed specifications, many security and privacy protections are inherited directly from the web platform rather than invented by EPUB itself. This inheritance is a strength: EPUB benefits from decades of security research and best practices built into these foundational technologies.
+
 ### Non-normative documents 
 
 Those companion documents are informative, they provide guidance related to implementing the EPUB 3 specifications as well as define experimental features.
@@ -38,18 +48,10 @@ Those companion documents are informative, they provide guidance related to impl
 
 ### 01. What information does features in your specification expose, and for what purposes?
 
-The EPUB format itself defines the book structure and metadata; any collection of user data results from reading‑app design choices, not from requirements in the EPUB specification.
-
-**EPUB format exposes (about the book):**  
-- Book metadata (title, author, identifiers like ISBN) to let apps display and organize books in a library.  
+The EPUB format defines the book structure and metadata:
+- title, author, identifiers like ISBN to allow display and organization of books in a library.  
 - Links to resources (mostly files inside the EPUB, sometimes remote media like streaming audio/video) so the content can be rendered correctly.  
-- Standard Web content (HTML, CSS, images, fonts, optional scripts) so reading apps can layout, style, and present the publication.
-
-**Reading apps may collect (about you, if they choose to):**  
-- Your reading position and bookmarks, so you can resume where you left off.  
-- Your reading preferences (font size, themes, layout options), to personalize the reading experience.  
-- Your reading time and progress, to show completion status and history.  
-- Analytics and usage data, for business reporting, personalization, or publisher insights.
+- Usable Standard Web content (HTML, CSS, images, fonts, optional scripts).
 
 ### 02. Do features in your specification expose the minimum amount of information necessary to implement the intended functionality?
 
@@ -57,8 +59,6 @@ Yes. EPUB only specifies what's needed to display a book:
 - Book structure and content
 - Packaging format
 - Navigation data
-
-EPUB doesn't define bookmarks, cloud sync, or analytics. Those are app features.
 
 ### 03. Do any of the features in your specification expose personal or personally identifiable information (PII), or information derived from either?
 
@@ -76,7 +76,7 @@ EPUB doesn't have special privacy features. However:
 - Just knowing *what* someone reads can be highly private
 - EPUB includes encryption for content protection, but this doesn't protect reading behavior
 
-Reading Systems therefore need policy and UX beyond what EPUB defines to avoid opaque surveillance of reading behavior tied to user identities. 
+Ecosystem therefore need policy and UX beyond what EPUB defines to avoid opaque surveillance of reading behavior tied to user identities. 
 
 ### 05. Does data exposed by your specification carry related but distinct information that may not be obvious to users?
 
@@ -130,8 +130,6 @@ EPUB 3.4 does not:
 - Define APIs to access external devices (printers, USB, Bluetooth, local network devices). 
 - Specify multi‑device sync; that remains a reading‑system feature (e.g., syncing reading position across a user’s phone and tablet) and is not described in the spec. 
 
-Any inter‑device communication is therefore out of scope for the EPUB format and falls under reading‑system architecture and broader Web or native APIs. 
-
 ### 12. Do features in this specification allow an origin some measure of control over a user agent's native UI? 
 
 No. Book content cannot:
@@ -147,7 +145,6 @@ The EPUB 3.4 format itself defines only publication‑level identifiers:
 - A required package‑level identifier (dc:identifier, referenced by unique‑identifier) identifies the publication, not the user. 
 - Reading Systems spec continues to recommend assigning each EPUB publication instance a unique origin, which in practice acts as an origin‑scoped identifier for web storage and cookies. 
 
-The spec does not define user, session, or tracking identifiers; those arise from reading‑system implementation choices and generic web storage mechanisms. 
 
 ### 14. How does this specification distinguish between behavior in first-party and third-party contexts?
 
@@ -155,7 +152,7 @@ EPUB uses the web's origin model. Books may embed ads or external content, but i
 
 ### 15. How do the features in this specification work in the context of a browser’s Private Browsing or Incognito mode?
 
-EPUB doesn't define this. Whether a reading app offers private reading mode is up to the app.
+EPUB doesn't define this. 
 
 ### 16. Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
@@ -174,7 +171,7 @@ Reading Systems are encouraged to strengthen isolation.
 
 ### 18.  What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?
 
-EPUB doesn't specify this. If a reading app supports browser-style caching, standard web rules apply.
+EPUB doesn't specify this. If a Reading System supports browser-style caching, standard web rules apply.
 
 ### 19. What happens when a document that uses your feature gets disconnected?
 
@@ -200,10 +197,9 @@ No. EPUB doesn't expose whether screen readers or other assistive tech are activ
 - Should EPUB and Reading Systems specs together constrain or at least *document* collection, retention, and sharing of reading analytics so that users can understand and control surveillance of their reading behavior?
 - How can EPUB 3.4 better align with the Web privacy model (e.g., clearer guidance on origins, third‑party resources, and tracking) while recognizing that most reading systems are not general‑purpose browsers? 
 
-
 ## Key Privacy Takeaways
 
-EPUB 3.4 itself is privacy-neutral. Privacy outcomes depend heavily on how reading apps and retail platforms implement and deploy EPUB content.
+EPUB 3.4 itself is privacy-neutral. Privacy outcomes depend heavily on how Reading Systems and retail platforms implement and deploy EPUB content.
 
 ### What EPUB Format Controls (Low Risk)
 - Book metadata and structure
