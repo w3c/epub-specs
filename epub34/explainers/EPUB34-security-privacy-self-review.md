@@ -170,7 +170,7 @@ No. EPUB doesn't provide ways to:
 - Relax same-origin policy
 - Weaken security controls
 
-Reading systems are encouraged to strengthen isolation.
+Reading Systems are encouraged to strengthen isolation.
 
 ### 18.  What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?
 
