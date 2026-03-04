@@ -153,7 +153,7 @@ The spec does not define user, session, or tracking identifiers; those arise fro
 
 EPUB uses the web's origin model. Books may embed ads or external content, but isolation details are up to reading apps and browser security.
 
-### 15. Does EPUB support private/incognito mode?
+### 15. How do the features in this specification work in the context of a browser’s Private Browsing or Incognito mode?
 
 EPUB doesn't define this. Whether a reading app offers private reading mode is up to the app.
 
