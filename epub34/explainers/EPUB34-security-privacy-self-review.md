@@ -43,7 +43,7 @@ The EPUB format itself defines the book structure and metadata; any collection o
 **EPUB format exposes (about the book):**  
 - Book metadata (title, author, identifiers like ISBN) to let apps display and organize books in a library.  
 - Links to resources (mostly files inside the EPUB, sometimes remote media like streaming audio/video) so the content can be rendered correctly.  
-- Standard Web content (HTML, CSS, images, optional scripts) so reading apps can layout, style, and present the publication.
+- Standard Web content (HTML, CSS, images, fonts, optional scripts) so reading apps can layout, style, and present the publication.
 
 **Reading apps may collect (about you, if they choose to):**  
 - Your reading position and bookmarks, so you can resume where you left off.  
