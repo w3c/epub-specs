@@ -22,13 +22,15 @@ EPUB 3.4 is a file format for digital books. It packages HTML, CSS, images, and 
 
 ### Scope of EPUB Reading Systems
 
-EPUB Reading Systems (RS) defines only the minimum requirements for reading apps to handle EPUB content according to the EPUB authoring specification. It does not specify features like bookmarking, note-taking, cloud sync, or other reader features that individual apps choose to implement.
+The EPUB Reading Systems (RS) specification outlines the minimum requirements for applications or devices that handle EPUB content, in accordance with the EPUB authoring guidelines. However, it does not include features such as bookmarking, note-taking, cloud synchronization, or other reader capabilities, as these are determined by different standards.
 
-This matters for security and privacy because it clarifies what EPUB's specifications require versus what Reading Systems decide to build. EPUB defines how content must be handled; readers and platforms decide what features to add.
+This distinction is important for security and privacy, as it clarifies what the EPUB specifications mandate versus what Reading Systems choose to implement. EPUB outlines the necessary handling of content, while the features and functionalities are up to the reading applications and platforms.
 
 ### Web Standards Inheritance
 
-EPUB's security and privacy model depends fundamentally on W3C web standards. EPUB publications are built on HTML5, CSS, JavaScript, and the DOM—all with their own established security and privacy frameworks. Because EPUB is built on these mature, widely-reviewed specifications, many security and privacy protections are inherited directly from the web platform rather than invented by EPUB itself. This inheritance is a strength: EPUB benefits from decades of security research and best practices built into these foundational technologies.
+EPUB fundamentally relies on W3C web standards. EPUB publications are constructed using HTML5, CSS, JavaScript, and the Document Object Model (DOM), each of which has its established security and privacy frameworks.
+
+Since EPUB is based on these mature and widely-reviewed specifications, many security and privacy protections are inherited from the web platform rather than being created by EPUB itself.
 
 ### Non-normative documents relevant to security and privacy
 
@@ -95,13 +97,13 @@ The Reading Systems spec recommends giving each publication a unique origin, whi
 
 ### 07. Do the features in your specification expose information about the underlying platform to origins?
 
-No. EPUB doesn't define any system information APIs. Scripts in books can only access what the reading app allows through standard web APIs.
+No. EPUB doesn't define any system information APIs. Scripts in books can only access what the Reading System allows through standard web APIs.
 
 Many Reading Systems disable scripting entirely or provide only a constrained subset, further limiting such exposure. 
 
 ### 08. Does this specification allow an origin to send data to the underlying platform?
 
-No EPUB-specific capability. Any data transfer happens through normal web mechanisms that the reading app might enable.
+No EPUB-specific capability. Any data transfer happens through normal web mechanisms.
 
 ### 9. Do features in this specification enable access to device sensors?
 
