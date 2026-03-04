@@ -13,7 +13,7 @@ This is a security and privacy self-review for EPUB 3.4, based on the [W3C Secur
 
 ## What is EPUB 3.4?
 
-EPUB 3.4 is a file format for digital books. It packages HTML, CSS, images, and other web content into a single `.epub` file that users read with reading apps (called "reading systems").
+EPUB 3.4 is a file format for digital books. It packages HTML, CSS, images, and other web content into a single `.epub` file that users read with reading apps (called "Reading Systems").
 
 ### Key specifications:
 - [EPUB 3.4](https://w3c.github.io/epub-specs/epub34/authoring/) - The file format
