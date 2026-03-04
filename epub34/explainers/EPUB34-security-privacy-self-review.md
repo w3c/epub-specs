@@ -157,7 +157,7 @@ EPUB uses the web's origin model. Books may embed ads or external content, but i
 
 EPUB doesn't define this. Whether a reading app offers private reading mode is up to the app.
 
-### 16. Does EPUB have security and privacy sections?
+### 16. Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
 Yes. Both the core spec and Reading Systems spec include security and privacy sections that can be found in the latest Editor’s Drafts:  
 - EPUB 3.4 Core: https://w3c.github.io/epub-specs/epub34/authoring/#sec-security-privacy
