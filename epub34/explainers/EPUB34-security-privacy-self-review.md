@@ -145,7 +145,7 @@ No. Book content cannot:
 The EPUB 3.4 format itself defines only publication‑level identifiers:
 
 - A required package‑level identifier (dc:identifier, referenced by unique‑identifier) identifies the publication, not the user. 
-- Reading Systems spec continues to recommend assigning each EPUB publication instance a unique origin, which in practice acts as an origin‑scoped identifier for Web storage and cookies. 
+- Reading Systems spec continues to recommend assigning each EPUB publication instance a unique origin, which in practice acts as an origin‑scoped identifier for web storage and cookies. 
 
 The spec does not define user, session, or tracking identifiers; those arise from reading‑system implementation choices and generic Web storage mechanisms. 
 
