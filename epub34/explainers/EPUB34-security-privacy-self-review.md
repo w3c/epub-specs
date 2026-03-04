@@ -62,7 +62,7 @@ Yes. EPUB only specifies what's needed to display a book:
 ### 03. Do any of the features in your specification expose personal or personally identifiable information (PII), or information derived from either?
 
 There are no built-in personal data fields. However:
-- Books could include personalized content (e.g. student names in textbooks or purchase information in filigrees).
+- Books could include personalized content (e.g. student names in textbooks or purchase information in watermarks).
 - DRM systems may link books to user accounts.
 - Book titles alone can reveal sensitive information about readers.
 
