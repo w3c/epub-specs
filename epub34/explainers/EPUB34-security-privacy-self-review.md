@@ -30,15 +30,12 @@ This matters for security and privacy because it clarifies what EPUB's specifica
 
 EPUB's security and privacy model depends fundamentally on W3C web standards. EPUB publications are built on HTML5, CSS, JavaScript, and the DOM—all with their own established security and privacy frameworks. Because EPUB is built on these mature, widely-reviewed specifications, many security and privacy protections are inherited directly from the web platform rather than invented by EPUB itself. This inheritance is a strength: EPUB benefits from decades of security research and best practices built into these foundational technologies.
 
-### Non-normative documents 
+### Non-normative documents relevant to security and privacy
 
-Those companion documents are informative, they provide guidance related to implementing the EPUB 3 specifications as well as define experimental features.
+This is a short list of companion documents that are informative but may be relevant for the security and privacy review. They provide guidance related to implementing the EPUB 3 specifications as well as define experimental features. A complete list of non-normative documents is available from the EPUB 3.4 Overview.
 
 * [EPUB 3.4 Overview](https://w3c.github.io/epub-specs/epub34/overview/), a non-normative overview of EPUB 3.4
 * [EPUB Accessibility Techniques 1.2](https://www.w3.org/TR/epub-a11y-tech-12/): provides guidance on how to meet the EPUB Accessibility.
-* [EPUB Accessibility - EU Accessibility Act Mapping](https://www.w3.org/TR/epub-a11y-eaa-mapping/): aims to demonstrate that the technical requirements of the European Accessibility Act related to ebooks are met by the EPUB standard.
-* [The EPUB Accessibility exemption property](https://www.w3.org/TR/epub-a11y-exemption/): the exemption property is used to indicate that an EPUB publication that does not meet accessibility conformance requirements has an exemption under the applicable jurisdiction's laws.
-* [EPUB Accessibility - Fixed Layout Challenges and Best Practices](https://www.w3.org/TR/epub-fxl-a11y/): provides guidance on how to make fixed-layout EPUB publications accessible.
 * [EPUB Multiple-Rendition Publications 1.1 ](https://www.w3.org/TR/epub-multi-rend-11/): defines the creation and rendering of EPUB publications consisting of more than one Rendition.
 * [EPUB 3 Structural Semantics Vocabulary 1.1](https://www.w3.org/TR/epub-ssv-11/): defines a set of properties relating to the description of structural semantics of written works.
 * [EPUB 3 Text-to-Speech Enhancements 1.0](https://www.w3.org/TR/epub-tts-10/): describes authoring features and reading system support for improving the voicing of EPUB 3 publications.
