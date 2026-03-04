@@ -94,7 +94,7 @@ EPUB 3.4 itself does not define any persistent state:
 - There are no format‑level requirements to remember reading position, preferences, or annotations. 
 - Any persistence is an implementation detail of the reading system (e.g., local databases, web storage, or cloud sync), which may rely on the publication’s origin. 
 
-The Reading Systems spec recommends giving each publication a unique origin, which implies origin‑scoped storage that *can* persist across sessions, but this storage is a Web Platform concern, not defined by EPUB core. 
+The Reading Systems spec recommends giving each publication a unique origin, which implies origin‑scoped storage that *can* persist across sessions, but this storage is a web platform concern, not defined by EPUB core. 
 
 ### 07. Do the features in your specification expose information about the underlying platform to origins?
 
