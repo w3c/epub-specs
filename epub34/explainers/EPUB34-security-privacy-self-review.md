@@ -75,7 +75,7 @@ EPUB doesn't have special privacy features. However:
 - Just knowing *what* someone reads can be highly private
 - EPUB includes encryption for content protection, but this doesn't protect reading behavior
 
-Ecosystem therefore need policy and UX beyond what EPUB defines to avoid opaque surveillance of reading behavior tied to user identities. 
+The publishing ecosystem therefore needs policy and user interface features beyond what EPUB defines to avoid surveillance of reading behaviour tied to user identities.
 
 ### 05. Does data exposed by your specification carry related but distinct information that may not be obvious to users?
 
