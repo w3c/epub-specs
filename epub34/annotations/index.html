@@ -1289,57 +1289,27 @@
                 <h2>Natural language strings</h2>
 
                 <p>
-                    The EPUB Annotation model inherits the <a data-cite="json-ld11#string-internationalization">string internationalization</a> features
-                    defined by [[[json-ld11]]]. The <a data-cite="json-ld11#dfn-default-language">default language</a> and
+                    The EPUB Annotation model inherits the <a data-cite="json-ld11#string-internationalization">string
+                    internationalization</a> features defined by [[[json-ld11]]].
+                    The <a data-cite="json-ld11#dfn-default-language">default language</a> and
                     <a data-cite="json-ld11#dfn-base-direction">base direction</a>
                     of a natural language string can be set with the `@language` and `@direction` keywords, respectively.
                     The value for `@language` is a string representing a [[BCP47]] language tag.
                     The value for `@direction` is a string whose value must be `"ltr"`, `"rtl"`.
                     Using these keywords, the language and the direction of natural language strings can be set either globally,
-                    e.g., for all annotations in an [=AnnotationSet=], or for a specific like, for example a [=Body object=].
+                    e.g., for all annotations in an [=AnnotationSet=], or for a specific object like a [=Body object=].
                 </p>
 
-                <p>
-                    For a global setting, the language and direction may be set by adding an extra, dedicated context object to
-                    `@context` (using the JSON array notation) setting the necessary values.
-                </p>
+                <section>
+                    <h3>Global setting</h3>
+                    <p>
+                        For global setting, the value of the top-level `@context` must be extended with an extra context object
+                        (using the JSON array notation) containing the necessary statements.
+                        The `@language` and `@direction` keys are used to set the respective values.
+                    </p>
 
-                <aside class="example" title="Setting language and direction globally">
-                    <pre>
-                    {
-                        "@context": [
-                            "https://www.w3.org/ns/epub-anno.jsonld",
-                            {
-                                "@language": "en",
-                                "@direction": "ltr"
-                            }
-                        ],
-                        "type": "AnnotationSet",
-                        "id": "urn:uuid:123-456-789",
-                        "items" : [
-                            {
-                                "type": "Annotation",
-                                "id": "urn:uuid:123-456-789-a1",
-                                "body": {
-                                    "type": "TextualBody",
-                                    "value": "This is a comment in English"
-                                }
-                            },
-                            …
-                        ]
-                    }
-                    </pre>
-                </aside>
-
-                <p>
-                    For setting the values locally, the same `@context` notation can be used within any
-                    object. This is referred to as the <a data-cite="json-ld11#scoped-contexts">"scoped" context</a>,
-                    i.e., a context that is only valid within the enclosing object and its descendent objects.
-                    Possible global values are overwritten.
-                </p>
-
-                <aside class="example" title="Setting language and direction locally">
-                    <pre>
+                    <aside class="example" title="Setting language and direction globally">
+                        <pre>
                         {
                             "@context": [
                                 "https://www.w3.org/ns/epub-anno.jsonld",
@@ -1351,25 +1321,69 @@
                             "type": "AnnotationSet",
                             "id": "urn:uuid:123-456-789",
                             "items" : [
-                                …
                                 {
-                                    "id": "urn:uuid:123-456-789-a2",
                                     "type": "Annotation",
+                                    "id": "urn:uuid:123-456-789-a1",
                                     "body": {
-                                        "@context": {
-                                            "@language": "he",
-                                            "@direction": "rtl"
-                                        },
                                         "type": "TextualBody",
-                                        "value": "התגובה הזו בעברית"
+                                        "value": "This is a comment in English"
                                     }
                                 },
                                 …
                             ]
                         }
                         </pre>
-                 </aside>
-                <!-- <section>
+                    </aside>
+
+                    <p>
+                        These language and direction values are valid for all natural language strings in the Annotation Set,
+                        unless overwritten by a local setting.
+                    </p>
+                </section>
+                <section>
+                    <h3>Local setting</h3>
+
+                    <p>
+                        For setting the values locally, the same `@context` notation can be used within any
+                        object. This is referred to as the <a data-cite="json-ld11#scoped-contexts">"scoped" context</a>,
+                        i.e., a context that is only valid within the enclosing object and its descendent objects.
+                        Possible global values are overwritten.
+                    </p>
+
+                    <aside class="example" title="Setting language and direction locally">
+                        <pre>
+                            {
+                                "@context": [
+                                    "https://www.w3.org/ns/epub-anno.jsonld",
+                                    {
+                                        "@language": "en",
+                                        "@direction": "ltr"
+                                    }
+                                ],
+                                "type": "AnnotationSet",
+                                "id": "urn:uuid:123-456-789",
+                                "items" : [
+                                    …
+                                    {
+                                        "id": "urn:uuid:123-456-789-a2",
+                                        "type": "Annotation",
+                                        "body": {
+                                            "@context": {
+                                                "@language": "he",
+                                                "@direction": "rtl"
+                                            },
+                                            "type": "TextualBody",
+                                            "value": "התגובה הזו בעברית"
+                                        }
+                                    },
+                                    …
+                                ]
+                            }
+                            </pre>
+                    </aside>
+                </section>
+
+                 <!-- <section>
                     <h3>Setting for a specific string</h3>
                     <p>
                         This is the finest granularity setting; instead of relying on the global or the scoped context, the
