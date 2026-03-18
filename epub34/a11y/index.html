@@ -1245,7 +1245,18 @@
 								this can diminish the trust users have in the claim.</p>
 						</div>
 
-						<aside class="example" title="Evaluator's name metadata">
+						<aside class="example" title="Evaluator's name">
+							<pre>&lt;metadata …>
+  …
+  &lt;meta
+      property="a11y:certifiedBy">
+     Foo's Accessibility Testing
+  &lt;/meta>
+  …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="Evaluator's name when more than one claim">
 							<p>The evaluator's name is linked to the conformance statement using the
 									<code>refines</code> attribute.</p>
 							<pre>&lt;metadata …>
@@ -1270,15 +1281,28 @@
 
 						<p>If the date the evaluation was performed on is known, include that information in a <a
 								href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#http://purl.org/dc/elements/1.1/date"
-									><code>dcterms:date</code> property</a> [[dcterms]] <a
-								data-cite="epub/#subexpression">associated with</a> [[epub-3]] the <a
-								href="#sec-evaluator-name">evaluator's name</a>.</p>
+									><code>dcterms:date</code> property</a> [[dcterms]].</p>
+
+						<p>If more than one conformance claim is made, <a data-cite="epub/#subexpression">associate</a>
+							[[epub-3]] the date with the <a href="#sec-evaluator-name">evaluator's name</a>.</p>
 
 						<p>It is REQUIRED that the date string conform to [[iso8601-1]], particularly the subset
 							expressed in W3C Date and Time Formats [[datetime]], as such strings are both human and
 							machine readable.</p>
 
 						<aside class="example" title="Expressing the evaluation date">
+							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:date"
+       refines="#certifier">
+      2021-09-07
+   &lt;/meta>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="Expressing the evaluation date when more than one claim">
 							<pre>&lt;metadata …>
    …
    &lt;meta
@@ -1321,14 +1345,7 @@
 							<pre>&lt;metadata …>
    …
    &lt;meta
-       property="dcterms:conformsTo"
-       id="conf">
-     EPUB Accessibility 1.2 - WCAG 2.2 Level AA
-   &lt;/meta>
-   
-   &lt;meta
        property="a11y:certifiedBy"
-       refines="#conf"
        id="certifier">
       EPUB Accessibility Evaluator
    &lt;/meta>
@@ -1338,6 +1355,7 @@
        refines="#certifier">
       A+ Accessibility Rating
    &lt;/meta>
+   …
 &lt;/metadata></pre>
 						</aside>
 					</section>
@@ -1347,13 +1365,33 @@
 
 						<p>If the evaluator provides a publicly-readable report of its assessment, provide a link to the
 							assessment in an <a href="#certifierReport"><code id="a11y-certifierReport"
-									>a11y:certifierReport</code> property</a>
-							<a data-cite="epub/#subexpression">associated with</a> [[epub-3]] the <a
-								href="#sec-evaluator-name">evaluator's name</a>.</p>
+									>a11y:certifierReport</code> property</a>.</p>
+
+						<p>If more than one conformance claim is made, <a data-cite="epub/#subexpression">associate</a>
+							[[epub-3]] the date with the <a href="#sec-evaluator-name">evaluator's name</a>.</p>
 
 						<aside class="example" title="An external accessibility report">
 							<p>The following example shows a link to an accessibility report hosted on a web site.</p>
 							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="conf">
+     EPUB Accessibility 1.2 - WCAG 2.2 Level AA
+   &lt;/meta>
+
+   &lt;link
+       rel="a11y:certifierReport"
+       href="http://www.example.com/a11y/report/9780000000001"/>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="An accessibility report when there are multiple claims">
+							<p>The following example uses the <code>refines</code> attribute to link the accessibility
+								report to the evaluator.</p>
+							<pre>&lt;metadata …>
+   …
    &lt;meta
        property="dcterms:conformsTo"
        id="conf">
@@ -1371,6 +1409,7 @@
        rel="a11y:certifierReport"
        refines="#certifier"
        href="http://www.example.com/a11y/report/9780000000001"/>
+   …
 &lt;/metadata></pre>
 						</aside>
 
@@ -1378,6 +1417,7 @@
 							<p>The following example shows a link to an accessibility report included in the <a
 									data-cite="epub/#dfn-epub-container">EPUB container</a>.</p>
 							<pre>&lt;metadata …>
+   …
    &lt;meta
        property="dcterms:conformsTo"
        id="conf">
@@ -1395,6 +1435,7 @@
        rel="a11y:certifierReport"
        refines="#certifier"
        href="reports/a11y.xhtml"/>
+   …
 &lt;/metadata></pre>
 						</aside>
 					</section>
@@ -1795,6 +1836,12 @@
 							<td>One or more</td>
 						</tr>
 						<tr>
+							<th>Extends:</th>
+							<td>
+								<a href="#dcterms-conformsTo"><code>dcterms:conformsTo</code></a> when an EPUB
+								publication contains multiple conformance statements.</td>
+						</tr>
+						<tr>
 							<th>Example:</th>
 							<td>
 								<pre>&lt;meta
@@ -1832,7 +1879,6 @@
 						<tr>
 							<th>Cardinality:</th>
 							<td>Zero or more</td>
-
 						</tr>
 						<tr>
 							<th>Extends:</th>
@@ -1887,22 +1933,14 @@
 						<tr>
 							<th>Extends:</th>
 							<td>
-								<a href="#certifiedBy">
-									<code>certifiedBy</code>
-								</a>
-							</td>
+								<a href="#certifiedBy"><code>certifiedBy</code></a> when an EPUB publication contains
+								multiple conformance statements.</td>
 						</tr>
 						<tr>
 							<th>Example:</th>
 							<td>
-								<pre>&lt;meta
-    property="a11y:certifiedBy"
-    id="certifier">
-   Accessibility Testers Group
-&lt;/meta>
-&lt;link
+								<pre>&lt;link
     rel="a11y:certifierReport"
-    refines="#certifier"
     href="https://example.com/a11y-report/"/></pre>
 							</td>
 						</tr>
