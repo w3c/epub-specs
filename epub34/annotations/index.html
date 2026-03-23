@@ -305,7 +305,7 @@
                                 <code> name </code>
                             </td>
                             <td> The name of the creator. </td>
-                            <td> natural language string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                     </tbody>
@@ -840,7 +840,7 @@
                                 <code> value </code>
                             </td>
                             <td> The textual content of the annotation. </td>
-                            <td> natural language string </td>
+                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
@@ -972,7 +972,7 @@
                             <code><dfn>title</dfn></code>
                         </td>
                         <td> A title to help identifying the set. </td>
-                        <td> natural language string </td>
+                        <td> Localizable text </td>
                         <td> No </td>
                     </tr>
                     <tr>
@@ -1024,7 +1024,7 @@
                                 <code> name </code>
                             </td>
                             <td> The name of the generator software. </td>
-                            <td> natural language string </td>
+                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
@@ -1065,7 +1065,7 @@
                                 <code> dc:title </code>
                             </td>
                             <td> The title of the publication. </td>
-                            <td> natural language string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1081,7 +1081,7 @@
                                 <code> dc:publisher </code>
                             </td>
                             <td> The name of the publisher. </td>
-                            <td> natural language string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1089,7 +1089,7 @@
                                 <code> dc:creator </code>
                             </td>
                             <td> The author(s) of the publication. </td>
-                            <td> array of natural language strings </td>
+                            <td> array of Localizable texts </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1286,47 +1286,107 @@
             <h1>Internationalization Considerations</h1>
 
             <section class="informative">
-                <h2>Natural language strings</h2>
+                <h2>Localizable texts</h2>
 
                 <p>
                     The EPUB Annotation model inherits the <a data-cite="json-ld11#string-internationalization">string
                     internationalization</a> features defined by [[[json-ld11]]].
-                    The <a data-cite="json-ld11#dfn-default-language">default language</a> and
-                    <a data-cite="json-ld11#dfn-base-direction">base direction</a>
-                    of a natural language string can be set with the `@language` and `@direction` keywords, respectively.
-                    The value for `@language` is a string representing a [[BCP47]] language tag.
-                    The value for `@direction` is a string whose value must be either `"ltr"` or `"rtl"`.
-                    Using these keywords, the language and the direction of natural language strings can be set either globally,
-                    e.g., for all annotations in an [=AnnotationSet=], or for a specific object like a [=Body object=].
+                    These may be used for values that are defined as
+                    <a data-cite="i18n-glossary#dfn-localizable-text">localizable texts</a>.
+                    To set the right language metadata, the value is a separate
+                    object with the string value set explicitly through the `stringValue` property.
+                    The `language` and `direction` properties can be used to set the
+                    <a data-cite="i18n-glossary#dfn-language-tag">language tag</a>
+                    and the  <a data-cite="i18n-glossary#dfn-string-direction">string direction</a>, respectively.
+                    The value for `language` is a string representing a [[BCP47]] language tag.
+                    The value for `direction` is a string whose value must be either `"ltr"` or `"rtl"`.
                 </p>
 
+                <p>
+                    In the example below, two annotations within the same [=AnnotationSet=] use different languages.
+                    In the second annotation the string direction is also set to ensure the correct
+                    rendering of the text with mixed Latin and Hebrew characters.
+                </p>
+
+                <aside class="example" title="Setting the language explicitly for localizable texts">
+                    <pre>
+                    {
+                        "@context": "https://www.w3.org/ns/epub-anno.jsonld",
+                        "type": "AnnotationSet",
+                        "id": "urn:uuid:123-456-789",
+                        "title" : {
+                            "stringValue": "This is an example for an annotation text",
+                            "language": "en"
+                        },
+                        "items" : [
+                            {
+                                "id": "urn:uuid:123-456-789-a1",
+                                "type": "Annotation",
+                                "value": {
+                                    "language": "en",
+                                    "stringValue": "HTML is a markup language.",
+                                    "language": "en"
+                                }
+                            },
+                            {
+                                "id": "urn:uuid:123-456-789-a3",
+                                "type": "Annotation",
+                                "body": {
+                                    "type": "TextualBody",
+                                    "value": {
+                                        "language": "he",
+                                        "direction": "rtl",
+                                        "stringValue": <bdo dir="rtl">"HTML היא שפת סימון."</bdo>
+                                    }
+                                }
+                            },
+                            …
+                        ]
+                    }
+                    </pre>
+                 </aside>
+                 <div class="ednote">
+                    The "language", "direction", and "stringValue" terms are all aliases that we define. Ie, it is possible to use
+                    other terms, e.g., "lang" or "dir".
+                </div>
+
                 <section>
-                    <h3>Global setting</h3>
+                    <h3>Setting the default values</h3>
+
                     <p>
-                        For global setting, the value of the top-level `@context` must be extended with an extra context object
-                        (using the JSON array notation) containing the necessary statements.
-                        The `@language` and `@direction` keys are used to set the respective values.
+                        The default values for `language` and `direction` may be set as part of the context
+                        declaration of the Annotation Set. The value of the top-level `@context` must be
+                        extended with an extra context object (using the JSON array notation) containing the default setting using the the `@language` and `@direction` keywords. See the example below as an alternative for the previous example.
                     </p>
 
-                    <aside class="example" title="Setting language and direction globally">
+                    <aside class="example" title="Setting the default language to English">
                         <pre>
                         {
                             "@context": [
                                 "https://www.w3.org/ns/epub-anno.jsonld",
                                 {
-                                    "@language": "en",
-                                    "@direction": "ltr"
+                                    "@language": "en"
                                 }
                             ],
                             "type": "AnnotationSet",
                             "id": "urn:uuid:123-456-789",
+                            "title" : "This is an example for an annotation text",
                             "items" : [
                                 {
-                                    "type": "Annotation",
                                     "id": "urn:uuid:123-456-789-a1",
+                                    "type": "Annotation",
+                                    "value": "HTML is a markup language."
+                                },
+                                {
+                                    "id": "urn:uuid:123-456-789-a3",
+                                    "type": "Annotation",
                                     "body": {
                                         "type": "TextualBody",
-                                        "value": "This is a comment in English"
+                                        "value": {
+                                            "language": "he",
+                                            "direction": "rtl",
+                                            "stringValue": <bdo dir="rtl">"HTML היא שפת סימון."</bdo>
+                                        }
                                     }
                                 },
                                 …
@@ -1335,99 +1395,11 @@
                         </pre>
                     </aside>
 
-                    <p>
-                        These language and direction values are valid for all natural language strings in the Annotation Set,
-                        unless overwritten by a local setting.
+                    <p class="note">
+                        The extra object in the context can be used whenever a context is set. For example, it is possible to set the default value for a single annotation.
                     </p>
                 </section>
-                <section>
-                    <h3>Local setting</h3>
-
-                    <p>
-                        For setting the values locally, the same `@context` notation can be used within any
-                        object. This is referred to as the <a data-cite="json-ld11#scoped-contexts">"scoped" context</a>,
-                        i.e., a context that is only valid within the enclosing object and its descendent objects.
-                        Possible global values are overwritten.
-                    </p>
-
-                    <aside class="example" title="Setting language and direction locally">
-                        <pre>
-                            {
-                                "@context": [
-                                    "https://www.w3.org/ns/epub-anno.jsonld",
-                                    {
-                                        "@language": "en",
-                                        "@direction": "ltr"
-                                    }
-                                ],
-                                "type": "AnnotationSet",
-                                "id": "urn:uuid:123-456-789",
-                                "items" : [
-                                    …
-                                    {
-                                        "id": "urn:uuid:123-456-789-a2",
-                                        "type": "Annotation",
-                                        "body": {
-                                            "@context": {
-                                                "@language": "he",
-                                                "@direction": "rtl"
-                                            },
-                                            "type": "TextualBody",
-                                            "value": "התגובה הזו בעברית"
-                                        }
-                                    },
-                                    …
-                                ]
-                            }
-                            </pre>
-                    </aside>
-                </section>
-
-                 <!-- <section>
-                    <h3>Setting for a specific string</h3>
-                    <p>
-                        This is the finest granularity setting; instead of relying on the global or the scoped context, the
-                        language and direction are set on a specific string. This relies on an an additional, property called `stringValue`,
-                        and is used as follows:
-                    </p>
-
-                    <aside class="example" title="Setting language and direction locally">
-                        <pre>
-                            …
-                                "items": [
-                                    {
-                                        …
-                                    },
-                                    {
-                                        "id": "urn:uuid:123-456-789-a3",
-                                        "type": "Annotation",
-                                        "body": {
-                                            "type": "TextualBody",
-                                            "value": {
-                                                "@language"   : "he",
-                                                "@direction"  : "rtl",
-                                                "stringValue" : "התגובה הזו בעברית"
-                                            }
-                                        }
-                                    },
-                                    …
-                                ]
-                            …
-                        </pre>
-                    </aside>
-
-                    <p>
-                        `stringValue` is actually an alias set to the JSON-LD `@value` keyword by the core EPUB Annotation `@context`
-                        file. It has been introduced to avoid a possible clash with the `value` property, inherited from the [[annotation-model]] specification.
-                    </p>
-                    <div class="issue">
-                        <p>
-                            It is not clear whether the string level language setting is of any use for annotations. It
-                            may be simpler ignore this possibility and require the usage of scoped contexts everywhere.
-                        </p>
-                    </div>
-                </section> -->
-            </section>
+          </section>
         </section>
 
         <section>
