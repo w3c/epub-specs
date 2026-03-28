@@ -176,7 +176,7 @@ EPUB defers to the app and platform:
 - No special cleanup requirements
 - Apps manage reading position and storage
 - Standard web document lifecycle applies
-
+Offline is a primary use case of EPUB and the specification has been designed to allow access to resources without a connection to a network, although details will depend on Reading System implementations. EPUB documents can be fully active across network connect/disconnect events.
 ### 20. Does your spec define when and how new kinds of errors should be raised?
 
 No, EPUB 3.4 does not define new kinds of error: 
