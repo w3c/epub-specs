@@ -145,7 +145,7 @@ The EPUB 3.4 format itself defines only publication‑level identifiers:
 
 ### 14. How does this specification distinguish between behavior in first-party and third-party contexts?
 
-EPUB uses the web's origin model. Books may embed ads or external content, but isolation details are up to reading apps and browser security.
+EPUB does not define third party contexts, as the majority of a publication must come from the EPUB itself. The exceptions are audio, video, and font files which may be hosted externally, and some scripting resources which may be loaded from remote sites, depending on Reading System support.
 
 ### 15. How do the features in this specification work in the context of a browser’s Private Browsing or Incognito mode?
 
