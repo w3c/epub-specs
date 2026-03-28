@@ -164,7 +164,7 @@ No. EPUB doesn't provide ways to:
 - Relax same-origin policy
 - Weaken security controls
 
-Reading Systems are encouraged to strengthen isolation.
+Reading Systems are encouraged to strengthen isolation. While an EPUB consists of a single archive file, it does define a virtual file system for that archive, and suggests expanding the origin to encompass all files in that virtual file system, which might be seen as an expansion of local file origins. The specification does define a URL expansion algorithm that limits the scope of relative paths to files contained in that single archive, and forbids access outside of it.
 
 ### 18.  What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?
 
