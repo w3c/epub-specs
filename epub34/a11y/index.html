@@ -1231,6 +1231,107 @@
 				<section id="sec-conf-reporting-eval">
 					<h4>Evaluator information</h4>
 
+					<section id="sec-conf-num-express" class="informative">
+						<h5>Differences in expression based on the number of claims</h5>
+
+						<p>How to add the evaluator information to an EPUB publication depends on the number of
+							conformance claims that are made.</p>
+
+						<p>Most publications will only contain a single <code>dcterms:conformsTo</code> [[dcterms]]
+							property with the <a href="#sec-conf-reporting-pub">accessibility claim</a> for the content.
+							In this case, it is not necessary to use EPUB 3's <a data-cite="epub/#subexpression"
+								>metadata association mechanism</a> [[epub-3]] to connect the various metadata
+							statements.</p>
+
+						<p>Consider the following example metadata:</p>
+
+						<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="conf">
+      EPUB Accessibility 1.2 - WCAG 2.2 Level AA
+   &lt;/meta>
+   &lt;meta
+       property="a11y:certifiedBy">
+      Foo's Accessibility Testing
+   &lt;/meta>
+   &lt;meta
+       property="a11y:certifierCredential">
+      A+ Accessibility Rating
+   &lt;/meta>
+   &lt;meta
+       property="dcterms:date">
+      2021-09-07
+   &lt;/meta>
+   &lt;link
+       rel="a11y:certifierReport"
+       href="reports/a11y.xhtml"/>
+   …
+&lt;/metadata></pre>
+
+						<p>Since there is only one conformance claim, it can be implied that the additional evaluation
+							information is all related to it.</p>
+
+						<div class="note">
+							<p>If it is preferred to have the metadata connections explicit, as will be described next,
+								it is still allowed even when there is only one claim.</p>
+						</div>
+
+						<p>The use of the <a data-cite="epub-3#attrdef-refines"><code>refines</code> attribute</a>
+							[[epub-3]] only becomes a necessity when there is <a href="#other-conformance-claims">more
+								than one <code>dcterms:conformsTo</code> statement</a>. Without chaining the metadata
+							statements together, the information stops being easily machine-processable, which can lead
+							to errors in its presentation to users.</p>
+
+						<p>The following example shows the same metadata as the previous example but this time it is all
+							connected through uses of the <code>refines</code> attribute because the publisher has added
+							a conformance claim to their own internal standard.</p>
+
+						<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="internal">
+      Acme Publishing's EPUB Standards
+   &lt;/meta>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="conf">
+      EPUB Accessibility 1.2 - WCAG 2.2 Level AA
+   &lt;/meta>
+   &lt;meta
+       id="certifier"
+       property="a11y:certifiedBy"
+       refines="#conf">
+      Foo's Accessibility Testing
+   &lt;/meta>
+   &lt;meta
+       property="a11y:certifierCredential"
+       refines="#certifier">
+      A+ Accessibility Rating
+   &lt;/meta>
+   &lt;meta
+       property="dcterms:date"
+       refines="#certifier">
+      2021-09-07
+   &lt;/meta>
+   &lt;link
+       rel="a11y:certifierReport"
+       refines="#certifier"
+       href="reports/a11y.xhtml"/>
+   …
+&lt;/metadata></pre>
+
+						<p>The <code>refines</code> attribute now allows the path back to the EPUB Accessibility
+							standard conformance claim to be established, thereby linking all the evaluator information
+							to it.</p>
+
+						<p>The following sections explain the purpose of the evaluator metadata in greater detail as
+							well as how to use the <code>refines</code> attribute when it is needed.</p>
+					</section>
+
 					<section id="sec-evaluator-name">
 						<h5>Evaluator name</h5>
 
@@ -1239,6 +1340,10 @@
 							that specifies the name of the party that evaluated the <a
 								data-cite="epub-3#dfn-epub-publication">EPUB publication</a>.</p>
 
+						<p>If <a href="#sec-conf-num-express">more than one conformance claim</a> is made, <a
+								data-cite="epub/#subexpression">associate</a> [[epub-3]] the evaluator with their <a
+								href="#sec-conf-reporting-pub">claim</a>.</p>
+
 						<div class="note">
 							<p>If an organization evaluates an EPUB publication, users will typically want to know the
 								name of that organization. This specification discourages including the name of the
@@ -1246,22 +1351,33 @@
 								this can diminish the trust users have in the claim.</p>
 						</div>
 
-						<aside class="example" title="Evaluator's name metadata">
-							<p>The evaluator's name is linked to the conformance statement using the
-									<code>refines</code> attribute.</p>
+						<aside class="example" title="Adding the evaluator">
 							<pre>&lt;metadata …>
-  …
-  &lt;meta
-      property="dcterms:conformsTo"
-      id="conf">
-     EPUB Accessibility 1.2 - WCAG 2.2 Level AA
-  &lt;/meta>
-  &lt;meta
-      property="a11y:certifiedBy"
-      refines="#conf">
-     Foo's Accessibility Testing
-  &lt;/meta>
-  …
+   …
+   &lt;meta
+       property="a11y:certifiedBy">
+      Foo's Accessibility Testing
+   &lt;/meta>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="Adding the evaluator when there is more than one claim">
+							<p>The evaluator is linked to the conformance statement using the <code>refines</code>
+								attribute.</p>
+							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="conf">
+      EPUB Accessibility 1.2 - WCAG 2.2 Level AA
+   &lt;/meta>
+   &lt;meta
+       property="a11y:certifiedBy"
+       refines="#conf">
+      Foo's Accessibility Testing
+   &lt;/meta>
+   …
 &lt;/metadata></pre>
 						</aside>
 					</section>
@@ -1271,15 +1387,30 @@
 
 						<p>If the date the evaluation was performed on is known, include that information in a <a
 								href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#http://purl.org/dc/elements/1.1/date"
-									><code>dcterms:date</code> property</a> [[dcterms]] <a
-								data-cite="epub-3#subexpression">associated with</a> [[epub-3]] the <a
-								href="#sec-evaluator-name">evaluator's name</a>.</p>
+									><code>dcterms:date</code> property</a> [[dcterms]].</p>
+
+						<p>If <a href="#sec-conf-num-express">more than one conformance claim</a> is made, <a
+								data-cite="epub/#subexpression">associate</a> [[epub-3]] the date with the <a
+								href="#sec-evaluator-name">evaluator</a>.</p>
 
 						<p>It is REQUIRED that the date string conform to [[iso8601-1]], particularly the subset
 							expressed in W3C Date and Time Formats [[datetime]], as such strings are both human and
 							machine readable.</p>
 
 						<aside class="example" title="Expressing the evaluation date">
+							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:date">
+      2021-09-07
+   &lt;/meta>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="Expressing the evaluation date when there is more than one claim">
+							<p>In this example, the <code>refines</code> attribute associates the date with the
+								evaluator.</p>
 							<pre>&lt;metadata …>
    …
    &lt;meta
@@ -1304,8 +1435,13 @@
 						<p>If the evaluator has credentials or badges that establish their authority to evaluate
 							content, include that information in an <a href="#certifierCredential"><code
 									id="a11y-certifierCredential">a11y:certifierCredential</code> properties</a>
-							<a data-cite="epub-3#subexpression">associated with</a> [[epub-3]] the <a
-								href="#sec-evaluator-name">evaluator's name</a>.</p>
+							<a data-cite="epub/#subexpression">associated with</a> [[epub-3]] the <a
+								href="#sec-evaluator-name">evaluator</a>.</p>
+
+						<p>If there is more than one evaluator, or <a href="#sec-conf-num-express">more than one
+								conformance claim</a> is made, <a data-cite="epub/#subexpression">associate</a>
+							[[epub-3]] the credential with the applicable <a href="#sec-evaluator-name"
+							>evaluator</a>.</p>
 
 						<div class="note">
 							<p>Although it is possible to use a URL as the value of the
@@ -1317,19 +1453,28 @@
 						</div>
 
 						<aside class="example" title="Expressing a basic credential">
+							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="a11y:certifiedBy">
+      EPUB Accessibility Evaluator
+   &lt;/meta>
+   
+   &lt;meta
+       property="a11y:certifierCredential">
+      A+ Accessibility Rating
+   &lt;/meta>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="Expressing a credential when there is more than one evaluator">
 							<p>In this example, the <code>refines</code> attribute associates the credential with the
 								certifier.</p>
 							<pre>&lt;metadata …>
    …
    &lt;meta
-       property="dcterms:conformsTo"
-       id="conf">
-     EPUB Accessibility 1.2 - WCAG 2.2 Level AA
-   &lt;/meta>
-   
-   &lt;meta
        property="a11y:certifiedBy"
-       refines="#conf"
        id="certifier">
       EPUB Accessibility Evaluator
    &lt;/meta>
@@ -1339,6 +1484,7 @@
        refines="#certifier">
       A+ Accessibility Rating
    &lt;/meta>
+   …
 &lt;/metadata></pre>
 						</aside>
 					</section>
@@ -1348,13 +1494,34 @@
 
 						<p>If the evaluator provides a publicly-readable report of its assessment, provide a link to the
 							assessment in an <a href="#certifierReport"><code id="a11y-certifierReport"
-									>a11y:certifierReport</code> property</a>
-							<a data-cite="epub-3#subexpression">associated with</a> [[epub-3]] the <a
-								href="#sec-evaluator-name">evaluator's name</a>.</p>
+									>a11y:certifierReport</code> property</a>.</p>
+
+						<p>If <a href="#sec-conf-num-express">more than one conformance claim</a> is made, <a
+								data-cite="epub/#subexpression">associate</a> [[epub-3]] the report with the <a
+								href="#sec-evaluator-name">evaluator</a>.</p>
 
 						<aside class="example" title="An external accessibility report">
 							<p>The following example shows a link to an accessibility report hosted on a web site.</p>
 							<pre>&lt;metadata …>
+   …
+   &lt;meta
+       property="dcterms:conformsTo"
+       id="conf">
+     EPUB Accessibility 1.2 - WCAG 2.2 Level AA
+   &lt;/meta>
+
+   &lt;link
+       rel="a11y:certifierReport"
+       href="http://www.example.com/a11y/report/9780000000001"/>
+   …
+&lt;/metadata></pre>
+						</aside>
+
+						<aside class="example" title="An accessibility report when there are multiple claims">
+							<p>The following example uses the <code>refines</code> attribute to link the accessibility
+								report to the evaluator.</p>
+							<pre>&lt;metadata …>
+   …
    &lt;meta
        property="dcterms:conformsTo"
        id="conf">
@@ -1372,6 +1539,7 @@
        rel="a11y:certifierReport"
        refines="#certifier"
        href="http://www.example.com/a11y/report/9780000000001"/>
+   …
 &lt;/metadata></pre>
 						</aside>
 
@@ -1379,6 +1547,7 @@
 							<p>The following example shows a link to an accessibility report included in the <a
 									data-cite="epub-3#dfn-epub-container">EPUB container</a>.</p>
 							<pre>&lt;metadata …>
+   …
    &lt;meta
        property="dcterms:conformsTo"
        id="conf">
@@ -1396,6 +1565,7 @@
        rel="a11y:certifierReport"
        refines="#certifier"
        href="reports/a11y.xhtml"/>
+   …
 &lt;/metadata></pre>
 						</aside>
 					</section>
@@ -1796,6 +1966,12 @@
 							<td>One or more</td>
 						</tr>
 						<tr>
+							<th>Extends:</th>
+							<td>
+								<a href="#dcterms-conformsTo"><code>dcterms:conformsTo</code></a> when an EPUB
+								publication contains multiple conformance statements.</td>
+						</tr>
+						<tr>
 							<th>Example:</th>
 							<td>
 								<pre>&lt;meta
@@ -1833,7 +2009,6 @@
 						<tr>
 							<th>Cardinality:</th>
 							<td>Zero or more</td>
-
 						</tr>
 						<tr>
 							<th>Extends:</th>
@@ -1888,22 +2063,14 @@
 						<tr>
 							<th>Extends:</th>
 							<td>
-								<a href="#certifiedBy">
-									<code>certifiedBy</code>
-								</a>
-							</td>
+								<a href="#certifiedBy"><code>certifiedBy</code></a> when an EPUB publication contains
+								multiple conformance statements.</td>
 						</tr>
 						<tr>
 							<th>Example:</th>
 							<td>
-								<pre>&lt;meta
-    property="a11y:certifiedBy"
-    id="certifier">
-   Accessibility Testers Group
-&lt;/meta>
-&lt;link
+								<pre>&lt;link
     rel="a11y:certifierReport"
-    refines="#certifier"
     href="https://example.com/a11y-report/"/></pre>
 							</td>
 						</tr>
@@ -1975,6 +2142,9 @@
 				<summary>Substantive changes since <a href="https://w3.org/TR/epub-a11y-11/">EPUB Accessibility
 					1.1</a></summary>
 				<ul>
+					<li>26-Mar-2026: Clarified that the <code>refines</code> attribute is only needed to chain
+						accessibility metadata statements together when there are multiple conformance claims. See <a
+							href="https://github.com/w3c/epub-specs/issues/2846">issue 2846</a>.</li>
 					<li>05-Sept-2025: Added a note to the evaluator credential field that while URLs are valid values
 						they will typically require additional processing for display. See <a
 							href="https://github.com/w3c/epub-specs/issues/2112">issue 2112</a>.</li>
