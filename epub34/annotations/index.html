@@ -305,7 +305,7 @@
                                 <code> name </code>
                             </td>
                             <td> The name of the creator. </td>
-                            <td> string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                     </tbody>
@@ -840,7 +840,7 @@
                                 <code> value </code>
                             </td>
                             <td> The textual content of the annotation. </td>
-                            <td> string </td>
+                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
@@ -871,22 +871,6 @@
                         </tr>
                         <tr>
                             <td>
-                                <code> language </code>
-                            </td>
-                            <td> The language of the annotation. </td>
-                            <td> [[BCP47]] </td>
-                            <td> No </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> textDirection </code>
-                            </td>
-                            <td> The direction of the text; left-to-right by default. </td>
-                            <td> "ltr" | "rtl" </td>
-                            <td> No </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <code> <dfn>tags</dfn> </code>
                             </td>
                             <td> Free text categorizing the annotation. </td>
@@ -909,8 +893,6 @@
                 </p>
 
                 <p class="note">Read “Best practices for Reading Systems” about using tags in an annotation. </p>
-                <p class="issue" data-number="2854"></p>
-
                 <aside class="example" title="An annotation Body">
                     <pre>
    {
@@ -921,8 +903,6 @@
             "value": "j'adore !",
             "tags": ["teacher"],
             "color": "blue",
-            "language": "fr",
-            "textDirection": "ltr"
         }
     }
 			        </pre>
@@ -1003,7 +983,7 @@
                             <code><dfn>title</dfn></code>
                         </td>
                         <td> A title to help identifying the set. </td>
-                        <td> string </td>
+                        <td> Localizable text </td>
                         <td> No </td>
                     </tr>
                     <tr>
@@ -1096,7 +1076,7 @@
                                 <code> dc:title </code>
                             </td>
                             <td> The title of the publication. </td>
-                            <td> string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1112,7 +1092,7 @@
                                 <code> dc:publisher </code>
                             </td>
                             <td> The name of the publisher. </td>
-                            <td> string </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1120,7 +1100,7 @@
                                 <code> dc:creator </code>
                             </td>
                             <td> The author(s) of the publication. </td>
-                            <td> array of strings </td>
+                            <td> array of Localizable texts </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1311,6 +1291,139 @@
             <h1> JSON Schema </h1>
 
             <p>T.B.D.</p>
+        </section>
+
+        <section>
+            <h1>Internationalization Considerations</h1>
+
+            <section class="informative">
+                <h2>Localizable texts</h2>
+
+                <p>
+                    The EPUB Annotation model inherits the <a data-cite="json-ld11#string-internationalization">string
+                    internationalization</a> features defined by [[[json-ld11]]].
+                    These may be used for values that are defined as
+                    <a data-cite="i18n-glossary#dfn-localizable-text">localizable texts</a>.
+                    To set the right language metadata, the value is a separate
+                    object with the string value set explicitly through the `stringValue` property.
+                    The `language` and `direction` properties can be used to set the
+                    <a data-cite="i18n-glossary#dfn-language-tag">language tag</a>
+                    and the  <a data-cite="i18n-glossary#dfn-string-direction">string direction</a>, respectively.
+                    The value for `language` is a string representing a [[BCP47]] language tag.
+                    The value for `direction` is a string whose value must be either `"ltr"` or `"rtl"`.
+                </p>
+
+                <p>
+                    In the example below, two annotations within the same [=AnnotationSet=] use different languages.
+                    In the second annotation the string direction is also set to ensure the correct
+                    rendering of the text with mixed Latin and Hebrew characters.
+                </p>
+
+                <aside class="example" title="Setting the language explicitly for localizable texts">
+                    <pre>
+                    {
+                        "@context": "https://www.w3.org/ns/epub-anno.jsonld",
+                        "type": "AnnotationSet",
+                        "id": "urn:uuid:123-456-789",
+                        "title" : {
+                            "text": "This is an example for an annotation text",
+                            "language": "en"
+                        },
+                        "items" : [
+                            {
+                                "id": "urn:uuid:123-456-789-a1",
+                                "type": "Annotation",
+                                "body" : {
+                                    "type": "TextualBody",
+                                    "value": {
+                                        "language": "en",
+                                        "text": "HTML is a markup language.",
+                                    }
+                                },
+                                "target" : {
+                                    …
+                                }
+                            },
+                            {
+                                "id": "urn:uuid:123-456-789-a3",
+                                "type": "Annotation",
+                                "body": {
+                                    "type": "TextualBody",
+                                    "value": {
+                                        "language": "he",
+                                        "direction": "rtl",
+                                        "text": <bdo dir="rtl">"HTML היא שפת סימון."</bdo>
+                                    }
+                                },
+                                "target": {
+                                    …
+                                }
+                            },
+                            …
+                        ]
+                    }
+                    </pre>
+                </aside>
+
+                <section>
+                    <h3>Setting the default values</h3>
+
+                    <p>
+                        The default values for `language` and `direction` may be set as part of the context
+                        declaration of the Annotation Set. The value of the top-level `@context` must be
+                        extended with an extra context object (using the JSON array notation) containing the default setting using the the `@language` and `@direction` keywords. See the example below as an alternative for the previous example.
+                    </p>
+
+                    <aside class="example" title="Setting the default language to English">
+                        <pre>
+                        {
+                            "@context": [
+                                "https://www.w3.org/ns/epub-anno.jsonld",
+                                {
+                                    "@language": "en"
+                                }
+                            ],
+                            "type": "AnnotationSet",
+                            "id": "urn:uuid:123-456-789",
+                            "title" : "This is an example for an annotation text",
+                            "items" : [
+                                {
+                                    "id": "urn:uuid:123-456-789-a1",
+                                    "type": "Annotation",
+                                    "body": {
+                                        "type": "TextualBody",
+                                        "value": "HTML is a markup language."
+                                    },
+                                    "target": {
+                                        …
+                                    }
+                                },
+                                {
+                                    "id": "urn:uuid:123-456-789-a3",
+                                    "type": "Annotation",
+                                    "body": {
+                                        "type": "TextualBody",
+                                        "value": {
+                                            "language": "he",
+                                            "direction": "rtl",
+                                            "text": <bdo dir="rtl">"HTML היא שפת סימון."</bdo>
+                                        }
+                                    },
+                                    "target": {
+                                        …
+                                    }
+                                },
+                                …
+                            ]
+                        }
+                        </pre>
+                    </aside>
+
+                    <p class="note">
+                        The extra object in the context can be used whenever a context is set. For example, it is possible to set the default value for a single annotation.
+                    </p>
+                </section>
+          </section>
         </section>
 
         <section>
