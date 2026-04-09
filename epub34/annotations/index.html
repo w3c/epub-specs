@@ -102,8 +102,7 @@
                 which contains properties defining the annotation's
                 <a data-cite="annotation-model#bodies-and-targets">Body and Target</a>.
                 EPUB Annotations reuse the <a href="#annotation">same model</a> with some restrictions specified in this document.
-                Subsequent sections provide more formal definitions for the terms used by this
-                specification.
+                Subsequent sections provide more formal definitions for the terms used by this specification.
             </p>
             <ul>
                 <li> Web Annotations may have 0 or more Bodies, whereas this document requires to have a single <a href="#body">Body</a>
@@ -124,7 +123,7 @@
                 <li> Web Annotations may have multiple creators, while only a single creator is allowed for EPUB
                     annotations.</li>
 
-                <li> Web Annotations may have additional properties that are not accepted for EPUB Annotations (see the
+                <li> Web Annotations may have additional properties that are not defined for EPUB Annotations (see the
                     definitions of the properties in later sections). For example,
                     a specific generator application and generated date may exist for a Web Annotation,
                     whereas this document only defines these properties for <a href="#annotation-set">Annotation Sets</a>.
@@ -186,7 +185,7 @@
                                 <code> <dfn>motivation</dfn> </code>
                             </td>
                             <td>The motivation for the annotation's creation.</td>
-                            <td>"bookmarking" | "commenting" | "highlighting"</td>
+                            <td>"bookmarking" | "highlighting"</td>
                             <td>No</td>
                         </tr>
                         <tr>
@@ -241,10 +240,10 @@
 
                 <p class="note">The type of annotation should be considered when determining the value of the
                     [=motivation=] property.
-                    An annotation with a Body structure corresponds to a "comment".
-                    An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of
-                    characters, a space in an image
-                    or a time period, and a "bookmark" if it does not.
+                    The motivation is "highlighting" if the Selector 
+                    defines a range of characters, a space in an image or a time period.
+                    It is "bookmarking" if the Selector references a single character in the resource.
+                    A textual or audiovisual body may be present in both cases.
                 </p>
 
                 <p class="ednote">We should specify whether a property may appear at most once (body, target) because
@@ -254,7 +253,6 @@
                     for all the tables in the document.
                 </p>
 
-                <p class="issue" data-number="2926"></p>
                 <p class="issue" data-number="2884"></p>
 
                 <aside class="example" title="Core structure of an EPUB annotation">
@@ -840,17 +838,9 @@
                                 <code> type </code>
                             </td>
                             <td> The body type. </td>
-                            <td> "TextualBody" | "Image" | "Sound" | "Video" </td>
+                            <td> "TextualBody" | "Image" | "Audio" | "Video" </td>
                             <td> The body type. It MUST be “TextualBody”. </td>
                             <td> string </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> value </code>
-                            </td>
-                            <td> The textual content of the annotation. </td>
-                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
@@ -869,7 +859,7 @@
                                 <code> value </code>
                             </td>
                             <td> The  content of a textual note. </td>
-                            <td> string </td>
+                            <td> Localizable text </td>
                             <td> Yes, if type is "TextualBody". Not applicable for audiovisual notes. </td>
                         </tr>
                         <tr>
@@ -878,7 +868,7 @@
                             </td>
                             <td> The relative URL of the audiovisual note. </td>
                             <td> URL </td>
-                            <td> Yes, if type is "Image", "Sound", or "Video". Not applicable for textual notes. </td>
+                            <td> Yes, if type is "Image", "Audio", or "Video". Not applicable for textual notes. </td>
                         </tr>
                         <tr>
                             <td>
@@ -910,7 +900,11 @@
 
                 </p>
 
-                <p class="note">Read “Best practices for Reading Systems” about using tags in an annotation. </p>
+                <p class="note">
+
+                  Implementers are free to add other properties, as long as they are properly declared in the context file.                
+
+                </p>
 
                 <aside class="example" title="A textual Body">
                     <pre>
@@ -1000,14 +994,6 @@
                     </tr>
                     <tr>
                         <td>
-                            <code><dfn>about</dfn></code>
-                        </td>
-                        <td> Information relative to the publication. </td>
-                        <td> [=About=] </td>
-                        <td> Yes </td>
-                    </tr>
-                    <tr>
-                        <td>
                             <code>generated</code>
                         </td>
                         <td> The time when the set was generated. </td>
@@ -1016,24 +1002,22 @@
                     </tr>
                     <tr>
                         <td>
-                            <code><dfn>title</dfn></code>
+                            <code><dfn>about</dfn></code>
                         </td>
-                        <td> A title to help identifying the set. </td>
-                        <td> Localizable text </td>
-                        <td> No </td>
+                        <td> Information relative to the publication. </td>
+                        <td> [=About=] </td>
+                        <td> Yes </td>
                     </tr>
                     <tr>
                         <td>
                             <code><dfn>items</dfn></code>
                         </td>
-                        <td> The annotations of the set. </td>
+                        <td> The set of annotations. </td>
                         <td> Array of Annotation objects </td>
                         <td> Yes </td>
                     </tr>
                 </tbody>
             </table>
-
-            <p class="issue" data-number="2929"></p>
 
             <section>
                 <h2>Generator</h2>
@@ -1109,18 +1093,18 @@
                         </tr>
                         <tr>
                             <td>
-                                <code> dc:title </code>
-                            </td>
-                            <td> The title of the publication. </td>
-                            <td> Localizable text </td>
-                            <td> No </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <code> dc:format </code>
                             </td>
                             <td> The media type of the publication. </td>
                             <td> string </td>
+                            <td> No </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> dc:title </code>
+                            </td>
+                            <td> The title of the publication. </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1149,9 +1133,15 @@
                         </tr>
                     </tbody>
                 </table>
-                <p class="note"> All properties are from the Dublin Core Vocabulary [[dcterms]], also referenced
+
+                <p class="note"> 
+                    
+                    All properties are from the Dublin Core Vocabulary [[dcterms]], also referenced
                     in the [[[annotation-model]]] as well as in the EPUB <a data-cite="epub-34#sec-pkg-metadata">package
-                        document metadata</a>. </p>
+                        document metadata</a>.
+
+                    Implementers are free to add other properties from the Dublin Core Vocabulary, or to use properties from other vocabularies, as long as they are properly declared in the context file.                
+                </p>
 
                 <aside class="example" title="An AnnotationSet containing one annotation">
                     <pre>
@@ -1273,15 +1263,11 @@
         <section class="informative">
             <h1>Best Practices for Reading Systems</h1>
 
-            <p class="ednote">This section being informative, the MUST, SHOULD, etc, keyword are not appropriate
-                here. At the minimum, they should be turned into lower case.
-            </p>
-
             <section>
                 <h2> Displaying filtered annotations </h2>
-                <p> Reading systems should enable filtering by motivation, color, highlight mode, tag and
-                    creator. For instance, a user can display &quot;blue&quot; annotations only or
-                    “typo” annotations only. Filtering on multiple criteria is a plus. </p>
+                <p> It is recommended that Reading systems  enable filtering by motivation, creator, style and tags. 
+                    For instance, a user can display &quot;blue&quot; colored annotations only, or
+                    &quot;typo&quot; tagged annotations only. Filtering on multiple criteria is a plus. </p>
 
             </section>
 
@@ -1295,46 +1281,42 @@
                     Selector available. It will select an alternative Selector as a fallback in case the
                     preferred one does not return a correct position in the publication: this can happen
                     if the publication has been modified after the annotation has been created. </p>
-                <p> Not all selectors are equally easy to implement. Reading Systems MAY choose to
+                <p> Not all selectors are equally easy to implement. Reading Systems are free to choose to
                     support only a subset of the selectors defined in this specification. </p>
-                <p> The W3C Publishing Maintenance Working Group is expected to define one or more selectors
-                    reading systems are required to implement, as a <i>lingua franca</i>. </p>
 
             </section>
 
             <section>
                 <h2>Exporting annotations as a detached file</h2>
-                <p> When a user decides to export an annotation set from a reading system, they SHOULD be
-                    proposed to filter annotations by creator, style and tags. The advantage of
+                <p> When a user decides to export an annotation set from a reading system, it is good to
+                    propose them to filter annotations by motivation, creator, style and tags. The advantage of
                     this practice is that, for instance, a user can export personal annotations only. </p>
-                <p> They MAY enter a title for the annotation set (empty by default). Such a title SHOULD
-                    become the exported filename. </p>
-                <p> They MUST be able to choose the directory in which the annotation set will be stored. </p>
-                <p> The application may propose alternative formats at export time: an HTML or markdown format
-                    with human-friendly references to the location of each annotation may be handy. </p>
+                <p> The application can propose alternative formats at export time: an HTML or markdown format
+                    with human-friendly references to the location of each annotation is handy. </p>
 
             </section>
 
             <section>
                 <h2>Exporting annotations embedded in an EPUB </h2>
-                <p> When a user decides to export a publication from the Reading System, they SHOULD be
-                    proposed to embed the annotations associated with the publication. </p>
-                <p> If the user decides to embed annotations in the publication, they SHOULD be prompted to
-                    filter the annotations by creator, style and tags. </p>
+                <p> When a user decides to export a publication from the Reading System, it is good to
+                    propose them to embed the annotations associated with the publication. </p>
+                <p> If the user decides to embed annotations in the publication, they should be prompted to
+                    filter the annotations. </p>
 
             </section>
 
             <section>
                 <h2>Importing annotations</h2>
-                <p> To simplify associating annotations with a publication, a Reading System MUST
-                    offer a way to select a publication before selecting an annotation set. An automatic association of an annotation set with a publication (e.g. via drag and
-                    drop) MAY also be proposed, butidentifying the proper publication from 
+                <p> To simplify associating annotations with a publication, a Reading System has to
+                    offer a way to select a publication before selecting an annotation set. 
+                    An automatic association of an annotation set with a publication (e.g. via drag and
+                    drop) can also be proposed, but identifying the proper publication from 
                     the metadata in the annotation set is error prone. </p>
-                <p> When importing an annotation set, a Reading System SHOULD display a message with the
-                    title of the annotation set and the number of annotations in the set. The Reading
-                    System MUST offer the user the choice to abort the import. </p>
+                <p> When importing an annotation set, the good practice for Reading Systems is to 
+                    display publication metadata (e.g. title, author), the number of annotations found in the set,
+                    and offer the user the choice to abort the import if the information does not match their expectations. </p>
                 <p> Each annotation is uniquely identified. If during the import of an annotation set,
-                    one or more annotations are re-imported, the Reading System MUST offer to the user
+                    one or more annotations are re-imported, the Reading System has to offer to the user
                     the choice to override existing annotations or abort the import of the annotation
                     set. </p>
 
@@ -1343,7 +1325,7 @@
             <section>
                 <h2>Dealing with audiovisual notes</h2>
                 <p> This specification provides mechanisms for handling audiovisual notes.</p>
-                <p> If an application does not support audiovisual notes, it should ignore them 
+                <p> If an application does not support audiovisual notes, it has to ignore them 
                     when importing an annotation set. It is good practice to notify the user 
                     that some annotations were not imported due to lack of support. </p>
 
@@ -1354,11 +1336,12 @@
                 <p> This document specifies a closed set of six colors chosen because of their
                     extensive support in well-known reading systems. However, most existing reading apps
                     offer a smaller set to their users. </p>
-                <p> If an application imports annotations with a color it does not support, it should
+                <p> If an application imports annotations with a color it does not support, 
+                    it is good practice to ignore the color information and to
                     display them with a neutral color. The recommended neutral color is grey. </p>
                 <p> Some applications may support colors not in the set defined by this specification
-                    (e.g. brown). In this case, a 1-to-1 substitution at export time is required (e.g.
-                    brown to orange). </p>
+                    (e.g. brown). In this case, a 1-to-1 substitution at import or export time is required (e.g.
+                    mapping brown to orange). </p>
                 <p class="note">We didn't spot applications with more than six annotation colors. </p>
 
             </section>
