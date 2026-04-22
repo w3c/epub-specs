@@ -66,8 +66,17 @@
                         "title": "URL Fragment Text Directives",
                         "publisher": "W3C",
                         "href": "https://wicg.github.io/scroll-to-text-fragment/"
+                    },
+                    "ISO21320": {
+                        "date": "2015",
+                        "href": "https://www.iso.org/standard/60101.html",
+                        "publisher": "ISO",
+                        "status": "International Standard",
+                        "title": "Document Container File - ISO/IEC 21320",
+                        "isoNumber": "ISO/IEC 21320-1:2015"
                     }
                 }
+
             };</script>
     </head>
 
@@ -94,15 +103,12 @@
                 which contains properties defining the annotation's
                 <a data-cite="annotation-model#bodies-and-targets">Body and Target</a>.
                 EPUB Annotations reuse the <a href="#annotation">same model</a> with some restrictions specified in this document.
-                Subsequent sections provide more formal definitions for the terms used by this
-                specification.
+                Subsequent sections provide more formal definitions for the terms used by this specification.
             </p>
             <ul>
                 <li> Web Annotations may have 0 or more Bodies, whereas this document requires to have a single <a href="#body">Body</a>
-                    per annotation. Furthermore, in the [[annotation-model]], such Body can be remote or embedded,
-                    whereas only embedded Bodies are used in EPUB Annotation and only for textual comments .
-
-                    <p class="issue" data-number="2925"></p>
+                    per annotation. Although most use cases relate to textual notes embedded in the annotation, this version 
+                    of the specification paves the way to the inclusion of audiovisual notes by also allowing external Web resources.
                 </li>
 
                 <li> Web Annotations have 1 or more Targets, while only a single <a href="#target">Target</a> is
@@ -118,7 +124,7 @@
                 <li> Web Annotations may have multiple creators, while only a single creator is allowed for EPUB
                     annotations.</li>
 
-                <li> Web Annotations may have additional properties that are not accepted for EPUB Annotations (see the
+                <li> Web Annotations may have additional properties that are not defined for EPUB Annotations (see the
                     definitions of the properties in later sections). For example,
                     a specific generator application and generated date may exist for a Web Annotation,
                     whereas this document only defines these properties for <a href="#annotation-set">Annotation Sets</a>.
@@ -235,10 +241,10 @@
 
                 <p class="note">The type of annotation should be considered when determining the value of the
                     [=motivation=] property.
-                    An annotation with a Body structure corresponds to a "comment".
-                    An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of
-                    characters, a space in an image
-                    or a time period, and a "bookmark" if it does not.
+                    An annotation with a Body structure corresponds to a "comment". 
+                    An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of characters, 
+                    a region in an image, or a time period, 
+                    and a "bookmark" if it does not.
                 </p>
 
                 <p class="ednote">We should specify whether a property may appear at most once (body, target) because
@@ -815,8 +821,9 @@
 
             <section>
                 <h2>Body</h2>
-                <p>The <dfn>Body object</dfn> of an annotation contains plain text, style, and optional tags.</p>
-                <p>This document specifies the following sub-properties:</p>
+                <p>The <dfn>Body object</dfn> of an annotation contains either plain text and style information,
+                    or a reference to an external audiovisual resource. It can also include optional tags.</p>
+                <p>This document specifies the following sub-properties of annotations:</p>
                 <table class="zebra">
                     <thead>
                         <tr>
@@ -831,27 +838,39 @@
                             <td>
                                 <code> type </code>
                             </td>
-                            <td> The body type. It MUST be “TextualBody”. </td>
+                            <td> The body type. </td>
+                            <td> "TextualBody" | "Image" | "Audio" | "Video" </td>
+                            <td> The body type. </td>
                             <td> string </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> value </code>
-                            </td>
-                            <td> The textual content of the annotation. </td>
-                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
                             <td>
                                 <code> format </code>
                             </td>
-                            <td> The media-type of the annotation value. It
-                                SHOULD be "text/plain".
+                            <td> The media-type of the note. Only plain text is allowed for textual notes. 
+                                Audiovisual notes can be of any media type supported by EPUB, 
+                                see EPUB Media Types <!--<a data-cite="epub34#sec-core-media-types">EPUB Media Types</a>-->.
                             </td>
-                            <td> string</td>
+                            </td>
+                            <td> string </td>
                             <td> No </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> value </code>
+                            </td>
+                            <td> The  content of a textual note. </td>
+                            <td> Localizable text </td>
+                            <td> Yes, if type is "TextualBody". Not applicable for audiovisual notes. </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> id </code>
+                            </td>
+                            <td> The relative URL of the audiovisual note. </td>
+                            <td> URL </td>
+                            <td> Yes, if type is "Image", "Audio", or "Video". Not applicable for textual notes. </td>
                         </tr>
                         <tr>
                             <td>
@@ -900,7 +919,6 @@
                     Future versions of this specification may reconsider this.
                 </p>
 
-
                 <p class="note">Read “Best practices for Reading Systems” about using tags in an annotation. </p>
                 <aside class="example" title="An annotation Body">
                     <pre>
@@ -912,10 +930,27 @@
             "value": "j'adore !",
             "tags": ["teacher"],
             "color": "blue",
+            "highlight": "underline"
         }
     }
 			        </pre>
                 </aside>
+
+                <aside class="example" title="An audio Body">
+                    <pre>
+   {
+        "@context": "https://www.w3.org/ns/epub-anno.jsonld",
+        "type": "Annotation",
+        "body": {
+            "type": "Audio",
+            "id": "./voice1.mp3",
+            "tags": ["correction"],
+            "color": "pink",
+        }
+    }
+			        </pre>
+                </aside>
+
             </section>
         </section>
 
@@ -925,14 +960,14 @@
 
             <p>An Annotation does not contain information about its associated publication. If a
                 set of annotations is shared as a detached file, it is mandatory to also export
-                information that will help find the associated publication even if the publication
+                information that will help find the associated publication, even if the publication
                 is not adequately identified.</p>
 
             <p class="note">The <a
                     data-cite="annotation-model#annotation-collection"><code>AnnotationCollection</code></a> defined
                 in the [[[annotation-model]]] does not provide an adequate
-                structure for sharing annotations either as a detached file or as a file embedded in
-                a Zip package. The <code>AnnotationCollection</code> provides a
+                structure for sharing annotations either as a detached file or in an EPUB package.
+                The <code>AnnotationCollection</code> provides a
                 way to retrieve annotations via a REST API and is, therefore, intrinsically paginated.</p>
 
             <p> The <dfn>AnnotationSet</dfn> contains: </p>
@@ -973,14 +1008,6 @@
                     </tr>
                     <tr>
                         <td>
-                            <code><dfn>about</dfn></code>
-                        </td>
-                        <td> Information relative to the publication. </td>
-                        <td> [=About=] </td>
-                        <td> Yes </td>
-                    </tr>
-                    <tr>
-                        <td>
                             <code>generated</code>
                         </td>
                         <td> The time when the set was generated. </td>
@@ -989,24 +1016,22 @@
                     </tr>
                     <tr>
                         <td>
-                            <code><dfn>title</dfn></code>
+                            <code><dfn>about</dfn></code>
                         </td>
-                        <td> A title to help identifying the set. </td>
-                        <td> Localizable text </td>
-                        <td> No </td>
+                        <td> Information relative to the publication. </td>
+                        <td> [=About=] </td>
+                        <td> Yes </td>
                     </tr>
                     <tr>
                         <td>
                             <code><dfn>items</dfn></code>
                         </td>
-                        <td> The annotations of the set. </td>
+                        <td> The set of annotations. </td>
                         <td> Array of Annotation objects </td>
                         <td> Yes </td>
                     </tr>
                 </tbody>
             </table>
-
-            <p class="issue" data-number="2929"></p>
 
             <section>
                 <h2>Generator</h2>
@@ -1082,18 +1107,18 @@
                         </tr>
                         <tr>
                             <td>
-                                <code> dc:title </code>
-                            </td>
-                            <td> The title of the publication. </td>
-                            <td> Localizable text </td>
-                            <td> No </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <code> dc:format </code>
                             </td>
                             <td> The media type of the publication. </td>
                             <td> string </td>
+                            <td> No </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> dc:title </code>
+                            </td>
+                            <td> The title of the publication. </td>
+                            <td> Localizable text </td>
                             <td> No </td>
                         </tr>
                         <tr>
@@ -1122,9 +1147,15 @@
                         </tr>
                     </tbody>
                 </table>
-                <p class="note"> All properties are from the Dublin Core Vocabulary [[dcterms]], also referenced
+
+                <p class="note"> 
+                    
+                    All properties are from the Dublin Core Vocabulary [[dcterms]], also referenced
                     in the [[[annotation-model]]] as well as in the EPUB <a data-cite="epub-34#sec-pkg-metadata">package
-                        document metadata</a>. </p>
+                        document metadata</a>.
+
+                    Implementers are free to add other properties from the Dublin Core Vocabulary, or to use properties from other vocabularies, as long as they are properly declared in the context file.                
+                </p>
 
                 <aside class="example" title="An AnnotationSet containing one annotation">
                     <pre>
@@ -1155,40 +1186,28 @@
                 }
             }
         ]
-    }</pre>
+    }
+                    </pre>
                 </aside>
             </section>
         </section>
         <section>
 
-            <h1>Serialization</h1>
+            <h1>Serialization of an AnnotationSet</h1>
             <p>
                 Following the [[[annotation-model]]] [[annotation-model]] specification, EPUB Annotations are
-                expressed as a "shape" of JSON-LD [[json-ld11]] (a variant of JSON [[ecma-404]] for linked data).
-                The shape is informally defined through a JSON Schema [[json-schema]]; see <a href="#json-schema"></a>
+                expressed as JSON-LD [[json-ld11]] (a variant of JSON [[ecma-404]] for linked data).
+                The model is informally defined through a JSON Schema [[json-schema]]; see <a href="#json-schema"></a>
                 for further details.
-                The media type of this format is
+                The media type of this model is
                 <code>application/ld+json;profile="http://www.w3.org/ns/anno.jsonld"</code>
-            </p>
-
-            <p> This specification introduces a dedicated file extension for serialized
-                [=AnnotationSets=]: <code>.annotation</code>.
-            </p>
-
-            <p>
-                Following the requirements of JSON-LD, each annotation file (whether a single annotation or an
-                annotation set) MUST start with a context declaration referring to the following, EPUB Annotation
-                specific context: <code>https://www.w3.org/ns/epub-anno.jsonld</code>.
-                This context file imports the "core" context file of the [[[annotation-model]]] [[annotation-model]], i.e.,
-                <code>https://www.w3.org/ns/anno.jsonld</code>.
-                The EPUB Annotation specific context file contains terms extending, an sometimes overriding the terms
-                in the core annotation context file, as defined in this specification.
             </p>
 
             <aside class="example" title="Required context declaration">
                 <pre>
                     {
                         "@context": "https://www.w3.org/ns/epub-anno.jsonld",
+                        "type": "AnnotationSet",
                         "id": "urn:uuid:123-123-123-123",
                         …
                     }
@@ -1206,98 +1225,151 @@
                 Such implementations may safely ignore the context
                 declarations and are not required to dereference the respective URLs.
             </p>
-        </section>
+            
+            <section>
 
-        <section>
-            <h1>Embedding annotations in EPUB</h1>
+                <p> An AnnotationSet can be shared as a detached file, or embedded in an EPUB package. 
+                    The advantage of detached annotations is that they can be shared independently of the publication, 
+                    and that they can be associated with a publication without modifying it. 
+                    The advantage of embedded annotations is that they are always available to users of the publication, 
+                    without any need to import them.
 
-            <p> The OPTIONAL <code> my.annotation </code> file in the META-INF directory holds an
-                [=AnnotationSet=]. </p>
-
-            <section class="informative">
-                <h2>Best Practices for Reading Systems</h2>
-
-                <p class="ednote">This section being informative, the MUST, SHOULD, etc, keyword are not appropriate
-                    here. At the minimum, they should be turned into lower case.
+                <p class="note">
+                    Reading Systems are not required to store annotations with such a format: this format is for export and import purposes.
+                </p>
+            
                 </p>
 
-                <section>
-                    <h3> Displaying filtered annotations </h3>
-                    <p> Reading systems should enable filtering by motivation, color, highlight mode, tag and
-                        creator. For instance, a user can display &quot;blue&quot; annotations only or
-                        “teacher” annotations only. Filtering on multiple criteria is a plus. </p>
+                <h2>Detached annotations</h2>
+                
+                <p> For packaging the set of constituent resources that comprise an AnnotationSet, 
+                    this specification uses the ZIP format 
+                    as specified in ISO/IEC 21320-1:2015 ([[ISO21320]] and [[zip]]). </p>
+                
+                <p> This specification introduces a dedicated file extension for detached annotations: 
+                    <code>.annotations</code>.
+                </p>
 
-                </section>
+                <p> The media type of this file is
+                    <code>application/zip;profile="https://www.w3.org/TR/epub-anno-10/"</code>. </p>
+            
+                <p> The serialized AnnotationSet is stored in the ZIP file as <code>annotations.json</code>, in the root of the ZIP file. 
+                    Audiovisual notes, if present, MAY be in any location descendant from the root of the ZIP file. 
+                    Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
 
-                <section>
-                    <h3> Using multiple selectors </h3>
-                    <p> It is recommended that Reading Systems export multiple selectors, including at least
-                        one precise selector (e.g. CssSelector + TextPositionSelector),
-                        and one selector resistant to content modifications (e.g., based on text fragments).
-                    </p>
-                    <p> When displaying an annotation, a Reading System is free to use the most precise
-                        Selector available. It will select an alternative Selector as a fallback in case the
-                        preferred one does not return a correct position in the publication: this can happen
-                        if the publication has been modified after the annotation has been created. </p>
-                    <p> Not all selectors are equally easy to implement. Reading Systems MAY choose to
-                        support only a subset of the selectors defined in this specification. </p>
-                    <p> The W3C Publishing Maintenance Working Group is expected to define one or more selectors
-                        reading systems are required to implement, as a <i>lingua franca</i>. </p>
+                <div class="note">
+                    <p> The [[zip]] specification has few constraints on the characters allowed 
+                        for file and directory names. 
+                        When crafting such names, authors must be careful to use characters which 
+                        allow a broad interoperability among operating systems.</p>
+                </div>
 
-                </section>
-
-                <section>
-                    <h3>Exporting annotations as a detached file</h3>
-                    <p> When a user decides to export an annotation set from a reading system, they SHOULD be
-                        proposed to filter the annotations by tags (multiple choice). “Annotations with
-                        no tag” and “All annotations” SHOULD be proposed as options. The advantage of
-                        this practice is that, for instance, a user can export personal annotations (usually
-                        with no tag) and leave “teacher” annotations unexported. </p>
-                    <p> They MAY enter a title for the annotation set (empty by default). Such a title SHOULD
-                        become the exported filename. </p>
-                    <p> They MUST be able to choose the directory in which the annotation set will be stored. </p>
-                    <p> The file extension MUST be <code> .annotation </code> . </p>
-                    <p> The application may propose alternative formats at export time: an HTML or markdown format
-                        with human-friendly references to the location of each annotation may be handy. </p>
-
-                </section>
-                <section>
-                    <h3>Exporting annotations in a publication </h3>
-                    <p> When a user decides to export a publication from the Reading System, they SHOULD be
-                        prompted to embed the annotations associated with the publication. </p>
-                    <p> If the user decides to embed annotations in a publication, they SHOULD be prompted to
-                        filter the annotations by tags (multiple choice). </p>
-
-                </section>
-                <section>
-                    <h3>Importing annotations</h3>
-                    <p> To simplify associating annotations with a publication, a Reading System MUST
-                        offer a way to select a publication before selecting an annotation set. The drag and
-                        drop of an annotation set into a Reading System MAY also be proposed, but
-                        identifying the proper publication from the metadata in the annotation set is more
-                        complicated. </p>
-                    <p> When importing an annotation set, a Reading System SHOULD display a message with the
-                        title of the annotation set and the number of annotations in the set. The Reading
-                        System MUST offer the user the choice to abort the import. </p>
-                    <p> Each annotation is uniquely identified. If during the import of an annotation set,
-                        one or more annotations are re-imported, the Reading System MUST offer to the user
-                        the choice to override existing annotations or abort the import of the annotation
-                        set. </p>
-
-                </section>
-                <section>
-                    <h3>Handling colors</h3>
-                    <p> This document specifies a closed set of six colors chosen because of their
-                        extensive support in well-known reading systems. However, most existing reading apps
-                        offer a smaller set to their users. </p>
-                    <p> If an application imports annotations with a color it does not support, it should
-                        display them with a neutral color. The recommended neutral color is grey. </p>
-                    <p> Some applications may support colors not in the set defined by this specification
-                        (e.g. brown). In this case, a 1-to-1 substitution at export time is required (e.g.
-                        brown to orange). </p>
-                    <p class="note">We didn't spot applications with more than six annotation colors. </p>
-                </section>
             </section>
+
+            <section>
+
+                <h2>Annotations embedded in EPUB</h2>
+
+                <p> The AnnotationSet is stored in the META-INF directory as <code>annotations.json</code>. 
+                    Audiovisual notes, if present, MAY be in any location descendant from the META-INF directory, 
+                    or in the META-INF directory itself. 
+                    Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
+
+                <div class="note">
+                    <p> Storing audiovisual notes in the META-INF directory has implications for the size of the EPUB package, and is therefore not recommended.</p>
+                </div>
+
+            </section>
+
+        </section>
+
+        <section class="informative">
+            <h1>Best Practices for Reading Systems</h1>
+
+            <section>
+                <h2> Displaying filtered annotations </h2>
+                <p> It is recommended that Reading systems  enable filtering by motivation, creator, style and tags. 
+                    For instance, a user can display &quot;blue&quot; colored annotations only, or
+                    &quot;typo&quot; tagged annotations only. Filtering on multiple criteria is a plus. </p>
+
+            </section>
+
+            <section>
+                <h2> Using multiple selectors </h2>
+                <p> It is recommended that Reading Systems export multiple selectors, including at least
+                    one precise selector (e.g. CssSelector + TextPositionSelector),
+                    and one selector resistant to content modifications (e.g., based on text fragments).
+                </p>
+                <p> When displaying an annotation, a Reading System is free to use the most precise
+                    Selector available. It will select an alternative Selector as a fallback in case the
+                    preferred one does not return a correct position in the publication: this can happen
+                    if the publication has been modified after the annotation has been created. </p>
+                <p> Not all selectors are equally easy to implement. Reading Systems are free to choose to
+                    support only a subset of the selectors defined in this specification. </p>
+
+            </section>
+
+            <section>
+                <h2>Exporting annotations as a detached file</h2>
+                <p> When a user decides to export an annotation set from a reading system, it is good to
+                    propose them to filter annotations by motivation, creator, style and tags. The advantage of
+                    this practice is that, for instance, a user can export personal annotations only. </p>
+                <p> The application can propose alternative formats at export time: an HTML or markdown format
+                    with human-friendly references to the location of each annotation is handy. </p>
+
+            </section>
+
+            <section>
+                <h2>Exporting annotations embedded in an EPUB </h2>
+                <p> When a user decides to export a publication from the Reading System, it is good to
+                    propose them to embed the annotations associated with the publication. </p>
+                <p> If the user decides to embed annotations in the publication, they should be prompted to
+                    filter the annotations. </p>
+
+            </section>
+
+            <section>
+                <h2>Importing annotations</h2>
+                <p> To simplify associating annotations with a publication, a Reading System has to
+                    offer a way to select a publication before selecting an annotation set. 
+                    An automatic association of an annotation set with a publication (e.g. via drag and
+                    drop) can also be proposed, but identifying the proper publication from 
+                    the metadata in the annotation set is error prone. </p>
+                <p> When importing an annotation set, the good practice for Reading Systems is to 
+                    display publication metadata (e.g. title, author), the number of annotations found in the set,
+                    and offer the user the choice to abort the import if the information does not match their expectations. </p>
+                <p> Each annotation is uniquely identified, independently of the annotation set it is part of. 
+                    During the import of an annotation set,
+                    if one or more annotations are found to be already stored in the application, 
+                    the Reading System will offer the user a choice: either overriding the existing annotations,
+                    or abort the import of the annotation set. </p>
+
+            </section>
+
+            <section>
+                <h2>Dealing with audiovisual notes</h2>
+                <p> This specification provides mechanisms for handling audiovisual notes.</p>
+                <p> If an application does not support audiovisual notes, it has to ignore them 
+                    when importing an annotation set. It is good practice to notify the user 
+                    that some annotations were not imported due to lack of support. </p>
+
+                </section>
+
+            <section>
+                <h2>Dealing with colors</h2>
+                <p> This document specifies a closed set of six colors chosen because of their
+                    extensive support in well-known reading systems. However, most existing reading apps
+                    offer a smaller set to their users. </p>
+                <p> If an application imports annotations with a color it does not support, 
+                    it is good practice to ignore the color information and to
+                    display them with a neutral color. The recommended neutral color is grey. </p>
+                <p> Some applications may support colors not in the set defined by this specification
+                    (e.g. brown). In this case, a 1-to-1 substitution at import or export time is required (e.g.
+                    mapping brown to orange). </p>
+                <p class="note">We didn't spot applications with more than six annotation colors. </p>
+
+            </section>
+
         </section>
 
         <section>
