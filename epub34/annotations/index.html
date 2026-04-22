@@ -186,7 +186,7 @@
                                 <code> <dfn>motivation</dfn> </code>
                             </td>
                             <td>The motivation for the annotation's creation.</td>
-                            <td>"bookmarking" | "highlighting"</td>
+                            <td>"bookmarking" | "commenting" | "highlighting"</td>
                             <td>No</td>
                         </tr>
                         <tr>
@@ -241,10 +241,10 @@
 
                 <p class="note">The type of annotation should be considered when determining the value of the
                     [=motivation=] property.
-                    The motivation is "highlighting" if the Selector 
-                    defines a range of characters, a space in an image or a time period.
-                    It is "bookmarking" if the Selector references a single character in the resource.
-                    A textual or audiovisual body may be present in both cases.
+                    An annotation with a Body structure corresponds to a "comment". 
+                    An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of characters, 
+                    a region in an image, or a time period, 
+                    and a "bookmark" if it does not.
                 </p>
 
                 <p class="ednote">We should specify whether a property may appear at most once (body, target) because
@@ -840,16 +840,8 @@
                             </td>
                             <td> The body type. </td>
                             <td> "TextualBody" | "Image" | "Audio" | "Video" </td>
-                            <td> The body type. It MUST be “TextualBody”. </td>
+                            <td> The body type. </td>
                             <td> string </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> value </code>
-                            </td>
-                            <td> The textual content of the annotation. </td>
-                            <td> Localizable text </td>
                             <td> Yes </td>
                         </tr>
                         <tr>
@@ -857,7 +849,8 @@
                                 <code> format </code>
                             </td>
                             <td> The media-type of the note. Only plain text is allowed for textual notes. 
-                                Audiovisual notes can be of any media type supported by EPUB, see EPUB Media Types.
+                                Audiovisual notes can be of any media type supported by EPUB, 
+                                see <a data-cite="epub34#sec-core-media-types">EPUB Media Types</a>.
                             </td>
                             </td>
                             <td> string </td>
@@ -878,6 +871,22 @@
                             <td> The relative URL of the audiovisual note. </td>
                             <td> URL </td>
                             <td> Yes, if type is "Image", "Audio", or "Video". Not applicable for textual notes. </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <dfn>color</dfn> </code>
+                            </td>
+                            <td> The color of the annotation; yellow by default. </td>
+                            <td> "pink" | "orange" | "yellow" | "green" | "blue" | "purple" </td>
+                            <td> No </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code> <dfn>highlight</dfn> </code>
+                            </td>
+                            <td> The style of the annotation; solid background by default. </td>
+                            <td> "solid" | "underline" | "strikethrough" | "outline" </td>
+                            <td> No </td>
                         </tr>
                         <tr>
                             <td>
@@ -1194,16 +1203,6 @@
                 <code>application/ld+json;profile="http://www.w3.org/ns/anno.jsonld"</code>
             </p>
 
-            <p>
-                Following the requirements of JSON-LD, each annotation file (whether a single annotation or an
-                annotation set) MUST start with a context declaration referring to the following, EPUB Annotation
-                specific context: <code>https://www.w3.org/ns/epub-anno.jsonld</code>.
-                This context file imports the "core" context file of the [[[annotation-model]]] [[annotation-model]], i.e.,
-                <code>https://www.w3.org/ns/anno.jsonld</code>.
-                The EPUB Annotation specific context file contains terms extending, and sometimes overriding the terms
-                in the core annotation context file, as defined in this specification.
-            </p>
-
             <aside class="example" title="Required context declaration">
                 <pre>
                     {
@@ -1228,6 +1227,18 @@
             </p>
             
             <section>
+
+                <p> An AnnotationSet can be shared as a detached file, or embedded in an EPUB package. 
+                    The advantage of detached annotations is that they can be shared independently of the publication, 
+                    and that they can be associated with a publication without modifying it. 
+                    The advantage of embedded annotations is that they are always available to users of the publication, 
+                    without any need to import them.
+
+                <p class="note">
+                    Reading Systems are not required to store annotations with such a format: this format is for export and import purposes.
+                </p>
+            
+                </p>
 
                 <h2>Detached annotations</h2>
                 
@@ -1260,7 +1271,9 @@
                 <h2>Annotations embedded in EPUB</h2>
 
                 <p> The AnnotationSet is stored in the META-INF directory as <code>annotations.json</code>. 
-                    Audiovisual notes, if present, MAY be in any location descendant from the META-INF directory, or in the META-INF directory itself. Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
+                    Audiovisual notes, if present, MAY be in any location descendant from the META-INF directory, 
+                    or in the META-INF directory itself. 
+                    Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
 
                 <div class="note">
                     <p> Storing audiovisual notes in the META-INF directory has implications for the size of the EPUB package, and is therefore not recommended.</p>
@@ -1341,19 +1354,6 @@
                     that some annotations were not imported due to lack of support. </p>
 
                 </section>
-                <section>
-                    <h3>Handling colors</h3>
-                    <p> This document specifies a closed set of six colors chosen because of their
-                        extensive support in well-known reading systems. However, most existing reading apps
-                        offer a smaller set to their users. </p>
-                    <p> If an application imports annotations with a color it does not support, it should
-                        display them with a neutral color. The recommended neutral color is grey. </p>
-                    <p> Some applications may support colors not in the set defined by this specification
-                        (e.g. brown). In this case, a 1-to-1 substitution at export time is required (e.g.
-                        brown to orange). </p>
-                    <p class="note">We didn't spot applications with more than six annotation colors. </p>
-                </section>
-            </section>
 
             <section>
                 <h2>Dealing with colors</h2>
