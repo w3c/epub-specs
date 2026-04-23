@@ -4,23 +4,25 @@
 
 ---
 
-As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) is now the maintainer of the EPUB 3 specifications.
+As of August 14, 2020, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) became the maintainer of the EPUB 3 specifications. In June 2023, after the publication of the EPUB 3.3 Recommendation, the Working Group was rechartered under the name of [Publishing Maintenance Working Group](https://www.w3.org/groups/wg/pm/), and has been maintaining the specifications ever since.
 
-## EPUB 3.4
+## Current development: EPUB 3.4
 
-The EPUB 3.4 revision started on February 11, 2025. It is chartered to run until February 5, 2027.
+The EPUB 3.4 revision started on February 11, 2025. It is [chartered](https://www.w3.org/2025/02/pmwg-charter.html) to run until February 5, 2027.
 
 Editor's Drafts of documents under active development:
 
-- [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub34/overview/)
+- [EPUB 3 Overview](https://w3c.github.io/epub-specs/epub34/overview/) (Working Group Note)
 - [EPUB 3.4](https://w3c.github.io/epub-specs/epub34/authoring/) (On Recommendation track)
 - [EPUB Reading Systems 3.4](https://w3c.github.io/epub-specs/epub34/rs/) (On Recommendation track)
-- [EPUB Accessibility 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y/) (On Recommendation track)
-- [EPUB Accessibility Techniques 1.1.1](https://w3c.github.io/epub-specs/epub34/a11y-tech/)
+- [EPUB Accessibility 1.2](https://w3c.github.io/epub-specs/epub34/a11y/) (On Recommendation track)
+- [EPUB Accessibility Techniques 1.2](https://w3c.github.io/epub-specs/epub34/a11y-tech/) (Working Group Note)
+- [EPUB Annotations 1.0](https://w3c.github.io/epub-specs/wg-notes/annotations-ucr/) (On Recommendation track)
+- [EPUB Annotations Vocabulary 1.0](https://w3c.github.io/epub-specs/epub34/annotations-vocab/) (Working Group Note)
 
 For more information about the meeting schedule, how to join or participate, etc., please consult the [Publishing Maintenance Working Group's home page](https://www.w3.org/groups/wg/pm/), or contribute to this repository via issues and comments.
 
-## Current version of EPUB: EPUB 3.3
+## Latest version of the EPUB Recommendation: EPUB 3.3
 
 On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishing/groups/epub-wg) published the following EPUB 3.3 Recommendations:
 
@@ -28,11 +30,11 @@ On the 25th of May, 2023, the [EPUB 3 Working Group](https://www.w3.org/publishi
 - [EPUB Reading Systems 3.3](https://www.w3.org/TR/epub-rs-33/), and
 - [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/).
 
-For a complete list of publications by the Working Group, including all Working Group Notes, see the
+For a complete list of publications by that Working Group, including all related Working Group Notes, see the
 [separate index page](https://www.w3.org/publishing/epub33/).
 
-The Working Group maintains an [errata](https://w3c.github.io/epub-specs/epub33/errata.html) file for all the specifications and notes. If you want to report a new
-erratum, please follow the guidelines in that file.
+The Working Group maintains an [errata](https://w3c.github.io/epub-specs/epub33/errata.html) file for all the specifications and notes.
+If you want to report a new erratum, please follow the guidelines in that file.
 
 Some issues have been left open by the Working Groups as [deferred issues](https://github.com/w3c/epub-specs/issues?q=is:issue+is:open+label:Status-Deferred).
 Issues for specifications not actively maintained have been [marked as abandoned and closed](https://github.com/w3c/epub-specs/issues?q=is%3Aissue+label%3AStatus-Abandoned+is%3Aclosed). These issues may be resurrected in the future if work is resumed on their respective specifications.
@@ -70,4 +72,4 @@ W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
 
 ---
 
-For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendy.reid@rakuten.com), [Shinya Takami](takami-s@kadokawa.jp), or [Matt Garrish](matt.garrish@gmail.com).
+For any further help, contact  [Ivan Herman](ivan@w3.org), [Wendy Reid](wendyreid@fastmail.com), [Shinya Takami](takami-s@kadokawa.jp), or [Matt Garrish](matt.garrish@gmail.com).
