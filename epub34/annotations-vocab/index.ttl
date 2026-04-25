@@ -2,6 +2,7 @@
 @prefix oa: <http://www.w3.org/ns/oa#> .
 @prefix as: <http://www.w3.org/ns/activitystreams#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dctypes: <http://purl.org/dc/dcmitype/> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -15,7 +16,7 @@ ea: a owl:Ontology ;
     dc:title """EPUB Annotations Vocabulary 1.0"""@en ;
     dc:description """RDFS [[rdf-schema]] vocabulary formalizing the terms defined in the [[[epub-anno-10]]] specification. The vocabulary is a "profile" of the W3C [[[annotation-vocab]]]"""^^rdf:HTML ;
     rdfs:seeAlso <https://www.w3.org/TR/epub-anno-vocab-10/> ;
-    dc:date "2026-04-10"^^xsd:date ;
+    dc:date "2026-04-22"^^xsd:date ;
 .
 
 # Property definitions
@@ -172,14 +173,6 @@ ea:target a rdf:Property, owl:ObjectProperty ;
     vs:term_status "stable" ;
 .
 
-ea:setTitle a rdf:Property ;
-    rdfs:domain ea:AnnotationSet ;
-    rdfs:range [ a owl:Class; owl:unionOf (rdf:langString xsd:string rdf:dirLangString) ] ;
-    rdfs:label "Title of the Annotation Set" ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/epub-anno-10/#dfn-title>, <http://www.w3.org/ns/ea#> ;
-    vs:term_status "stable" ;
-.
-
 # Class definitions
 ea:About a rdfs:Class ;
     rdfs:label "Information about the EPUB publication" ;
@@ -203,10 +196,18 @@ ea:AnnotationSet a rdfs:Class ;
     vs:term_status "stable" ;
 .
 
+ea:Audio a rdfs:Class ;
+    rdfs:subClassOf dctypes:Sound ;
+    rdfs:label "Class for audio resources" ;
+    rdfs:comment """<div>This class is an "alias" of the <a href="https://www.w3.org/TR/annotation-vocab/#dctypes-sound"><code>Sound</code></a> class, using a terminology more widely used in practice.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <http://www.w3.org/ns/ea#> ;
+    vs:term_status "stable" ;
+.
+
 ea:Body a rdfs:Class ;
-    rdfs:subClassOf oa:TextualBody ;
+    rdfs:subClassOf [ a owl:Class; owl:unionOf (oa:TextualBody oa:Image ea:Audio oa:Video) ] ;
     rdfs:label "Body of an EPUB Annotation" ;
-    rdfs:comment """<div>In EPUB, annotations are restricted to have textual content only.</div>"""^^rdf:HTML ;
+    rdfs:comment """<div>In EPUB, annotations are restricted  textual content, image, audio, or video.</div>"""^^rdf:HTML ;
     rdfs:isDefinedBy <https://www.w3.org/TR/epub-anno-10/#dfn-body-object>, <http://www.w3.org/ns/ea#> ;
     vs:term_status "stable" ;
 .
@@ -324,6 +325,7 @@ ea:outline a rdfs:Resource ;
         ea:About,
         ea:Annotation,
         ea:AnnotationSet,
+        ea:Audio,
         ea:Body,
         ea:Creator,
         ea:FragmentSelector,
@@ -351,7 +353,6 @@ ea:outline a rdfs:Resource ;
         ea:purple,
         ea:refinedBy,
         ea:selector,
-        ea:setTitle,
         ea:solid,
         ea:source,
         ea:strikethrough,
