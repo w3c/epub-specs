@@ -131,8 +131,8 @@
                     Web Annotations also define additional property values and types than are not accepted for EPUB Annotations. </li>
 
                 <li> Web Annotations define an <a data-cite="annotation-model#annotation-collection">Annotation Collection</a> structure to handle paginated requests,
-                    whereas this document defines an [=AnnotationSet=] structure to group multiple annotations for sharing purposes.
-                    Implementers MUST support [=AnnotationSet=] and MAY support both structures for maximum compatibility.
+                    whereas this document defines a [=Metadata=] structure to provide common metadata to a set annotations for sharing purposes.
+                    Implementers MUST support [=Metadata=] and MAY support both structures for maximum compatibility.
                 </li>
             </ul>
             <p class="note">This document does not define how annotations are created, stored, or synchronized in a reading system. </p>
@@ -955,10 +955,10 @@
         </section>
 
         <section>
-            <h1>Annotation Set</h1>
-            <p>An Annotation Set is an unordered collection of annotations.</p>
+            <h1>Metadata</h1>
+            <p>A Metadata object is a collection of metadata related to a set of annotations.</p>
 
-            <p>An Annotation does not contain information about its associated publication. If a
+            <p>A Metadata does not contain information about its associated publication. If a
                 set of annotations is shared as a detached file, it is mandatory to also export
                 information that will help find the associated publication, even if the publication
                 is not adequately identified.</p>
@@ -970,7 +970,7 @@
                 The <code>AnnotationCollection</code> provides a
                 way to retrieve annotations via a REST API and is, therefore, intrinsically paginated.</p>
 
-            <p> The <dfn>AnnotationSet</dfn> contains: </p>
+            <p> The <dfn>Metadata</dfn> contains: </p>
             <table class="zebra">
                 <thead>
                     <tr>
@@ -985,7 +985,7 @@
                         <td>
                             <code> id </code>
                         </td>
-                        <td> The identity of the annotation set. A uuid formatted as a URN is
+                        <td> The identity of the metadata. A uuid formatted as a URN is
                             RECOMMENDED. </td>
                         <td> URL </td>
                         <td> Yes </td>
@@ -994,7 +994,7 @@
                         <td>
                             <code> type </code>
                         </td>
-                        <td> It MUST be <code>AnnotationSet</code>. </td>
+                        <td> It MUST be <code>Metadata</code>. </td>
                         <td> string </td>
                         <td> Yes </td>
                     </tr>
@@ -1022,15 +1022,7 @@
                         <td> [=About=] </td>
                         <td> Yes </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <code><dfn>items</dfn></code>
-                        </td>
-                        <td> The set of annotations. </td>
-                        <td> Array of Annotation objects </td>
-                        <td> Yes </td>
-                    </tr>
-                </tbody>
+                 </tbody>
             </table>
 
             <section>
@@ -1153,16 +1145,15 @@
                     All properties are from the Dublin Core Vocabulary [[dcterms]], also referenced
                     in the [[[annotation-model]]] as well as in the EPUB <a data-cite="epub-34#sec-pkg-metadata">package
                         document metadata</a>.
-
                     Implementers are free to add other properties from the Dublin Core Vocabulary, or to use properties from other vocabularies, as long as they are properly declared in the context file.
                 </p>
 
-                <aside class="example" title="An AnnotationSet containing one annotation">
+                <aside class="example" title="An Metadata containing a small collection of metadata">
                     <pre>
     {
         "@context": "https://www.w3.org/ns/epub-anno.jsonld",
         "id": "urn:uuid:123-123-123-123",
-        "type": "AnnotationSet",
+        "type": "Metadata",
         "generator": "https://github.com/edrlab/thorium-reader/releases/tag/v3.1.0",
         "generated": "2023-09-01T10:00:00Z",
         "about": {
@@ -1174,17 +1165,7 @@
             "dc:publisher": "Example Publisher",
             "dc:creator": ["Anne O'Tater"],
             "dc:date": "1865"
-        },
-        "items": [
-            {
-                "id": "urn:uuid:234-234-234-234",
-                "type": "Annotation",
-                "target": {
-                },
-                "body": {
-                }
-            }
-        ]
+        }
     }
                     </pre>
                 </aside>
@@ -1192,9 +1173,9 @@
         </section>
         <section>
 
-            <h1>Serialization of an AnnotationSet</h1>
+            <h1>Serialization of annotations and the metadata</h1>
             <p>
-                Following the [[[annotation-model]]] [[annotation-model]] specification, EPUB Annotations are
+                Following the [[[annotation-model]]] [[annotation-model]] specification, EPUB Annotations and Metadata instances are
                 expressed as JSON-LD [[json-ld11]] (a variant of JSON [[ecma-404]] for linked data).
                 The model is informally defined through a JSON Schema [[json-schema]]; see <a href="#json-schema"></a>
                 for further details.
@@ -1206,7 +1187,7 @@
                 <pre>
                     {
                         "@context": "https://www.w3.org/ns/epub-anno.jsonld",
-                        "type": "AnnotationSet",
+                        "type": "Annotation",
                         "id": "urn:uuid:123-123-123-123",
                         …
                     }
@@ -1224,10 +1205,11 @@
                 Such implementations may safely ignore the context
                 declarations and are not required to dereference the respective URLs.
             </p>
+        </section>
 
-            <section>
-
-                <p> An AnnotationSet can be shared as a detached file, or embedded in an EPUB package.
+        <section>
+                <h2>Exporting annotations</h2>
+                <p> A set of annotations can be exported as a detached file, or embedded in an EPUB package.
                     The advantage of detached annotations is that they can be shared independently of the publication,
                     and that they can be associated with a publication without modifying it.
                     The advantage of embedded annotations is that they are always available to users of the publication,
@@ -1239,47 +1221,51 @@
 
                 </p>
 
-                <h2>Detached annotations</h2>
+                <section>
 
-                <p> For packaging the set of constituent resources that comprise an AnnotationSet,
-                    this specification uses the ZIP format
-                    as specified in ISO/IEC 21320-1:2015 ([[ISO21320]] and [[zip]]). </p>
+                    <h2>Detached annotations</h2>
 
-                <p> This specification introduces a dedicated file extension for detached annotations:
-                    <code>.annotations</code>.
-                </p>
+                    <p>
+                        To be exported as a detached file the set of annotations, as well as the metadata, are
+                        packaged into a single file.
+                        For packaging this specification uses the ZIP format
+                        as specified in ISO/IEC 21320-1:2015 ([[ISO21320]] and [[zip]]). </p>
 
-                <p> The media type of this file is
-                    <code>application/zip;profile="https://www.w3.org/TR/epub-anno-10/"</code>. </p>
+                    <p> This specification introduces a dedicated file extension for detached annotations:
+                        <code>.annotations</code>.
+                    </p>
 
-                <p> The serialized AnnotationSet is stored in the ZIP file as <code>annotations.json</code>, in the root of the ZIP file.
-                    Audiovisual notes, if present, MAY be in any location descendant from the root of the ZIP file.
-                    Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
+                    <p> The media type of this file is
+                        <code>application/zip;profile="https://www.w3.org/TR/epub-anno-10/"</code>. </p>
 
-                <div class="note">
-                    <p> The [[zip]] specification has few constraints on the characters allowed
-                        for file and directory names.
-                        When crafting such names, authors must be careful to use characters which
-                        allow a broad interoperability among operating systems.</p>
-                </div>
+                    <p> The serialized annotations, as well as an instance of a [=Metadata=] object, MUST be stored at the root of the ZIP file.
+                        Audiovisual notes, if present, MAY be in any location descendant from the root of the ZIP file.
+                        Annotations MUST reference these resources via relative-URL strings [[url]].</p>
 
-            </section>
+                    <div class="note">
+                        <p> The [[zip]] specification has few constraints on the characters allowed
+                            for file and directory names.
+                            When crafting such names, authors must be careful to use characters which
+                            allow a broad interoperability among operating systems.</p>
+                    </div>
 
-            <section>
+                </section>
 
-                <h2>Annotations embedded in EPUB</h2>
+                <section>
 
-                <p> The AnnotationSet is stored in the META-INF directory as <code>annotations.json</code>.
-                    Audiovisual notes, if present, MAY be in any location descendant from the META-INF directory,
-                    or in the META-INF directory itself.
-                    Annotation bodies within the AnnotationSet MUST reference these resources via relative-URL strings [[url]].</p>
+                    <h2>Annotations embedded in EPUB</h2>
 
-                <div class="note">
-                    <p> Storing audiovisual notes in the META-INF directory has implications for the size of the EPUB package, and is therefore not recommended.</p>
-                </div>
+                    <p> The serialized annotations, as well as an instance of a [=Metadata=] object, MUST be stored in
+                        the ANNOTATIONS subdirectory of the META-INF directory.
+                        Audiovisual notes, if present, MAY be in any location descendant from the ANNOTATIONS
+                        directory, or in the ANNOTATIONS directory itself.
+                        Annotation MUST reference these resources via relative-URL strings [[url]].</p>
 
-            </section>
+                    <div class="note">
+                        <p> Storing audiovisual notes in the META-INF directory has implications for the size of the EPUB package, and is therefore not recommended.</p>
+                    </div>
 
+                </section>
         </section>
 
         <section class="informative">
@@ -1330,18 +1316,18 @@
             <section>
                 <h2>Importing annotations</h2>
                 <p> To simplify associating annotations with a publication, a Reading System has to
-                    offer a way to select a publication before selecting an annotation set.
-                    An automatic association of an annotation set with a publication (e.g. via drag and
+                    offer a way to select a publication before selecting a set of annotations.
+                    An automatic association of a set of annotations with a publication (e.g. via drag and
                     drop) can also be proposed, but identifying the proper publication from
                     the metadata in the annotation set is error prone. </p>
-                <p> When importing an annotation set, the good practice for Reading Systems is to
+                <p> When importing a set of annotations, the good practice for Reading Systems is to
                     display publication metadata (e.g. title, author), the number of annotations found in the set,
                     and offer the user the choice to abort the import if the information does not match their expectations. </p>
-                <p> Each annotation is uniquely identified, independently of the annotation set it is part of.
-                    During the import of an annotation set,
+                <p> Each annotation is uniquely identified, independently of the set of annotations it is part of.
+                    During the import of a set of annotations,
                     if one or more annotations are found to be already stored in the application,
                     the Reading System will offer the user a choice: either overriding the existing annotations,
-                    or abort the import of the annotation set. </p>
+                    or abort the import of the annotations. </p>
 
             </section>
 
@@ -1379,7 +1365,6 @@
 
         <section>
             <h1>Internationalization Considerations</h1>
-
             <section class="informative">
                 <h2>Localizable texts</h2>
 
@@ -1389,7 +1374,7 @@
                     These may be used for values that are defined as
                     <a data-cite="i18n-glossary#dfn-localizable-text">localizable texts</a>.
                     To set the right language metadata, the value is a separate
-                    object with the string value set explicitly through the `stringValue` property.
+                    object with the string value set explicitly through the `text` property.
                     The `language` and `direction` properties can be used to set the
                     <a data-cite="i18n-glossary#dfn-language-tag">language tag</a>
                     and the  <a data-cite="i18n-glossary#dfn-string-direction">string direction</a>, respectively.
@@ -1398,21 +1383,24 @@
                 </p>
 
                 <p>
-                    In the example below, two annotations within the same [=AnnotationSet=] use different languages.
+                    In the examples below annotations use different languages.
                     In the second annotation the string direction is also set to ensure the correct
                     rendering of the text with mixed Latin and Hebrew characters.
                 </p>
 
                 <aside class="example" title="Setting the language explicitly for localizable texts">
                     <pre>
-                    {
-                        "@context": "https://www.w3.org/ns/epub-anno.jsonld",
-                        "type": "AnnotationSet",
-                        "id": "urn:uuid:123-456-789",
-                        "items" : [
                             {
+                                "@context": "https://www.w3.org/ns/epub-anno.jsonld",
                                 "id": "urn:uuid:123-456-789-a1",
                                 "type": "Annotation",
+                                "creator": {
+                                    "type": "Organization",
+                                    "name": {
+                                        "language": "en",
+                                        "text": "Centre for Mathematics and Computer Sciences"
+                                    }
+                                },
                                 "body" : {
                                     "type": "TextualBody",
                                     "value": {
@@ -1423,8 +1411,13 @@
                                 "target" : {
                                     …
                                 }
-                            },
+                            }
+                    </pre>
+                </aside>
+                <aside class="example" title="Setting the language and the base direction explicitly for localizable texts">
+                    <pre>
                             {
+                                "@context": "https://www.w3.org/ns/epub-anno.jsonld",
                                 "id": "urn:uuid:123-456-789-a3",
                                 "type": "Annotation",
                                 "body": {
@@ -1438,10 +1431,7 @@
                                 "target": {
                                     …
                                 }
-                            },
-                            …
-                        ]
-                    }
+                            }
                     </pre>
                 </aside>
 
@@ -1450,25 +1440,25 @@
 
                     <p>
                         The default values for `language` and `direction` may be set as part of the context
-                        declaration of the Annotation Set. The value of the top-level `@context` must be
-                        extended with an extra context object (using the JSON array notation) containing the default setting using the the `@language` and `@direction` keywords. See the example below as an alternative for the previous example.
+                        declaration of the annotation. The value of the top-level `@context` must be
+                        extended with an extra context object (using the JSON array notation) containing the default setting using the the `@language` and `@direction` keywords. See the example below as an alternative for the example above.
                     </p>
 
                     <aside class="example" title="Setting the default language to English">
                         <pre>
-                        {
-                            "@context": [
-                                "https://www.w3.org/ns/epub-anno.jsonld",
                                 {
-                                    "@language": "en"
-                                }
-                            ],
-                            "type": "AnnotationSet",
-                            "id": "urn:uuid:123-456-789",
-                            "items" : [
-                                {
+                                    "@context": [
+                                        "https://www.w3.org/ns/epub-anno.jsonld",
+                                        {
+                                            "@language": "en"
+                                        }
+                                    ],
                                     "id": "urn:uuid:123-456-789-a1",
                                     "type": "Annotation",
+                                    "creator": {
+                                        "type": "Organization",
+                                        "name":  "Centre for Mathematics and Computer Sciences"
+                                    }
                                     "body": {
                                         "type": "TextualBody",
                                         "value": "HTML is a markup language."
@@ -1476,34 +1466,12 @@
                                     "target": {
                                         …
                                     }
-                                },
-                                {
-                                    "id": "urn:uuid:123-456-789-a3",
-                                    "type": "Annotation",
-                                    "body": {
-                                        "type": "TextualBody",
-                                        "value": {
-                                            "language": "he",
-                                            "direction": "rtl",
-                                            "text": <bdo dir="rtl">"HTML היא שפת סימון."</bdo>
-                                        }
-                                    },
-                                    "target": {
-                                        …
-                                    }
-                                },
-                                …
-                            ]
-                        }
+                                }
                         </pre>
                     </aside>
-
-                    <p class="note">
-                        The extra object in the context can be used whenever a context is set. For example, it is possible to set the default value for a single annotation.
-                    </p>
                 </section>
-          </section>
-        </section>
+            </section>
+         </section>
 
         <section>
             <h1>Privacy Considerations</h1>
