@@ -68,7 +68,7 @@ Refer to the [EPUB 3 Working Group's home page](https://www.w3.org/publishing/gr
 
 ## Code of Conduct
 
-W3C functions under a [code of conduct](https://www.w3.org/Consortium/cepc/).
+W3C functions under a [code of conduct](https://www.w3.org/policies/code-of-conduct/).
 
 ---
 
