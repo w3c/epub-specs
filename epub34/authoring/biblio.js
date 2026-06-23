@@ -117,6 +117,12 @@ var biblio = {
 		"href": "https://www.w3.org/TR/wai-aria/",
 		"publisher": "W3C"
 	},
+	"watermark-privacy": {
+		"title": "Privacy Principles for Digital Watermarking Version 1.0",
+		"href": "https://cdt.org/wp-content/uploads/copyright/20080529watermarking.pdf",
+		"publisher": "Center for Democracy &amp; Technology",
+		"date": "May 2008"
+	},
 	"wcag2": {
 		"title": "Web Content Accessibility Guidelines (WCAG) 2",
 		"href": "https://www.w3.org/TR/WCAG2/",
