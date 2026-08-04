@@ -74,6 +74,11 @@ var biblio = {
 		"href": "https://www.itu.int/ITU-T/recommendations/rec.aspx?rec=13189",
 		"date": "2017-04-13"
 	},
+	"iso14977": {
+		"title": "ISO/IEC 14977:1996 — Information technology — Syntactic metalanguage — Extended BNF",
+		"href": "https://www.iso.org/standard/26153.html",
+		"date": "1996-12"
+	},
 	"iso22424": {
 		"title": "ISO/IEC TS 22424-1:2020 — Digital publishing — EPUB3 preservation",
 		"href": "https://www.iso.org/standard/73163.html",
@@ -88,6 +93,10 @@ var biblio = {
 		"title": "ISO/IEC 19757-4: NVDL (Namespace-based Validation Dispatching Language)",
 		"href": "http://standards.iso.org/ittf/PubliclyAvailableStandards/c038615_ISO_IEC_19757-4_2006(E).zip",
 		"date": "2006-06-01"
+	},
+	"marc-relators": {
+		"title": "MARC Code List for Relators",
+		"href": "https://www.loc.gov/marc/relators/relaterm.html"
 	},
 	"odf": {
 		"title": "Open Document Format for Office Applications (OpenDocument) v1.0",
