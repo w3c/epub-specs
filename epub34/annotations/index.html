@@ -1285,92 +1285,78 @@
         </section>
 
         <section class="informative">
-            <h1>Best Practices for Reading Systems</h1>
+            <h1>Reading Systems Behavior and Expectations</h1>
+            <p>While this specification primarily defines the serialization format for EPUB annotations, this section outlines the expected behaviors and capabilities of Reading Systems to ensure a consistent user experience and data interoperability across different environments.</p>
 
             <section>
-                <h2> Displaying filtered annotations </h2>
-                <p> It is recommended that Reading systems  enable filtering by motivation, creator, style and tags.
-                    For instance, a user can display &quot;blue&quot; colored annotations only, or
-                    &quot;typo&quot; tagged annotations only. Filtering on multiple criteria is a plus. </p>
-
+                <h2>Displaying and Filtering Annotations</h2>
+                <p>To provide a useful user interface for managing annotations, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Support metadata-based filtering:</strong> Allow users to filter the displayed annotations within a publication based on keys like <code>motivation</code> (e.g., distinguishing between a personal note and a bookmark), <code>creator</code>, <code>color</code>, <code>highlight</code>, and user-defined <code>tags</code>.</li>
+                    <li><strong>Handle multi-criteria filtering:</strong> Provide the capability to combine multiple filtering criteria simultaneously (e.g., filtering for annotations that are both tagged "review" and marked with a specific <code>color</code>) to help users manage large sets of annotations.</li>
+                </ul>
             </section>
 
             <section>
-                <h2> Using multiple selectors </h2>
-                <p> It is recommended that Reading Systems export multiple selectors, including at least
-                    one precise selector (e.g. CssSelector + TextPositionSelector),
-                    and one selector resistant to content modifications (e.g., based on text fragments).
-                </p>
-                <p> When displaying an annotation, a Reading System is free to use the most precise
-                    Selector available. It will select an alternative Selector as a fallback in case the
-                    preferred one does not return a correct position in the publication: this can happen
-                    if the publication has been modified after the annotation has been created. </p>
-                <p> Not all selectors are equally easy to implement. Reading Systems are free to choose to
-                    support only a subset of the selectors defined in this specification. </p>
+                <h2>Generating and Processing Selectors</h2>
+                <p>Because a publication may be modified or updated over time, the generation and robust processing of selectors are key to ensuring annotations remain attached to their correct positions.</p>
+                
+                <p>When <strong>generating</strong> annotations, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Create multiple selectors:</strong> Generate more than one type of selector for a single target whenever possible to ensure robustness against future modifications of the publication.</li>
+                </ul>
 
+                <p>When <strong>processing</strong> annotations, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Evaluate selectors by precision:</strong> Parse the array of Selectors in order of their precision (e.g., evaluating a <code>FragmentSelector</code> or <code>CssSelector</code> before falling back to broader text or range selectors).</li>
+                    <li><strong>Implement robust fallback logic:</strong> If the primary or most precise selector fails to resolve because the underlying publication content has been modified, automatically attempt to resolve the alternative selectors provided in the array.</li>
+                    <li><strong>Support core selector types:</strong> While Reading Systems have the freedom to implement only a subset of the selectors provided in this specification, they are expected to support the <code>CssSelector</code>, which is universally usable for both text and multimedia annotations.</li>
+                    <li><strong>Maintain degradation tolerance:</strong> Safely ignore unsupported selector types within an array without failing to process the annotation as a whole.</li>
+                </ul>
             </section>
 
             <section>
-                <h2>Exporting annotations as a detached file</h2>
-                <p> When a user decides to export an annotation set from a reading system, it is good to
-                    propose them to filter annotations by motivation, creator, style and tags. The advantage of
-                    this practice is that, for instance, a user can export personal annotations only. </p>
-                <p> The application can propose alternative formats at export time: an HTML or markdown format
-                    with human-friendly references to the location of each annotation is handy. </p>
+                <h2>Importing Annotations and Conflict Resolution</h2>
+                <p>The expectations for matching an annotation dataset to its target vary depending on how the data is delivered:</p>
+                <ul>
+                    <li><strong>Embedded Annotation Sets:</strong> If the data is embedded directly within the publication, the target publication context is inherently known, and no external mapping is required.</li>
+                    <li><strong>Detached Annotation Sets:</strong> When a Reading System imports detached annotations, it is expected to check whether those annotations are indeed for the publication being rendered. Because there are no universally accepted identifiers for EPUB publications, this process involves heuristics that depend on the Reading System. These may include comparing the content of the package document with the metadata assigned to the imported annotations, or checking whether the target resources of the annotation selectors are valid.</li>
+                </ul>
 
+                <p>To support this import workflow, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Facilitate publication mapping:</strong> Use the user interface to make it easy for the user to map the data to the proper publication. This process may require direct user interaction via the interface.</li>
+                    <li><strong>Alert and inform the user:</strong> Provide clear information about the imported annotations to the user. If the metadata checks or validation heuristics detect a mismatch, the Reading System is expected to alert the user.</li>
+                    <li><strong>Prevent data duplication:</strong> Use the unique <code>id</code> of each <code>Annotation</code> to detect collisions once the publication context is verified. If an incoming annotation shares an ID with an existing one, the system is expected to either update the existing entry or prompt the user for resolution, rather than creating a duplicate.</li>
+                </ul>
             </section>
 
             <section>
-                <h2>Exporting annotations embedded in an EPUB </h2>
-                <p> When a user decides to export a publication from the Reading System, it is good to
-                    propose them to embed the annotations associated with the publication. </p>
-                <p> If the user decides to embed annotations in the publication, they should be prompted to
-                    filter the annotations. </p>
-
+                <h2>Exporting Annotations</h2>
+                <p>The <code>AnnotationSet</code> structure does not exist natively inside a reading application; it is a pure serialization artifact used during the export process. When generating this structure for export, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Adhere to standard serialization layouts:</strong> Formulate the exported <code>AnnotationSet</code> precisely according to the JSON structures defined in Section 5, ensuring that detached files or embedded container elements are placed in their expected locations.</li>
+                    <li><strong>Offer flexible export filtering:</strong> Provide users with options to filter annotations at export time, allowing them to export a specific subset (e.g., exporting only notes tagged "final" or highlights of a single <code>color</code>) rather than forcing the serialization of all internal annotation data.</li>
+                </ul>
             </section>
 
             <section>
-                <h2>Importing annotations</h2>
-                <p> To simplify associating annotations with a publication, a Reading System has to
-                    offer a way to select a publication before selecting an annotation set.
-                    An automatic association of an annotation set with a publication (e.g. via drag and
-                    drop) can also be proposed, but identifying the proper publication from
-                    the metadata in the annotation set is error prone. </p>
-                <p> When importing an annotation set, the good practice for Reading Systems is to
-                    display publication metadata (e.g. title, author), the number of annotations found in the set,
-                    and offer the user the choice to abort the import if the information does not match their expectations. </p>
-                <p> Each annotation is uniquely identified, independently of the annotation set it is part of.
-                    During the import of an annotation set,
-                    if one or more annotations are found to be already stored in the application,
-                    the Reading System will offer the user a choice: either overriding the existing annotations,
-                    or abort the import of the annotation set. </p>
-
+                <h2>Handling Unsupported Payload Types</h2>
+                <p>The Web Annotation Data Model allows for rich media types that not all reading environments can parse. Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Degrade gracefully:</strong> If an annotation contains an audiovisual body (such as an image, audio, or video clip) that the current reading environment cannot render or play, ignore that specific annotation without disrupting the processing or rendering of other, textual annotations.</li>
+                    <li><strong>Inform the user:</strong> Provide a subtle visual indicator, placeholder, or notification to let the user know that an annotation exists at that location but its media content cannot be displayed due to format limitations.</li>
+                </ul>
             </section>
 
             <section>
-                <h2>Dealing with audiovisual notes</h2>
-                <p> This specification provides mechanisms for handling audiovisual notes.</p>
-                <p> If an application does not support audiovisual notes, it has to ignore them
-                    when importing an annotation set. It is good practice to notify the user
-                    that some annotations were not imported due to lack of support. </p>
-
-                </section>
-
-            <section>
-                <h2>Dealing with colors</h2>
-                <p> This document specifies a closed set of six colors chosen because of their
-                    extensive support in well-known reading systems. However, most existing reading apps
-                    offer a smaller set to their users. </p>
-                <p> If an application imports annotations with a color it does not support,
-                    it is good practice to ignore the color information and to
-                    display them with a neutral color. The recommended neutral color is grey. </p>
-                <p> Some applications may support colors not in the set defined by this specification
-                    (e.g. brown). In this case, a 1-to-1 substitution at import or export time is required (e.g.
-                    mapping brown to orange). </p>
-                <p class="note">We didn't spot applications with more than six annotation colors. </p>
-
+                <h2>Color Mapping and Fallbacks</h2>
+                <p>To ensure visual consistency across different reading environments, Reading Systems are expected to:</p>
+                <ul>
+                    <li><strong>Map to a neutral default:</strong> If an annotation contains a <code>color</code> value outside of the standard enumerated profile (or one unsupported by the application's current theme), map it to a neutral fallback color (such as grey).</li>
+                    <li><strong>Standardize colors on export:</strong> If the application uses proprietary or system-specific color names internally, map those colors to the closest matching standard value from the six enumerated profile colors (<code>pink</code>, <code>orange</code>, <code>yellow</code>, <code>green</code>, <code>blue</code>, <code>purple</code>) when exporting the data.</li>
+                </ul>
             </section>
-
         </section>
 
         <section>
