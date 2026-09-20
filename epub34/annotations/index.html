@@ -112,13 +112,11 @@
                 <li> Web Annotations may have multiple creators, while only a single creator is allowed for EPUB
                     annotations.</li>
 
-                <li> Web Annotations may have additional properties that are not defined for EPUB Annotations (see the
-                    definitions of the properties in later sections). For example,
-                    a specific generator application and generated date may exist for a Web Annotation,
-                    whereas this document only defines these properties for <a href="#annotation-set">Annotation Sets</a>.
-                    Web Annotations also define additional property values and types than are not accepted for EPUB Annotations. </li>
+                <li> Web Annotations have properties that are not defined for EPUB Annotations.
+                    Implementers are free to ignore these additional properties when processing EPUB Annotations. </li>
 
-                <li> Web Annotations define an <a data-cite="annotation-model#annotation-collection">Annotation Collection</a> structure to handle paginated requests,
+                <li> Web Annotations define an <a data-cite="annotation-model#annotation-collection">Annotation Collection</a> 
+                    structure to handle paginated requests,
                     whereas this document defines an [=AnnotationSet=] structure to group multiple annotations for sharing purposes.
                     Implementers MUST support [=AnnotationSet=] and MAY support both structures for maximum compatibility.
                 </li>
@@ -128,7 +126,8 @@
             <section>
                 <h2>Relationship to URL</h2>
                 <p>To be consistent with [[[epub-34]]], this specification refers to the [[url]] standard for terminology
-                    and processing related to URLs expressed in [=EPUB publications=] and in <a href="#dfn-annotation-object">Annotations Objects</a>.
+                    and processing related to URLs expressed in [=EPUB publications=] 
+                    and in <a href="#dfn-annotation-object">Annotations Objects</a>.
                     The additional constraints expressed in <a data-cite="epub-34#sec-overview-relations-url"></a> also apply.
                     Note that this is a difference with the [[[annotation-model]]] which uses the term IRI [[rfc3987]]. This difference does
                     not alter the structure of the Data Model used by this specification.
@@ -174,7 +173,7 @@
                                 <code> <dfn>motivation</dfn> </code>
                             </td>
                             <td>The motivation for the annotation's creation.</td>
-                            <td>"bookmarking" | "commenting" | "highlighting"</td>
+                            <td>"bookmarking" | "highlighting"</td>
                             <td>No</td>
                         </tr>
                         <tr>
@@ -227,13 +226,21 @@
                     [=Creator=], [=Target=], and [=Body=] below.
                 </p>
 
-                <p class="note">The type of annotation should be considered when determining the value of the
-                    [=motivation=] property.
-                    An annotation with a Body structure corresponds to a "comment".
-                    An annotation without Body structure corresponds to a "highlight" if its Selector defines a range of characters,
-                    a region in an image, or a time period,
-                    and a "bookmark" if it does not.
-                </p>
+                <div class="note">
+                    <p>The type of annotation should be considered when determining the value of the
+                    [=motivation=] property.</p>
+
+                    <p>An annotation is a "highlight" if its motivation is set to "highlighting". 
+                    In this case, its Selector should reference a range of characters, a region of an image or a time period.</p>
+
+                    <p>An annotation is a "bookmark" if its motivation is set to "bookmarking". 
+                    In this case, its Selector should reference a single point in the publication, not a range. 
+                    If the Selector references a range, only the start of the range is used as a placeholder for the bookmark.</p>
+
+                    <p>An annotation that does not include an explicit <dfn>motivation</dfn> is considered a bookmark.</p>
+
+                    <p>Both highlights and bookmarks can have a Body, which is usually called a <i>note</i> or <i>comment</i>.</p>
+                </div>
 
                 <p class="ednote">We should specify whether a property may appear at most once (body, target) because
                     that is also part of
@@ -519,7 +526,10 @@
                         <h4>CSS Selector</h4>
                         <p>
                             One of the most common ways to select elements in the HTML Document Object Model is to use
-                            CSS Selectors [[CSS3-selectors]]. This specification reuses the <a
+                            CSS Selectors [[CSS3-selectors]]. 
+                        </p>
+                        <p>
+                            This specification reuses the <a
                                 data-cite="annotation-model#css-selector"><code>CssSelector</code></a>, as defined in
                             the [[[annotation-model]]] specification, but lists it here for an easier readability.
                         </p>
@@ -647,7 +657,8 @@
                             selection in the stream.
                             Position 0 would be immediately before the first character, position 1 would be immediately
                             before the second character, and so on.
-
+                        </p>
+                        <p>
                             This specification reuses the <a
                                 data-cite="annotation-model#text-position-selector"><code>TextPositionSelector</code></a>,
                             as defined in the [[[annotation-model]]] specification, but lists it here for an easier
@@ -701,19 +712,25 @@
                             </tbody>
                         </table>
                         <p>
-                            The text must be selected and normalized in the same way as for the <a
-                                data-cite="annotation-model#text-quote-selector">Text Quote Selector</a> before counting the
-                            number of characters to determine the start and end positions.
+                            When a Text Position Selector is used on an HTML resource, it operates on a plain text serialization of the content using the Document Object Model `textContent` algorithm.
+                        </p>
+                        <p>
+                            <em>Character 0</em>: Refers to the position immediately before the first character of the textContent of the scope. If the selector is a refinement, the scope is the element identified by the parent Selector; otherwise, the scope is the HTML &lt;body&gt; element.
+                        </p>
+                        <p>
+                            <em>Cross-Boundary Selection</em>: When a selection spans multiple HTML elements, the parent Selector must identify a common ancestor of all involved nodes. The character stream is the concatenation of all text nodes within that ancestor, in tree order.
+                        </p>
+                        <p>
+                            <em>Robustness</em>: To ensure persistence against DOM changes, the TextPositionSelector should be accompanied by a selector resistant to content modification and using the same serialization algorithm, e.g. the Text Fragment Selector. In cases of conflict (e.g., if the text has been modified), the latter should be used to re-calculate the correct offsets within the scope.
                         </p>
 
-                        <p class="issue" data-number="2927"></p>
                     </section>
 
                     <section>
-                        <h4>Refinement of Selection</h4>
+                        <h4>Refinement of a Selection</h4>
                         <p>
-                            It may be easier, more reliable, or more accurate to specify the segment of interest of a
-                            resource as a selection of a selection, rather than as a selection of the complete resource.
+                            It may be more efficient or simpler to specify the segment of interest of a
+                            resource as a selection inside a selection, rather than as a selection of the complete resource.
                             This is accomplished by having selectors chained together, where each refines the results
                             of the previous one.
                         </p>
@@ -1000,56 +1017,6 @@
             </table>
 
             <section>
-                <h2>Generator</h2>
-                <p>The <dfn>Generator object</dfn> contains information relative to the software from which the
-                    serialized annotation has been produced.</p>
-                <table class="zebra">
-                    <thead>
-                        <tr>
-                            <th> Name </th>
-                            <th> Description </th>
-                            <th> Format </th>
-                            <th> Required? </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <code> id </code>
-                            </td>
-                            <td> The identity of the generator software. The recommended value is the
-                                GitHub URL of the application source code. </td>
-                            <td> URL </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> type </code>
-                            </td>
-                            <td> The RDF type. It MUST be "Software". </td>
-                            <td> string </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> name </code>
-                            </td>
-                            <td> The name of the generator software. </td>
-                            <td> string </td>
-                            <td> Yes </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <code> homepage </code>
-                            </td>
-                            <td> The home page presenting the generator software. </td>
-                            <td> URL </td>
-                            <td> No </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-            <section>
                 <h2>About</h2>
                 <p> The <dfn>About object</dfn> contains information relative to the publication. 
                     The following table lists recommended metadata fields, directly extracted from the EPUB.
@@ -1115,7 +1082,6 @@
         "@context": "https://www.w3.org/ns/epub-anno.jsonld",
         "id": "urn:uuid:123-123-123-123",
         "type": "AnnotationSet",
-        "generator": "https://github.com/edrlab/thorium-reader/releases/tag/v3.1.0",
         "generated": "2023-09-01T10:00:00Z",
         "about": {
             "dc:title": "Alice in Wonderland",
@@ -1175,7 +1141,7 @@
         </section>
 
         <section>
-            <h2>Sharing AnnotationSets</h2>
+            <h1>Sharing AnnotationSets</h1>
             <p> An AnnotationSet can be shared as a detached file, or embedded in an EPUB package.
                 The advantage of detached annotations is that they can be shared independently of the publication,
                 and that they can be associated with a publication without modifying it.
@@ -1214,7 +1180,6 @@
             </section>
 
             <section>
-
                 <h2>Annotations embedded in EPUB</h2>
 
                 <p> The AnnotationSet is stored in the META-INF directory as <code>annotations.json</code>.
@@ -1225,7 +1190,6 @@
                 <div class="note">
                     <p> Storing audiovisual notes in the META-INF directory has implications for the size of the EPUB package, and is therefore not recommended.</p>
                 </div>
-
             </section>
 
         </section>
@@ -1238,7 +1202,7 @@
                 <h2>Displaying and Filtering Annotations</h2>
                 <p>To provide a useful user interface for managing annotations, Reading Systems are expected to:</p>
                 <ul>
-                    <li><strong>Support metadata-based filtering:</strong> Allow users to filter the displayed annotations within a publication based on keys like [=motivation=] (e.g., distinguishing between a personal note and a bookmark), [=creator=], [=color=], [=highlight=], and user-defined [=tags=].</li>
+                    <li><strong>Support metadata-based filtering:</strong> Allow users to filter the displayed annotations within a publication based on keys like [=motivation=] (e.g., distinguishing between a highlight and a bookmark), [=creator=], [=color=], [=highlight=], and user-defined [=tags=].</li>
                     <li><strong>Handle multi-criteria filtering:</strong> Provide the capability to combine multiple filtering criteria simultaneously (e.g., filtering for annotations that are both tagged "review" and marked with a specific [=color=]) to help users manage large sets of annotations.</li>
                 </ul>
             </section>
