@@ -157,7 +157,7 @@
                                 <code> id </code>
                             </td>
                             <td>The identity of the annotation. A uuid formatted as a URN is RECOMMENDED.</td>
-                            <td>URL</td>
+                            <td>URI</td>
                             <td>Yes</td>
                         </tr>
                         <tr>
@@ -349,25 +349,34 @@
                 <p> A Target with no Selector indicates that the annotation applies to the entire
                     target resource. </p>
 
+                
+                <div class="note">
+                    <p> A future version of the specification may add a way to reference another annotation by its unique identifier. 
+                        This would allow annotations to target other annotations, enabling more complex annotation structures. 
+                        In that case, we might introduce new [=Motivation] properties to indicate the relationship between annotations.
+                    </p>
+                </div>
+
+
                 <section>
                     <h3>Source</h3>
-                    <p> The target resource MUST be identified by the URL of an existing EPUB top-level content document, as
+                    <p> The target resource MUST be identified by the relative URL of an existing EPUB top-level content document, as
                         defined in [[epub-34]].</p>
 
                     <aside class="example"
                         title=" the source of the annotation is the relative URL identifying an HTML document in an EPUB">
                         <pre>
-                {
-                    "@context": "https://www.w3.org/ns/epub-anno.jsonld",
-                    "type": "Annotation",
-                    "target": {
-                        "source": "OEBPS/text/chapter1.html",
-                        "selector": [
-                        …
-                        ]
-                    }
-                }
-				</pre>
+                        {
+                            "@context": "https://www.w3.org/ns/epub-anno.jsonld",
+                            "type": "Annotation",
+                            "target": {
+                                "source": "OEBPS/text/chapter1.html",
+                                "selector": [
+                                …
+                                ]
+                            }
+                        }
+                        </pre>
                     </aside>
                 </section>
 
@@ -1011,7 +1020,7 @@
             <section>
                 <h2>About</h2>
                 <p> The <dfn>About object</dfn> contains information relative to the publication. 
-                    The following table lists recommended metadata fields, directly extracted from the EPUB.
+                    The following table lists recommended metadata fields, directly extracted from the metadata of the publication.
                     They are intended to help associate an annotation set with a publication: </p>
                 <table class="zebra">
                     <thead>
@@ -1066,6 +1075,14 @@
 
                     Implementers are free to add other properties from the Dublin Core Vocabulary, or to use properties from
                         other vocabularies, as long as they are properly declared in the context file.
+                </p>
+
+                <p class="note">
+
+                    The metadata of the publication may differ from the EPUB package document metadata. 
+
+                    This happens when the publication metadata is manually updated by the user of the reading system, or when 
+                        the reading system fetches metadata from an external source.
                 </p>
 
                 <aside class="example" title="An AnnotationSet containing one annotation">
@@ -1253,7 +1270,15 @@
             </section>
 
             <section>
-                <h2>Color Mapping and Fallbacks</h2>
+                <h2>Handling Fallbacks in top-level content documents</h2>
+                <p>There may be cases where annotations are associated with foreign top-level content documents that the current reading environment cannot render. This is for instance the case if the annotation points to a section of image used as top-level content document, this image has a textual or svg fallback, and the reading system only supports textual or svg content as top-level content documents.</p>
+                <p>If a reading system encounters such a case, it is recommended to associate the annotation with the selected fallback representation, by mapping the annotation [=Selector=] to a representation supported by this content document. It is not recommended to store this mapped selector permanently.</p>
+            </section>
+
+            <p class="issue" data-number="3076"></p>
+
+            <section>
+                <h2>Color Mapping</h2>
                 <p>To ensure visual consistency across different reading environments, Reading Systems are expected to:</p>
                 <ul>
                     <li><strong>Map to a neutral default:</strong> If an annotation contains a [=color=] value outside of the standard enumerated profile (or one unsupported by the application's current theme), map it to a neutral fallback color (such as grey).</li>
