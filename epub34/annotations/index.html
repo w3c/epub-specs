@@ -1427,11 +1427,105 @@
             <p>T.B.D.</p>
         </section>
 
-        <section>
-            <h1>Security Considerations</h1>
+        <section id="security-considerations" class="non-normative">
+            <h2>Security Considerations</h2>
+            <p>
+                The EPUB Annotations specification provides a standardized data model for importing, exporting, 
+                and displaying annotations. Because annotations can originate from untrusted external sources—such as 
+                downloaded detached files (<code>AnnotationSet</code>) or crowd-sourced annotation servers—implementations 
+                must treat all incoming annotation data as potentially malicious.
+            </p>
+            <p>
+                Implementers should design reading systems and processing tools defensively to mitigate the risks of 
+                injection attacks, malicious resource loading, and denial-of-service, aligning with the guidelines in the 
+                <a href="https://www.w3.org/TR/security-privacy-questionnaire/">W3C Self-Review Questionnaire: Security and Privacy</a>.
+            </p>
 
-            <p>T.B.D.</p>
+            <section id="security-plain-text">
+                <h3>Plain Text Handling and Cross-Site Scripting (XSS)</h3>
+                <p>
+                This specification restricts textual annotation bodies to plain text. Consequently, reading systems MUST NOT 
+                parse, interpret, or render HTML, XML, or script markup contained within an annotation's <code>body</code>.
+                </p>
+                <ul>
+                <li>
+                    <strong>Plain Text Enforcement:</strong> Reading systems must process any markup elements or 
+                    entity references (such as <code>&lt;script&gt;</code> or <code>&lt;iframe&gt;</code>) strictly as 
+                    raw text strings. When displaying annotation content within a web-based context or DOM element, 
+                    reading systems must safely escape text or use plain-text insertion methods 
+                    (e.g., <code>textContent</code> in JavaScript) to ensure that embedded code cannot execute.
+                </li>
+                <li>
+                    <strong>Auto-linking Risks:</strong> If a reading system automatically parses plain text to render 
+                    hyperlinked URLs within an annotation body, it must validate the URI scheme (limiting active links 
+                    to secure protocols like <code>https:</code>) to prevent execution of malicious schemes 
+                    such as <code>javascript:</code> or <code>file:</code>.
+                </li>
+                </ul>
+            </section>
+
+            <section id="security-external-resources">
+                <h3>External Resources and Network Security</h3>
+                <p>
+                Annotations can reference external Web resources (e.g., in the <code>target</code> property or when 
+                referencing external media for audiovisual notes).
+                </p>
+                <ul>
+                <li>
+                    <strong>Automatic Fetching:</strong> Reading systems should not automatically fetch or render external resources linked in an annotation without explicit user consent. Automatic fetching can be exploited to conduct Server-Side Request Forgery (SSRF) attacks or to expose the user's IP address to third-party tracking servers.
+                </li>
+                <li>
+                    <strong>Malicious URIs:</strong> Implementations must validate the URI schemes of all external resources, restricting active requests to secure protocols (e.g., <code>https:</code>) and blocking dangerous schemes (e.g., <code>javascript:</code>, <code>file:</code>, or OS-specific application handlers).
+                </li>
+                <li>
+                    <strong>User Warnings:</strong> When an annotation prompts a user to open an external link, the reading system should clearly indicate that the destination is external to the EPUB package and inherently untrusted.
+                </li>
+                </ul>
+            </section>
+
+            <section id="security-path-traversal">
+                <h3>Path Traversal and Local Access</h3>
+                <p>
+                The [=Target] object utilizes a <code>source</code> property, which must be the URL of an existing resource within the EPUB package (e.g., an HTML document).
+                </p>
+                <ul>
+                <li>
+                    <strong>Container Bounding:</strong> When resolving the <code>source</code> URL against the EPUB package, reading systems must prevent path traversal attacks. Implementations must ensure that malicious paths (e.g., <code>../../../../etc/passwd</code> or <code>../outside-container.html</code>) cannot be used to escape the bounds of the EPUB container or access local system files.
+                </li>
+                </ul>
+            </section>
+
+            <section id="security-dos">
+                <h3>Algorithmic Complexity and Denial of Service (DoS)</h3>
+                <p>
+                Processing deeply nested annotation data or calculating complex selectors can be weaponized to consume excessive CPU or memory, leading to a Denial of Service.
+                </p>
+                <ul>
+                <li>
+                    <strong>Selector Complexity:</strong> The [=Selector=] object (particularly CSS Selectors and Text Position Selectors) requires the reading system to traverse the Document Object Model (DOM) to locate specific segments. Attackers may craft overly complex CSS selectors or extreme text coordinate ranges designed to hang the rendering engine. Implementations should enforce execution time limits and depth limits when applying selectors.
+                </li>
+                <li>
+                    <strong>JSON Parsing:</strong> As EPUB Annotations are serialized in JSON/JSON-LD, implementations must use secure parsing libraries configured to limit maximum file size, string length, and nesting depth to prevent memory exhaustion or "Billion Laughs"-style parser attacks.
+                </li>
+                </ul>
+            </section>
+
+            <section id="security-spoofing">
+                <h3>Spoofing and Data Integrity</h3>
+                <p>
+                When annotations are imported from a detached [=AnnotationSet=], reading systems have no inherent guarantee of the data's authenticity.
+                </p>
+                <ul>
+                <li>
+                    <strong>Creator Forgery:</strong> The [=Creator=] object can be easily forged. An attacker could craft an annotation file that appears to come from a trusted source (such as a teacher, publisher, or known peer) but contains misleading or offensive notes.
+                </li>
+                <li>
+                    <strong>Integrity Validation:</strong> Implementers should treat the [=Creator=] metadata in detached files as unverified unless the annotation set is transmitted over a secure, authenticated channel (like an authenticated API) or is cryptographically signed. Reading systems should visually distinguish between locally authored annotations and untrusted imported annotations.
+                </li>
+                </ul>
+            </section>
         </section>
+
         <section class="appendix" id="index"></section>
         <section class="appendix" id="issue-summary"></section>
     </body>
